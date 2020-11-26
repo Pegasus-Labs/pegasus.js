@@ -14,14 +14,14 @@ export function getPerpetualContract(
 export async function getPerpetualStorage(
   perpetual: Perpetual
 ): Promise<PerpetualStorage> {
-  console.log('get perpetualStorage', perpetual.address)
-
   // const result = await Promise.all([
   //   perpetual.information(),
   //   perpetual.shareToken(),
   //   perpetual.callStatic.state(),
   //   perpetual.callStatic.fundingState(),
   // ])
+  perpetual // just ref
+
   return {
     // perpetual
     underlyingSymbol: 'ETH',
@@ -90,8 +90,10 @@ export async function getAccountStorage(
   perpetual: Perpetual,
   userAddress: string
 ): Promise<AccountStorage> {
-  console.log('get account storage', perpetual.address, userAddress)
   // const marginAccount = await perpetual.marginAccount(userAddress)
+  perpetual // just ref 
+  userAddress // just ref
+
   return {
     cashBalance: normalizeBigNumberish(1000000),
     entryFundingLoss: normalizeBigNumberish(10),
