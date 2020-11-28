@@ -1,6 +1,6 @@
 {
   "name": "@mcarloai/mai3.js",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Mai Protocol v3 JavaScript API",
   "homepage": "http://github.com/mcarloai/mai3.js",
   "author": "Zhu Tianchi <zhutianchi@mcarlo.com>",
@@ -34,10 +34,7 @@
   },
   "dependencies": {
     "bignumber.js": "~9.0.0",
-    "ethers": "5.0.20",
-    "@ethersproject/abi": "5.0.8",
-    "@ethersproject/contracts": "5.0.7",
-    "@ethersproject/providers": "5.0.15",
+    "ethers": "^5.0.20",
     "minimize-golden-section-1d": "~3.0.0"
   },
   "prepare": "npm run build",
