@@ -17,7 +17,7 @@ jobs:
           registry-url: https://npm.pkg.github.com
           scope: '@mcarloai'
 
-      - run: npm install
+      - run: yarn install
       - run: npm run build
       - run: npm publish
         env:
