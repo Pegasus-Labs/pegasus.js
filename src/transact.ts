@@ -59,11 +59,10 @@ export async function perpetualWithdraw(
 export async function brokerRelayDeposit(
   brokerRelay: BrokerRelay,
   tokenAmount: BigNumberish, // should be a decimal number (ie: 1.234)
-  tokenDecimals: number,
   overrides: PayableOverrides,
 ): Promise<ethers.providers.TransactionResponse> {
   const largeAmount = normalizeBigNumberish(tokenAmount)
-    .shiftedBy(tokenDecimals)
+    .shiftedBy(DECIMALS)
     .dp(0, BigNumber.ROUND_DOWN)
   overrides.value = largeAmount.toFixed()
   return await brokerRelay.deposit(overrides)
@@ -72,11 +71,10 @@ export async function brokerRelayDeposit(
 export async function brokerRelayWithdraw(
   brokerRelay: BrokerRelay,
   tokenAmount: BigNumberish, // should be a decimal number (ie: 1.234)
-  tokenDecimals: number,
   overrides?: Overrides,
 ): Promise<ethers.providers.TransactionResponse> {
   const largeAmount = normalizeBigNumberish(tokenAmount)
-    .shiftedBy(tokenDecimals)
+    .shiftedBy(DECIMALS)
     .dp(0, BigNumber.ROUND_DOWN)
   return await brokerRelay.withdraw(largeAmount.toFixed(), overrides)
 }

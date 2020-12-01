@@ -7,6 +7,7 @@ import { SignerOrProvider } from './types'
 import { normalizeBigNumberish } from './utils'
 import { BigNumber } from 'bignumber.js'
 import { getAddress } from "@ethersproject/address"
+import { DECIMALS } from './constants'
 
 export function getPerpetualContract(
   perpetualAddress: string,
@@ -121,9 +122,8 @@ export async function getAccountStorage(
 export async function getBrokerRelayBalanceOf(
   brokerRelay: BrokerRelay,
   trader: string,
-  tokenDecimals: number
 ): Promise<BigNumber> {
   getAddress(trader)
   const balance = await brokerRelay.balanceOf(trader)
-  return normalizeBigNumberish(balance).shiftedBy(-tokenDecimals)
+  return normalizeBigNumberish(balance).shiftedBy(-DECIMALS)
 }
