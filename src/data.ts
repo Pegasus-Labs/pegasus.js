@@ -1,14 +1,25 @@
 import { AccountStorage, PerpetualStorage } from './types'
 import { Perpetual } from './wrapper/Perpetual'
 import { PerpetualFactory } from './wrapper/PerpetualFactory'
+import { BrokerRelay } from './wrapper/BrokerRelay'
+import { BrokerRelayFactory } from './wrapper/BrokerRelayFactory'
 import { SignerOrProvider } from './types'
 import { normalizeBigNumberish } from './utils'
+import { BigNumber } from 'bignumber.js'
+import { getAddress } from "@ethersproject/address"
 
 export function getPerpetualContract(
   perpetualAddress: string,
   signerOrProvider: SignerOrProvider
 ): Perpetual {
   return PerpetualFactory.connect(perpetualAddress, signerOrProvider)
+}
+
+export function getBrokerRelayContract(
+  contractAddress: string,
+  signerOrProvider: SignerOrProvider
+): BrokerRelay {
+  return BrokerRelayFactory.connect(contractAddress, signerOrProvider)
 }
 
 export async function getPerpetualStorage(
@@ -91,7 +102,7 @@ export async function getAccountStorage(
   userAddress: string
 ): Promise<AccountStorage> {
   // const marginAccount = await perpetual.marginAccount(userAddress)
-  perpetual // just ref 
+  perpetual // just ref
   userAddress // just ref
 
   return {
@@ -105,4 +116,14 @@ export async function getAccountStorage(
     // entryFundingLoss: normalizeBigNumberish(marginAccount.entryFundingLoss).shiftedBy(-DECIMALS),
     // entryValue: null,
   }
+}
+
+export async function getBrokerRelayBalanceOf(
+  brokerRelay: BrokerRelay,
+  trader: string,
+  tokenDecimals: number
+): Promise<BigNumber> {
+  getAddress(trader)
+  const balance = await brokerRelay.balanceOf(trader)
+  return normalizeBigNumberish(balance).shiftedBy(-tokenDecimals)
 }

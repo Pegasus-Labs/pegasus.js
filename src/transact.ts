@@ -4,7 +4,8 @@ import { BigNumberish } from './types'
 import { normalizeBigNumberish } from './utils'
 import BigNumber from 'bignumber.js'
 import type { Perpetual } from './wrapper/Perpetual'
-import { Overrides } from "@ethersproject/contracts"
+import type { BrokerRelay } from './wrapper/BrokerRelay'
+import { Overrides, PayableOverrides } from "@ethersproject/contracts"
 import { getAddress } from "@ethersproject/address"
 
 export async function perpetualTrade(
@@ -52,4 +53,30 @@ export async function perpetualWithdraw(
     .shiftedBy(collateralDecimals)
     .dp(0, BigNumber.ROUND_DOWN)
   return await perpetual.withdraw(trader, largeAmount.toFixed(), overrides)
+}
+
+
+export async function brokerRelayDeposit(
+  brokerRelay: BrokerRelay,
+  tokenAmount: BigNumberish, // should be a decimal number (ie: 1.234)
+  tokenDecimals: number,
+  overrides: PayableOverrides,
+): Promise<ethers.providers.TransactionResponse> {
+  const largeAmount = normalizeBigNumberish(tokenAmount)
+    .shiftedBy(tokenDecimals)
+    .dp(0, BigNumber.ROUND_DOWN)
+  overrides.value = largeAmount.toFixed()
+  return await brokerRelay.deposit(overrides)
+}
+
+export async function brokerRelayWithdraw(
+  brokerRelay: BrokerRelay,
+  tokenAmount: BigNumberish, // should be a decimal number (ie: 1.234)
+  tokenDecimals: number,
+  overrides?: Overrides,
+): Promise<ethers.providers.TransactionResponse> {
+  const largeAmount = normalizeBigNumberish(tokenAmount)
+    .shiftedBy(tokenDecimals)
+    .dp(0, BigNumber.ROUND_DOWN)
+  return await brokerRelay.withdraw(largeAmount.toFixed(), overrides)
 }
