@@ -3,7 +3,7 @@ import { SignerOrProvider } from './types'
 import { ERC20_ABI } from './constants'
 import { normalizeBigNumberish } from './utils'
 import BigNumber from 'bignumber.js'
-import { Overrides } from "@ethersproject/contracts"
+import { CallOverrides } from "@ethersproject/contracts"
 
 export function getERC20Contract(
   erc20Address: string,
@@ -37,13 +37,18 @@ export async function allowance(
 
 export async function approveToken(
   erc20Contract: ethers.Contract,
-  targetAddress: string,
+  ownerAddress: string | Promise<string>,
+  spenderAddress: string,
   allowance: BigNumber,
   decimals: number,
-  overrides?: Overrides,
+  overrides?: CallOverrides,
 ): Promise<ethers.providers.TransactionResponse> {
+  if (!overrides) {
+    overrides = {}
+  }
+  overrides.from = ownerAddress
   allowance = allowance.shiftedBy(decimals)
-  return erc20Contract.approve(targetAddress, allowance, overrides)
+  return erc20Contract.approve(spenderAddress, allowance, overrides)
 }
 
 export async function balanceOf(
