@@ -48,7 +48,7 @@ export async function approveToken(
   }
   overrides.from = ownerAddress
   allowance = allowance.shiftedBy(decimals)
-  return erc20Contract.approve(spenderAddress, allowance, overrides)
+  return erc20Contract.approve(spenderAddress, allowance.toFixed(), overrides)
 }
 
 export async function balanceOf(
