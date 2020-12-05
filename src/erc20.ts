@@ -29,8 +29,8 @@ export async function allowance(
   erc20Contract: ethers.Contract,
   accountAddress: string,
   perpetualAddress: string,
+  decimals: number,
 ): Promise<BigNumber> {
-  const decimals = await erc20Decimals(erc20Contract)
   const allowance = await erc20Contract.allowance(accountAddress, perpetualAddress)
   return normalizeBigNumberish(allowance).shiftedBy(-decimals)
 }
@@ -49,20 +49,16 @@ export async function approveToken(
 export async function balanceOf(
   erc20Contract: ethers.Contract,
   accountAddress: string,
+  decimals: number,
 ): Promise<BigNumber> {
-  const [ decimals, balance ] = await Promise.all([
-    erc20Decimals(erc20Contract),
-    erc20Contract.balanceOf(accountAddress),
-  ])
+  const balance = await erc20Contract.balanceOf(accountAddress)
   return normalizeBigNumberish(balance).shiftedBy(-decimals)
 }
 
 export async function totalSupply(
-  erc20Contract: ethers.Contract
+  erc20Contract: ethers.Contract,
+  decimals: number,
 ): Promise<BigNumber> {
-  const [ decimals, totalSupply ] = await Promise.all([
-    erc20Decimals(erc20Contract),
-    erc20Contract.totalSupply(),
-  ])
+  const totalSupply = erc20Contract.totalSupply()
   return normalizeBigNumberish(totalSupply).shiftedBy(-decimals)
 }
