@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { ETH_COLLATERAL_ADDRESS, _MAX_UINT256, _0, _1, _2, _3, DECIMALS } from './constants'
+import { _MAX_UINT256, _0, _1, _2, _3, DECIMALS } from './constants'
 import { BigNumberish } from './types'
 import { SignerOrProvider } from './types'
 import { ethers } from 'ethers'
@@ -24,10 +24,6 @@ export function normalizeBigNumberish(bigNumberish: BigNumberish): BigNumber {
 
 export function normalizeAddress(address: string): string {
   return ethers.utils.getAddress(address.toLowerCase())
-}
-
-export function isCollateralETH(tokenAddress: string): boolean {
-  return tokenAddress === ETH_COLLATERAL_ADDRESS
 }
 
 export function hasTheSameSign(x: BigNumber, y: BigNumber): boolean {

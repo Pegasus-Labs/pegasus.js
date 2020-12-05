@@ -3,13 +3,12 @@ import { ethers } from 'ethers'
 import { BigNumberish } from '../src/types'
 import {
   normalizeBigNumberish,
-  isCollateralETH,
   hasTheSameSign,
   mostSignificantBit,
   sqrt,
   splitAmount,
 } from '../src/utils'
-import { ETH_COLLATERAL_ADDRESS, _0, _1 } from '../src/constants'
+import { _0, _1 } from '../src/constants'
 
 import { extendExpect } from './helper'
 
@@ -217,8 +216,4 @@ describe('normalizeBigNumberish', (): void => {
     testSuccesses(expectedSuccesses)
     testFailures(expectedFailures)
   })
-})
-
-it('isCollateralETH', function () {
-  expect(isCollateralETH(ETH_COLLATERAL_ADDRESS)).toBeTruthy()
 })

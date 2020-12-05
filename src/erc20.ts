@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { SignerOrProvider } from './types'
-import { ERC20_ABI, ALLOWANCE_AMOUNT } from './constants'
+import { ERC20_ABI } from './constants'
 import { normalizeBigNumberish } from './utils'
 import BigNumber from 'bignumber.js'
 import { Overrides } from "@ethersproject/contracts"
@@ -38,10 +38,11 @@ export async function allowance(
 export async function approveToken(
   erc20Contract: ethers.Contract,
   targetAddress: string,
-  allow: boolean = true,
+  allowance: BigNumber,
+  decimals: number,
   overrides?: Overrides,
 ): Promise<ethers.providers.TransactionResponse> {
-  const allowance = allow ? ALLOWANCE_AMOUNT : '0'
+  allowance = allowance.shiftedBy(decimals)
   return erc20Contract.approve(targetAddress, allowance, overrides)
 }
 
