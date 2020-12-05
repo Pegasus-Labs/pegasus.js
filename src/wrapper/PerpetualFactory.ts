@@ -686,6 +686,20 @@ const _abi = [
   },
   {
     inputs: [
+    ],
+    name: "shareToken",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
       {
         internalType: "address",
         name: "claimer",
@@ -808,7 +822,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "infomation",
+    name: "information",
     outputs: [
       {
         internalType: "string",

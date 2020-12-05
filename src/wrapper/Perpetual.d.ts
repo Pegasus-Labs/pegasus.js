@@ -34,7 +34,7 @@ interface PerpetualInterface extends ethers.utils.Interface {
     "fundingState()": FunctionFragment;
     "governor()": FunctionFragment;
     "grantPrivilege(address,address,uint256)": FunctionFragment;
-    "infomation()": FunctionFragment;
+    "information()": FunctionFragment;
     "initialize(address,address,address,address,int256[7],int256[5],int256[5],int256[5])": FunctionFragment;
     "isGranted(address,address,uint256)": FunctionFragment;
     "liquidateByAMM(address,uint256)": FunctionFragment;
@@ -114,7 +114,7 @@ interface PerpetualInterface extends ethers.utils.Interface {
     values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "infomation",
+    functionFragment: "information",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -223,7 +223,7 @@ interface PerpetualInterface extends ethers.utils.Interface {
     functionFragment: "grantPrivilege",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "infomation", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "information", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "isGranted", data: BytesLike): Result;
   decodeFunctionResult(
@@ -316,6 +316,8 @@ export class Perpetual extends Contract {
   removeListener(eventName: any, listener: Listener): this;
 
   interface: PerpetualInterface;
+
+  shareToken(): Promise<string>;
 
   functions: {
     addLiquidatity(
@@ -477,7 +479,7 @@ export class Perpetual extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    infomation(
+    information(
       overrides?: CallOverrides
     ): Promise<{
       underlyingAsset: string;
@@ -516,7 +518,7 @@ export class Perpetual extends Contract {
       7: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
     }>;
 
-    "infomation()"(
+    "information()"(
       overrides?: CallOverrides
     ): Promise<{
       underlyingAsset: string;
@@ -959,8 +961,8 @@ export class Perpetual extends Contract {
     privilege: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
-
-  infomation(
+  
+  information(
     overrides?: CallOverrides
   ): Promise<{
     underlyingAsset: string;
@@ -999,7 +1001,7 @@ export class Perpetual extends Contract {
     7: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
   }>;
 
-  "infomation()"(
+  "information()"(
     overrides?: CallOverrides
   ): Promise<{
     underlyingAsset: string;
@@ -1457,7 +1459,7 @@ export class Perpetual extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    infomation(
+    information(
       overrides?: CallOverrides
     ): Promise<{
       underlyingAsset: string;
@@ -1496,7 +1498,7 @@ export class Perpetual extends Contract {
       7: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
     }>;
 
-    "infomation()"(
+    "information()"(
       overrides?: CallOverrides
     ): Promise<{
       underlyingAsset: string;
@@ -2042,9 +2044,9 @@ export class Perpetual extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    infomation(overrides?: CallOverrides): Promise<BigNumber>;
+    information(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "infomation()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "information()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     initialize(
       operator: string,
@@ -2437,9 +2439,9 @@ export class Perpetual extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    infomation(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    information(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "infomation()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "information()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     initialize(
       operator: string,
