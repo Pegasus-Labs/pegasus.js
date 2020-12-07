@@ -95,7 +95,7 @@ export async function getPerpetualStorage(
 
     // state
     isEmergency: result[2].isEmergency,
-    isGlobalSettled: result[2].isShuttingdown,
+    isGlobalSettled: result[2].isCleared,
     insuranceFund1: normalizeBigNumberish(result[2].insuranceFund).shiftedBy(-DECIMALS),
     insuranceFund2: normalizeBigNumberish(result[2].donatedInsuranceFund).shiftedBy(-DECIMALS),
     markPrice: normalizeBigNumberish(result[2].markPrice).shiftedBy(-DECIMALS),
@@ -129,7 +129,7 @@ export async function getAccountStorage(
   return {
     cashBalance: normalizeBigNumberish(marginAccount.cashBalance).shiftedBy(-DECIMALS),
     positionAmount: normalizeBigNumberish(marginAccount.positionAmount).shiftedBy(-DECIMALS),
-    entryFundingLoss: normalizeBigNumberish(marginAccount.entryFundingLoss).shiftedBy(-DECIMALS),
+    entryFundingLoss: normalizeBigNumberish(marginAccount.entryFunding).shiftedBy(-DECIMALS),
     entryValue: null,
   }
 }

@@ -33,13 +33,30 @@ export async function perpetualDeposit(
   trader: string,
   collateralAmount: BigNumberish, // should be a decimal number (ie: 1.234)
   collateralDecimals: number,
-  overrides?: Overrides,
+  overrides?: PayableOverrides,
 ): Promise<ethers.providers.TransactionResponse> {
   getAddress(trader)
   const largeAmount = normalizeBigNumberish(collateralAmount)
     .shiftedBy(collateralDecimals)
     .dp(0, BigNumber.ROUND_DOWN)
   return await perpetual.deposit(trader, largeAmount.toFixed(), overrides)
+}
+
+export async function perpetualDepositEth(
+  perpetual: Perpetual,
+  trader: string,
+  collateralAmount: BigNumberish, // should be a decimal number (ie: 1.234)
+  overrides?: PayableOverrides,
+): Promise<ethers.providers.TransactionResponse> {
+  getAddress(trader)
+  const largeAmount = normalizeBigNumberish(collateralAmount)
+    .shiftedBy(DECIMALS)
+    .dp(0, BigNumber.ROUND_DOWN)
+  if (!overrides) {
+    overrides = {}
+  }
+  overrides.value = largeAmount.toFixed()
+  return await perpetual.deposit(trader, '0', overrides)
 }
 
 export async function perpetualWithdraw(
@@ -55,15 +72,17 @@ export async function perpetualWithdraw(
   return await perpetual.withdraw(trader, largeAmount.toFixed(), overrides)
 }
 
-
 export async function brokerRelayDeposit(
   brokerRelay: BrokerRelay,
   tokenAmount: BigNumberish, // should be a decimal number (ie: 1.234)
-  overrides: PayableOverrides,
+  overrides?: PayableOverrides,
 ): Promise<ethers.providers.TransactionResponse> {
   const largeAmount = normalizeBigNumberish(tokenAmount)
     .shiftedBy(DECIMALS)
     .dp(0, BigNumber.ROUND_DOWN)
+  if (!overrides) {
+    overrides = {}
+  }
   overrides.value = largeAmount.toFixed()
   return await brokerRelay.deposit(overrides)
 }

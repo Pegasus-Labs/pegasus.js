@@ -37,16 +37,11 @@ export async function allowance(
 
 export async function approveToken(
   erc20Contract: ethers.Contract,
-  ownerAddress: string | Promise<string>,
   spenderAddress: string,
   allowance: BigNumber,
   decimals: number,
   overrides?: CallOverrides,
 ): Promise<ethers.providers.TransactionResponse> {
-  if (!overrides) {
-    overrides = {}
-  }
-  overrides.from = ownerAddress
   allowance = allowance.shiftedBy(decimals)
   return erc20Contract.approve(spenderAddress, allowance.toFixed(), overrides)
 }

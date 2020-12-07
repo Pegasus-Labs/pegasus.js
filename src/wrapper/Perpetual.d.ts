@@ -14,6 +14,7 @@ import {
   Contract,
   ContractTransaction,
   Overrides,
+  PayableOverrides,
   CallOverrides,
 } from "@ethersproject/contracts";
 import { BytesLike } from "@ethersproject/bytes";
@@ -22,39 +23,41 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface PerpetualInterface extends ethers.utils.Interface {
   functions: {
-    "addLiquidatity(int256)": FunctionFragment;
+    "addLiquidity(int256)": FunctionFragment;
     "adjustRiskParameter(bytes32,int256)": FunctionFragment;
     "availableMargin(address)": FunctionFragment;
-    "brokerTrade(tuple,int256)": FunctionFragment;
-    "claimFee(address,int256)": FunctionFragment;
+    "brokerTrade(tuple,int256,bytes)": FunctionFragment;
+    "claimFee(int256)": FunctionFragment;
     "claimableFee(address)": FunctionFragment;
-    "clear(address)": FunctionFragment;
+    "clearMarginAccount(address)": FunctionFragment;
     "deposit(address,int256)": FunctionFragment;
     "donateInsuranceFund(int256)": FunctionFragment;
     "fundingState()": FunctionFragment;
     "governor()": FunctionFragment;
-    "grantPrivilege(address,address,uint256)": FunctionFragment;
+    "grantPrivilege(address,uint256)": FunctionFragment;
     "information()": FunctionFragment;
     "initialize(address,address,address,address,int256[7],int256[5],int256[5],int256[5])": FunctionFragment;
     "isGranted(address,address,uint256)": FunctionFragment;
     "liquidateByAMM(address,uint256)": FunctionFragment;
     "liquidateByTrader(address,int256,int256,uint256)": FunctionFragment;
+    "listUnclearedTraders(uint256,uint256)": FunctionFragment;
     "margin(address)": FunctionFragment;
     "marginAccount(address)": FunctionFragment;
-    "removeLiquidatity(int256)": FunctionFragment;
-    "revokePrivilege(address,address,uint256)": FunctionFragment;
+    "removeLiquidity(int256)": FunctionFragment;
+    "revokePrivilege(address,uint256)": FunctionFragment;
     "settle(address)": FunctionFragment;
-    "shutdown()": FunctionFragment;
+    "shareToken()": FunctionFragment;
     "state()": FunctionFragment;
     "trade(address,int256,int256,uint256,address)": FunctionFragment;
+    "unclearedTraderCount()": FunctionFragment;
     "updateCoreParameter(bytes32,int256)": FunctionFragment;
+    "updateIndex()": FunctionFragment;
     "updateRiskParameter(bytes32,int256,int256,int256)": FunctionFragment;
     "withdraw(address,int256)": FunctionFragment;
-    "withdrawableMargin(address)": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "addLiquidatity",
+    functionFragment: "addLiquidity",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -76,26 +79,25 @@ interface PerpetualInterface extends ethers.utils.Interface {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        deadline: BigNumberish;
-        version: BigNumberish;
-        orderType: BigNumberish;
-        closeOnly: boolean;
-        salt: BigNumberish;
+        data: BytesLike;
         chainID: BigNumberish;
-        signature: { config: BytesLike; r: BytesLike; s: BytesLike };
       },
-      BigNumberish
+      BigNumberish,
+      BytesLike
     ]
   ): string;
   encodeFunctionData(
     functionFragment: "claimFee",
-    values: [string, BigNumberish]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "claimableFee",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "clear", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "clearMarginAccount",
+    values: [string]
+  ): string;
   encodeFunctionData(
     functionFragment: "deposit",
     values: [string, BigNumberish]
@@ -111,7 +113,7 @@ interface PerpetualInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "governor", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "grantPrivilege",
-    values: [string, string, BigNumberish]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "information",
@@ -150,29 +152,44 @@ interface PerpetualInterface extends ethers.utils.Interface {
     functionFragment: "liquidateByTrader",
     values: [string, BigNumberish, BigNumberish, BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "listUnclearedTraders",
+    values: [BigNumberish, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "margin", values: [string]): string;
   encodeFunctionData(
     functionFragment: "marginAccount",
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "removeLiquidatity",
+    functionFragment: "removeLiquidity",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "revokePrivilege",
-    values: [string, string, BigNumberish]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "settle", values: [string]): string;
-  encodeFunctionData(functionFragment: "shutdown", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "shareToken",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "state", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "trade",
     values: [string, BigNumberish, BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
+    functionFragment: "unclearedTraderCount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "updateCoreParameter",
     values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateIndex",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "updateRiskParameter",
@@ -182,13 +199,9 @@ interface PerpetualInterface extends ethers.utils.Interface {
     functionFragment: "withdraw",
     values: [string, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "withdrawableMargin",
-    values: [string]
-  ): string;
 
   decodeFunctionResult(
-    functionFragment: "addLiquidatity",
+    functionFragment: "addLiquidity",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -208,7 +221,10 @@ interface PerpetualInterface extends ethers.utils.Interface {
     functionFragment: "claimableFee",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "clear", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "clearMarginAccount",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "donateInsuranceFund",
@@ -223,7 +239,10 @@ interface PerpetualInterface extends ethers.utils.Interface {
     functionFragment: "grantPrivilege",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "information", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "information",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "isGranted", data: BytesLike): Result;
   decodeFunctionResult(
@@ -234,13 +253,17 @@ interface PerpetualInterface extends ethers.utils.Interface {
     functionFragment: "liquidateByTrader",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "listUnclearedTraders",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "margin", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "marginAccount",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "removeLiquidatity",
+    functionFragment: "removeLiquidity",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -248,11 +271,19 @@ interface PerpetualInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "settle", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "shutdown", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "shareToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "state", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "trade", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "unclearedTraderCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "updateCoreParameter",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateIndex",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -260,13 +291,9 @@ interface PerpetualInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "withdrawableMargin",
-    data: BytesLike
-  ): Result;
 
   events: {
-    "AddLiquidatity(address,int256,int256)": EventFragment;
+    "AddLiquidity(address,int256,int256)": EventFragment;
     "AdjustRiskSetting(bytes32,int256)": EventFragment;
     "ClaimFee(address,int256)": EventFragment;
     "Clear(address)": EventFragment;
@@ -274,18 +301,19 @@ interface PerpetualInterface extends ethers.utils.Interface {
     "ClosePositionByTrade(address,int256,int256,int256)": EventFragment;
     "Deposit(address,int256)": EventFragment;
     "DonateInsuranceFund(address,int256)": EventFragment;
-    "LiquidateByAMM(address,int256,int256,int256,uint256)": EventFragment;
-    "LiquidateByTrader(address,address,int256,int256,uint256)": EventFragment;
+    "GrantPrivilege(address,address,uint256)": EventFragment;
+    "Liquidate(address,address,int256,int256)": EventFragment;
     "OpenPositionByLiquidation(address,int256,int256)": EventFragment;
     "OpenPositionByTrade(address,int256,int256)": EventFragment;
-    "RemoveLiquidatity(address,int256,int256)": EventFragment;
-    "Trade(address,int256,int256,int256,uint256)": EventFragment;
+    "RemoveLiquidity(address,int256,int256)": EventFragment;
+    "RevokePrivilege(address,address,uint256)": EventFragment;
+    "Trade(address,int256,int256,int256)": EventFragment;
     "UpdateCoreSetting(bytes32,int256)": EventFragment;
     "UpdateRiskSetting(bytes32,int256,int256,int256)": EventFragment;
     "Withdraw(address,int256)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "AddLiquidatity"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "AddLiquidity"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "AdjustRiskSetting"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ClaimFee"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Clear"): EventFragment;
@@ -293,11 +321,12 @@ interface PerpetualInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "ClosePositionByTrade"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "DonateInsuranceFund"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "LiquidateByAMM"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "LiquidateByTrader"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "GrantPrivilege"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Liquidate"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OpenPositionByLiquidation"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OpenPositionByTrade"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "RemoveLiquidatity"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RemoveLiquidity"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RevokePrivilege"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Trade"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UpdateCoreSetting"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UpdateRiskSetting"): EventFragment;
@@ -317,17 +346,15 @@ export class Perpetual extends Contract {
 
   interface: PerpetualInterface;
 
-  shareToken(): Promise<string>;
-
   functions: {
-    addLiquidatity(
+    addLiquidity(
       cashToAdd: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
-    "addLiquidatity(int256)"(
+    "addLiquidity(int256)"(
       cashToAdd: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     adjustRiskParameter(
@@ -361,19 +388,15 @@ export class Perpetual extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        deadline: BigNumberish;
-        version: BigNumberish;
-        orderType: BigNumberish;
-        closeOnly: boolean;
-        salt: BigNumberish;
+        data: BytesLike;
         chainID: BigNumberish;
-        signature: { config: BytesLike; r: BytesLike; s: BytesLike };
       },
       amount: BigNumberish,
+      signature: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "brokerTrade(tuple,int256)"(
+    "brokerTrade(tuple,int256,bytes)"(
       order: {
         trader: string;
         broker: string;
@@ -382,26 +405,20 @@ export class Perpetual extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        deadline: BigNumberish;
-        version: BigNumberish;
-        orderType: BigNumberish;
-        closeOnly: boolean;
-        salt: BigNumberish;
+        data: BytesLike;
         chainID: BigNumberish;
-        signature: { config: BytesLike; r: BytesLike; s: BytesLike };
       },
       amount: BigNumberish,
+      signature: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     claimFee(
-      claimer: string,
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "claimFee(address,int256)"(
-      claimer: string,
+    "claimFee(int256)"(
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -420,9 +437,12 @@ export class Perpetual extends Contract {
       0: BigNumber;
     }>;
 
-    clear(trader: string, overrides?: Overrides): Promise<ContractTransaction>;
+    clearMarginAccount(
+      trader: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
-    "clear(address)"(
+    "clearMarginAccount(address)"(
       trader: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -430,23 +450,23 @@ export class Perpetual extends Contract {
     deposit(
       trader: string,
       amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     "deposit(address,int256)"(
       trader: string,
       amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     donateInsuranceFund(
       amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     "donateInsuranceFund(int256)"(
       amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     fundingState(overrides?: Overrides): Promise<ContractTransaction>;
@@ -466,14 +486,12 @@ export class Perpetual extends Contract {
     }>;
 
     grantPrivilege(
-      owner: string,
       trader: string,
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "grantPrivilege(address,address,uint256)"(
-      owner: string,
+    "grantPrivilege(address,uint256)"(
       trader: string,
       privilege: BigNumberish,
       overrides?: Overrides
@@ -679,6 +697,24 @@ export class Perpetual extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    listUnclearedTraders(
+      start: BigNumberish,
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      result: string[];
+      0: string[];
+    }>;
+
+    "listUnclearedTraders(uint256,uint256)"(
+      start: BigNumberish,
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      result: string[];
+      0: string[];
+    }>;
+
     margin(trader: string, overrides?: Overrides): Promise<ContractTransaction>;
 
     "margin(address)"(
@@ -690,9 +726,9 @@ export class Perpetual extends Contract {
       trader: string,
       overrides?: CallOverrides
     ): Promise<{
-      positionAmount: BigNumber;
       cashBalance: BigNumber;
-      entryFundingLoss: BigNumber;
+      positionAmount: BigNumber;
+      entryFunding: BigNumber;
       0: BigNumber;
       1: BigNumber;
       2: BigNumber;
@@ -702,33 +738,31 @@ export class Perpetual extends Contract {
       trader: string,
       overrides?: CallOverrides
     ): Promise<{
-      positionAmount: BigNumber;
       cashBalance: BigNumber;
-      entryFundingLoss: BigNumber;
+      positionAmount: BigNumber;
+      entryFunding: BigNumber;
       0: BigNumber;
       1: BigNumber;
       2: BigNumber;
     }>;
 
-    removeLiquidatity(
+    removeLiquidity(
       shareToRemove: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "removeLiquidatity(int256)"(
+    "removeLiquidity(int256)"(
       shareToRemove: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     revokePrivilege(
-      owner: string,
       trader: string,
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "revokePrivilege(address,address,uint256)"(
-      owner: string,
+    "revokePrivilege(address,uint256)"(
       trader: string,
       privilege: BigNumberish,
       overrides?: Overrides
@@ -741,9 +775,17 @@ export class Perpetual extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    shutdown(overrides?: Overrides): Promise<ContractTransaction>;
+    shareToken(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
 
-    "shutdown()"(overrides?: Overrides): Promise<ContractTransaction>;
+    "shareToken()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
 
     state(overrides?: Overrides): Promise<ContractTransaction>;
 
@@ -767,6 +809,18 @@ export class Perpetual extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    unclearedTraderCount(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "unclearedTraderCount()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
     updateCoreParameter(
       key: BytesLike,
       newValue: BigNumberish,
@@ -778,6 +832,10 @@ export class Perpetual extends Contract {
       newValue: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    updateIndex(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "updateIndex()"(overrides?: Overrides): Promise<ContractTransaction>;
 
     updateRiskParameter(
       key: BytesLike,
@@ -806,26 +864,16 @@ export class Perpetual extends Contract {
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
-
-    withdrawableMargin(
-      trader: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "withdrawableMargin(address)"(
-      trader: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
   };
 
-  addLiquidatity(
+  addLiquidity(
     cashToAdd: BigNumberish,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
-  "addLiquidatity(int256)"(
+  "addLiquidity(int256)"(
     cashToAdd: BigNumberish,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   adjustRiskParameter(
@@ -859,19 +907,15 @@ export class Perpetual extends Contract {
       referrer: string;
       amount: BigNumberish;
       priceLimit: BigNumberish;
-      deadline: BigNumberish;
-      version: BigNumberish;
-      orderType: BigNumberish;
-      closeOnly: boolean;
-      salt: BigNumberish;
+      data: BytesLike;
       chainID: BigNumberish;
-      signature: { config: BytesLike; r: BytesLike; s: BytesLike };
     },
     amount: BigNumberish,
+    signature: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "brokerTrade(tuple,int256)"(
+  "brokerTrade(tuple,int256,bytes)"(
     order: {
       trader: string;
       broker: string;
@@ -880,26 +924,20 @@ export class Perpetual extends Contract {
       referrer: string;
       amount: BigNumberish;
       priceLimit: BigNumberish;
-      deadline: BigNumberish;
-      version: BigNumberish;
-      orderType: BigNumberish;
-      closeOnly: boolean;
-      salt: BigNumberish;
+      data: BytesLike;
       chainID: BigNumberish;
-      signature: { config: BytesLike; r: BytesLike; s: BytesLike };
     },
     amount: BigNumberish,
+    signature: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   claimFee(
-    claimer: string,
     amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "claimFee(address,int256)"(
-    claimer: string,
+  "claimFee(int256)"(
     amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -911,9 +949,12 @@ export class Perpetual extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  clear(trader: string, overrides?: Overrides): Promise<ContractTransaction>;
+  clearMarginAccount(
+    trader: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  "clear(address)"(
+  "clearMarginAccount(address)"(
     trader: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -921,23 +962,23 @@ export class Perpetual extends Contract {
   deposit(
     trader: string,
     amount: BigNumberish,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   "deposit(address,int256)"(
     trader: string,
     amount: BigNumberish,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   donateInsuranceFund(
     amount: BigNumberish,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   "donateInsuranceFund(int256)"(
     amount: BigNumberish,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   fundingState(overrides?: Overrides): Promise<ContractTransaction>;
@@ -949,19 +990,17 @@ export class Perpetual extends Contract {
   "governor()"(overrides?: CallOverrides): Promise<string>;
 
   grantPrivilege(
-    owner: string,
     trader: string,
     privilege: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "grantPrivilege(address,address,uint256)"(
-    owner: string,
+  "grantPrivilege(address,uint256)"(
     trader: string,
     privilege: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
-  
+
   information(
     overrides?: CallOverrides
   ): Promise<{
@@ -1158,6 +1197,18 @@ export class Perpetual extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  listUnclearedTraders(
+    start: BigNumberish,
+    count: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
+  "listUnclearedTraders(uint256,uint256)"(
+    start: BigNumberish,
+    count: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
   margin(trader: string, overrides?: Overrides): Promise<ContractTransaction>;
 
   "margin(address)"(
@@ -1169,9 +1220,9 @@ export class Perpetual extends Contract {
     trader: string,
     overrides?: CallOverrides
   ): Promise<{
-    positionAmount: BigNumber;
     cashBalance: BigNumber;
-    entryFundingLoss: BigNumber;
+    positionAmount: BigNumber;
+    entryFunding: BigNumber;
     0: BigNumber;
     1: BigNumber;
     2: BigNumber;
@@ -1181,33 +1232,31 @@ export class Perpetual extends Contract {
     trader: string,
     overrides?: CallOverrides
   ): Promise<{
-    positionAmount: BigNumber;
     cashBalance: BigNumber;
-    entryFundingLoss: BigNumber;
+    positionAmount: BigNumber;
+    entryFunding: BigNumber;
     0: BigNumber;
     1: BigNumber;
     2: BigNumber;
   }>;
 
-  removeLiquidatity(
+  removeLiquidity(
     shareToRemove: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "removeLiquidatity(int256)"(
+  "removeLiquidity(int256)"(
     shareToRemove: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   revokePrivilege(
-    owner: string,
     trader: string,
     privilege: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "revokePrivilege(address,address,uint256)"(
-    owner: string,
+  "revokePrivilege(address,uint256)"(
     trader: string,
     privilege: BigNumberish,
     overrides?: Overrides
@@ -1220,9 +1269,9 @@ export class Perpetual extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  shutdown(overrides?: Overrides): Promise<ContractTransaction>;
+  shareToken(overrides?: CallOverrides): Promise<string>;
 
-  "shutdown()"(overrides?: Overrides): Promise<ContractTransaction>;
+  "shareToken()"(overrides?: CallOverrides): Promise<string>;
 
   state(overrides?: Overrides): Promise<ContractTransaction>;
 
@@ -1246,6 +1295,10 @@ export class Perpetual extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  unclearedTraderCount(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "unclearedTraderCount()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   updateCoreParameter(
     key: BytesLike,
     newValue: BigNumberish,
@@ -1257,6 +1310,10 @@ export class Perpetual extends Contract {
     newValue: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  updateIndex(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "updateIndex()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   updateRiskParameter(
     key: BytesLike,
@@ -1286,23 +1343,13 @@ export class Perpetual extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  withdrawableMargin(
-    trader: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "withdrawableMargin(address)"(
-    trader: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   callStatic: {
-    addLiquidatity(
+    addLiquidity(
       cashToAdd: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "addLiquidatity(int256)"(
+    "addLiquidity(int256)"(
       cashToAdd: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1338,19 +1385,15 @@ export class Perpetual extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        deadline: BigNumberish;
-        version: BigNumberish;
-        orderType: BigNumberish;
-        closeOnly: boolean;
-        salt: BigNumberish;
+        data: BytesLike;
         chainID: BigNumberish;
-        signature: { config: BytesLike; r: BytesLike; s: BytesLike };
       },
       amount: BigNumberish,
+      signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "brokerTrade(tuple,int256)"(
+    "brokerTrade(tuple,int256,bytes)"(
       order: {
         trader: string;
         broker: string;
@@ -1359,26 +1402,17 @@ export class Perpetual extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        deadline: BigNumberish;
-        version: BigNumberish;
-        orderType: BigNumberish;
-        closeOnly: boolean;
-        salt: BigNumberish;
+        data: BytesLike;
         chainID: BigNumberish;
-        signature: { config: BytesLike; r: BytesLike; s: BytesLike };
       },
       amount: BigNumberish,
+      signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    claimFee(
-      claimer: string,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    claimFee(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    "claimFee(address,int256)"(
-      claimer: string,
+    "claimFee(int256)"(
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1393,9 +1427,15 @@ export class Perpetual extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    clear(trader: string, overrides?: CallOverrides): Promise<void>;
+    clearMarginAccount(
+      trader: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    "clear(address)"(trader: string, overrides?: CallOverrides): Promise<void>;
+    "clearMarginAccount(address)"(
+      trader: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     deposit(
       trader: string,
@@ -1446,14 +1486,12 @@ export class Perpetual extends Contract {
     "governor()"(overrides?: CallOverrides): Promise<string>;
 
     grantPrivilege(
-      owner: string,
       trader: string,
       privilege: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "grantPrivilege(address,address,uint256)"(
-      owner: string,
+    "grantPrivilege(address,uint256)"(
       trader: string,
       privilege: BigNumberish,
       overrides?: CallOverrides
@@ -1655,6 +1693,18 @@ export class Perpetual extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    listUnclearedTraders(
+      start: BigNumberish,
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
+    "listUnclearedTraders(uint256,uint256)"(
+      start: BigNumberish,
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
     margin(trader: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "margin(address)"(
@@ -1666,9 +1716,9 @@ export class Perpetual extends Contract {
       trader: string,
       overrides?: CallOverrides
     ): Promise<{
-      positionAmount: BigNumber;
       cashBalance: BigNumber;
-      entryFundingLoss: BigNumber;
+      positionAmount: BigNumber;
+      entryFunding: BigNumber;
       0: BigNumber;
       1: BigNumber;
       2: BigNumber;
@@ -1678,33 +1728,31 @@ export class Perpetual extends Contract {
       trader: string,
       overrides?: CallOverrides
     ): Promise<{
-      positionAmount: BigNumber;
       cashBalance: BigNumber;
-      entryFundingLoss: BigNumber;
+      positionAmount: BigNumber;
+      entryFunding: BigNumber;
       0: BigNumber;
       1: BigNumber;
       2: BigNumber;
     }>;
 
-    removeLiquidatity(
+    removeLiquidity(
       shareToRemove: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "removeLiquidatity(int256)"(
+    "removeLiquidity(int256)"(
       shareToRemove: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     revokePrivilege(
-      owner: string,
       trader: string,
       privilege: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "revokePrivilege(address,address,uint256)"(
-      owner: string,
+    "revokePrivilege(address,uint256)"(
       trader: string,
       privilege: BigNumberish,
       overrides?: CallOverrides
@@ -1714,15 +1762,15 @@ export class Perpetual extends Contract {
 
     "settle(address)"(trader: string, overrides?: CallOverrides): Promise<void>;
 
-    shutdown(overrides?: CallOverrides): Promise<void>;
+    shareToken(overrides?: CallOverrides): Promise<string>;
 
-    "shutdown()"(overrides?: CallOverrides): Promise<void>;
+    "shareToken()"(overrides?: CallOverrides): Promise<string>;
 
     state(
       overrides?: CallOverrides
     ): Promise<{
       isEmergency: boolean;
-      isShuttingdown: boolean;
+      isCleared: boolean;
       insuranceFund: BigNumber;
       donatedInsuranceFund: BigNumber;
       markPrice: BigNumber;
@@ -1739,7 +1787,7 @@ export class Perpetual extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       isEmergency: boolean;
-      isShuttingdown: boolean;
+      isCleared: boolean;
       insuranceFund: BigNumber;
       donatedInsuranceFund: BigNumber;
       markPrice: BigNumber;
@@ -1770,6 +1818,10 @@ export class Perpetual extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    unclearedTraderCount(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "unclearedTraderCount()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     updateCoreParameter(
       key: BytesLike,
       newValue: BigNumberish,
@@ -1781,6 +1833,22 @@ export class Perpetual extends Contract {
       newValue: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    updateIndex(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+      1: BigNumber;
+      2: BigNumber;
+    }>;
+
+    "updateIndex()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+      1: BigNumber;
+      2: BigNumber;
+    }>;
 
     updateRiskParameter(
       key: BytesLike,
@@ -1809,24 +1877,10 @@ export class Perpetual extends Contract {
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    withdrawableMargin(
-      trader: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "withdrawableMargin(address)"(
-      trader: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
   };
 
   filters: {
-    AddLiquidatity(
-      trader: null,
-      addedCash: null,
-      mintedShare: null
-    ): EventFilter;
+    AddLiquidity(trader: null, addedCash: null, mintedShare: null): EventFilter;
 
     AdjustRiskSetting(key: null, value: null): EventFilter;
 
@@ -1852,20 +1906,17 @@ export class Perpetual extends Contract {
 
     DonateInsuranceFund(trader: null, amount: null): EventFilter;
 
-    LiquidateByAMM(
+    GrantPrivilege(
+      owner: string | null,
       trader: string | null,
-      amount: null,
-      price: null,
-      fee: null,
-      deadline: null
+      privilege: null
     ): EventFilter;
 
-    LiquidateByTrader(
+    Liquidate(
       liquidator: string | null,
       trader: string | null,
       amount: null,
-      price: null,
-      deadline: null
+      price: null
     ): EventFilter;
 
     OpenPositionByLiquidation(
@@ -1876,18 +1927,23 @@ export class Perpetual extends Contract {
 
     OpenPositionByTrade(trader: null, amount: null, price: null): EventFilter;
 
-    RemoveLiquidatity(
+    RemoveLiquidity(
       trader: null,
       returnedCash: null,
       burnedShare: null
     ): EventFilter;
 
+    RevokePrivilege(
+      owner: string | null,
+      trader: string | null,
+      privilege: null
+    ): EventFilter;
+
     Trade(
       trader: string | null,
       positionAmount: null,
-      priceLimit: null,
-      fee: null,
-      deadline: null
+      price: null,
+      fee: null
     ): EventFilter;
 
     UpdateCoreSetting(key: null, value: null): EventFilter;
@@ -1903,14 +1959,14 @@ export class Perpetual extends Contract {
   };
 
   estimateGas: {
-    addLiquidatity(
+    addLiquidity(
       cashToAdd: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
-    "addLiquidatity(int256)"(
+    "addLiquidity(int256)"(
       cashToAdd: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     adjustRiskParameter(
@@ -1941,19 +1997,15 @@ export class Perpetual extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        deadline: BigNumberish;
-        version: BigNumberish;
-        orderType: BigNumberish;
-        closeOnly: boolean;
-        salt: BigNumberish;
+        data: BytesLike;
         chainID: BigNumberish;
-        signature: { config: BytesLike; r: BytesLike; s: BytesLike };
       },
       amount: BigNumberish,
+      signature: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "brokerTrade(tuple,int256)"(
+    "brokerTrade(tuple,int256,bytes)"(
       order: {
         trader: string;
         broker: string;
@@ -1962,26 +2014,17 @@ export class Perpetual extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        deadline: BigNumberish;
-        version: BigNumberish;
-        orderType: BigNumberish;
-        closeOnly: boolean;
-        salt: BigNumberish;
+        data: BytesLike;
         chainID: BigNumberish;
-        signature: { config: BytesLike; r: BytesLike; s: BytesLike };
       },
       amount: BigNumberish,
+      signature: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    claimFee(
-      claimer: string,
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
+    claimFee(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
 
-    "claimFee(address,int256)"(
-      claimer: string,
+    "claimFee(int256)"(
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -1996,30 +2039,36 @@ export class Perpetual extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    clear(trader: string, overrides?: Overrides): Promise<BigNumber>;
+    clearMarginAccount(
+      trader: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
-    "clear(address)"(trader: string, overrides?: Overrides): Promise<BigNumber>;
+    "clearMarginAccount(address)"(
+      trader: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
     deposit(
       trader: string,
       amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     "deposit(address,int256)"(
       trader: string,
       amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     donateInsuranceFund(
       amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     "donateInsuranceFund(int256)"(
       amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     fundingState(overrides?: Overrides): Promise<BigNumber>;
@@ -2031,14 +2080,12 @@ export class Perpetual extends Contract {
     "governor()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     grantPrivilege(
-      owner: string,
       trader: string,
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "grantPrivilege(address,address,uint256)"(
-      owner: string,
+    "grantPrivilege(address,uint256)"(
       trader: string,
       privilege: BigNumberish,
       overrides?: Overrides
@@ -2166,6 +2213,18 @@ export class Perpetual extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    listUnclearedTraders(
+      start: BigNumberish,
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "listUnclearedTraders(uint256,uint256)"(
+      start: BigNumberish,
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     margin(trader: string, overrides?: Overrides): Promise<BigNumber>;
 
     "margin(address)"(
@@ -2183,25 +2242,23 @@ export class Perpetual extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    removeLiquidatity(
+    removeLiquidity(
       shareToRemove: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "removeLiquidatity(int256)"(
+    "removeLiquidity(int256)"(
       shareToRemove: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     revokePrivilege(
-      owner: string,
       trader: string,
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "revokePrivilege(address,address,uint256)"(
-      owner: string,
+    "revokePrivilege(address,uint256)"(
       trader: string,
       privilege: BigNumberish,
       overrides?: Overrides
@@ -2214,9 +2271,9 @@ export class Perpetual extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    shutdown(overrides?: Overrides): Promise<BigNumber>;
+    shareToken(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "shutdown()"(overrides?: Overrides): Promise<BigNumber>;
+    "shareToken()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     state(overrides?: Overrides): Promise<BigNumber>;
 
@@ -2240,6 +2297,10 @@ export class Perpetual extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    unclearedTraderCount(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "unclearedTraderCount()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     updateCoreParameter(
       key: BytesLike,
       newValue: BigNumberish,
@@ -2251,6 +2312,10 @@ export class Perpetual extends Contract {
       newValue: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    updateIndex(overrides?: Overrides): Promise<BigNumber>;
+
+    "updateIndex()"(overrides?: Overrides): Promise<BigNumber>;
 
     updateRiskParameter(
       key: BytesLike,
@@ -2279,27 +2344,17 @@ export class Perpetual extends Contract {
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
-
-    withdrawableMargin(
-      trader: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "withdrawableMargin(address)"(
-      trader: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    addLiquidatity(
+    addLiquidity(
       cashToAdd: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
-    "addLiquidatity(int256)"(
+    "addLiquidity(int256)"(
       cashToAdd: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     adjustRiskParameter(
@@ -2333,19 +2388,15 @@ export class Perpetual extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        deadline: BigNumberish;
-        version: BigNumberish;
-        orderType: BigNumberish;
-        closeOnly: boolean;
-        salt: BigNumberish;
+        data: BytesLike;
         chainID: BigNumberish;
-        signature: { config: BytesLike; r: BytesLike; s: BytesLike };
       },
       amount: BigNumberish,
+      signature: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "brokerTrade(tuple,int256)"(
+    "brokerTrade(tuple,int256,bytes)"(
       order: {
         trader: string;
         broker: string;
@@ -2354,26 +2405,20 @@ export class Perpetual extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        deadline: BigNumberish;
-        version: BigNumberish;
-        orderType: BigNumberish;
-        closeOnly: boolean;
-        salt: BigNumberish;
+        data: BytesLike;
         chainID: BigNumberish;
-        signature: { config: BytesLike; r: BytesLike; s: BytesLike };
       },
       amount: BigNumberish,
+      signature: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     claimFee(
-      claimer: string,
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "claimFee(address,int256)"(
-      claimer: string,
+    "claimFee(int256)"(
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
@@ -2388,9 +2433,12 @@ export class Perpetual extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    clear(trader: string, overrides?: Overrides): Promise<PopulatedTransaction>;
+    clearMarginAccount(
+      trader: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
-    "clear(address)"(
+    "clearMarginAccount(address)"(
       trader: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
@@ -2398,23 +2446,23 @@ export class Perpetual extends Contract {
     deposit(
       trader: string,
       amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     "deposit(address,int256)"(
       trader: string,
       amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     donateInsuranceFund(
       amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     "donateInsuranceFund(int256)"(
       amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     fundingState(overrides?: Overrides): Promise<PopulatedTransaction>;
@@ -2426,14 +2474,12 @@ export class Perpetual extends Contract {
     "governor()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     grantPrivilege(
-      owner: string,
       trader: string,
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "grantPrivilege(address,address,uint256)"(
-      owner: string,
+    "grantPrivilege(address,uint256)"(
       trader: string,
       privilege: BigNumberish,
       overrides?: Overrides
@@ -2561,6 +2607,18 @@ export class Perpetual extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    listUnclearedTraders(
+      start: BigNumberish,
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "listUnclearedTraders(uint256,uint256)"(
+      start: BigNumberish,
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     margin(
       trader: string,
       overrides?: Overrides
@@ -2581,25 +2639,23 @@ export class Perpetual extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    removeLiquidatity(
+    removeLiquidity(
       shareToRemove: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "removeLiquidatity(int256)"(
+    "removeLiquidity(int256)"(
       shareToRemove: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     revokePrivilege(
-      owner: string,
       trader: string,
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "revokePrivilege(address,address,uint256)"(
-      owner: string,
+    "revokePrivilege(address,uint256)"(
       trader: string,
       privilege: BigNumberish,
       overrides?: Overrides
@@ -2615,9 +2671,9 @@ export class Perpetual extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    shutdown(overrides?: Overrides): Promise<PopulatedTransaction>;
+    shareToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "shutdown()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+    "shareToken()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     state(overrides?: Overrides): Promise<PopulatedTransaction>;
 
@@ -2641,6 +2697,14 @@ export class Perpetual extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    unclearedTraderCount(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "unclearedTraderCount()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     updateCoreParameter(
       key: BytesLike,
       newValue: BigNumberish,
@@ -2652,6 +2716,10 @@ export class Perpetual extends Contract {
       newValue: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
+
+    updateIndex(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "updateIndex()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     updateRiskParameter(
       key: BytesLike,
@@ -2678,16 +2746,6 @@ export class Perpetual extends Contract {
     "withdraw(address,int256)"(
       trader: string,
       amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    withdrawableMargin(
-      trader: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "withdrawableMargin(address)"(
-      trader: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
   };
