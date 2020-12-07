@@ -343,3 +343,19 @@ export function computeDeltaMarginLong(context: AMMTradingContext, beta: BigNumb
   const ma2 = sqrt(beforeSqrt).plus(b).div(a)
   return ma2.minus(ma1).dp(DECIMALS)
 }
+
+export function computeFundingRate(p: PerpetualStorage, amm: AccountDetails): BigNumber {
+  let context = initAMMTradingContext(p, amm)  
+  if (!isAMMSafe(context, p.beta1)) {
+    if (context.pos1.isZero()) {
+      return _0
+    } else if (context.pos1.gt(_0)) {
+      return p.fundingRateCoefficient.negated()
+    } else {
+      return p.fundingRateCoefficient
+    }
+  }
+  
+  context = computeM0(context, p.beta1)
+  return p.fundingRateCoefficient.times(p.indexPrice).times(context.pos1).div(context.m0).negated()
+}
