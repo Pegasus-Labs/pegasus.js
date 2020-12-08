@@ -10,6 +10,7 @@ import {
   computeDeltaMargin,
   computeAMMSafeShortPositionAmount,
   computeAMMSafeLongPositionAmount,
+  // computeFundingRate,
 } from '../src/amm'
 import { _0, _1 } from '../src/constants'
 import {
@@ -522,3 +523,19 @@ describe('trade - fail', function () {
     })
   })
 })
+
+// TODO:
+// describe('computeFundingRate', function () {
+//   it('normal', () => {
+  
+//     console.log('[0]', computeFundingRate(perpetualStorage, ammDetails0).toFixed())
+//     console.log('[1]', computeFundingRate(perpetualStorage, ammDetails1).toFixed())
+//     console.log('[2]', computeFundingRate(perpetualStorage, ammDetails2).toFixed())
+//     console.log('[3]', computeFundingRate(perpetualStorage, ammDetails3).toFixed())
+//     console.log('[4]', computeFundingRate(perpetualStorage, ammDetails4).toFixed())
+//     console.log('[5]', computeFundingRate(perpetualStorage, ammDetails5).toFixed())
+//     console.log('[6]', computeFundingRate(perpetualStorage, ammDetails6).toFixed())
+    
+//   })
+// })
+
