@@ -10,8 +10,8 @@ export type SignerOrProvider = ethers.Signer | Provider
  * Indicates that the AMM has insufficient reserves for a desired amount.
  * I.e. if the trade completes, the margin of the AMM will be not enough.
  */
-export class InsufficientReservesError extends Error {
-  public readonly isInsufficientReservesError: true = true
+export class InsufficientLiquidityError extends Error {
+  public readonly isInsufficientLiquidityError: true = true
 
   public constructor(message: string) {
     super()
@@ -20,7 +20,7 @@ export class InsufficientReservesError extends Error {
 }
 
 /**
- * Indicates that some bugs happened. E.g: we do not fully implement the contract.
+ * Indicates that calling convention error or bugs happened.
  */
 export class BugError extends Error {
   public constructor(message: string) {

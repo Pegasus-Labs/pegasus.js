@@ -6,7 +6,7 @@ import { BigNumber } from 'bignumber.js'
 import { DECIMALS, _0, _1, _2, _4 } from './constants'
 import { PerpetualStorage, AMMTradingContext, AccountDetails } from './types'
 import { sqrt, splitAmount } from './utils'
-import { InsufficientReservesError, BugError } from './types'
+import { InsufficientLiquidityError, BugError } from './types'
 
 export function initAMMTradingContext(p: PerpetualStorage, amm: AccountDetails): AMMTradingContext {
   const pos1 = amm.accountStorage.positionAmount
@@ -78,20 +78,20 @@ export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNu
 
   // pre-check
   if (!isAMMSafe(ret, beta)) {
-    throw new InsufficientReservesError(`amm can not open position anymore: unsafe before trade`)
+    throw new InsufficientLiquidityError(`amm can not open position anymore: unsafe before trade`)
   }
   ret = computeM0(ret, beta)
   if (amount.gt(_0)) {
     // 0.....pos2.....safePos2
     const safePos2 = computeAMMSafeLongPositionAmount(ret, beta)
     if (pos2.gt(safePos2)) {
-      throw new InsufficientReservesError(`amm can not open position anymore: position too large after trade ${pos2.toFixed()} > ${safePos2.toFixed()}`)
+      throw new InsufficientLiquidityError(`amm can not open position anymore: position too large after trade ${pos2.toFixed()} > ${safePos2.toFixed()}`)
     }
   } else {
     // safePos2.....pos2.....0
     const safePos2 = computeAMMSafeShortPositionAmount(ret, beta)
     if (pos2.lt(safePos2)) {
-      throw new InsufficientReservesError(`amm can not open position anymore: position too large after trade ${pos2.toFixed()} < ${safePos2.toFixed()}`)
+      throw new InsufficientLiquidityError(`amm can not open position anymore: position too large after trade ${pos2.toFixed()} < ${safePos2.toFixed()}`)
     }
   }
 
@@ -296,7 +296,7 @@ export function computeDeltaMarginShort(context: AMMTradingContext, beta: BigNum
     throw new BugError(`bug: pos2 (${pos2.toFixed()}) > 0`)
   }
   if (m0.lte(_0)) {
-    throw new InsufficientReservesError(`m0 (${m0.toFixed()}) <= 0`)
+    throw new InsufficientLiquidityError(`m0 (${m0.toFixed()}) <= 0`)
   }
   // ma2 - ma1 = index * (pos1 - pos2) * (1 - beta + beta * m0**2 / (m0 + pos1 * index) / (m0 + pos2 * index))
   let deltaMargin = beta.times(m0).times(m0)
@@ -317,10 +317,10 @@ export function computeDeltaMarginLong(context: AMMTradingContext, beta: BigNumb
     throw new BugError(`bug: pos2 (${pos2.toFixed()}) < 0`)
   }
   if (m0.lte(_0)) {
-    throw new InsufficientReservesError(`m0 (${m0.toFixed()}) <= 0`)
+    throw new InsufficientLiquidityError(`m0 (${m0.toFixed()}) <= 0`)
   }
   if (ma1.lte(_0)) {
-    throw new InsufficientReservesError(`ma1 (${ma1.toFixed()}) <= 0`)
+    throw new InsufficientLiquidityError(`ma1 (${ma1.toFixed()}) <= 0`)
   }
   // a = 2 * (1 - beta) * ma1
   // assert a != 0
