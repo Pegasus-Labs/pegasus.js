@@ -20,7 +20,7 @@ import {
 } from '../src/types'
 import { normalizeBigNumberish } from '../src/utils'
 import { extendExpect } from './helper'
-import { InsufficientReservesError } from '../src/types'
+import { InsufficientLiquidityError } from '../src/types'
 
 extendExpect()
 
@@ -518,7 +518,7 @@ describe('trade - fail', function () {
     it(element.name, () => {
       expect((): void => {
         computeAMMInternalTrade(perpetualStorage, element.amm, element.amount)
-      }).toThrow(InsufficientReservesError)
+      }).toThrow(InsufficientLiquidityError)
     })
   })
 })
