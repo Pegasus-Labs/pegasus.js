@@ -3,6 +3,8 @@ import { Perpetual } from './wrapper/Perpetual'
 import { PerpetualFactory } from './wrapper/PerpetualFactory'
 import { BrokerRelay } from './wrapper/BrokerRelay'
 import { BrokerRelayFactory } from './wrapper/BrokerRelayFactory'
+import { PerpetualMaker } from './wrapper/PerpetualMaker'
+import { PerpetualMakerFactory } from './wrapper/PerpetualMakerFactory'
 import { SignerOrProvider } from './types'
 import { normalizeBigNumberish } from './utils'
 import { BigNumber } from 'bignumber.js'
@@ -21,6 +23,13 @@ export function getBrokerRelayContract(
   signerOrProvider: SignerOrProvider
 ): BrokerRelay {
   return BrokerRelayFactory.connect(contractAddress, signerOrProvider)
+}
+
+export function getPerpetualMakerContract(
+  contractAddress: string,
+  signerOrProvider: SignerOrProvider
+): PerpetualMaker {
+  return PerpetualMakerFactory.connect(contractAddress, signerOrProvider)
 }
 
 export async function getPerpetualStorageMock(
@@ -141,4 +150,23 @@ export async function getBrokerRelayBalanceOf(
   getAddress(trader)
   const balance = await brokerRelay.balanceOf(trader)
   return normalizeBigNumberish(balance).shiftedBy(-DECIMALS)
+}
+
+export async function getActivatePerpetuals(
+  perpetualMaker: PerpetualMaker,
+  trader: string
+): Promise<string[]> {
+  getAddress(trader)
+  const count = (await perpetualMaker.totalActivePerpetualCountForTrader(trader)).toNumber()
+  if (count > 1000000) {
+    throw new Error(`activate perpetual count is too large: ${count}`)
+  }
+  let ret: string[] = []
+  const step = 100
+  for (let begin = 0; begin < count; begin = ret.length) {
+    let end = Math.min(begin + step, count)
+    const ids = await perpetualMaker.listActivePerpetualForTrader(trader, begin, end)
+    ret = ret.concat(ids)
+  }
+  return ret
 }
