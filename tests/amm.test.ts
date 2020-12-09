@@ -1,9 +1,10 @@
 import BigNumber from 'bignumber.js'
 import {
   initAMMTradingContext,
+  initAMMTradingContextEagerEvaluation,
   // computeAMMInternalTrade,
   // computeM0,
-  // isAMMSafe,
+  isAMMSafe,
   // computeDeltaMargin,
   // computeAMMSafeShortPositionAmount,
   // computeAMMSafeLongPositionAmount,
@@ -122,7 +123,6 @@ for (let i = 0; i < amms.length; i++) {
   })
 }
 
-
 describe('initAMMTradingContext', function () {
   it('0', function () {
     const context: AMMTradingContext = initAMMTradingContext(poolStorage[0], TEST_MARKET_ID)
@@ -154,59 +154,128 @@ describe('initAMMTradingContext', function () {
   })
 })
 
-// describe('isAMMSafe', function () {
-//   // long: larger index is safer
-//   it(`long - ok`, function () {
-//     const context: AMMTradingContext = {
-//       index: new BigNumber('11.026192936488206'),
-//       cash: new BigNumber('-70.81710610832608'),
-//       pos1: new BigNumber('11'),
-//       lev: new BigNumber('5'),
-//       isSafe: true, m0: _0, mv: _0, ma1: _0, deltaMargin: _0, deltaPosition: _0,
-//     }
-//     expect(isAMMSafe(context, new BigNumber('0.1') /* beta */)).toBeTruthy()
-//   })
-//   it(`long - fail`, function () {
-//     const context: AMMTradingContext = {
-//       index: new BigNumber('11.026192936488204'),
-//       cash: new BigNumber('-70.81710610832608'),
-//       pos1: new BigNumber('11'),
-//       lev: new BigNumber('5'),
-//       isSafe: true, m0: _0, mv: _0, ma1: _0, deltaMargin: _0, deltaPosition: _0,
-//     }
-//     expect(isAMMSafe(context, new BigNumber('0.1') /* beta */)).toBeFalsy()
-//   })
-//   it(`long - positive cash is always safe`, function () {
-//     const context: AMMTradingContext = {
-//       index: new BigNumber('-1'),
-//       cash: new BigNumber('0'),
-//       pos1: new BigNumber('11'),
-//       lev: new BigNumber('5'),
-//       isSafe: true, m0: _0, mv: _0, ma1: _0, deltaMargin: _0, deltaPosition: _0,
-//     }
-//     expect(isAMMSafe(context, new BigNumber('0.1') /* beta */)).toBeTruthy()
-//   })
-//   it(`short - ok`, function () {
-//     const context: AMMTradingContext = {
-//       index: new BigNumber('130.647439610301681'),
-//       cash: new BigNumber('2131.0256410256410'),
-//       pos1: new BigNumber('-11'),
-//       lev: new BigNumber('5'),
-//       isSafe: true, m0: _0, mv: _0, ma1: _0, deltaMargin: _0, deltaPosition: _0,
-//     }
-//     expect(isAMMSafe(context, new BigNumber('0.1') /* beta */)).toBeTruthy()
-//   })
-//   it(`short - fail`, function () {
-//     const context: AMMTradingContext = {
-//       index: new BigNumber('130.647439610301682'),
-//       cash: new BigNumber('2131.0256410256410'),
-//       pos1: new BigNumber('-11'),
-//       lev: new BigNumber('5'),
-//       isSafe: true, m0: _0, mv: _0, ma1: _0, deltaMargin: _0, deltaPosition: _0,
-//     }
-//     expect(isAMMSafe(context, new BigNumber('0.1') /* beta */)).toBeFalsy()
-//   })
-// })
+describe('isAMMSafe', function () {
+  // long: larger index is safer
+  it(`long - always safe (sqrt < 0)`, function () {
+    const context: AMMTradingContext = initAMMTradingContextEagerEvaluation({
+      cash: new BigNumber('100000'),
+      index: new BigNumber('1'),
+      position1: new BigNumber('110'),
+      otherIndex: [ new BigNumber('100') ],
+      otherPosition: [ new BigNumber('1') ],
+      otherHalfSpreadRate: [ _0 ],
+      beta1: new BigNumber('1000'),
+      beta2: new BigNumber('1000'),
+      halfSpreadRate: _0, fundingRateCoefficient: _0, maxLeverage: _0,
+      otherBeta1: [ new BigNumber('100') ],
+      otherBeta2: [ new BigNumber('100') ],
+      otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
+      isAMMSafe: false, availableMargin: _0, deltaMargin: _0, deltaPosition: _0,
+      marginBalanceWithoutCurrent: _0, squareWithoutCurrent: _0
+    })
+    expect(isAMMSafe(context, new BigNumber('1000') /* beta */)).toBeTruthy()
+  })
+  it(`long - ok`, function () {
+    const context: AMMTradingContext = initAMMTradingContextEagerEvaluation({
+      cash: new BigNumber('10000'),
+      index: new BigNumber('337.9088160260'),
+      position1: new BigNumber('100'),
+      otherIndex: [ new BigNumber('100') ],
+      otherPosition: [ new BigNumber('1000') ],
+      otherHalfSpreadRate: [ _0 ],
+      beta1: new BigNumber('100'),
+      beta2: new BigNumber('100'),
+      halfSpreadRate: _0, fundingRateCoefficient: _0, maxLeverage: _0,
+      otherBeta1: [ new BigNumber('100') ],
+      otherBeta2: [ new BigNumber('100') ],
+      otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
+      isAMMSafe: false, availableMargin: _0, deltaMargin: _0, deltaPosition: _0,
+      marginBalanceWithoutCurrent: _0, squareWithoutCurrent: _0
+    })
+    expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeTruthy()
+  })
+  it(`long - fail`, function () {
+    const context: AMMTradingContext = initAMMTradingContextEagerEvaluation({
+      cash: new BigNumber('10000'),
+      index: new BigNumber('337.9088160259'),
+      position1: new BigNumber('100'),
+      otherIndex: [ new BigNumber('100') ],
+      otherPosition: [ new BigNumber('1000') ],
+      otherHalfSpreadRate: [ _0 ],
+      beta1: new BigNumber('100'),
+      beta2: new BigNumber('100'),
+      halfSpreadRate: _0, fundingRateCoefficient: _0, maxLeverage: _0,
+      otherBeta1: [ new BigNumber('100') ],
+      otherBeta2: [ new BigNumber('100') ],
+      otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
+      isAMMSafe: false, availableMargin: _0, deltaMargin: _0, deltaPosition: _0,
+      marginBalanceWithoutCurrent: _0, squareWithoutCurrent: _0
+    })
+    expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeFalsy()
+  })
+  // short: lower index is safer
+  it(`short - unsafe (margin balance < 0)`, function () {
+    const context: AMMTradingContext = initAMMTradingContextEagerEvaluation({
+      cash: new BigNumber('100000'),
+      index: new BigNumber('1'),
+      position1: new BigNumber('-110'),
+      otherIndex: [ new BigNumber('100') ],
+      otherPosition: [ new BigNumber('-1001') ],
+      otherHalfSpreadRate: [ _0 ],
+      beta1: new BigNumber('1000'),
+      beta2: new BigNumber('1000'),
+      halfSpreadRate: _0, fundingRateCoefficient: _0, maxLeverage: _0,
+      otherBeta1: [ new BigNumber('100') ],
+      otherBeta2: [ new BigNumber('100') ],
+      otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
+      isAMMSafe: false, availableMargin: _0, deltaMargin: _0, deltaPosition: _0,
+      marginBalanceWithoutCurrent: _0, squareWithoutCurrent: _0
+    })
+    expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeFalsy()
+  })
+  it(`short - ok`, function () {
+    const context: AMMTradingContext = initAMMTradingContextEagerEvaluation({
+      cash: new BigNumber('100000'),
+      index: new BigNumber('482.1023652650379499133'),
+      position1: new BigNumber('-110'),
+      otherIndex: [ new BigNumber('100') ],
+      otherPosition: [ new BigNumber('-100') ],
+      otherHalfSpreadRate: [ _0 ],
+      beta1: new BigNumber('100'),
+      beta2: new BigNumber('100'),
+      halfSpreadRate: _0, fundingRateCoefficient: _0, maxLeverage: _0,
+      otherBeta1: [ new BigNumber('100') ],
+      otherBeta2: [ new BigNumber('100') ],
+      otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
+      isAMMSafe: false, availableMargin: _0, deltaMargin: _0, deltaPosition: _0,
+      marginBalanceWithoutCurrent: _0, squareWithoutCurrent: _0
+    })
+    expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeTruthy()
+  })
+  it(`short - fail`, function () {
+    const context: AMMTradingContext = initAMMTradingContextEagerEvaluation({
+      cash: new BigNumber('100000'),
+      index: new BigNumber('482.1023652650379499134'),
+      position1: new BigNumber('-110'),
+      otherIndex: [ new BigNumber('100') ],
+      otherPosition: [ new BigNumber('-100') ],
+      otherHalfSpreadRate: [ _0 ],
+      beta1: new BigNumber('100'),
+      beta2: new BigNumber('100'),
+      halfSpreadRate: _0, fundingRateCoefficient: _0, maxLeverage: _0,
+      otherBeta1: [ new BigNumber('100') ],
+      otherBeta2: [ new BigNumber('100') ],
+      otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
+      isAMMSafe: false, availableMargin: _0, deltaMargin: _0, deltaPosition: _0,
+      marginBalanceWithoutCurrent: _0, squareWithoutCurrent: _0
+    })
+    expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeFalsy()
+  })
+  it(`zero - ok`, function () {
+  })
+  it(`zero - fail`, function () {
+  })
+})
 
 // describe('computeM0', function () {
 //   interface ComputeAccountCase {

@@ -28,7 +28,8 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketID: string)
   let otherBeta2: BigNumber[] = []
   let otherFundingRateCoefficient: BigNumber[] = []
   let otherMaxLeverage: BigNumber[] = []
- 
+
+  // split markets into current market and other markets
   // M_c = ammCash - Σ accumulatedFunding * position
   let cash = p.ammCashBalance
   for (let id in p.markets) {
@@ -53,12 +54,37 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketID: string)
     }
   }
    
-  return {
+  let ret = {
     index, position1, halfSpreadRate, beta1, beta2,
     fundingRateCoefficient, maxLeverage,
     otherIndex, otherPosition, otherHalfSpreadRate, otherBeta1, otherBeta2,
     otherFundingRateCoefficient, otherMaxLeverage,
     cash, isAMMSafe: true, availableMargin: _0, deltaMargin: _0, deltaPosition: _0,
+    marginBalanceWithoutCurrent: _0, squareWithoutCurrent: _0,
+  }
+  ret = initAMMTradingContextEagerEvaluation(ret)
+  return ret
+}
+
+export function initAMMTradingContextEagerEvaluation(context: AMMTradingContext): AMMTradingContext {
+  let marginBalanceWithoutCurrent = context.cash
+  let squareWithoutCurrent = _0
+  
+  for (let j = 0; j < context.otherIndex.length; j++) {
+    // cash + Σ_j (index position) where j ≠ id
+    marginBalanceWithoutCurrent = marginBalanceWithoutCurrent.plus(
+      context.otherIndex[j].times(context.otherPosition[j])
+    )
+    // Σ_j (beta1 index position^2) where j ≠ id
+    squareWithoutCurrent = squareWithoutCurrent.plus(
+      context.otherBeta1[j].times(context.otherIndex[j]).times(context.otherPosition[j]).times(context.otherPosition[j])
+    )
+  }
+   
+  return {
+    ...context,
+    marginBalanceWithoutCurrent,
+    squareWithoutCurrent,
   }
 }
 
@@ -223,53 +249,48 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketID: string)
 //   return mv.dp(DECIMALS)
 // }
 
-// export function isAMMSafe(context: AMMTradingContext, beta: BigNumber): boolean {
-//   const { pos1 } = context
-//   if (pos1.isZero()) {
-//     return true
-//   } else if (pos1.lt(_0)) {
-//     return isAMMSafeShort(context, beta)
-//   } else {
-//     return isAMMSafeLong(context, beta)
-//   }
-// }
+export function isAMMSafe(context: AMMTradingContext, beta: BigNumber): boolean {
+  if (context.position1.isZero()) {
+    // current market pos = 0
+    // (cash + Σ i pos) ^ 2 - 2 Σ beta i pos^2 >= 0
+    const beforeSqrt = context.marginBalanceWithoutCurrent
+      .times(context.marginBalanceWithoutCurrent)
+      .minus(_2.times(context.squareWithoutCurrent))
+    return beforeSqrt.gte(_0)
+  }
 
-// export function isAMMSafeShort(context: AMMTradingContext, beta: BigNumber): boolean {
-//   const { pos1, cash, index, lev } = context
-//   if (pos1.gt(_0)) {
-//     throw new BugError(`bug: pos1 (${pos1.toFixed()}) > 0`)
-//   }
-//   // safeIndex = -lev * cash / pos / (lev + 1 + 2 * math.sqrt(beta * lev))
-//   const beforeSqrt = beta.times(lev)
-//   if (beforeSqrt.lt(_0)) {
-//     throw new BugError('bug: ammSafe sqrt < 0')
-//   }
-//   const denominator = lev.plus(_1).plus(_2.times(sqrt(beforeSqrt)))
-//   const safeIndex = lev.negated().times(cash).div(pos1).div(denominator)
-//   return index.lte(safeIndex)
-// }
+  if (context.position1.lt(_0)) {
+    // short
+    if (context.marginBalanceWithoutCurrent.lt(_0)) {
+      // perpetual should revert before this function. we also mark this as unsafe
+      return false
+    }
+  }
+  
+  // uniform
+  // -2 beta pos1 margin + k^2 pos1^2 + 2 square
+  let beforeSqrt = _2.negated().times(beta).times(context.position1).times(context.marginBalanceWithoutCurrent)
+  beforeSqrt = beforeSqrt.plus(beta.times(beta).times(context.position1).times(context.position1))
+  beforeSqrt = beforeSqrt.plus(_2.times(context.squareWithoutCurrent))
+  if (beforeSqrt.lt(_0)) {
+    // means the function is always above the x-axis
+    return true
+  }
 
-// export function isAMMSafeLong(context: AMMTradingContext, beta: BigNumber): boolean {
-//   const { pos1, cash, index, lev } = context
-//   if (pos1.lt(_0)) {
-//     throw new BugError(`bug: pos1 (${pos1.toFixed()}) < 0`)
-//   }
-//   if (cash.gte(_0)) {
-//     return true
-//   }
-//   // Δ = beta * (lev - 1 + beta)
-//   // safeIndex = -lev * cash * (lev - 1 + 2 * (beta + math.sqrt(Δ)))
-//   // / pos / (lev - 1) ** 2
-//   const levMinus1 = lev.minus(1)
-//   const beforeSqrt = beta.times(levMinus1.plus(beta))
-//   if (beforeSqrt.lt(_0)) {
-//     throw new BugError('bug: ammSafe sqrt < 0')
-//   }
-//   let safeIndex = lev.negated().times(cash)
-//   safeIndex = safeIndex.times(levMinus1.plus(_2.times(beta.plus(sqrt(beforeSqrt)))))
-//   safeIndex = safeIndex.div(pos1).div(levMinus1).div(levMinus1)
-//   return index.gte(safeIndex)
-// }
+  // (- margin + beta pos1 + sqrt) / pos1
+  let safeIndex = context.marginBalanceWithoutCurrent.negated()
+  safeIndex = safeIndex.plus(beta.times(context.position1))
+  safeIndex = safeIndex.plus(sqrt(beforeSqrt))
+  safeIndex = safeIndex.div(context.position1)
+  
+  console.log(context.index.toFixed(), safeIndex.toFixed(), context.position1.toFixed())
+  if (context.position1.gt(_0)) {
+    // long
+    return context.index.gte(safeIndex)
+  }
+  // short
+  return context.index.lte(safeIndex)
+}
 
 // // call computeM0 before this function
 // export function computeAMMSafeShortPositionAmount(context: AMMTradingContext, beta: BigNumber): BigNumber {

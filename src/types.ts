@@ -141,8 +141,14 @@ export interface AMMTradingContext {
   cash: BigNumber // M_c
   isAMMSafe: boolean
   availableMargin: BigNumber // M
+
+  // trading result
   deltaMargin: BigNumber // cash2 - cash1
   deltaPosition: BigNumber // position2 - position1
+
+  // eager evaluation
+  marginBalanceWithoutCurrent: BigNumber // Σ_j (index position) where j ≠ id
+  squareWithoutCurrent: BigNumber // Σ_j (beta1 index position^2) where j ≠ id
 }
 
 export interface TradingContext {
