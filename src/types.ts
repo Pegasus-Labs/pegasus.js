@@ -33,12 +33,26 @@ export interface PerpetualContract {
   contract: ethers.Contract
 }
 
-export interface PerpetualStorage {
-  // perpetual gov
-  underlyingSymbol: string
+export enum MarketState {
+  INIT,
+  NORMAL,
+  EMERGENCY,
+  CLEARED,
+}
+
+export interface LiquidityPoolStorage {
   collateralTokenAddress: string
   shareTokenAddress: string
+
+  ammCashBalance: BigNumber
+  fundingTime: number
+
+  markets: { [marketID: string]: MarketStorage }
+}
+
+export interface MarketStorage {
   oracleAddress: string
+  underlyingSymbol: string
   initialMarginRate: BigNumber
   maintenanceMarginRate: BigNumber
   operatorFeeRate: BigNumber
@@ -48,49 +62,47 @@ export interface PerpetualStorage {
   liquidatorPenaltyRate: BigNumber
   keeperGasReward: BigNumber
 
-  // amm gov
+  state: MarketState
+  markPrice: BigNumber
+  indexPrice: BigNumber
+  accumulatedFundingPerContract: BigNumber
+  insuranceFund1: BigNumber
+  insuranceFund2: BigNumber
+
   halfSpreadRate: BigNumber
   beta1: BigNumber
   beta2: BigNumber
   fundingRateCoefficient: BigNumber
-  targetLeverage: BigNumber
+  maxLeverage: BigNumber
 
-  // perpetual state
-  isEmergency: boolean
-  isGlobalSettled: boolean
-  insuranceFund1: BigNumber
-  insuranceFund2: BigNumber
-  markPrice: BigNumber
-  indexPrice: BigNumber
-  accumulatedFundingPerContract: BigNumber
-  fundingTime: number
+  ammPositionAmount: BigNumber
 }
 
 export interface AccountStorage {
   cashBalance: BigNumber
   positionAmount: BigNumber
-  entryFundingLoss: BigNumber
-
+  
   // read from the graph
   entryValue: BigNumber | null
+  entryFunding: BigNumber | null
 }
 
 export interface AccountComputed {
   positionValue: BigNumber
   positionMargin: BigNumber
-  leverage: BigNumber
   maintenanceMargin: BigNumber
-  fundingLoss: BigNumber
-  availableCashBalance: BigNumber // cash - loss
-  marginBalance: BigNumber // cash + i pos - loss
+  availableCashBalance: BigNumber // cash - accumulatedFunding * pos
+  marginBalance: BigNumber // cash + i pos - accumulatedFunding * pos
   availableMargin: BigNumber
   maxWithdrawable: BigNumber
   withdrawableBalance: BigNumber
   isSafe: boolean
-
+  leverage: BigNumber
+  
   entryPrice: BigNumber | null
-  pnl1: BigNumber | null // exit - entry if entry != null
-  pnl2: BigNumber | null // pnl1 - loss if entry != null
+  fundingPNL: BigNumber | null // entryFunding - pos * accumulatedFunding
+  pnl1: BigNumber | null // pos * (exitPrice - entryPrice) if entry != null
+  pnl2: BigNumber | null // pnl1 + funding if entry != null
   roe: BigNumber | null
   liquidationPrice: BigNumber
 }

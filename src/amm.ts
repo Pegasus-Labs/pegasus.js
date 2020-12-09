@@ -4,13 +4,17 @@
 
 import { BigNumber } from 'bignumber.js'
 import { DECIMALS, _0, _1, _2, _4 } from './constants'
-import { PerpetualStorage, AMMTradingContext, AccountDetails } from './types'
+import { LiquidityPoolStorage, AMMTradingContext, AccountDetails } from './types'
 import { sqrt, splitAmount } from './utils'
 import { InsufficientLiquidityError, BugError } from './types'
 
-export function initAMMTradingContext(p: PerpetualStorage, amm: AccountDetails): AMMTradingContext {
+export function initAMMTradingContext(p: LiquidityPoolStorage, amm: AccountDetails): AMMTradingContext {
   const pos1 = amm.accountStorage.positionAmount
   const cash = amm.accountComputed.availableCashBalance
+
+
+  // ammAvailableCashBalance: BigNumber // ammCash + Σ accumulatedFunding * (-pos)
+
   const index = p.indexPrice
   const lev = p.targetLeverage
   const context: AMMTradingContext = { index, lev, cash, pos1, isSafe: true, m0: _0, mv: _0, ma1: _0, deltaMargin: _0, deltaPosition: _0 }
@@ -18,7 +22,7 @@ export function initAMMTradingContext(p: PerpetualStorage, amm: AccountDetails):
 }
 
 // the amount is the amm's perspective
-export function computeAMMInternalTrade(p: PerpetualStorage, amm: AccountDetails, amount: BigNumber): AMMTradingContext {
+export function computeAMMInternalTrade(p: LiquidityPoolStorage, amm: AccountDetails, amount: BigNumber): AMMTradingContext {
   let context = initAMMTradingContext(p, amm)
   const { close, open } = splitAmount(context.pos1, amount)
   if (close.isZero() && open.isZero()) {
@@ -46,7 +50,7 @@ export function computeAMMInternalTrade(p: PerpetualStorage, amm: AccountDetails
 }
 
 // the amount is the amm's perspective
-export function computeAMMInternalClose(context: AMMTradingContext, amount: BigNumber, p: PerpetualStorage): AMMTradingContext {
+export function computeAMMInternalClose(context: AMMTradingContext, amount: BigNumber, p: LiquidityPoolStorage): AMMTradingContext {
   const beta = p.beta2
   let ret: AMMTradingContext = { ...context }
   const { index } = ret
@@ -70,7 +74,7 @@ export function computeAMMInternalClose(context: AMMTradingContext, amount: BigN
 }
 
 // the amount is the amm's perspective
-export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNumber, p: PerpetualStorage): AMMTradingContext {
+export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNumber, p: LiquidityPoolStorage): AMMTradingContext {
   const beta = p.beta1
   let ret: AMMTradingContext = { ...context }
   const pos2 = ret.pos1.plus(amount)
@@ -344,7 +348,7 @@ export function computeDeltaMarginLong(context: AMMTradingContext, beta: BigNumb
   return ma2.minus(ma1).dp(DECIMALS)
 }
 
-export function computeFundingRate(p: PerpetualStorage, amm: AccountDetails): BigNumber {
+export function computeFundingRate(p: LiquidityPoolStorage, amm: AccountDetails): BigNumber {
   let context = initAMMTradingContext(p, amm)  
   if (!isAMMSafe(context, p.beta1)) {
     if (context.pos1.isZero()) {
