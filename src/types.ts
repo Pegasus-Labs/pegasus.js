@@ -119,16 +119,30 @@ export interface TradeCost {
 }
 
 export interface AMMTradingContext {
-  index: BigNumber
-  lev: BigNumber
-  cash: BigNumber
-  pos1: BigNumber
-  isSafe: boolean
-  m0: BigNumber // original margin
-  mv: BigNumber // virtual margin
-  ma1: BigNumber // available margin
-  deltaMargin: BigNumber // ma2 - ma1
-  deltaPosition: BigNumber // pos2 - pos1
+  // current trading market
+  index: BigNumber // P_i_m
+  position1: BigNumber // N_m
+  halfSpreadRate: BigNumber // α_m
+  beta1: BigNumber // β1_m
+  beta2: BigNumber // β2_m
+  fundingRateCoefficient: BigNumber // γ_m
+  maxLeverage: BigNumber // λ_m
+
+  // other markets
+  otherIndex: BigNumber[] // P_i_j
+  otherPosition: BigNumber[] // N_j
+  otherHalfSpreadRate: BigNumber[] // α_j
+  otherBeta1: BigNumber[] // β1_j
+  otherBeta2: BigNumber[] // β2_j
+  otherFundingRateCoefficient: BigNumber[] // γ_j
+  otherMaxLeverage: BigNumber[] // λ_j
+  
+  // total
+  cash: BigNumber // M_c
+  isAMMSafe: boolean
+  availableMargin: BigNumber // M
+  deltaMargin: BigNumber // cash2 - cash1
+  deltaPosition: BigNumber // position2 - position1
 }
 
 export interface TradingContext {
