@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js'
 import {
   computeAccount,
-  // computeDecreasePosition,
-  // computeIncreasePosition,
-  // computeFee,
-  // computeTradeWithPrice,
+  computeDecreasePosition,
+  computeIncreasePosition,
+  computeFee,
+  computeTradeWithPrice,
   // computeAMMPrice,
   // computeAMMTrade,
 } from '../src/computation'
@@ -279,409 +279,408 @@ describe('computeAccount', function () {
   })
 })
 
-// describe('computeTrade fail', function () {
-//   it('decrease flat', function () {
-//     expect((): void => {
-//       computeDecreasePosition(poolStorage, accountStorage4, new BigNumber(7000), _1)
-//     }).toThrow()
-//   })
+describe('computeTrade fail', function () {
+  it('decrease flat', function () {
+    expect((): void => {
+      computeDecreasePosition(poolStorage1, TEST_MARKET_ID, accountStorage4, new BigNumber(7000), _1)
+    }).toThrow()
+  })
 
-//   it('decrease zero price', function () {
-//     expect((): void => {
-//       computeDecreasePosition(poolStorage, accountStorage1, _0, _1)
-//     }).toThrow()
-//   })
+  it('decrease zero price', function () {
+    expect((): void => {
+      computeDecreasePosition(poolStorage1, TEST_MARKET_ID, accountStorage1, _0, _1)
+    }).toThrow()
+  })
 
-//   it('decrease zero amount', function () {
-//     expect((): void => {
-//       computeDecreasePosition(poolStorage, accountStorage1, _1, _0)
-//     }).toThrow()
-//   })
+  it('decrease zero amount', function () {
+    expect((): void => {
+      computeDecreasePosition(poolStorage1, TEST_MARKET_ID, accountStorage1, _1, _0)
+    }).toThrow()
+  })
 
-//   it('decrease large amount', function () {
-//     expect((): void => {
-//       computeDecreasePosition(poolStorage, accountStorage1, _1, new BigNumber(1000))
-//     }).toThrow()
-//   })
+  it('decrease large amount', function () {
+    expect((): void => {
+      computeDecreasePosition(poolStorage1, TEST_MARKET_ID, accountStorage1, _1, new BigNumber(1000))
+    }).toThrow()
+  })
 
-//   it('increase bad side', function () {
-//     expect((): void => {
-//       computeIncreasePosition(
-//         poolStorage,
-//         accountStorage1,
-//         new BigNumber(7000),
-//         _1.negated() // sell
-//       )
-//     }).toThrow()
-//   })
+  it('increase bad side', function () {
+    expect((): void => {
+      computeIncreasePosition(
+        poolStorage1, TEST_MARKET_ID, accountStorage1,
+        new BigNumber(7000), _1.negated() // sell
+      )
+    }).toThrow()
+  })
 
-//   it('increase zero price', function () {
-//     expect((): void => {
-//       computeIncreasePosition(poolStorage, accountStorage1, _0, _1)
-//     }).toThrow()
-//   })
+  it('increase zero price', function () {
+    expect((): void => {
+      computeIncreasePosition(poolStorage1, TEST_MARKET_ID, accountStorage1, _0, _1)
+    }).toThrow()
+  })
 
-//   it('increase zero amount', function () {
-//     expect((): void => {
-//       computeIncreasePosition(poolStorage, accountStorage1, _1, _0)
-//     }).toThrow()
-//   })
+  it('increase zero amount', function () {
+    expect((): void => {
+      computeIncreasePosition(poolStorage1, TEST_MARKET_ID, accountStorage1, _1, _0)
+    }).toThrow()
+  })
 
-//   it('increase bad side', function () {
-//     expect((): void => {
-//       computeIncreasePosition(poolStorage, accountStorage1, _1, _0)
-//     }).toThrow()
-//   })
+  it('increase bad side', function () {
+    expect((): void => {
+      computeIncreasePosition(poolStorage1, TEST_MARKET_ID, accountStorage1, _1, _0)
+    }).toThrow()
+  })
 
-//   it('fee zero price', function () {
-//     expect((): void => {
-//       computeFee(0, 1, 0.1)
-//     }).toThrow()
-//   })
+  it('fee zero price', function () {
+    expect((): void => {
+      computeFee(0, 1, 0.1)
+    }).toThrow()
+  })
 
-//   it('fee zero amount', function () {
-//     expect((): void => {
-//       computeFee(1, 0, 0.1)
-//     }).toThrow()
-//   })
+  it('fee zero amount', function () {
+    expect((): void => {
+      computeFee(1, 0, 0.1)
+    }).toThrow()
+  })
 
-//   it('computeTradeWithPrice zero price', function () {
-//     expect((): void => {
-//       computeTradeWithPrice(poolStorage, accountStorage1, _0, _1, _0)
-//     }).toThrow()
-//   })
+  it('computeTradeWithPrice zero price', function () {
+    expect((): void => {
+      computeTradeWithPrice(poolStorage1, TEST_MARKET_ID, accountStorage1, _0, _1, _0)
+    }).toThrow()
+  })
 
-//   it('computeTradeWithPrice zero amount', function () {
-//     expect((): void => {
-//       computeTradeWithPrice(poolStorage, accountStorage1, _1, _0, _0)
-//     }).toThrow()
-//   })
-// })
+  it('computeTradeWithPrice zero amount', function () {
+    expect((): void => {
+      computeTradeWithPrice(poolStorage1, TEST_MARKET_ID, accountStorage1, _1, _0, _0)
+    }).toThrow()
+  })
+})
 
-// describe('computeTradeWithPrice', function () {
-//   interface TradeCase {
-//     name: string
-//     input: {
-//       accountDetails: AccountDetails
-//       price: BigNumberish
-//       amount: BigNumberish
-//       feeRate: BigNumberish
-//     }
-//     expectedOutput: {
-//       account: {
-//         cashBalance: BigNumberish
-//         marginBalance: BigNumberish
-//         positionAmount: BigNumberish
-//         entryValue: BigNumberish
-//         entryFundingLoss: BigNumberish
-//       },
-//       fee: BigNumberish
-//     }
-//   }
+describe('computeTradeWithPrice', function () {
+  interface TradeCase {
+    name: string
+    input: {
+      accountDetails: AccountDetails
+      price: BigNumberish
+      amount: BigNumberish
+      feeRate: BigNumberish
+    }
+    expectedOutput: {
+      account: {
+        cashBalance: BigNumberish
+        marginBalance: BigNumberish
+        positionAmount: BigNumberish
+        entryValue: BigNumberish
+        entryFunding: BigNumberish
+      },
+      fee: BigNumberish
+    }
+  }
 
-//   //console.log(fundingResult.markPrice.toString())
-//   //fundingResult.accumulatedFundingPerContract = 9.9059375
-//   //fundingResult.markPrice = 6965
-//   //new BigNumber('23694.9847500349122')
-//   const tradeCases: Array<TradeCase> = [
-//     {
-//       name: 'increase long',
-//       input: {
-//         accountDetails: accountDetails1,
-//         price: 2000,
-//         amount: 1,
-//         feeRate: 0.01
-//       },
-//       expectedOutput: {
-//         account: {
-//           // 10000 - 20 - 4300.23
-//           cashBalance: '5679.77',
-//           /*
-//             10000 - 20 +
-//             (6965 * 3.3 - 4300.23) -
-//             (9.9059375 * 3.3 - 8.9959375),
-//           */
-//           marginBalance: '28640.57634375',
-//           positionAmount: '3.3',
-//           entryValue: '4300.23',
-//           entryFundingLoss: '8.9959375'
-//         },
-//         fee: 20
-//       }
-//     },
-//     {
-//       name: 'increase long with leverage cost',
-//       input: {
-//         accountDetails: accountDetails1,
-//         price: 7000,
-//         amount: 5,
-//         feeRate: 0.01
-//       },
-//       expectedOutput: {
-//         account: {
-//           // 10000 - 350 - 37300.23
-//           cashBalance: '-27650.23',
-//           /*
-//             10000 - 350 +
-//             (6965 * 7.3 - 37300.23) -
-//             (9.9059375 * 7.3 - 48.6196875),
-//           */
-//           marginBalance: '23170.57634375',
-//           positionAmount: '7.3',
-//           entryValue: '37300.23',
-//           entryFundingLoss: '48.6196875'
-//         },
-//         fee: 350
-//       }
-//     },
-//     {
-//       name: 'increase long with loss',
-//       input: {
-//         accountDetails: accountDetails1,
-//         price: 10000,
-//         amount: 10,
-//         feeRate: 0.01
-//       },
-//       expectedOutput: {
-//         account: {
-//           // 9000 - 102300.23
-//           cashBalance: '-93300.23',
-//           /*
-//             9000 +
-//             (6965 * 12.3 - 102300.23) -
-//             (9.9059375 * 12.3 - 98.149375),
-//           */
-//           marginBalance: '-7654.42365625',
-//           positionAmount: '12.3',
-//           entryValue: '102300.23',
-//           entryFundingLoss: '98.149375'
-//         },
-//         fee: 1000
-//       }
-//     },
-//     {
-//       name: 'decrease long',
-//       input: {
-//         accountDetails: accountDetails1,
-//         price: 2000,
-//         amount: -1, // sell
-//         feeRate: 0.01
-//       },
-//       expectedOutput: {
-//         account: {
-//           // 10000 + 999.9 - 20 - (9.9059375 - (-0.91)/2.3 ) * 1
-//           // = 10969.59841032608695652174
-//           // 10969.59841032608695652174 - 1300.13
-//           cashBalance: '9669.46841032608695652174',
-//           positionAmount: '1.3',
-//           entryValue: '1300.13',
-//           entryFundingLoss: '-0.514347826087',
-//           /*
-//             10969.59841032608695652174 +
-//             (6965 * 1.3 - 1300.13) -
-//             (9.9059375 * 1.3 - (-0.514347826087)),
-//           */
-//           marginBalance: '18710.57634375'
-//         },
-//         fee: 20
-//       }
-//     },
-//     {
-//       name: 'decrease long to zero',
-//       input: {
-//         accountDetails: accountDetails1,
-//         price: 2000,
-//         amount: -2.3, // sell
-//         feeRate: 0.01
-//       },
-//       expectedOutput: {
-//         account: {
-//           // 10000 + 2299.77‬ - 46 - (9.9059375 * 2.3 - (-0.91))
-//           cashBalance: '12230.07634375',
-//           positionAmount: 0,
-//           entryValue: 0,
-//           entryFundingLoss: 0,
-//           marginBalance: '12230.07634375'
-//         },
-//         fee: 46
-//       }
-//     },
-//     {
-//       name: 'decrease long to short',
-//       input: {
-//         accountDetails: accountDetails1,
-//         price: 2000,
-//         amount: -3.3, // sell
-//         feeRate: 0.01
-//       },
-//       expectedOutput: {
-//         account: {
-//           // 10000 + 2299.77‬ - 66 - (9.9059375 * 2.3 - (-0.91))
-//           // = 12210.07634375
-//           // 12210.07634375 - (-2000)
-//           cashBalance: '14210.07634375',
-//           positionAmount: -1,
-//           entryValue: -2000,
-//           entryFundingLoss: '-9.9059375',
-//           /*
-//             12210.07634375 + (2000 - 6965 * 1)
-//           */
-//           marginBalance: '7245.076343750000000000002'
-//         },
-//         fee: 66
-//       }
-//     },
-//     {
-//       name: 'increase zero to long with cost',
-//       input: {
-//         accountDetails: accountDetails4,
-//         price: 7000,
-//         amount: 2,
-//         feeRate: 0.01
-//       },
-//       expectedOutput: {
-//         account: {
-//           // 9860 - 14000
-//           cashBalance: -4140,
-//           positionAmount: 2,
-//           entryValue: 14000,
-//           entryFundingLoss: '19.811875',
-//           /*
-//             9860 + (6965 * 2 - 14000)
-//           */
-//           marginBalance: '9790'
-//         },
-//         fee: 140
-//       }
-//     },
-//     {
-//       name: 'decrease zero to short with cost',
-//       input: {
-//         accountDetails: accountDetails4,
-//         price: 7000,
-//         amount: -2, // sell
-//         feeRate: 0.01
-//       },
-//       expectedOutput: {
-//         account: {
-//           // 10000 - 140 = 9860
-//           // 9860 - (-14000)
-//           cashBalance: 23860,
-//           positionAmount: -2,
-//           entryValue: -14000,
-//           entryFundingLoss: '-19.811875',
-//           /*
-//             9860 + (14000-6965 * 2)
-//           */
-//           marginBalance: '9930'
-//         },
-//         fee: 140
-//       }
-//     },
-//     {
-//       name: 'decrease short',
-//       input: {
-//         accountDetails: accountDetails3,
-//         price: 2000,
-//         amount: 1,
-//         feeRate: 0.01
-//       },
-//       expectedOutput: {
-//         account: {
-//           // 14000 - 999.9 - 20 + (9.9059375 - (-0.91)/2.3 ) * 1
-//           // = 12990.401589673913
-//           // 12990.401589673913 - (-1300.13)
-//           cashBalance: '14290.53158967391304347826',
-//           positionAmount: '-1.3',
-//           entryValue: '-1300.13',
-//           entryFundingLoss: '0.514347826087',
-//           /*
-//             12990.401589673913 +
-//             (1300.13 - 6965 * 1.3)
-//             + (9.9059375 * 1.3 - (-0.514347826087)),
-//           */
-//           marginBalance: '5249.42365625'
-//         },
-//         fee: 20
-//       }
-//     },
-//     {
-//       name: 'decrease short to zero',
-//       input: {
-//         accountDetails: accountDetails3,
-//         price: 2000,
-//         amount: 2.3,
-//         feeRate: 0.01
-//       },
-//       expectedOutput: {
-//         account: {
-//           // 14000 - 2299.77 - 46 + (9.9059375 * 2.3 - (-0.91))
-//           cashBalance: '11677.92365625',
-//           positionAmount: 0,
-//           entryValue: 0,
-//           entryFundingLoss: 0,
-//           marginBalance: '11677.92365625'
-//         },
-//         fee: 46
-//       }
-//     },
-//     {
-//       name: 'decrease short to long with leverage',
-//       input: {
-//         accountDetails: accountDetails3,
-//         price: 2000,
-//         amount: 3.3,
-//         feeRate: 0.01
-//       },
-//       expectedOutput: {
-//         account: {
-//           // 14000 - 2299.77 - 66 + (9.9059375 * 2.3 - (-0.91))
-//           // = 11657.92365625
-//           // 11657.92365625 - 2000
-//           cashBalance: '9657.92365625',
-//           positionAmount: 1,
-//           entryValue: 2000,
-//           entryFundingLoss: '9.9059375',
-//           // 11657.92365625 + (6965-2000) * 1
-//           marginBalance: '16622.92365625'
-//         },
-//         fee: 66
-//       }
-//     }
-//   ]
+  //console.log(fundingResult.markPrice.toString())
+  //fundingResult.accumulatedFundingPerContract = 9.9059375
+  //fundingResult.markPrice = 6965
+  //new BigNumber('23694.9847500349122')
+  const tradeCases: Array<TradeCase> = [
+    {
+      name: 'increase long',
+      input: {
+        accountDetails: accountDetails1,
+        price: 2000,
+        amount: 1,
+        feeRate: 0.01
+      },
+      expectedOutput: {
+        account: {
+          // 10000 - 20 - 4300.23 + 8.9959375
+          cashBalance: '5688.7659375',
+          /*
+            10000 - 20 +
+            (6965 * 3.3 - 4300.23) -
+            (9.9059375 * 3.3 - 8.9959375),
+          */
+          marginBalance: '28640.57634375',
+          positionAmount: '3.3',
+          entryValue: '4300.23',
+          entryFunding: '8.9959375'
+        },
+        fee: 20
+      }
+    },
+    {
+      name: 'increase long with leverage cost',
+      input: {
+        accountDetails: accountDetails1,
+        price: 7000,
+        amount: 5,
+        feeRate: 0.01
+      },
+      expectedOutput: {
+        account: {
+          // 10000 - 350 - 37300.23 + 48.6196875
+          cashBalance: '-27601.6103125',
+          /*
+            10000 - 350 +
+            (6965 * 7.3 - 37300.23) -
+            (9.9059375 * 7.3 - 48.6196875),
+          */
+          marginBalance: '23170.57634375',
+          positionAmount: '7.3',
+          entryValue: '37300.23',
+          entryFunding: '48.6196875'
+        },
+        fee: 350
+      }
+    },
+    {
+      name: 'increase long with loss',
+      input: {
+        accountDetails: accountDetails1,
+        price: 10000,
+        amount: 10,
+        feeRate: 0.01
+      },
+      expectedOutput: {
+        account: {
+          // 9000 - 102300.23 + 98.149375
+          cashBalance: '-93202.080625',
+          /*
+            9000 +
+            (6965 * 12.3 - 102300.23) -
+            (9.9059375 * 12.3 - 98.149375),
+          */
+          marginBalance: '-7654.42365625',
+          positionAmount: '12.3',
+          entryValue: '102300.23',
+          entryFunding: '98.149375'
+        },
+        fee: 1000
+      }
+    },
+    {
+      name: 'decrease long',
+      input: {
+        accountDetails: accountDetails1,
+        price: 2000,
+        amount: -1, // sell
+        feeRate: 0.01
+      },
+      expectedOutput: {
+        account: {
+          // 10000 + 999.9 - 20 - (9.9059375 - (-0.91)/2.3 ) * 1
+          // = 10969.59841032608695652174
+          // 10969.59841032608695652174 - 1300.13 + (-0.514347826087)
+          cashBalance: '9668.95406249999995652174',
+          positionAmount: '1.3',
+          entryValue: '1300.13',
+          entryFunding: '-0.514347826087',
+          /*
+            10969.59841032608695652174 +
+            (6965 * 1.3 - 1300.13) -
+            (9.9059375 * 1.3 - (-0.514347826087)),
+          */
+          marginBalance: '18710.57634375'
+        },
+        fee: 20
+      }
+    },
+    {
+      name: 'decrease long to zero',
+      input: {
+        accountDetails: accountDetails1,
+        price: 2000,
+        amount: -2.3, // sell
+        feeRate: 0.01
+      },
+      expectedOutput: {
+        account: {
+          // 10000 + 2299.77‬ - 46 - (9.9059375 * 2.3 - (-0.91))
+          cashBalance: '12230.07634375',
+          positionAmount: 0,
+          entryValue: 0,
+          entryFunding: 0,
+          marginBalance: '12230.07634375'
+        },
+        fee: 46
+      }
+    },
+    {
+      name: 'decrease long to short',
+      input: {
+        accountDetails: accountDetails1,
+        price: 2000,
+        amount: -3.3, // sell
+        feeRate: 0.01
+      },
+      expectedOutput: {
+        account: {
+          // 10000 + 2299.77‬ - 66 - (9.9059375 * 2.3 - (-0.91))
+          // = 12210.07634375
+          // 12210.07634375 - (-2000) + (-9.9059375)
+          cashBalance: '14200.17040625',
+          positionAmount: -1,
+          entryValue: -2000,
+          entryFunding: '-9.9059375',
+          /*
+            12210.07634375 + (2000 - 6965 * 1)
+          */
+          marginBalance: '7245.076343750000000000002'
+        },
+        fee: 66
+      }
+    },
+    {
+      name: 'increase zero to long with cost',
+      input: {
+        accountDetails: accountDetails4,
+        price: 7000,
+        amount: 2,
+        feeRate: 0.01
+      },
+      expectedOutput: {
+        account: {
+          // 9860 - 14000 + 19.811875
+          cashBalance: '-4120.188125',
+          positionAmount: 2,
+          entryValue: 14000,
+          entryFunding: '19.811875',
+          /*
+            9860 + (6965 * 2 - 14000)
+          */
+          marginBalance: '9790'
+        },
+        fee: 140
+      }
+    },
+    {
+      name: 'decrease zero to short with cost',
+      input: {
+        accountDetails: accountDetails4,
+        price: 7000,
+        amount: -2, // sell
+        feeRate: 0.01
+      },
+      expectedOutput: {
+        account: {
+          // 10000 - 140 = 9860
+          // 9860 - (-14000) + (-19.811875)
+          cashBalance: '23840.188125',
+          positionAmount: -2,
+          entryValue: -14000,
+          entryFunding: '-19.811875',
+          /*
+            9860 + (14000-6965 * 2)
+          */
+          marginBalance: '9930'
+        },
+        fee: 140
+      }
+    },
+    {
+      name: 'decrease short',
+      input: {
+        accountDetails: accountDetails3,
+        price: 2000,
+        amount: 1,
+        feeRate: 0.01
+      },
+      expectedOutput: {
+        account: {
+          // 14000 - 999.9 - 20 + (9.9059375 - (-0.91)/2.3 ) * 1
+          // = 12990.401589673913
+          // 12990.401589673913 - (-1300.13) + 0.514347826087
+          cashBalance: '14291.0459375',
+          positionAmount: '-1.3',
+          entryValue: '-1300.13',
+          entryFunding: '0.514347826087',
+          /*
+            12990.401589673913 +
+            (1300.13 - 6965 * 1.3)
+            + (9.9059375 * 1.3 - (-0.514347826087)),
+          */
+          marginBalance: '5249.42365625'
+        },
+        fee: 20
+      }
+    },
+    {
+      name: 'decrease short to zero',
+      input: {
+        accountDetails: accountDetails3,
+        price: 2000,
+        amount: 2.3,
+        feeRate: 0.01
+      },
+      expectedOutput: {
+        account: {
+          // 14000 - 2299.77 - 46 + (9.9059375 * 2.3 - (-0.91))
+          cashBalance: '11677.92365625',
+          positionAmount: 0,
+          entryValue: 0,
+          entryFunding: 0,
+          marginBalance: '11677.92365625'
+        },
+        fee: 46
+      }
+    },
+    {
+      name: 'decrease short to long with leverage',
+      input: {
+        accountDetails: accountDetails3,
+        price: 2000,
+        amount: 3.3,
+        feeRate: 0.01
+      },
+      expectedOutput: {
+        account: {
+          // 14000 - 2299.77 - 66 + (9.9059375 * 2.3 - (-0.91))
+          // = 11657.92365625
+          // 11657.92365625 - 2000 + 9.9059375
+          cashBalance: '9667.82959375',
+          positionAmount: 1,
+          entryValue: 2000,
+          entryFunding: '9.9059375',
+          // 11657.92365625 + (6965-2000) * 1
+          marginBalance: '16622.92365625'
+        },
+        fee: 66
+      }
+    }
+  ]
 
-//   tradeCases.forEach(element => {
-//     const input = element.input
-//     const name = element.name
-//     const expectedOutput = element.expectedOutput
+  tradeCases.forEach(element => {
+    const input = element.input
+    const name = element.name
+    const expectedOutput = element.expectedOutput
 
-//     it(name, function () {
-//       const newAccount = computeTradeWithPrice(
-//         poolStorage,
-//         input.accountDetails.accountStorage,
-//         input.price,
-//         input.amount,
-//         input.feeRate,
-//       )
-//       expect(newAccount.cashBalance).toApproximate(
-//         normalizeBigNumberish(expectedOutput.account.cashBalance)
-//       )
-//       expect(newAccount.positionAmount).toBeBigNumber(
-//         normalizeBigNumberish(expectedOutput.account.positionAmount)
-//       )
-//       expect(newAccount.entryValue).toBeBigNumber(
-//         normalizeBigNumberish(expectedOutput.account.entryValue)
-//       )
-//       expect(newAccount.entryFundingLoss).toApproximate(
-//         normalizeBigNumberish(expectedOutput.account.entryFundingLoss)
-//       )
-//       const details = computeAccount(poolStorage, newAccount)
-//       expect(details.accountComputed.marginBalance).toApproximate(
-//         normalizeBigNumberish(expectedOutput.account.marginBalance)
-//       )
-//     })
-//   })
-// })
+    it(name, function () {
+      const newAccount = computeTradeWithPrice(
+        poolStorage1,
+        TEST_MARKET_ID,
+        input.accountDetails.accountStorage,
+        input.price,
+        input.amount,
+        input.feeRate,
+      )
+      expect(newAccount.cashBalance).toApproximate(
+        normalizeBigNumberish(expectedOutput.account.cashBalance)
+      )
+      expect(newAccount.positionAmount).toBeBigNumber(
+        normalizeBigNumberish(expectedOutput.account.positionAmount)
+      )
+      expect(newAccount.entryValue).toBeBigNumber(
+        normalizeBigNumberish(expectedOutput.account.entryValue)
+      )
+      expect(newAccount.entryFunding).toApproximate(
+        normalizeBigNumberish(expectedOutput.account.entryFunding)
+      )
+      const details = computeAccount(poolStorage1, TEST_MARKET_ID, newAccount)
+      expect(details.accountComputed.marginBalance).toApproximate(
+        normalizeBigNumberish(expectedOutput.account.marginBalance)
+      )
+    })
+  })
+})
 
 // describe('computeAMMPrice', function () {
 //   it(`holds long, sell`, function () {
