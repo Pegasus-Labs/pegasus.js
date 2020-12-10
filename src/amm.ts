@@ -226,7 +226,6 @@ export function isAMMSafe(context: AMMTradingContext, beta: BigNumber): boolean 
   safeIndex = safeIndex.plus(sqrt(beforeSqrt))
   safeIndex = safeIndex.div(context.position1)
   
-  console.log(context.index.toFixed(), safeIndex.toFixed(), context.position1.toFixed())
   if (context.position1.gt(_0)) {
     // long
     return context.index.gte(safeIndex)
@@ -283,17 +282,18 @@ export function isAMMSafe(context: AMMTradingContext, beta: BigNumber): boolean 
 //   return safePosition.dp(DECIMALS)
 // }
 
-// // ma2 - ma1
-// export function computeDeltaMargin(context: AMMTradingContext, beta: BigNumber, pos2: BigNumber): BigNumber {
-//   const { pos1 } = context
-//   if (pos1.gte(_0) && pos2.gte(_0)) {
-//     return computeDeltaMarginLong(context, beta, pos2)
-//   } else if (pos1.lte(_0) && pos2.lte(_0)) {
-//     return computeDeltaMarginShort(context, beta, pos2)
-//   } else {
-//     throw new BugError('bug: cross direction is not supported')
-//   }
-// }
+// cash2 - cash1
+export function computeDeltaMargin(context: AMMTradingContext, beta: BigNumber, position2: BigNumber): BigNumber {
+  if (context.position1.gt(_0) && position2.lt(_0)
+    || context.position1.lt(_0) && position2.gt(_0)) {
+    throw new BugError('bug: cross direction is not supported')
+  }
+  // i (pos1 - pos2) (1 - beta / m * (pos2 + pos1) / 2)
+  let ret = position2.plus(context.position1).div(_2).div(context.availableMargin).times(beta)
+  ret = _1.minus(ret)
+  ret = context.position1.minus(position2).times(ret).times(context.index)
+  return ret
+}
 
 // // ma2 - ma1
 // export function computeDeltaMarginShort(context: AMMTradingContext, beta: BigNumber, pos2: BigNumber): BigNumber {

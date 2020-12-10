@@ -5,7 +5,7 @@ import {
   // computeAMMInternalTrade,
   computeAMMAvailableMargin,
   isAMMSafe,
-  // computeDeltaMargin,
+  computeDeltaMargin,
   // computeAMMSafeShortPositionAmount,
   // computeAMMSafeLongPositionAmount,
   // computeFundingRate,
@@ -57,8 +57,8 @@ const TEST_MARKET_ID = '0x0'
 const TEST_MARKET_ID2 = '0x1'
 
 // [0] zero
-// available cash = 1000
-// available margin = 1000
+// available cash = 10000
+// available margin = 10000
 const poolStorage0: LiquidityPoolStorage = {
   collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
   ammCashBalance: new BigNumber('10000'),
@@ -331,42 +331,40 @@ describe('isAMMSafe', function () {
   })
 })
 
-// describe('computeDeltaMargin', function () {
-//   interface ComputeAccountCase {
-//     name: string
-//     amm: AccountDetails
-//     beta: BigNumber
-//     pos2: BigNumber
+describe('computeDeltaMargin', function () {
+  const beta1 = new BigNumber('100')
+  interface ComputeAccountCase {
+    name: string
+    amm: LiquidityPoolStorage
+    pos2: BigNumber
 
-//     // expected
-//     deltaMargin: BigNumber
-//   }
+    // expected
+    deltaMargin: BigNumber
+  }
 
-//   const successCases: Array<ComputeAccountCase> = [
-//     {
-//       name: '0 -> +5',
-//       amm: ammDetails0,
-//       beta: new BigNumber('0.1'),
-//       pos2: new BigNumber('5'),
-//       deltaMargin: new BigNumber('-494.570984085309081')
-//     },
-//     {
-//       name: '0 -> -5',
-//       amm: ammDetails0,
-//       beta: new BigNumber('0.1'),
-//       pos2: new BigNumber('-5'),
-//       deltaMargin: new BigNumber('505.555555555555556')
-//     },
-//   ]
+  const successCases: Array<ComputeAccountCase> = [
+    {
+      name: '0 -> +5',
+      amm: poolStorage0,
+      pos2: new BigNumber('5'),
+      deltaMargin: new BigNumber('-487.5')
+    },
+    {
+      name: '0 -> -5',
+      amm: poolStorage0,
+      pos2: new BigNumber('-5'),
+      deltaMargin: new BigNumber('512.5')
+    },
+  ]
 
-//   successCases.forEach(element => {
-//     it(element.name, function () {
-//       const context = computeM0(initAMMTradingContext(perpetualStorage, element.amm), element.beta)
-//       const deltaMargin = computeDeltaMargin(context, element.beta, element.pos2)
-//       expect(deltaMargin).toApproximate(normalizeBigNumberish(element.deltaMargin))
-//     })
-//   })
-// })
+  successCases.forEach(element => {
+    it(element.name, function () {
+      const context = computeAMMAvailableMargin(initAMMTradingContext(element.amm, TEST_MARKET_ID), beta1)
+      const deltaMargin = computeDeltaMargin(context, beta1, element.pos2)
+      expect(deltaMargin).toApproximate(normalizeBigNumberish(element.deltaMargin))
+    })
+  })
+})
 
 // describe('safePosition', function () {
 //   it('shorts from 0', function () {
