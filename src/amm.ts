@@ -327,18 +327,18 @@ export function computeDeltaMargin(context: AMMTradingContext, beta: BigNumber, 
   return ret.dp(DECIMALS)
 }
 
-// export function computeFundingRate(p: LiquidityPoolStorage, amm: AccountDetails): BigNumber {
-//   let context = initAMMTradingContext(p, amm)  
-//   if (!isAMMSafe(context, p.beta1)) {
-//     if (context.pos1.isZero()) {
-//       return _0
-//     } else if (context.pos1.gt(_0)) {
-//       return p.fundingRateCoefficient.negated()
-//     } else {
-//       return p.fundingRateCoefficient
-//     }
-//   }
+export function computeFundingRate(p: LiquidityPoolStorage, marketID: string): BigNumber {
+  let context = initAMMTradingContext(p, marketID)  
+  if (!isAMMSafe(context, context.beta1)) {
+    if (context.position1.isZero()) {
+      return _0
+    } else if (context.position1.gt(_0)) {
+      return context.fundingRateCoefficient.negated()
+    } else {
+      return context.fundingRateCoefficient
+    }
+  }
   
-//   context = computeM0(context, p.beta1)
-//   return p.fundingRateCoefficient.times(p.indexPrice).times(context.pos1).div(context.m0).negated()
-// }
+  context = computeAMMAvailableMargin(context, context.beta1)
+  return context.fundingRateCoefficient.times(context.index).times(context.position1).div(context.availableMargin).negated()
+}

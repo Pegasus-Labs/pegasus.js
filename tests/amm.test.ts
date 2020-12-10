@@ -8,19 +8,18 @@ import {
   computeDeltaMargin,
   computeAMMSafeShortPositionAmount,
   computeAMMSafeLongPositionAmount,
-  // computeFundingRate,
+  computeFundingRate,
 } from '../src/amm'
-import { DECIMALS, _0, _1 } from '../src/constants'
+import { _0, _1 } from '../src/constants'
 import {
   MarketState,
   MarketStorage,
   LiquidityPoolStorage,
-  AccountDetails,
-  AMMTradingContext
+  AMMTradingContext,
+  InsufficientLiquidityError,
 } from '../src/types'
-import { normalizeBigNumberish, splitAmount } from '../src/utils'
+import { normalizeBigNumberish } from '../src/utils'
 import { extendExpect } from './helper'
-import { InsufficientLiquidityError } from '../src/types'
 
 extendExpect()
 
@@ -59,6 +58,7 @@ const TEST_MARKET_ID2 = '0x1'
 // [0] zero
 // available cash = 10000
 // available margin = 10000, 10000
+// max pos2 = 100, -141.42135623730950488
 const poolStorage0: LiquidityPoolStorage = {
   collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
   ammCashBalance: new BigNumber('10000'),
@@ -71,6 +71,7 @@ const poolStorage0: LiquidityPoolStorage = {
 // [1] short 1: normal
 // available cash = 10100 - 1.9 * (-10) - 1.9 * (10) = 10100
 // available margin = 10000, 10005.0479311506160242805
+// max pos2 = -141.067359796658844252
 const poolStorage1: LiquidityPoolStorage = {
   collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
   ammCashBalance: new BigNumber('10100'),
@@ -83,6 +84,7 @@ const poolStorage1: LiquidityPoolStorage = {
 // [2] short 2: loss but safe
 // available cash = 14599 - 1.9 * (-50) - 1.9 * (10) = 14675
 // available margin = 9273.09477715884768908142691791, 9428.820844177342198192
+// max pos2 = -130.759540184393963844
 const poolStorage2: LiquidityPoolStorage = {
   collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
   ammCashBalance: new BigNumber('14599'),
@@ -107,6 +109,7 @@ const poolStorage3: LiquidityPoolStorage = {
 // [4] long 1: normal
 // available cash = 8138 - 1.9 * (10) - 1.9 * (10)= 8100
 // available margin = 10000, 10005.0479311506160242805
+// max pos2 = 100
 const poolStorage4: LiquidityPoolStorage = {
   collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
   ammCashBalance: new BigNumber('8138'),
@@ -119,6 +122,7 @@ const poolStorage4: LiquidityPoolStorage = {
 // [5] long 2: loss but safe
 // available cash = 1664 - 1.9 * (50) - 1.9 * (10) = 1550
 // available margin = 4893.31346231725208539935787445, 5356.336460086846919343
+// max pos2 = 48.933134623172520854
 const poolStorage5: LiquidityPoolStorage = {
   collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
   ammCashBalance: new BigNumber('1664'),
@@ -466,28 +470,28 @@ describe('trade - success', function () {
 
   const successCases: Array<ComputeAccountCase> = [
     {
-      name: 'open 0 -> -25',
+      name: 'open 0 -> -141.421',
       amm: poolStorage0,
-      amount: new BigNumber('-25'),
-      deltaMargin: new BigNumber('2815.3125') // trader buy, 1612.5 (1 + α)
+      amount: new BigNumber('-141.421'),
+      deltaMargin: new BigNumber('24166.1916701205') // trader buy, 24142.0496205 (1 + α)
     },
     {
-      name: 'open -10 -> -23',
+      name: 'open -10 -> -141.067',
       amm: poolStorage1,
-      amount: new BigNumber('-13'),
-      deltaMargin: new BigNumber('1516.0145') // trader buy, 1527.5 (1 + α)
+      amount: new BigNumber('-131.067'),
+      deltaMargin: new BigNumber('23029.6558937445') // trader buy, 23006.6492445 (1 + α)
     },
     {
-      name: 'open 0 -> 37',
+      name: 'open 0 -> 100',
       amm: poolStorage0,
-      amount: new BigNumber('37'),
-      deltaMargin: new BigNumber('-3012.4845') // trader sell, -3015.5 (1 - α)
+      amount: new BigNumber('100'),
+      deltaMargin: new BigNumber('-4995') // trader sell, -5000 (1 - α)
     },
     {
-      name: 'open 10 -> 35',
+      name: 'open 10 -> 100',
       amm: poolStorage4,
-      amount: new BigNumber('25'),
-      deltaMargin: new BigNumber('-1935.5625') // trader sell, -1937.5 (1 - α)
+      amount: new BigNumber('90'),
+      deltaMargin: new BigNumber('-4045.95') // trader sell, -4050 (1 - α)
     },
     {
       name: 'close -10 -> -9',
@@ -535,95 +539,64 @@ describe('trade - success', function () {
   })
 })
 
-// describe('trade - fail', function () {
-//   interface ComputeAccountCase {
-//     name: string
-//     amm: AccountDetails
-//     amount: BigNumber
-//   }
+describe('trade - fail', function () {
+  interface ComputeAccountCase {
+    name: string
+    amm: LiquidityPoolStorage
+    amount: BigNumber
+  }
 
-//   const failCases: Array<ComputeAccountCase> = [
-//     {
-//       name: 'open 0 -> -25.01, pos2 too large',
-//       amm: ammDetails0,
-//       amount: new BigNumber('-25.01'),
-//     },
-//     {
-//       name: 'open -11 -> -24.2, pos2 too large',
-//       amm: ammDetails1,
-//       amount: new BigNumber('-13.2'),
-//     },
-//     {
-//       name: 'open -11 already unsafe',
-//       amm: ammDetails3,
-//       amount: new BigNumber('-0.01'),
-//     },
-//     {
-//       name: 'open 0 -> 37.3',
-//       amm: ammDetails0,
-//       amount: new BigNumber('37.3'),
-//     },
-//     {
-//       name: 'open 11 -> 36.3',
-//       amm: ammDetails4,
-//       amount: new BigNumber('25.3'),
-//     },
-//     {
-//       name: 'open 11 already unsafe',
-//       amm: ammDetails6,
-//       amount: new BigNumber('0.01'),
-//     },
-//   ]
+  const failCases: Array<ComputeAccountCase> = [
+    {
+      name: 'open 0 -> -141.422, pos2 too large',
+      amm: poolStorage0,
+      amount: new BigNumber('-141.422'),
+    },
+    {
+      name: 'open -10 -> -141.068, pos2 too large',
+      amm: poolStorage1,
+      amount: new BigNumber('-131.068'),
+    },
+    {
+      name: 'open -10 already unsafe',
+      amm: poolStorage3,
+      amount: new BigNumber('-0.01'),
+    },
+    {
+      name: 'open 0 -> 100.001',
+      amm: poolStorage0,
+      amount: new BigNumber('100.001'),
+    },
+    {
+      name: 'open 10 -> 100.001',
+      amm: poolStorage4,
+      amount: new BigNumber('90.001'),
+    },
+    {
+      name: 'open 10 already unsafe',
+      amm: poolStorage6,
+      amount: new BigNumber('0.01'),
+    },
+  ]
 
-//   failCases.forEach(element => {
-//     it(element.name, () => {
-//       expect((): void => {
-//         computeAMMInternalTrade(perpetualStorage, element.amm, element.amount)
-//       }).toThrow(InsufficientLiquidityError)
-//     })
-//   })
-// })
+  failCases.forEach(element => {
+    it(element.name, () => {
+      expect((): void => {
+        computeAMMInternalTrade(element.amm, TEST_MARKET_ID, element.amount)
+      }).toThrow(InsufficientLiquidityError)
+    })
+  })
+})
 
-// TODO:
-// describe('computeFundingRate', function () {
-//   it('normal', () => {
-  
-//     console.log('[0]', computeFundingRate(perpetualStorage, ammDetails0).toFixed())
-//     console.log('[1]', computeFundingRate(perpetualStorage, ammDetails1).toFixed())
-//     console.log('[2]', computeFundingRate(perpetualStorage, ammDetails2).toFixed())
-//     console.log('[3]', computeFundingRate(perpetualStorage, ammDetails3).toFixed())
-//     console.log('[4]', computeFundingRate(perpetualStorage, ammDetails4).toFixed())
-//     console.log('[5]', computeFundingRate(perpetualStorage, ammDetails5).toFixed())
-//     console.log('[6]', computeFundingRate(perpetualStorage, ammDetails6).toFixed())
-    
-//   })
-// })
+describe('computeFundingRate', function () {
+  it('normal', () => {
+    expect(computeFundingRate(poolStorage0, TEST_MARKET_ID)).toApproximate(normalizeBigNumberish('0'))
+    expect(computeFundingRate(poolStorage1, TEST_MARKET_ID)).toApproximate(normalizeBigNumberish('0.0005'))
+    expect(computeFundingRate(poolStorage2, TEST_MARKET_ID)).toApproximate(normalizeBigNumberish('0.00269597158238683137'))
+    expect(computeFundingRate(poolStorage3, TEST_MARKET_ID)).toApproximate(normalizeBigNumberish('0.005'))
+    expect(computeFundingRate(poolStorage4, TEST_MARKET_ID)).toApproximate(normalizeBigNumberish('-0.0005'))
+    expect(computeFundingRate(poolStorage5, TEST_MARKET_ID)).toApproximate(normalizeBigNumberish('-0.00510901257246682291'))
+    expect(computeFundingRate(poolStorage6, TEST_MARKET_ID)).toApproximate(normalizeBigNumberish('-0.005'))
+  })
+})
 
-
-DECIMALS
-_0
-_1
-splitAmount
-initAMMTradingContext
-// computeAMMInternalTrade
-isAMMSafe
-computeDeltaMargin
-computeAMMSafeShortPositionAmount
-computeAMMSafeLongPositionAmount
-let a: AccountDetails | null = null
-a
-normalizeBigNumberish
-let b: InsufficientLiquidityError | null = null
-b
-let c: LiquidityPoolStorage | null = null
-c
-poolStorage0
-poolStorage1
-poolStorage2
-poolStorage3
-poolStorage4
-poolStorage5
-poolStorage6
-initAMMTradingContextEagerEvaluation
-let d: AMMTradingContext | null = null
-d
