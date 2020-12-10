@@ -33,8 +33,8 @@ const market1: MarketStorage = {
   keeperGasReward: new BigNumber(1),
 
   halfSpreadRate: new BigNumber(0.001),
-  beta1: new BigNumber(0.2),
-  beta2: new BigNumber(0.1),
+  beta1: new BigNumber(100),
+  beta2: new BigNumber(90),
   fundingRateCoefficient: new BigNumber(0.005),
   maxLeverage: new BigNumber(5),
   lpFeeRate: new BigNumber(0.0007),

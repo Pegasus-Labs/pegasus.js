@@ -59,7 +59,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketID: string)
     fundingRateCoefficient, maxLeverage,
     otherIndex, otherPosition, otherHalfSpreadRate, otherBeta1, otherBeta2,
     otherFundingRateCoefficient, otherMaxLeverage,
-    cash, isAMMSafe: true, availableMargin: _0, deltaMargin: _0, deltaPosition: _0,
+    cash, availableMargin: _0, deltaMargin: _0, deltaPosition: _0,
     marginBalanceWithoutCurrent: _0, squareWithoutCurrent: _0,
   }
   ret = initAMMTradingContextEagerEvaluation(ret)
@@ -88,7 +88,7 @@ export function initAMMTradingContextEagerEvaluation(context: AMMTradingContext)
   }
 }
 
-// // the amount is the amm's perspective
+// // the amount is the AMM's perspective
 // export function computeAMMInternalTrade(p: LiquidityPoolStorage, marketID: string, amm: AccountDetails, amount: BigNumber): AMMTradingContext {
 //   let context = initAMMTradingContext(p, amm)
 //   const { close, open } = splitAmount(context.pos1, amount)
@@ -116,7 +116,7 @@ export function initAMMTradingContextEagerEvaluation(context: AMMTradingContext)
 //   return context
 // }
 
-// // the amount is the amm's perspective
+// // the amount is the AMM's perspective
 // export function computeAMMInternalClose(context: AMMTradingContext, amount: BigNumber, p: LiquidityPoolStorage): AMMTradingContext {
 //   const beta = p.beta2
 //   let ret: AMMTradingContext = { ...context }
@@ -140,7 +140,7 @@ export function initAMMTradingContextEagerEvaluation(context: AMMTradingContext)
 //   return ret
 // }
 
-// // the amount is the amm's perspective
+// // the amount is the AMM's perspective
 // export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNumber, p: LiquidityPoolStorage): AMMTradingContext {
 //   const beta = p.beta1
 //   let ret: AMMTradingContext = { ...context }
@@ -178,76 +178,19 @@ export function initAMMTradingContextEagerEvaluation(context: AMMTradingContext)
 //   return ret
 // }
 
-// export function computeM0(context: AMMTradingContext, beta: BigNumber): AMMTradingContext {
-//   if (!isAMMSafe(context, beta)) {
-//     return { ...context, isSafe: false }
-//   }
-//   const { pos1, cash, lev } = context
-//   let mv = _0
-//   if (pos1.isZero()) {
-//     mv = computeM0Flat(context)
-//   } else if (pos1.lt(_0)) {
-//     mv = computeM0Short(context, beta)
-//   } else {
-//     mv = computeM0Long(context, beta)
-//   }
-//   const m0 = mv.times(lev).div(lev.minus(_1))
-//   const ma1 = cash.plus(mv)
-//   return { ...context, isSafe: true, mv, m0, ma1 }
-// }
-
-// export function computeM0Flat(context: AMMTradingContext): BigNumber {
-//   const { pos1, cash, lev } = context
-//   if (!pos1.isZero()) {
-//     throw new BugError(`bug: pos1 ${pos1.toFixed()} != 0`)
-//   }
-//   // v = cash * (lev - 1)
-//   const mv = cash.times(lev.minus(_1))
-//   return mv.dp(DECIMALS)
-// }
-
-// export function computeM0Short(context: AMMTradingContext, beta: BigNumber): BigNumber {
-//   const { pos1, cash, index, lev } = context
-//   if (pos1.gt(_0)) {
-//     throw new BugError(`bug: pos1 (${pos1.toFixed()}) > 0`)
-//   }
-//   // a = 2 * index * pos1
-//   // b = lev * cash + index * pos1 * (lev + 1)
-//   // before_sqrt = b ** 2 - beta * lev * a ** 2
-//   // v = (lev - 1) / 2 / lev * (b - a + math.sqrt(before_sqrt))
-//   const a = _2.times(index).times(pos1)
-//   let b = lev.times(cash)
-//   b = b.plus(index.times(pos1).times(lev.plus(_1)))
-//   let beforeSqrt = b.times(b)
-//   beforeSqrt = beforeSqrt.minus(beta.times(lev).times(a).times(a))
-//   if (beforeSqrt.lt(_0)) {
-//     throw new BugError('edge case: short m0 sqrt < 0')
-//   }
-//   let afterSqrt = sqrt(beforeSqrt)
-//   let mv = lev.minus(_1).div(_2).div(lev)
-//   mv = mv.times(b.minus(a).plus(afterSqrt))
-//   return mv.dp(DECIMALS)
-// }
-
-// export function computeM0Long(context: AMMTradingContext, beta: BigNumber): BigNumber {
-//   const { pos1, cash, index, lev } = context
-//   if (pos1.lt(_0)) {
-//     throw new BugError(`bug: pos1 (${pos1.toFixed()}) < 0`)
-//   }
-//   // b = lev * cash + index * pos1 * (lev - 1)
-//   // before_sqrt = b ** 2 + 4 * beta * index * lev * cash * pos1
-//   // v = (lev - 1) / 2 / (lev + beta - 1) * (b - 2 * (1 - beta) * cash + math.sqrt(before_sqrt))
-//   let b = lev.times(cash).plus(index.times(pos1).times(lev.minus(_1)))
-//   let beforeSqrt = b.times(b)
-//   beforeSqrt = beforeSqrt.plus(_4.times(beta).times(index).times(lev).times(cash).times(pos1))
-//   if (beforeSqrt.lt(_0)) {
-//     throw new BugError('edge case: long m0 sqrt < 0')
-//   }
-//   let afterSqrt = sqrt(beforeSqrt)
-//   let mv = lev.minus(_1).div(_2).div(lev.plus(beta).minus(_1))
-//   mv = mv.times(b.minus(_2.times(_1.minus(beta).times(cash))).plus(afterSqrt))
-//   return mv.dp(DECIMALS)
-// }
+// do not call this function if !isAMMSafe
+export function computeAMMAvailableMargin(context: AMMTradingContext, beta: BigNumber): AMMTradingContext {
+  const marginBalanceWithCurrent = context.marginBalanceWithoutCurrent
+    .plus(context.index.times(context.position1))
+  const squareWithCurrent = context.squareWithoutCurrent
+    .plus(beta.times(context.index).times(context.position1).times(context.position1))
+  const beforeSqrt = marginBalanceWithCurrent.times(marginBalanceWithCurrent).minus(_2.times(squareWithCurrent))
+  if (beforeSqrt.lt(_0)) {
+    throw new BugError('AMM available margin sqrt < 0')
+  }
+  const availableMargin = marginBalanceWithCurrent.plus(sqrt(beforeSqrt)).div(_2)
+  return { ...context, availableMargin }
+}
 
 export function isAMMSafe(context: AMMTradingContext, beta: BigNumber): boolean {
   if (context.position1.isZero()) {
@@ -273,7 +216,7 @@ export function isAMMSafe(context: AMMTradingContext, beta: BigNumber): boolean 
   beforeSqrt = beforeSqrt.plus(beta.times(beta).times(context.position1).times(context.position1))
   beforeSqrt = beforeSqrt.plus(_2.times(context.squareWithoutCurrent))
   if (beforeSqrt.lt(_0)) {
-    // means the function is always above the x-axis
+    // means the curve is always above the x-axis
     return true
   }
 

@@ -139,7 +139,6 @@ export interface AMMTradingContext {
   
   // total
   cash: BigNumber // M_c
-  isAMMSafe: boolean
   availableMargin: BigNumber // M
 
   // trading result
