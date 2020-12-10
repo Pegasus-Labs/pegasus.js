@@ -6,7 +6,7 @@ import {
   computeFee,
   computeTradeWithPrice,
   computeAMMPrice,
-  // computeAMMTrade,
+  computeAMMTrade,
 } from '../src/computation'
 import { _0, _1 } from '../src/constants'
 import {
@@ -140,7 +140,7 @@ describe('computeAccount', function () {
     availableCashBalance: new BigNumber('7676.07634375'),
     marginBalance: new BigNumber('23695.57634375'), // 10000 + (6965 - 2300.23/2.3) * 2.3 - 23.69365625
     maxWithdrawable: new BigNumber('22092.62634375'),
-    poolMargin: new BigNumber('22092.62634375'),
+    availableMargin: new BigNumber('22092.62634375'),
     withdrawableBalance: new BigNumber('22092.62634375'),
     isSafe: true,
     leverage: new BigNumber('0.67605445706853804198'),
@@ -159,7 +159,7 @@ describe('computeAccount', function () {
     availableCashBalance: new BigNumber('-1323.92365625'),
     marginBalance: new BigNumber('14695.57634375'), // 1000 + (6965 - 2300.23/2.3) * 2.3 - 23.69365625
     maxWithdrawable: new BigNumber('13092.62634375'),
-    poolMargin: new BigNumber('13092.62634375'),
+    availableMargin: new BigNumber('13092.62634375'),
     withdrawableBalance: new BigNumber('13092.62634375'),
     isSafe: true,
     leverage: new BigNumber('1.0900899444350858789365744572076'),
@@ -178,7 +178,7 @@ describe('computeAccount', function () {
     availableCashBalance: new BigNumber('16323.92365625'),
     marginBalance: new BigNumber('304.42365625'), // 14000 + (2300.23/2.3 - 6965) * 2.3 - (-23.69365625)
     maxWithdrawable: _0,
-    poolMargin: _0,
+    availableMargin: _0,
     withdrawableBalance: _0,
     isSafe: false,
     leverage: new BigNumber('52.622388802939575523397504968355'),
@@ -196,7 +196,7 @@ describe('computeAccount', function () {
     maintenanceMargin: _0,
     availableCashBalance: new BigNumber('10000'),
     marginBalance: new BigNumber('10000'),
-    poolMargin: new BigNumber('10000'),
+    availableMargin: new BigNumber('10000'),
     maxWithdrawable: new BigNumber('10000'),
     withdrawableBalance: new BigNumber('10000'),
     isSafe: true,
@@ -244,7 +244,7 @@ describe('computeAccount', function () {
       expect(computed.availableCashBalance).toBeBigNumber(expectedOutput.availableCashBalance)
       expect(computed.marginBalance).toBeBigNumber(expectedOutput.marginBalance)
       expect(computed.maxWithdrawable).toBeBigNumber(expectedOutput.maxWithdrawable)
-      expect(computed.poolMargin).toBeBigNumber(expectedOutput.poolMargin)
+      expect(computed.availableMargin).toBeBigNumber(expectedOutput.availableMargin)
       expect(computed.withdrawableBalance).toBeBigNumber(expectedOutput.withdrawableBalance)
       expect(computed.isSafe).toEqual(expectedOutput.isSafe)
       expect(computed.leverage).toApproximate(expectedOutput.leverage)
@@ -713,62 +713,38 @@ describe('computeAMMPrice', function () {
   })
 })
 
-// describe('computeAMMTrade', function () {
-//   it(`sell`, function () {
-//     const res = computeAMMTrade(poolStorage, accountStorage1, ammStorage1, '-0.5')
-//     expect(res.tradingPrice).toApproximate(new BigNumber('6501.300190232855501915'))
-//     expect(res.lpFee).toApproximate(new BigNumber('2.275455066581499430'))
-//     expect(res.vaultFee).toApproximate(new BigNumber('0.650130019023285599'))
-//     expect(res.operatorFee).toApproximate(new BigNumber('0.325065009511642799'))
+describe('computeAMMTrade', function () {
+  it(`sell`, function () {
+    const res = computeAMMTrade(poolStorage1, TEST_MARKET_ID, accountStorage1, '-0.5')
+    expect(res.tradingPrice).toApproximate(new BigNumber('6501.300190232855501915'))
+    expect(res.lpFee).toApproximate(new BigNumber('2.275455066581499430'))
+    expect(res.vaultFee).toApproximate(new BigNumber('0.650130019023285599'))
+    expect(res.operatorFee).toApproximate(new BigNumber('0.325065009511642799'))
 
-//     // fundingLoss: 5.150794836956521739, // 9.9059375 * 0.5 -(-0.91 * 0.5 / 2.3)
-//     // 7699.77 - 5.150794836956521739 + 6501.300190232855501915 * 0.5 - 6501.300190232855501915 * 0.5 * 0.001
-//     expect(res.takerAccount.cashBalance).toApproximate(new BigNumber('10942.01865018435480146754'))
-//     // 7699.77 - 6501.300190232855501915 * 0.5 + 2.275455066581499430
-//     expect(res.makerAccount.cashBalance).toApproximate(new BigNumber('4451.395359950153748472500'))
-//   })
+    // fundingLoss: 5.150794836956521739, // 9.9059375 * 0.5 -(-0.91 * 0.5 / 2.3)
+    // 7699.77 - 5.150794836956521739 + 6501.300190232855501915 * 0.5 - 6501.300190232855501915 * 0.5 * 0.001
+    expect(res.takerAccount.cashBalance).toApproximate(new BigNumber('10942.01865018435480146754'))
+  })
 
-//   it(`buy without cross 0`, function () {
-//     const res = computeAMMTrade(poolStorage, accountStorage1, ammStorage1, '0.5')
-//     expect(res.tradingPrice).toApproximate(new BigNumber('6807.834634007232478054'))
-//     expect(res.lpFee).toApproximate(new BigNumber('2.382742121902531367318900'))
-//     expect(res.vaultFee).toApproximate(new BigNumber('0.6807834634007232478054000'))
-//     expect(res.operatorFee).toApproximate(new BigNumber('0.3403917317003616239027000'))
+  it(`buy without cross 0`, function () {
+    const res = computeAMMTrade(poolStorage1, TEST_MARKET_ID, accountStorage1, '0.5')
+    expect(res.tradingPrice).toApproximate(new BigNumber('6994.0723243958047929013153136')) // see computeAMMPrice's test case
+    expect(res.lpFee).toApproximate(new BigNumber('2.382742121902531367318900'))
+    expect(res.vaultFee).toApproximate(new BigNumber('0.6807834634007232478054000'))
+    expect(res.operatorFee).toApproximate(new BigNumber('0.3403917317003616239027000'))
 
-//     // 7699.77 - 6807.834634007232478054 * 0.5 - 6807.834634007232478054 * 0.5 * 0.001
-//     expect(res.takerAccount.cashBalance).toApproximate(new BigNumber('4292.448765679380144733973'))
-//     // fundingLoss: 5.150794836956521739, // 9.9059375 * 0.5 -(-0.91 * 0.5 / 2.3)
-//     // 7699.77 - 5.150794836956521739 + 6807.834634007232478054 * 0.5 + 2.382742121902531367318900
-//     expect(res.makerAccount.cashBalance).toApproximate(new BigNumber('11100.91926428856224865532'))
-//   })
+    // 7699.77 - 6807.834634007232478054 * 0.5 - 6807.834634007232478054 * 0.5 * 0.001
+    expect(res.takerAccount.cashBalance).toApproximate(new BigNumber('4292.448765679380144733973'))
+  })
 
-//   it(`buy cross 0`, function () {
-//     const res = computeAMMTrade(poolStorage, accountStorage1, ammStorage1, '3.3')
-//     expect(res.tradingPrice).toApproximate(new BigNumber('6958.975118459550521339')) // see computeAMMPrice's test case
-//     expect(res.lpFee).toApproximate(new BigNumber('16.075232523641561704'))
-//     expect(res.vaultFee).toApproximate(new BigNumber('4.592923578183303344'))
-//     expect(res.operatorFee).toApproximate(new BigNumber('2.296461789091651672'))
+  it(`buy cross 0`, function () {
+    const res = computeAMMTrade(poolStorage1, TEST_MARKET_ID, accountStorage1, '3.3')
+    expect(res.tradingPrice).toApproximate(new BigNumber('7003.0071456066865259178653894')) // see computeAMMPrice's test case
+    expect(res.lpFee).toApproximate(new BigNumber('16.075232523641561704'))
+    expect(res.vaultFee).toApproximate(new BigNumber('4.592923578183303344'))
+    expect(res.operatorFee).toApproximate(new BigNumber('2.296461789091651672'))
 
-//     // 7699.77 - 6958.975118459550521339 * 3.3 - 6958.975118459550521339 * 3.3 * 0.001
-//     expect(res.takerAccount.cashBalance).toApproximate(new BigNumber('-15287.812508807433237139'))
-//     // fundingLoss: 23.69365625, // 9.9059375 * 2.3 -(-0.91 * 2.3 / 2.3)
-//     // 7699.77 - 23.69365625 + 6958.975118459550521339 * 3.3 + 16.075232523641561704
-//     expect(res.makerAccount.cashBalance).toApproximate(new BigNumber('30656.769467190158282122'))
-//   })
-// })
-
-
-
-
-
-
-poolStorage1
-poolStorage3
-accountDetails1
-accountDetails3
-accountDetails4
-normalizeBigNumberish
-let a: AccountDetails | null = null
-a
-let b: BigNumberish | null = null
-b
+    // 7699.77 - 6958.975118459550521339 * 3.3 - 6958.975118459550521339 * 3.3 * 0.001
+    expect(res.takerAccount.cashBalance).toApproximate(new BigNumber('-15287.812508807433237139'))
+  })
+})

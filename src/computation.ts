@@ -33,7 +33,7 @@ export function computeAccount(p: LiquidityPoolStorage, marketID: string, s: Acc
   const availableCashBalance = s.cashBalance.minus(s.positionAmount.times(market.accumulatedFundingPerContract))
   const marginBalance = availableCashBalance.plus(market.markPrice.times(s.positionAmount))
   const maxWithdrawable = BigNumber.max(_0, marginBalance.minus(positionMargin).minus(reservedCash))
-  const poolMargin = BigNumber.max(_0, maxWithdrawable)
+  const availableMargin = BigNumber.max(_0, maxWithdrawable)
   const withdrawableBalance = maxWithdrawable
   const isSafe = maintenanceMargin.lte(marginBalance)
   const leverage = marginBalance.gt(0) ? positionValue.div(marginBalance) : _0
@@ -77,7 +77,7 @@ export function computeAccount(p: LiquidityPoolStorage, marketID: string, s: Acc
     availableCashBalance,
     marginBalance,
     maxWithdrawable,
-    poolMargin,
+    availableMargin,
     withdrawableBalance,
     isSafe,
     leverage,
@@ -201,44 +201,45 @@ export function computeTradeWithPrice(
   return newAccount
 }
 
-// export function computeAMMTrade(
-//   p: LiquidityPoolStorage,
-//   trader: AccountStorage,
-//   amm: AccountStorage,
-//   amount: BigNumberish, // trader's perspective
-// ): TradingContext {
-//   const normalizedAmount = normalizeBigNumberish(amount)
-//   if (normalizedAmount.isZero()) {
-//     throw Error(`bad amount ${normalizedAmount.toFixed()}`)
-//   }
+export function computeAMMTrade(
+  p: LiquidityPoolStorage,
+  marketID: string,
+  trader: AccountStorage,
+  amount: BigNumberish, // trader's perspective
+): TradingContext {
+  const normalizedAmount = normalizeBigNumberish(amount)
+  if (normalizedAmount.isZero()) {
+    throw Error(`bad amount ${normalizedAmount.toFixed()}`)
+  }
+  if (!p.markets[marketID]) {
+    throw new Error(`market {marketID} not found in the pool`)
+  }
+  const market = p.markets[marketID]
 
-//   // amm
-//   const { deltaAMMAmount, tradingPrice, newAMM } = computeAMMPrice(p, amm, normalizedAmount)
-//   if (!deltaAMMAmount.negated().eq(normalizedAmount)) {
-//     throw new Error(`trading amount mismatched ${deltaAMMAmount.negated().toFixed()} != ${normalizedAmount.toFixed()}`)
-//   }
-//   amm = newAMM
+  // amm
+  const { deltaAMMAmount, tradingPrice } = computeAMMPrice(p, marketID, normalizedAmount)
+  if (!deltaAMMAmount.negated().eq(normalizedAmount)) {
+    throw new Error(`trading amount mismatched ${deltaAMMAmount.negated().toFixed()} != ${normalizedAmount.toFixed()}`)
+  }
 
-//   // fee
-//   const lpFee = computeFee(tradingPrice, deltaAMMAmount, p.lpFeeRate)
-//   const vaultFee = computeFee(tradingPrice, deltaAMMAmount, p.vaultFeeRate)
-//   const operatorFee = computeFee(tradingPrice, deltaAMMAmount, p.operatorFeeRate)
-//   amm.cashBalance = amm.cashBalance.plus(lpFee)
+  // fee
+  const lpFee = computeFee(tradingPrice, deltaAMMAmount, market.lpFeeRate)
+  const vaultFee = computeFee(tradingPrice, deltaAMMAmount, market.vaultFeeRate)
+  const operatorFee = computeFee(tradingPrice, deltaAMMAmount, market.operatorFeeRate)
 
-//   // trader
-//   trader = computeTradeWithPrice(
-//     p, trader, tradingPrice, deltaAMMAmount.negated(),
-//     p.lpFeeRate.plus(p.vaultFeeRate).plus(p.operatorFeeRate))
+  // trader
+  trader = computeTradeWithPrice(
+    p, marketID, trader, tradingPrice, deltaAMMAmount.negated(),
+    market.lpFeeRate.plus(market.vaultFeeRate).plus(market.operatorFeeRate))
 
-//   return {
-//     takerAccount: trader,
-//     makerAccount: amm,
-//     lpFee,
-//     vaultFee,
-//     operatorFee,
-//     tradingPrice
-//   }
-// }
+  return {
+    takerAccount: trader,
+    lpFee,
+    vaultFee,
+    operatorFee,
+    tradingPrice
+  }
+}
 
 // don't forget to transfer lpFees into amm after calling this function
 export function computeAMMPrice(

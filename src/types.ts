@@ -93,7 +93,7 @@ export interface AccountComputed {
   maintenanceMargin: BigNumber
   availableCashBalance: BigNumber // cash - accumulatedFunding * pos
   marginBalance: BigNumber // cash + i pos - accumulatedFunding * pos
-  poolMargin: BigNumber
+  availableMargin: BigNumber
   maxWithdrawable: BigNumber
   withdrawableBalance: BigNumber
   isSafe: boolean
@@ -153,7 +153,6 @@ export interface AMMTradingContext {
 
 export interface TradingContext {
   takerAccount: AccountStorage
-  makerAccount: AccountStorage
   lpFee: BigNumber
   vaultFee: BigNumber
   operatorFee: BigNumber
