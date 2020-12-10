@@ -33,7 +33,7 @@ export function computeAccount(p: LiquidityPoolStorage, marketID: string, s: Acc
   const availableCashBalance = s.cashBalance.minus(s.positionAmount.times(market.accumulatedFundingPerContract))
   const marginBalance = availableCashBalance.plus(market.markPrice.times(s.positionAmount))
   const maxWithdrawable = BigNumber.max(_0, marginBalance.minus(positionMargin).minus(reservedCash))
-  const availableMargin = BigNumber.max(_0, maxWithdrawable)
+  const poolMargin = BigNumber.max(_0, maxWithdrawable)
   const withdrawableBalance = maxWithdrawable
   const isSafe = maintenanceMargin.lte(marginBalance)
   const leverage = marginBalance.gt(0) ? positionValue.div(marginBalance) : _0
@@ -77,7 +77,7 @@ export function computeAccount(p: LiquidityPoolStorage, marketID: string, s: Acc
     availableCashBalance,
     marginBalance,
     maxWithdrawable,
-    availableMargin,
+    poolMargin,
     withdrawableBalance,
     isSafe,
     leverage,
@@ -322,7 +322,7 @@ export function computeAMMPrice(
 
 // export function computeAMMAmount(amm: AMMDetails, side: TRADE_SIDE, price: BigNumberish): BigNumber {
 //   const normalizedPrice = normalizeBigNumberish(price)
-//   const x = amm.ammComputed.availableMargin
+//   const x = amm.ammComputed.poolMargin
 //   const y = amm.accountStorage.positionSize
 
 //   if (normalizedPrice.lte(_0)) {

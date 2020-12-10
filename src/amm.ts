@@ -59,7 +59,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketID: string)
     fundingRateCoefficient, maxLeverage,
     otherIndex, otherPosition, otherHalfSpread, otherBeta1, otherBeta2,
     otherFundingRateCoefficient, otherMaxLeverage,
-    cash, availableMargin: _0, deltaMargin: _0, deltaPosition: _0,
+    cash, poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
     marginBalanceWithoutCurrent: _0, squareWithoutCurrent: _0, positionValueWithoutCurrent: _0,
   }
   ret = initAMMTradingContextEagerEvaluation(ret)
@@ -133,7 +133,7 @@ export function computeAMMInternalClose(context: AMMTradingContext, amount: BigN
 
   // trade
   if (isAMMSafe(ret, beta)) {
-    ret = computeAMMAvailableMargin(ret, beta)
+    ret = computeAMMPoolMargin(ret, beta)
     deltaMargin = computeDeltaMargin(ret, beta, position2)
   } else {
     deltaMargin = index.times(amount).negated()
@@ -158,7 +158,7 @@ export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNu
   if (!isAMMSafe(ret, beta)) {
     throw new InsufficientLiquidityError(`amm can not open position anymore: unsafe before trade`)
   }
-  ret = computeAMMAvailableMargin(ret, beta)
+  ret = computeAMMPoolMargin(ret, beta)
   if (amount.gt(_0)) {
     // 0.....position2.....safePosition2
     const safePosition2 = computeAMMSafeLongPositionAmount(ret, beta)
@@ -186,7 +186,7 @@ export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNu
 }
 
 // do not call this function if !isAMMSafe
-export function computeAMMAvailableMargin(context: AMMTradingContext, beta: BigNumber): AMMTradingContext {
+export function computeAMMPoolMargin(context: AMMTradingContext, beta: BigNumber): AMMTradingContext {
   const marginBalanceWithCurrent = context.marginBalanceWithoutCurrent
     .plus(context.index.times(context.position1))
   const squareWithCurrent = context.squareWithoutCurrent
@@ -195,8 +195,8 @@ export function computeAMMAvailableMargin(context: AMMTradingContext, beta: BigN
   if (beforeSqrt.lt(_0)) {
     throw new BugError('AMM available margin sqrt < 0')
   }
-  const availableMargin = marginBalanceWithCurrent.plus(sqrt(beforeSqrt)).div(_2)
-  return { ...context, availableMargin }
+  const poolMargin = marginBalanceWithCurrent.plus(sqrt(beforeSqrt)).div(_2)
+  return { ...context, poolMargin }
 }
 
 export function isAMMSafe(context: AMMTradingContext, beta: BigNumber): boolean {
@@ -241,7 +241,7 @@ export function isAMMSafe(context: AMMTradingContext, beta: BigNumber): boolean 
   return context.index.lte(safeIndex)
 }
 
-// call computeAMMAvailableMargin before this function. make sure isAMMSafe before this function
+// call computeAMMPoolMargin before this function. make sure isAMMSafe before this function
 export function computeAMMSafeShortPositionAmount(context: AMMTradingContext, beta: BigNumber): BigNumber {
   let condition3 = computeAMMSafeCondition3(context, beta)
   if (condition3 === false) {
@@ -257,7 +257,7 @@ export function computeAMMSafeShortPositionAmount(context: AMMTradingContext, be
   }
 }
 
-// call computeAMMAvailableMargin before this function. make sure isAMMSafe before this function
+// call computeAMMPoolMargin before this function. make sure isAMMSafe before this function
 export function computeAMMSafeLongPositionAmount(context: AMMTradingContext, beta: BigNumber): BigNumber {
   let condition3 = computeAMMSafeCondition3(context, beta)
   if (condition3 === false) {
@@ -275,26 +275,26 @@ export function computeAMMSafeLongPositionAmount(context: AMMTradingContext, bet
 
 export function computeAMMSafeCondition1(context: AMMTradingContext, beta: BigNumber): BigNumber {
   // M / β
-  const position2 = context.availableMargin.div(beta)
+  const position2 = context.poolMargin.div(beta)
   return position2.dp(DECIMALS)
 }
 
 // return true if always safe
 export function computeAMMSafeCondition2(context: AMMTradingContext, beta: BigNumber): BigNumber | true {
   // M - Σ(positionValue_j - square_j / 2 / M) where j ≠ id
-  const x = context.availableMargin
+  const x = context.poolMargin
     .minus(context.positionValueWithoutCurrent)
-    .plus(context.squareWithoutCurrent.div(context.availableMargin).div(_2))
+    .plus(context.squareWithoutCurrent.div(context.poolMargin).div(_2))
   //  M - √(M(M - 2βλ^2/P_i x))
   // ---------------------------
   //             βλ
   let beforeSquare = x.times(context.maxLeverage).times(context.maxLeverage).times(beta).times(_2).div(context.index)
-  beforeSquare = context.availableMargin.minus(beforeSquare).times(context.availableMargin)
+  beforeSquare = context.poolMargin.minus(beforeSquare).times(context.poolMargin)
   if (beforeSquare.lt(_0)) {
     // means the curve is always above the x-axis
     return true
   }
-  let position2 = context.availableMargin.minus(sqrt(beforeSquare))
+  let position2 = context.poolMargin.minus(sqrt(beforeSquare))
   position2 = position2.div(beta).div(context.maxLeverage)
   return position2.dp(DECIMALS)
 }
@@ -304,7 +304,7 @@ export function computeAMMSafeCondition3(context: AMMTradingContext, beta: BigNu
   //    2M^2 - square
   // √(---------------)
   //       P_i β
-  const beforeSqrt = _2.times(context.availableMargin).times(context.availableMargin)
+  const beforeSqrt = _2.times(context.poolMargin).times(context.poolMargin)
     .minus(context.squareWithoutCurrent)
     .div(context.index).div(beta)
   if (beforeSqrt.lt(_0)) {
@@ -321,7 +321,7 @@ export function computeDeltaMargin(context: AMMTradingContext, beta: BigNumber, 
     throw new BugError('bug: cross direction is not supported')
   }
   // P_i (N1 - N2) (1 - β / M * (N2 + N1) / 2)
-  let ret = position2.plus(context.position1).div(_2).div(context.availableMargin).times(beta)
+  let ret = position2.plus(context.position1).div(_2).div(context.poolMargin).times(beta)
   ret = _1.minus(ret)
   ret = context.position1.minus(position2).times(ret).times(context.index)
   return ret.dp(DECIMALS)
@@ -339,6 +339,6 @@ export function computeFundingRate(p: LiquidityPoolStorage, marketID: string): B
     }
   }
   
-  context = computeAMMAvailableMargin(context, context.beta1)
-  return context.fundingRateCoefficient.times(context.index).times(context.position1).div(context.availableMargin).negated()
+  context = computeAMMPoolMargin(context, context.beta1)
+  return context.fundingRateCoefficient.times(context.index).times(context.position1).div(context.poolMargin).negated()
 }

@@ -93,7 +93,7 @@ export interface AccountComputed {
   maintenanceMargin: BigNumber
   availableCashBalance: BigNumber // cash - accumulatedFunding * pos
   marginBalance: BigNumber // cash + i pos - accumulatedFunding * pos
-  availableMargin: BigNumber
+  poolMargin: BigNumber
   maxWithdrawable: BigNumber
   withdrawableBalance: BigNumber
   isSafe: boolean
@@ -139,7 +139,7 @@ export interface AMMTradingContext {
   
   // total
   cash: BigNumber // M_c
-  availableMargin: BigNumber // M
+  poolMargin: BigNumber // M
 
   // trading result
   deltaMargin: BigNumber // cash2 - cash1

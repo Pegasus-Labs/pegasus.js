@@ -64,7 +64,7 @@ export function computeMaxTradeAmountWithPrice(
   //                 cash lev 
   // => x = ± ---------------------
   //           (1 + lev fee) price
-  const cash = newDetails.accountComputed.availableMargin
+  const cash = newDetails.accountComputed.poolMargin
   let denominator = normalizedMaxLeverage.times(normalizedFeeRate).plus(_1).times(normalizedPrice)
   if (denominator.isZero()) {
     // no solution
