@@ -95,95 +95,95 @@ export function initAMMTradingContextEagerEvaluation(context: AMMTradingContext)
   }
 }
 
-// // the amount is the AMM's perspective
-// export function computeAMMInternalTrade(p: LiquidityPoolStorage, marketID: string, amm: AccountDetails, amount: BigNumber): AMMTradingContext {
-//   let context = initAMMTradingContext(p, amm)
-//   const { close, open } = splitAmount(context.pos1, amount)
-//   if (close.isZero() && open.isZero()) {
-//     throw new BugError('amm trade: trading amount = 0')
-//   }
+// the amount is the AMM's perspective
+export function computeAMMInternalTrade(p: LiquidityPoolStorage, marketID: string, amount: BigNumber): AMMTradingContext {
+  let context = initAMMTradingContext(p, marketID)
+  const { close, open } = splitAmount(context.position1, amount)
+  if (close.isZero() && open.isZero()) {
+    throw new BugError('amm trade: trading amount = 0')
+  }
 
-//   // trade
-//   if (!close.isZero()) {
-//     context = computeAMMInternalClose(context, close, p)
-//   }
-//   if (!open.isZero()) {
-//     context = computeAMMInternalOpen(context, open, p)
-//   }
+  // trade
+  if (!close.isZero()) {
+    context = computeAMMInternalClose(context, close)
+  }
+  if (!open.isZero()) {
+    context = computeAMMInternalOpen(context, open)
+  }
 
-//   // spread
-//   if (amount.lt(_0)) {
-//     // amm sells, trader buys
-//     context.deltaMargin = context.deltaMargin.times(_1.plus(p.halfSpread)).dp(DECIMALS)
-//   } else {
-//     // amm buys, trader sells
-//     context.deltaMargin = context.deltaMargin.times(_1.minus(p.halfSpread)).dp(DECIMALS)
-//   }
+  // spread
+  if (amount.lt(_0)) {
+    // amm sells, trader buys
+    context.deltaMargin = context.deltaMargin.times(_1.plus(context.halfSpread)).dp(DECIMALS)
+  } else {
+    // amm buys, trader sells
+    context.deltaMargin = context.deltaMargin.times(_1.minus(context.halfSpread)).dp(DECIMALS)
+  }
 
-//   return context
-// }
+  return context
+}
 
-// // the amount is the AMM's perspective
-// export function computeAMMInternalClose(context: AMMTradingContext, amount: BigNumber, p: LiquidityPoolStorage): AMMTradingContext {
-//   const beta = p.beta2
-//   let ret: AMMTradingContext = { ...context }
-//   const { index } = ret
-//   const pos2 = ret.pos1.plus(amount)
-//   let deltaMargin = _0
+// the amount is the AMM's perspective
+export function computeAMMInternalClose(context: AMMTradingContext, amount: BigNumber): AMMTradingContext {
+  const beta = context.beta2
+  let ret: AMMTradingContext = { ...context }
+  const { index } = ret
+  const position2 = ret.position1.plus(amount)
+  let deltaMargin = _0
 
-//   // trade
-//   if (isAMMSafe(ret, beta)) {
-//     ret = computeM0(ret, beta)
-//     deltaMargin = computeDeltaMargin(ret, beta, pos2)
-//   } else {
-//     deltaMargin = index.times(amount).negated()
-//   }
+  // trade
+  if (isAMMSafe(ret, beta)) {
+    ret = computeAMMAvailableMargin(ret, beta)
+    deltaMargin = computeDeltaMargin(ret, beta, position2)
+  } else {
+    deltaMargin = index.times(amount).negated()
+  }
 
-//   // commit
-//   ret.deltaMargin = ret.deltaMargin.plus(deltaMargin)
-//   ret.deltaPosition = ret.deltaPosition.plus(amount)
-//   ret.cash = ret.cash.plus(deltaMargin)
-//   ret.pos1 = pos2
-//   return ret
-// }
+  // commit
+  ret.deltaMargin = ret.deltaMargin.plus(deltaMargin)
+  ret.deltaPosition = ret.deltaPosition.plus(amount)
+  ret.cash = ret.cash.plus(deltaMargin)
+  ret.position1 = position2
+  return ret
+}
 
-// // the amount is the AMM's perspective
-// export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNumber, p: LiquidityPoolStorage): AMMTradingContext {
-//   const beta = p.beta1
-//   let ret: AMMTradingContext = { ...context }
-//   const pos2 = ret.pos1.plus(amount)
-//   let deltaMargin = _0
+// the amount is the AMM's perspective
+export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNumber): AMMTradingContext {
+  const beta = context.beta1
+  let ret: AMMTradingContext = { ...context }
+  const position2 = ret.position1.plus(amount)
+  let deltaMargin = _0
 
-//   // pre-check
-//   if (!isAMMSafe(ret, beta)) {
-//     throw new InsufficientLiquidityError(`amm can not open position anymore: unsafe before trade`)
-//   }
-//   ret = computeM0(ret, beta)
-//   if (amount.gt(_0)) {
-//     // 0.....pos2.....safePos2
-//     const safePos2 = computeAMMSafeLongPositionAmount(ret, beta)
-//     if (pos2.gt(safePos2)) {
-//       throw new InsufficientLiquidityError(`amm can not open position anymore: position too large after trade ${pos2.toFixed()} > ${safePos2.toFixed()}`)
-//     }
-//   } else {
-//     // safePos2.....pos2.....0
-//     const safePos2 = computeAMMSafeShortPositionAmount(ret, beta)
-//     if (pos2.lt(safePos2)) {
-//       throw new InsufficientLiquidityError(`amm can not open position anymore: position too large after trade ${pos2.toFixed()} < ${safePos2.toFixed()}`)
-//     }
-//   }
+  // pre-check
+  if (!isAMMSafe(ret, beta)) {
+    throw new InsufficientLiquidityError(`amm can not open position anymore: unsafe before trade`)
+  }
+  ret = computeAMMAvailableMargin(ret, beta)
+  if (amount.gt(_0)) {
+    // 0.....position2.....safePosition2
+    const safePosition2 = computeAMMSafeLongPositionAmount(ret, beta)
+    if (position2.gt(safePosition2)) {
+      throw new InsufficientLiquidityError(`amm can not open position anymore: position too large after trade ${position2.toFixed()} > ${safePosition2.toFixed()}`)
+    }
+  } else {
+    // safePosition2.....position2.....0
+    const safePosition2 = computeAMMSafeShortPositionAmount(ret, beta)
+    if (position2.lt(safePosition2)) {
+      throw new InsufficientLiquidityError(`amm can not open position anymore: position too large after trade ${position2.toFixed()} < ${safePosition2.toFixed()}`)
+    }
+  }
+  
+  // trade
+  deltaMargin = computeDeltaMargin(ret, beta, position2)
 
-//   // trade
-//   deltaMargin = computeDeltaMargin(ret, beta, pos2)
+  // commit
+  ret.deltaMargin = ret.deltaMargin.plus(deltaMargin)
+  ret.deltaPosition = ret.deltaPosition.plus(amount)
+  ret.cash = ret.cash.plus(deltaMargin)
+  ret.position1 = position2
 
-//   // commit
-//   ret.deltaMargin = ret.deltaMargin.plus(deltaMargin)
-//   ret.deltaPosition = ret.deltaPosition.plus(amount)
-//   ret.cash = ret.cash.plus(deltaMargin)
-//   ret.pos1 = pos2
-
-//   return ret
-// }
+  return ret
+}
 
 // do not call this function if !isAMMSafe
 export function computeAMMAvailableMargin(context: AMMTradingContext, beta: BigNumber): AMMTradingContext {
@@ -342,10 +342,3 @@ export function computeDeltaMargin(context: AMMTradingContext, beta: BigNumber, 
 //   context = computeM0(context, p.beta1)
 //   return p.fundingRateCoefficient.times(p.indexPrice).times(context.pos1).div(context.m0).negated()
 // }
-
-
-sqrt
-DECIMALS
-InsufficientLiquidityError
-BugError
-splitAmount
