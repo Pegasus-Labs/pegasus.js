@@ -337,9 +337,9 @@ export function computeAMMAmountWithPrice(
   // shift by spread
   let normalizedLimitPrice = normalizeBigNumberish(limitPrice)
   if (isBuy) {
-    normalizedLimitPrice = normalizedLimitPrice.div(_1.plus(p.halfSpreadRate))
+    normalizedLimitPrice = normalizedLimitPrice.div(_1.plus(p.halfSpread))
   } else {
-    normalizedLimitPrice = normalizedLimitPrice.div(_1.minus(p.halfSpreadRate))
+    normalizedLimitPrice = normalizedLimitPrice.div(_1.minus(p.halfSpread))
   }
 
   // get amount

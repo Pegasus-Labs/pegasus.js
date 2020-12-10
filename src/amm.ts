@@ -15,7 +15,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketID: string)
   
   let index = _0
   let position1 = _0
-  let halfSpreadRate = _0
+  let halfSpread = _0
   let beta1 = _0
   let beta2 = _0
   let fundingRateCoefficient = _0
@@ -23,7 +23,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketID: string)
  
   let otherIndex: BigNumber[] = []
   let otherPosition: BigNumber[] = []
-  let otherHalfSpreadRate: BigNumber[] = []
+  let otherHalfSpread: BigNumber[] = []
   let otherBeta1: BigNumber[] = []
   let otherBeta2: BigNumber[] = []
   let otherFundingRateCoefficient: BigNumber[] = []
@@ -38,7 +38,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketID: string)
     if (id === marketID) {
       index = market.indexPrice
       position1 = market.ammPositionAmount
-      halfSpreadRate = market.halfSpreadRate
+      halfSpread = market.halfSpread
       beta1 = market.beta1
       beta2 = market.beta2
       fundingRateCoefficient = market.fundingRateCoefficient
@@ -46,7 +46,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketID: string)
     } else {
       otherIndex.push(market.indexPrice)
       otherPosition.push(market.ammPositionAmount)
-      otherHalfSpreadRate.push(market.halfSpreadRate)
+      otherHalfSpread.push(market.halfSpread)
       otherBeta1.push(market.beta1)
       otherBeta2.push(market.beta2)
       otherFundingRateCoefficient.push(market.fundingRateCoefficient)
@@ -55,9 +55,9 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketID: string)
   }
    
   let ret = {
-    index, position1, halfSpreadRate, beta1, beta2,
+    index, position1, halfSpread, beta1, beta2,
     fundingRateCoefficient, maxLeverage,
-    otherIndex, otherPosition, otherHalfSpreadRate, otherBeta1, otherBeta2,
+    otherIndex, otherPosition, otherHalfSpread, otherBeta1, otherBeta2,
     otherFundingRateCoefficient, otherMaxLeverage,
     cash, availableMargin: _0, deltaMargin: _0, deltaPosition: _0,
     marginBalanceWithoutCurrent: _0, squareWithoutCurrent: _0,
@@ -107,10 +107,10 @@ export function initAMMTradingContextEagerEvaluation(context: AMMTradingContext)
 //   // spread
 //   if (amount.lt(_0)) {
 //     // amm sells, trader buys
-//     context.deltaMargin = context.deltaMargin.times(_1.plus(p.halfSpreadRate)).dp(DECIMALS)
+//     context.deltaMargin = context.deltaMargin.times(_1.plus(p.halfSpread)).dp(DECIMALS)
 //   } else {
 //     // amm buys, trader sells
-//     context.deltaMargin = context.deltaMargin.times(_1.minus(p.halfSpreadRate)).dp(DECIMALS)
+//     context.deltaMargin = context.deltaMargin.times(_1.minus(p.halfSpread)).dp(DECIMALS)
 //   }
 
 //   return context
@@ -294,64 +294,6 @@ export function computeDeltaMargin(context: AMMTradingContext, beta: BigNumber, 
   ret = context.position1.minus(position2).times(ret).times(context.index)
   return ret
 }
-
-// // ma2 - ma1
-// export function computeDeltaMarginShort(context: AMMTradingContext, beta: BigNumber, pos2: BigNumber): BigNumber {
-//   const { pos1, index, m0 } = context
-//   if (pos1.gt(_0)) {
-//     throw new BugError(`bug: pos1 (${pos1.toFixed()}) > 0`)
-//   }
-//   if (pos2.gt(_0)) {
-//     throw new BugError(`bug: pos2 (${pos2.toFixed()}) > 0`)
-//   }
-//   if (m0.lte(_0)) {
-//     throw new InsufficientLiquidityError(`m0 (${m0.toFixed()}) <= 0`)
-//   }
-//   // ma2 - ma1 = index * (pos1 - pos2) * (1 - beta + beta * m0**2 / (m0 + pos1 * index) / (m0 + pos2 * index))
-//   let deltaMargin = beta.times(m0).times(m0)
-//   deltaMargin = deltaMargin.div(pos1.times(index).plus(m0))
-//   deltaMargin = deltaMargin.div(pos2.times(index).plus(m0))
-//   deltaMargin = deltaMargin.plus(_1).minus(beta)
-//   deltaMargin = deltaMargin.times(index).times(pos1.minus(pos2))
-//   return deltaMargin.dp(DECIMALS)
-// }
-
-// // ma2 - ma1
-// export function computeDeltaMarginLong(context: AMMTradingContext, beta: BigNumber, pos2: BigNumber): BigNumber {
-//   const { pos1, index, m0, ma1 } = context
-//   if (pos1.lt(_0)) {
-//     throw new BugError(`bug: pos1 (${pos1.toFixed()}) < 0`)
-//   }
-//   if (pos2.lt(_0)) {
-//     throw new BugError(`bug: pos2 (${pos2.toFixed()}) < 0`)
-//   }
-//   if (m0.lte(_0)) {
-//     throw new InsufficientLiquidityError(`m0 (${m0.toFixed()}) <= 0`)
-//   }
-//   if (ma1.lte(_0)) {
-//     throw new InsufficientLiquidityError(`ma1 (${ma1.toFixed()}) <= 0`)
-//   }
-//   // a = 2 * (1 - beta) * ma1
-//   // assert a != 0
-//   // b = -beta * m0 ** 2 + ma1 * (ma1 * (1 - beta) - index * (pos2 - pos1))
-//   // before_sqrt = b**2 + 2 * a * ma1 * m0 ** 2 * beta
-//   // assert before_sqrt >= 0
-//   // ma2 = (b + math.sqrt(before_sqrt)) / a
-//   const a = _1.minus(beta).times(ma1).times(_2)
-//   if (a.isZero()) {
-//     throw new BugError('edge case: deltaMarginLong.a = 0')
-//   }
-//   let b = pos2.minus(pos1).times(index)
-//   b = a.div(_2).minus(b).times(ma1)
-//   b = b.minus(beta.times(m0).times(m0))
-//   let beforeSqrt = beta.times(a).times(ma1).times(m0).times(m0).times(2)
-//   beforeSqrt = beforeSqrt.plus(b.times(b))
-//   if (beforeSqrt.lt(_0)) {
-//     throw new BugError('edge case: deltaMarginLong.sqrt < 0')
-//   }
-//   const ma2 = sqrt(beforeSqrt).plus(b).div(a)
-//   return ma2.minus(ma1).dp(DECIMALS)
-// }
 
 // export function computeFundingRate(p: LiquidityPoolStorage, amm: AccountDetails): BigNumber {
 //   let context = initAMMTradingContext(p, amm)  

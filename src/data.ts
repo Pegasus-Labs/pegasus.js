@@ -53,7 +53,7 @@ export async function getPerpetualStorageMock(
     keeperGasReward: normalizeBigNumberish(0.5),
 
     // amm
-    halfSpreadRate: normalizeBigNumberish(0.001),
+    halfSpread: normalizeBigNumberish(0.001),
     beta1: normalizeBigNumberish(0.12),
     beta2: normalizeBigNumberish(0.06),
     fundingRateCoefficient: normalizeBigNumberish(0.1),
@@ -96,7 +96,7 @@ export async function getPerpetualStorage(
     keeperGasReward: normalizeBigNumberish(result[0].coreParameter[7]).shiftedBy(-DECIMALS),
 
     // amm gov
-    halfSpreadRate: normalizeBigNumberish(result[0].riskParameter[0]).shiftedBy(-DECIMALS),
+    halfSpread: normalizeBigNumberish(result[0].riskParameter[0]).shiftedBy(-DECIMALS),
     beta1: normalizeBigNumberish(result[0].riskParameter[1]).shiftedBy(-DECIMALS),
     beta2: normalizeBigNumberish(result[0].riskParameter[2]).shiftedBy(-DECIMALS),
     fundingRateCoefficient: normalizeBigNumberish(result[0].riskParameter[3]).shiftedBy(-DECIMALS),

@@ -69,7 +69,7 @@ export interface MarketStorage {
   insuranceFund1: BigNumber
   insuranceFund2: BigNumber
 
-  halfSpreadRate: BigNumber
+  halfSpread: BigNumber
   beta1: BigNumber
   beta2: BigNumber
   fundingRateCoefficient: BigNumber
@@ -122,7 +122,7 @@ export interface AMMTradingContext {
   // current trading market
   index: BigNumber // P_i_m
   position1: BigNumber // N_m
-  halfSpreadRate: BigNumber // α_m
+  halfSpread: BigNumber // α_m
   beta1: BigNumber // β1_m
   beta2: BigNumber // β2_m
   fundingRateCoefficient: BigNumber // γ_m
@@ -131,7 +131,7 @@ export interface AMMTradingContext {
   // other markets
   otherIndex: BigNumber[] // P_i_j
   otherPosition: BigNumber[] // N_j
-  otherHalfSpreadRate: BigNumber[] // α_j
+  otherHalfSpread: BigNumber[] // α_j
   otherBeta1: BigNumber[] // β1_j
   otherBeta2: BigNumber[] // β2_j
   otherFundingRateCoefficient: BigNumber[] // γ_j

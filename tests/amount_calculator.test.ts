@@ -35,7 +35,7 @@ const perpetualStorage: PerpetualStorage = {
   liquidatorPenaltyRate: new BigNumber(0.005),
   keeperGasReward: new BigNumber(1),
 
-  halfSpreadRate: new BigNumber(0.001),
+  halfSpread: new BigNumber(0.001),
   beta1: new BigNumber(0.2),
   beta2: new BigNumber(0.1),
   fundingRateCoefficient: new BigNumber(0.005),
@@ -214,7 +214,7 @@ describe('computeAMMShortInverseVWAP', function () {
     const amount = computeAMMShortInverseVWAP(context, price, perpetualStorage.beta1, false)
     expect(amount).toApproximate(normalizeBigNumberish('-1.150442655750823901'))
     const trade = computeAMMTrade(perpetualStorage, accountStorage1, ammStorage1, amount.negated())
-    expect(trade.tradingPrice).toApproximate(price.times(_1.plus(perpetualStorage.halfSpreadRate)))
+    expect(trade.tradingPrice).toApproximate(price.times(_1.plus(perpetualStorage.halfSpread)))
   })
 
   it(`open with vwap`, function () {
@@ -244,7 +244,7 @@ describe('computeAMMShortInverseVWAP', function () {
     const amount = computeAMMShortInverseVWAP(context, price, perpetualStorage.beta2, true)
     expect(amount).toApproximate(normalizeBigNumberish('0.1'))
     const trade = computeAMMTrade(perpetualStorage, accountStorage1, ammStorage1, amount.negated())
-    expect(trade.tradingPrice).toApproximate(price.times(_1.minus(perpetualStorage.halfSpreadRate)))
+    expect(trade.tradingPrice).toApproximate(price.times(_1.minus(perpetualStorage.halfSpread)))
   })
 })
 
@@ -256,7 +256,7 @@ describe('computeAMMLongInverseVWAP', function () {
     const amount = computeAMMLongInverseVWAP(context, price, perpetualStorage.beta1, false)
     expect(amount).toApproximate(normalizeBigNumberish('1.448990370102629051'))
     const trade = computeAMMTrade(perpetualStorage, accountStorage1, ammStorage4, amount.negated())
-    expect(trade.tradingPrice).toApproximate(price.times(_1.minus(perpetualStorage.halfSpreadRate)))
+    expect(trade.tradingPrice).toApproximate(price.times(_1.minus(perpetualStorage.halfSpread)))
   })
 
   it(`open with vwap`, function () {
@@ -286,7 +286,7 @@ describe('computeAMMLongInverseVWAP', function () {
     const amount = computeAMMLongInverseVWAP(context, price, perpetualStorage.beta2, true)
     expect(amount).toApproximate(normalizeBigNumberish('-0.1'))
     const trade = computeAMMTrade(perpetualStorage, accountStorage1, ammStorage4, amount.negated())
-    expect(trade.tradingPrice).toApproximate(price.times(_1.plus(perpetualStorage.halfSpreadRate)))
+    expect(trade.tradingPrice).toApproximate(price.times(_1.plus(perpetualStorage.halfSpread)))
   })
 })
 
@@ -314,7 +314,7 @@ describe('computeAMMAmountWithPrice - amm holds short, trader buys', function ()
   })
 
   it(`normal`, function () {
-    const limitPrice = (new BigNumber(8600)).times(_1.plus(perpetualStorage.halfSpreadRate))
+    const limitPrice = (new BigNumber(8600)).times(_1.plus(perpetualStorage.halfSpread))
     const ammDetails = computeAccount(perpetualStorage, ammStorage1)
     const amount = computeAMMAmountWithPrice(perpetualStorage, ammDetails, true, limitPrice)
     // -2.3 => -4.578554661208745284
@@ -324,7 +324,7 @@ describe('computeAMMAmountWithPrice - amm holds short, trader buys', function ()
   })
 
   it(`no solution`, function () {
-    const limitPrice = new BigNumber(7010).times(_1.plus(perpetualStorage.halfSpreadRate))
+    const limitPrice = new BigNumber(7010).times(_1.plus(perpetualStorage.halfSpread))
     const ammDetails = computeAccount(perpetualStorage, ammStorage1)
     const amount = computeAMMAmountWithPrice(perpetualStorage, ammDetails, true, limitPrice)
     expect(amount.isZero()).toBeTruthy()
@@ -347,7 +347,7 @@ describe('computeAMMAmountWithPrice - amm holds short, trader sells', function (
   })
 
   it(`amm unsafe close + open`, function () {
-    const limitPrice = new BigNumber(6999).times(_1.minus(perpetualStorage.halfSpreadRate))
+    const limitPrice = new BigNumber(6999).times(_1.minus(perpetualStorage.halfSpread))
     const ammDetails = computeAccount(perpetualStorage, ammStorage3)
     const amount = computeAMMAmountWithPrice(perpetualStorage, ammDetails, false, limitPrice)
     expect(amount).toApproximate(normalizeBigNumberish('-1.016044559439571046')) // close -1 + open -0.016044559439571046
@@ -356,7 +356,7 @@ describe('computeAMMAmountWithPrice - amm holds short, trader sells', function (
   })
 
   it(`close only`, function () {
-    const limitPrice = new BigNumber('7496.94559507299850561599560184').times(_1.minus(perpetualStorage.halfSpreadRate))
+    const limitPrice = new BigNumber('7496.94559507299850561599560184').times(_1.minus(perpetualStorage.halfSpread))
     const ammDetails = computeAccount(perpetualStorage, ammStorage1)
     const amount = computeAMMAmountWithPrice(perpetualStorage, ammDetails, false, limitPrice)
     expect(amount).toApproximate(normalizeBigNumberish('-0.1'))
@@ -365,7 +365,7 @@ describe('computeAMMAmountWithPrice - amm holds short, trader sells', function (
   })
 
   it(`close + open`, function () {
-    const limitPrice = new BigNumber(6999).times(_1.minus(perpetualStorage.halfSpreadRate))
+    const limitPrice = new BigNumber(6999).times(_1.minus(perpetualStorage.halfSpread))
     const ammDetails = computeAccount(perpetualStorage, ammStorage1)
     const amount = computeAMMAmountWithPrice(perpetualStorage, ammDetails, false, limitPrice)
     expect(amount).toApproximate(normalizeBigNumberish('-4.072429388483517252')) // close -2.3 + open -1.772429388483517252
@@ -390,7 +390,7 @@ describe('computeAMMAmountWithPrice - amm holds long, trader buys', function () 
   })
 
   it(`amm unsafe - close + open`, function () {
-    const limitPrice = new BigNumber(7001).times(_1.plus(perpetualStorage.halfSpreadRate))
+    const limitPrice = new BigNumber(7001).times(_1.plus(perpetualStorage.halfSpread))
     const ammDetails = computeAccount(perpetualStorage, ammStorage6)
     const amount = computeAMMAmountWithPrice(perpetualStorage, ammDetails, true, limitPrice)
     expect(amount).toApproximate(normalizeBigNumberish('1.035909706138829466')) // close 1 + open 0.035909706138829466
@@ -399,7 +399,7 @@ describe('computeAMMAmountWithPrice - amm holds long, trader buys', function () 
   })
 
   it(`close only`, function () {
-    const limitPrice = new BigNumber('6778.41582553989229623003259').times(_1.plus(perpetualStorage.halfSpreadRate))
+    const limitPrice = new BigNumber('6778.41582553989229623003259').times(_1.plus(perpetualStorage.halfSpread))
     const ammDetails = computeAccount(perpetualStorage, ammStorage4)
     const amount = computeAMMAmountWithPrice(perpetualStorage, ammDetails, true, limitPrice)
     expect(amount).toApproximate(normalizeBigNumberish('0.1')) // close 1
@@ -408,7 +408,7 @@ describe('computeAMMAmountWithPrice - amm holds long, trader buys', function () 
   })
 
   it(`close + open`, function () {
-    const limitPrice = new BigNumber(7001).times(_1.plus(perpetualStorage.halfSpreadRate))
+    const limitPrice = new BigNumber(7001).times(_1.plus(perpetualStorage.halfSpread))
     const ammDetails = computeAccount(perpetualStorage, ammStorage4)
     const amount = computeAMMAmountWithPrice(perpetualStorage, ammDetails, true, limitPrice)
     expect(amount).toApproximate(normalizeBigNumberish('3.948030273926512578')) // close 2.3 + open 1.648030273926512578
@@ -441,7 +441,7 @@ describe('computeAMMAmountWithPrice - amm holds long, trader sells', function ()
   })
 
   it(`normal`, function () {
-    const limitPrice = (new BigNumber(6400)).times(_1.minus(perpetualStorage.halfSpreadRate))
+    const limitPrice = (new BigNumber(6400)).times(_1.minus(perpetualStorage.halfSpread))
     const ammDetails = computeAccount(perpetualStorage, ammStorage4)
     const amount = computeAMMAmountWithPrice(perpetualStorage, ammDetails, false, limitPrice)
     expect(amount).toApproximate(normalizeBigNumberish('-1.448990370102629051'))
@@ -450,7 +450,7 @@ describe('computeAMMAmountWithPrice - amm holds long, trader sells', function ()
   })
 
   it(`no solution`, function () {
-    const limitPrice = new BigNumber(6990).times(_1.minus(perpetualStorage.halfSpreadRate))
+    const limitPrice = new BigNumber(6990).times(_1.minus(perpetualStorage.halfSpread))
     const ammDetails = computeAccount(perpetualStorage, ammStorage4)
     const amount = computeAMMAmountWithPrice(perpetualStorage, ammDetails, false, limitPrice)
     expect(amount.isZero()).toBeTruthy()

@@ -33,7 +33,7 @@ const market1: MarketStorage = {
   liquidatorPenaltyRate: new BigNumber(0.005),
   keeperGasReward: new BigNumber(2),
 
-  halfSpreadRate: new BigNumber(0.001),
+  halfSpread: new BigNumber(0.001),
   beta1: new BigNumber(100),
   beta2: new BigNumber(90),
   fundingRateCoefficient: new BigNumber(0.005),
@@ -221,10 +221,10 @@ describe('isAMMSafe', function () {
       position1: new BigNumber('110'),
       otherIndex: [ new BigNumber('100') ],
       otherPosition: [ new BigNumber('1') ],
-      otherHalfSpreadRate: [ _0 ],
+      otherHalfSpread: [ _0 ],
       beta1: new BigNumber('1000'),
       beta2: new BigNumber('1000'),
-      halfSpreadRate: _0, fundingRateCoefficient: _0, maxLeverage: _0,
+      halfSpread: _0, fundingRateCoefficient: _0, maxLeverage: _0,
       otherBeta1: [ new BigNumber('100') ],
       otherBeta2: [ new BigNumber('100') ],
       otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
@@ -240,10 +240,10 @@ describe('isAMMSafe', function () {
       position1: new BigNumber('100'),
       otherIndex: [ new BigNumber('100') ],
       otherPosition: [ new BigNumber('1000') ],
-      otherHalfSpreadRate: [ _0 ],
+      otherHalfSpread: [ _0 ],
       beta1: new BigNumber('100'),
       beta2: new BigNumber('100'),
-      halfSpreadRate: _0, fundingRateCoefficient: _0, maxLeverage: _0,
+      halfSpread: _0, fundingRateCoefficient: _0, maxLeverage: _0,
       otherBeta1: [ new BigNumber('100') ],
       otherBeta2: [ new BigNumber('100') ],
       otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
@@ -259,10 +259,10 @@ describe('isAMMSafe', function () {
       position1: new BigNumber('100'),
       otherIndex: [ new BigNumber('100') ],
       otherPosition: [ new BigNumber('1000') ],
-      otherHalfSpreadRate: [ _0 ],
+      otherHalfSpread: [ _0 ],
       beta1: new BigNumber('100'),
       beta2: new BigNumber('100'),
-      halfSpreadRate: _0, fundingRateCoefficient: _0, maxLeverage: _0,
+      halfSpread: _0, fundingRateCoefficient: _0, maxLeverage: _0,
       otherBeta1: [ new BigNumber('100') ],
       otherBeta2: [ new BigNumber('100') ],
       otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
@@ -279,10 +279,10 @@ describe('isAMMSafe', function () {
       position1: new BigNumber('-110'),
       otherIndex: [ new BigNumber('100') ],
       otherPosition: [ new BigNumber('-1001') ],
-      otherHalfSpreadRate: [ _0 ],
+      otherHalfSpread: [ _0 ],
       beta1: new BigNumber('1000'),
       beta2: new BigNumber('1000'),
-      halfSpreadRate: _0, fundingRateCoefficient: _0, maxLeverage: _0,
+      halfSpread: _0, fundingRateCoefficient: _0, maxLeverage: _0,
       otherBeta1: [ new BigNumber('100') ],
       otherBeta2: [ new BigNumber('100') ],
       otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
@@ -298,10 +298,10 @@ describe('isAMMSafe', function () {
       position1: new BigNumber('-110'),
       otherIndex: [ new BigNumber('100') ],
       otherPosition: [ new BigNumber('-100') ],
-      otherHalfSpreadRate: [ _0 ],
+      otherHalfSpread: [ _0 ],
       beta1: new BigNumber('100'),
       beta2: new BigNumber('100'),
-      halfSpreadRate: _0, fundingRateCoefficient: _0, maxLeverage: _0,
+      halfSpread: _0, fundingRateCoefficient: _0, maxLeverage: _0,
       otherBeta1: [ new BigNumber('100') ],
       otherBeta2: [ new BigNumber('100') ],
       otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
@@ -317,10 +317,10 @@ describe('isAMMSafe', function () {
       position1: new BigNumber('-110'),
       otherIndex: [ new BigNumber('100') ],
       otherPosition: [ new BigNumber('-100') ],
-      otherHalfSpreadRate: [ _0 ],
+      otherHalfSpread: [ _0 ],
       beta1: new BigNumber('100'),
       beta2: new BigNumber('100'),
-      halfSpreadRate: _0, fundingRateCoefficient: _0, maxLeverage: _0,
+      halfSpread: _0, fundingRateCoefficient: _0, maxLeverage: _0,
       otherBeta1: [ new BigNumber('100') ],
       otherBeta2: [ new BigNumber('100') ],
       otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
@@ -366,7 +366,7 @@ describe('computeDeltaMargin', function () {
   })
 })
 
-// describe('safePosition', function () {
+describe('safePosition', function () {
 //   it('shorts from 0', function () {
 //     const beta = new BigNumber('0.2')
 //     const context = computeM0(initAMMTradingContext(perpetualStorage, ammDetails0), beta)
@@ -451,7 +451,7 @@ describe('computeDeltaMargin', function () {
 //     const pos2 = computeAMMSafeLongPositionAmount(context, beta)
 //     expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('18.2026549289986863')))
 //   })
-// })
+})
 
 // describe('trade - success', function () {
 //   interface ComputeAccountCase {
