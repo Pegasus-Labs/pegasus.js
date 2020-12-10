@@ -13,7 +13,7 @@ import {
   TradingContext,
 } from './types'
 import {
-  // computeAMMInternalTrade
+  computeAMMInternalTrade
 } from './amm'
 import { _0, _1 } from './constants'
 import { normalizeBigNumberish, hasTheSameSign, splitAmount } from './utils'
@@ -240,29 +240,26 @@ export function computeTradeWithPrice(
 //   }
 // }
 
-// // don't forget to transfer lpFees into amm after calling this function
-// export function computeAMMPrice(
-//   p: LiquidityPoolStorage,
-//   amm: AccountStorage,
-//   amount: BigNumberish, // trader's perspective
-// ): {
-//   deltaAMMAmount: BigNumber,
-//   deltaAMMMargin: BigNumber,
-//   tradingPrice: BigNumber,
-//   newAMM: AccountStorage,
-// } {
-//   const normalizedAmount = normalizeBigNumberish(amount)
-//   if (normalizedAmount.isZero()) {
-//     throw Error(`bad amount ${normalizedAmount.toFixed()}`)
-//   }
-//   const ammDetails = computeAccount(p, amm)
-//   const ammTrading = computeAMMInternalTrade(p, ammDetails, normalizedAmount.negated())
-//   const deltaAMMMargin = ammTrading.deltaMargin
-//   const deltaAMMAmount = ammTrading.deltaPosition
-//   const tradingPrice = deltaAMMMargin.div(deltaAMMAmount).abs()
-//   amm = computeTradeWithPrice(p, amm, tradingPrice, normalizedAmount.negated(), _0)
-//   return { deltaAMMAmount, deltaAMMMargin, tradingPrice, newAMM: amm }
-// }
+// don't forget to transfer lpFees into amm after calling this function
+export function computeAMMPrice(
+  p: LiquidityPoolStorage,
+  marketID: string,
+  amount: BigNumberish, // trader's perspective
+): {
+  deltaAMMAmount: BigNumber,
+  deltaAMMMargin: BigNumber,
+  tradingPrice: BigNumber,
+} {
+  const normalizedAmount = normalizeBigNumberish(amount)
+  if (normalizedAmount.isZero()) {
+    throw Error(`bad amount ${normalizedAmount.toFixed()}`)
+  }
+  const ammTrading = computeAMMInternalTrade(p, marketID, normalizedAmount.negated())
+  const deltaAMMMargin = ammTrading.deltaMargin
+  const deltaAMMAmount = ammTrading.deltaPosition
+  const tradingPrice = deltaAMMMargin.div(deltaAMMAmount).abs()
+  return { deltaAMMAmount, deltaAMMMargin, tradingPrice }
+}
 
 // export function computeAMMAddLiquidity(
 //   p: LiquidityPoolStorage,

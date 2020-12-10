@@ -5,7 +5,7 @@ import {
   computeIncreasePosition,
   computeFee,
   computeTradeWithPrice,
-  // computeAMMPrice,
+  computeAMMPrice,
   // computeAMMTrade,
 } from '../src/computation'
 import { _0, _1 } from '../src/constants'
@@ -682,39 +682,39 @@ describe('computeTradeWithPrice', function () {
   })
 })
 
-// describe('computeAMMPrice', function () {
-//   it(`holds long, sell`, function () {
-//     const { tradingPrice } = computeAMMPrice(poolStorage, ammStorage1, '-0.5')
-//     expect(tradingPrice).toApproximate(new BigNumber('6501.300190232855501915'))
-//   })
+describe('computeAMMPrice', function () {
+  it(`holds long, sell`, function () {
+    const { tradingPrice } = computeAMMPrice(poolStorage1, TEST_MARKET_ID, '-0.5')
+    expect(tradingPrice).toApproximate(new BigNumber('6501.300190232855501915'))
+  })
 
-//   it(`holds long, buy without cross 0`, function () {
-//     const { tradingPrice } = computeAMMPrice(poolStorage, ammStorage1, '0.5')
-//     expect(tradingPrice).toApproximate(new BigNumber('6807.834634007232478054'))
-//   })
+  it(`holds long, buy without cross 0`, function () {
+    const { tradingPrice } = computeAMMPrice(poolStorage1, TEST_MARKET_ID, '0.5')
+    expect(tradingPrice).toApproximate(new BigNumber('6807.834634007232478054'))
+  })
 
-//   it(`holds long, buy cross 0`, function () {
-//     const { tradingPrice } = computeAMMPrice(poolStorage, ammStorage1, '3.3')
-//     expect(tradingPrice).toApproximate(new BigNumber('6958.975118459550521339')) // (close (without spread) 15853.1053843801274454660887584 + open (without spread) 7088.57083032168746005019591999) / 3.3 * 1.001
-//   })
+  it(`holds long, buy cross 0`, function () {
+    const { tradingPrice } = computeAMMPrice(poolStorage1, TEST_MARKET_ID, '3.3')
+    expect(tradingPrice).toApproximate(new BigNumber('6958.975118459550521339')) // (close (without spread) 15853.1053843801274454660887584 + open (without spread) 7088.57083032168746005019591999) / 3.3 * 1.001
+  })
 
-//   it(`holds short, sell cross 0`, function () {
-//     const { tradingPrice } = computeAMMPrice(poolStorage, ammStorage3, '-2.4')
-//     expect(tradingPrice).toApproximate(new BigNumber('6941.873815005349466655')) // (unsafe close (without spread) 16100 + open (without spread) 577.174330343181901875950289565) / 2.4 * 0.999
-//   })
+  it(`holds short, sell cross 0`, function () {
+    const { tradingPrice } = computeAMMPrice(poolStorage3, TEST_MARKET_ID, '-2.4')
+    expect(tradingPrice).toApproximate(new BigNumber('6941.873815005349466655')) // (unsafe close (without spread) 16100 + open (without spread) 577.174330343181901875950289565) / 2.4 * 0.999
+  })
 
-//   it(`buy too large`, function () {
-//     expect((): void => {
-//       computeAMMPrice(poolStorage, ammStorage1, 11) // > 2.3 + 8.4
-//     }).toThrow()
-//   })
+  it(`buy too large`, function () {
+    expect((): void => {
+      computeAMMPrice(poolStorage1, TEST_MARKET_ID, 11) // > 2.3 + 8.4
+    }).toThrow()
+  })
 
-//   it(`sell too large`, function () {
-//     expect((): void => {
-//       computeAMMPrice(poolStorage, ammStorage1, -10.1) // 12.4 - 2.3
-//     }).toThrow()
-//   })
-// })
+  it(`sell too large`, function () {
+    expect((): void => {
+      computeAMMPrice(poolStorage1, TEST_MARKET_ID, -10.1) // 12.4 - 2.3
+    }).toThrow()
+  })
+})
 
 // describe('computeAMMTrade', function () {
 //   it(`sell`, function () {
