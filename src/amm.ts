@@ -144,6 +144,10 @@ export function computeAMMInternalClose(context: AMMTradingContext, amount: BigN
   ret.deltaPosition = ret.deltaPosition.plus(amount)
   ret.cash = ret.cash.plus(deltaMargin)
   ret.position1 = position2
+
+  // eager evaluation
+  ret.marginBalanceWithoutCurrent = ret.marginBalanceWithoutCurrent.plus(deltaMargin)
+
   return ret
 }
 
@@ -181,6 +185,9 @@ export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNu
   ret.deltaPosition = ret.deltaPosition.plus(amount)
   ret.cash = ret.cash.plus(deltaMargin)
   ret.position1 = position2
+
+  // eager evaluation
+  ret.marginBalanceWithoutCurrent = ret.marginBalanceWithoutCurrent.plus(deltaMargin)
 
   return ret
 }
