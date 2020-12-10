@@ -398,7 +398,7 @@ describe('safePosition', function () {
           ...poolStorage1.markets[TEST_MARKET_ID], maxLeverage: new BigNumber('0.5'), indexPrice: new BigNumber(100),
           ammPositionAmount: new BigNumber('-10'), beta1: beta },
         [TEST_MARKET_ID2]: {
-          ...poolStorage1.markets[TEST_MARKET_ID2], indexPrice: new BigNumber(90),
+          ...poolStorage1.markets[TEST_MARKET_ID2], indexPrice: new BigNumber('90'),
           ammPositionAmount: new BigNumber('85.5148648938521'), beta1: new BigNumber('200'), },
       }
     }, TEST_MARKET_ID), beta)
@@ -411,50 +411,47 @@ describe('safePosition', function () {
     // TODO
   })
 
-  it('long: condition3 √, condition2 √, condition 1 selected', function () {
+  it('long: condition3 √, condition2 ×, condition 1 selected', function () {
+    const beta = new BigNumber('100')
+    const context = computeAMMAvailableMargin(initAMMTradingContext(poolStorage4, TEST_MARKET_ID), beta)
+    expect(isAMMSafe(context, beta)).toBeTruthy()
+    const pos2 = computeAMMSafeLongPositionAmount(context, beta)
+    expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('100')))
   })
 
-  // it('long: condition3 √, condition2 ×', function () {
-  //   const beta = new BigNumber('100')
-  //   const context = computeAMMAvailableMargin(initAMMTradingContext(poolStorage1, TEST_MARKET_ID), beta)
-  //   expect(isAMMSafe(context, beta)).toBeTruthy()
-  //   const pos2 = computeAMMSafeShortPositionAmount(context, beta)
-  //   expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('-141.067359796658844252321636909')))
-  // })
+  it('long: condition3 √, condition2 √, condition 2 selected', function () {
+    const beta = new BigNumber('100')
+    const context = computeAMMAvailableMargin(initAMMTradingContext({
+      ...poolStorage4,
+      markets: {
+        [TEST_MARKET_ID]: { ...poolStorage4.markets[TEST_MARKET_ID], maxLeverage: new BigNumber('0.5'), },
+        [TEST_MARKET_ID2]: poolStorage4.markets[TEST_MARKET_ID2],
+      }
+    }, TEST_MARKET_ID), beta)
+    expect(isAMMSafe(context, beta)).toBeTruthy()
+    const pos2 = computeAMMSafeLongPositionAmount(context, beta)
+    expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('56.589168238006977708561982164')))
+  })
 
-  // it('long: condition3 √, condition2 √, condition 2 selected', function () {
-  //   const beta = new BigNumber('100')
-  //   const context = computeAMMAvailableMargin(initAMMTradingContext({
-  //     ...poolStorage1,
-  //     markets: {
-  //       [TEST_MARKET_ID]: { ...poolStorage1.markets[TEST_MARKET_ID], maxLeverage: new BigNumber('0.5'), },
-  //       [TEST_MARKET_ID2]: poolStorage1.markets[TEST_MARKET_ID2],
-  //     }
-  //   }, TEST_MARKET_ID), beta)
-  //   expect(isAMMSafe(context, beta)).toBeTruthy()
-  //   const pos2 = computeAMMSafeShortPositionAmount(context, beta)
-  //   expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('-56.589168238006977708561982164')))
-  // })
+  it('long: condition3 √, condition2 ×, condition 3 selected', function () {
+    const beta = new BigNumber('39.77')
+    const context = computeAMMAvailableMargin(initAMMTradingContext({
+      ...poolStorage4,
+      markets: {
+        [TEST_MARKET_ID]: { ...poolStorage4.markets[TEST_MARKET_ID], beta1: beta },
+        [TEST_MARKET_ID2]: {
+          ...poolStorage4.markets[TEST_MARKET_ID2], indexPrice: new BigNumber('10'),
+          ammPositionAmount: new BigNumber('-109'), beta1: new BigNumber('30'), },
+      }
+    }, TEST_MARKET_ID), beta)
+    expect(isAMMSafe(context, beta)).toBeTruthy()
+    const pos2 = computeAMMSafeLongPositionAmount(context, beta)
+    expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('176.61598769492977')))
+  })
 
-  // it('long: condition3 √, condition2 √, condition 1 selected', function () {
-  //   const beta = new BigNumber('100')
-  //   const context = computeAMMAvailableMargin(initAMMTradingContext({
-  //     ...poolStorage1,
-  //     markets: {
-  //       [TEST_MARKET_ID]: { ...poolStorage1.markets[TEST_MARKET_ID], maxLeverage: new BigNumber('0.5'), },
-  //       [TEST_MARKET_ID2]: poolStorage1.markets[TEST_MARKET_ID2],
-  //     }
-  //   }, TEST_MARKET_ID), beta)
-  //   expect(isAMMSafe(context, beta)).toBeTruthy()
-  //   const pos2 = computeAMMSafeShortPositionAmount(context, beta)
-  //   expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('-56.589168238006977708561982164')))
-  // })
-
-  // it('long: condition3 ×', function () {
-  //   // TODO
-  // })
-
-
+  it('long: condition3 ×', function () {
+    // TODO
+  })
 })
 
 // describe('trade - success', function () {
