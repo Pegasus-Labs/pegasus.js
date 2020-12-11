@@ -320,35 +320,3 @@ export function computeAMMPrice(
 
 //   return { amm: amm2, user: user2 }
 // }
-
-// export function computeAMMAmount(amm: AMMDetails, side: TRADE_SIDE, price: BigNumberish): BigNumber {
-//   const normalizedPrice = normalizeBigNumberish(price)
-//   const x = amm.ammComputed.poolMargin
-//   const y = amm.accountStorage.positionSize
-
-//   if (normalizedPrice.lte(_0)) {
-//     throw Error(`invalid price '${normalizedPrice}'`)
-//   }
-
-//   if (side === TRADE_SIDE.Buy) {
-//     if (normalizedPrice.lt(amm.ammComputed.fairPrice)) {
-//       throw Error(`buy price '${normalizedPrice}' is less than the amm's fair price '${amm.ammComputed.fairPrice}'`)
-//     }
-//     return y.minus(x.div(normalizedPrice))
-//   } else {
-//     if (normalizedPrice.gt(amm.ammComputed.fairPrice)) {
-//       throw Error(`sell price '${normalizedPrice}' is greater than the amm's fair price '${amm.ammComputed.fairPrice}'`)
-//     }
-//     return x.div(normalizedPrice).minus(y)
-//   }
-// }
-
-
-
-normalizeBigNumberish
-hasTheSameSign
-splitAmount
-let a: TradingContext | null = null
-a
-let b: BigNumberish | null = null
-b
