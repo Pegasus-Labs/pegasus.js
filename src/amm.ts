@@ -167,13 +167,13 @@ export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNu
     // 0.....position2.....safePosition2
     const safePosition2 = computeAMMSafeLongPositionAmount(ret, beta)
     if (position2.gt(safePosition2)) {
-      throw new InsufficientLiquidityError(`amm can not open position anymore: position too large after trade ${position2.toFixed()} > ${safePosition2.toFixed()}`)
+      throw new InsufficientLiquidityError(`AMM can not open position anymore: position too large after trade ${position2.toFixed()} > ${safePosition2.toFixed()}`)
     }
   } else {
     // safePosition2.....position2.....0
     const safePosition2 = computeAMMSafeShortPositionAmount(ret, beta)
     if (position2.lt(safePosition2)) {
-      throw new InsufficientLiquidityError(`amm can not open position anymore: position too large after trade ${position2.toFixed()} < ${safePosition2.toFixed()}`)
+      throw new InsufficientLiquidityError(`AMM can not open position anymore: position too large after trade ${position2.toFixed()} < ${safePosition2.toFixed()}`)
     }
   }
   
@@ -326,6 +326,9 @@ export function computeDeltaMargin(context: AMMTradingContext, beta: BigNumber, 
   if (context.position1.gt(_0) && position2.lt(_0)
     || context.position1.lt(_0) && position2.gt(_0)) {
     throw new BugError('bug: cross direction is not supported')
+  }
+  if (context.poolMargin.lte(_0)) {
+    throw new InsufficientLiquidityError(`AMM poolMargin <= 0`)
   }
   // P_i (N1 - N2) (1 - β / M * (N2 + N1) / 2)
   let ret = position2.plus(context.position1).div(_2).div(context.poolMargin).times(beta)
