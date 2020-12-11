@@ -69,9 +69,7 @@ const amm3 = {
 const TEST_MARKET_ID = '0x0'
 
 const poolStorage1: LiquidityPoolStorage = {
-  collateralTokenAddress: '0x0',
-  shareTokenAddress: '0x0',
-  fundingTime: 1579601290,
+  collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
   ammCashBalance: amm1.cashBalance,
   markets: {
     [TEST_MARKET_ID]: {
@@ -82,9 +80,7 @@ const poolStorage1: LiquidityPoolStorage = {
 }
 
 const poolStorage3: LiquidityPoolStorage = {
-  collateralTokenAddress: '0x0',
-  shareTokenAddress: '0x0',
-  fundingTime: 1579601290,
+  collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
   ammCashBalance: amm3.cashBalance,
   markets: {
     [TEST_MARKET_ID]: {
