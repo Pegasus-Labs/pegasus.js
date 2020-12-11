@@ -233,7 +233,7 @@ describe('isAMMSafe', function () {
       otherBeta2: [ new BigNumber('100') ],
       otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
-      marginBalanceWithoutCurrent: _0, squareWithoutCurrent: _0, positionValueWithoutCurrent: _0,
+      marginBalanceWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
     expect(isAMMSafe(context, new BigNumber('1000') /* beta */)).toBeTruthy()
   })
@@ -252,7 +252,7 @@ describe('isAMMSafe', function () {
       otherBeta2: [ new BigNumber('100') ],
       otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
-      marginBalanceWithoutCurrent: _0, squareWithoutCurrent: _0, positionValueWithoutCurrent: _0,
+      marginBalanceWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
     expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeTruthy()
   })
@@ -271,7 +271,7 @@ describe('isAMMSafe', function () {
       otherBeta2: [ new BigNumber('100') ],
       otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
-      marginBalanceWithoutCurrent: _0, squareWithoutCurrent: _0, positionValueWithoutCurrent: _0,
+      marginBalanceWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
     expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeFalsy()
   })
@@ -291,7 +291,7 @@ describe('isAMMSafe', function () {
       otherBeta2: [ new BigNumber('100') ],
       otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
-      marginBalanceWithoutCurrent: _0, squareWithoutCurrent: _0, positionValueWithoutCurrent: _0,
+      marginBalanceWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
     expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeFalsy()
   })
@@ -310,7 +310,7 @@ describe('isAMMSafe', function () {
       otherBeta2: [ new BigNumber('100') ],
       otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
-      marginBalanceWithoutCurrent: _0, squareWithoutCurrent: _0, positionValueWithoutCurrent: _0,
+      marginBalanceWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
     expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeTruthy()
   })
@@ -329,7 +329,7 @@ describe('isAMMSafe', function () {
       otherBeta2: [ new BigNumber('100') ],
       otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
-      marginBalanceWithoutCurrent: _0, squareWithoutCurrent: _0, positionValueWithoutCurrent: _0,
+      marginBalanceWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
     expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeFalsy()
   })

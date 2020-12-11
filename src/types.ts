@@ -147,8 +147,8 @@ export interface AMMTradingContext {
 
   // eager evaluation
   marginBalanceWithoutCurrent: BigNumber // Σ_j (P_i_j * N_j) where j ≠ id
-  squareWithoutCurrent: BigNumber // Σ_j (β1_j * P_i_j * N_j ^ 2) where j ≠ id
-  positionValueWithoutCurrent: BigNumber // Σ_j (P_i_j * | N_j | / λ_j) where j ≠ id
+  squareValueWithoutCurrent: BigNumber // Σ_j (β1_j * P_i_j * N_j ^ 2) where j ≠ id
+  positionMarginWithoutCurrent: BigNumber // Σ_j (P_i_j * | N_j | / λ_j) where j ≠ id
 }
 
 export interface TradingContext {
