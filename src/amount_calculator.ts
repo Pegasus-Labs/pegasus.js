@@ -120,7 +120,8 @@ export function computeAMMMaxTradeAmount(
     try {
       const context = computeAMMTrade(p, trader, amm, new BigNumber(a))
       const newTraderDetails = computeAccount(p, context.takerAccount)
-      if (newTraderDetails.accountComputed.leverage.gt(normalizeMaxLeverage)) {
+      if (!newTraderDetails.accountComputed.isSafe
+        || newTraderDetails.accountComputed.leverage.gt(normalizeMaxLeverage)) {
         return Math.abs(a)
       }
       return -Math.abs(a) // return a negative value
