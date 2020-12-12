@@ -102,7 +102,7 @@ export function computeAMMInternalTrade(p: LiquidityPoolStorage, marketID: strin
   let context = initAMMTradingContext(p, marketID)
   const { close, open } = splitAmount(context.position1, amount)
   if (close.isZero() && open.isZero()) {
-    throw new BugError('amm trade: trading amount = 0')
+    throw new BugError('AMM trade: trading amount = 0')
   }
 
   // trade
@@ -115,10 +115,10 @@ export function computeAMMInternalTrade(p: LiquidityPoolStorage, marketID: strin
 
   // spread
   if (amount.lt(_0)) {
-    // amm sells, trader buys
+    // AMM sells, trader buys
     context.deltaMargin = context.deltaMargin.times(_1.plus(context.halfSpread)).dp(DECIMALS)
   } else {
-    // amm buys, trader sells
+    // AMM buys, trader sells
     context.deltaMargin = context.deltaMargin.times(_1.minus(context.halfSpread)).dp(DECIMALS)
   }
 
@@ -162,7 +162,7 @@ export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNu
 
   // pre-check
   if (!isAMMSafe(ret, beta)) {
-    throw new InsufficientLiquidityError(`amm can not open position anymore: unsafe before trade`)
+    throw new InsufficientLiquidityError(`AMM can not open position anymore: unsafe before trade`)
   }
   ret = computeAMMPoolMargin(ret, beta)
   if (amount.gt(_0)) {

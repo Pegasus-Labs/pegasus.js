@@ -216,7 +216,7 @@ export function computeAMMTrade(
   }
   const market = p.markets[marketID]
 
-  // amm
+  // AMM
   const { deltaAMMAmount, tradingPrice } = computeAMMPrice(p, marketID, normalizedAmount)
   if (!deltaAMMAmount.negated().eq(normalizedAmount)) {
     throw new Error(`trading amount mismatched ${deltaAMMAmount.negated().toFixed()} != ${normalizedAmount.toFixed()}`)

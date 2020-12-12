@@ -96,7 +96,7 @@ export function computeMaxTradeAmountWithPrice(
 // ): BigNumber {
 //   const normalizeMaxLeverage = normalizeBigNumberish(maxLeverage)
 
-//   // if amm is unsafe, return 0
+//   // if AMM is unsafe, return 0
 //   const ammDetails = computeAccount(p, amm)
 //   const ammContext = initAMMTradingContext(p, ammDetails)
 //   if (!isAMMSafe(ammContext, p.beta1)) {
@@ -153,7 +153,7 @@ export function computeMaxTradeAmountWithPrice(
 // ): BigNumber {
 //   const normalizeDeltaMargin = normalizeBigNumberish(deltaMargin)
 
-//   // if amm is unsafe, return 0
+//   // if AMM is unsafe, return 0
 //   const ammDetails = computeAccount(p, amm)
 //   const ammContext = initAMMTradingContext(p, ammDetails)
 //   if (!isAMMSafe(ammContext, p.beta1)) {
@@ -355,7 +355,7 @@ export function computeMaxTradeAmountWithPrice(
 // }
 
 // // spread and fees are ignored. add them after calling this function
-// // the returned amount is the amm's perspective
+// // the returned amount is the AMM's perspective
 // export function computeAMMAmountShortOpen(
 //   context: AMMTradingContext,
 //   limitPrice: BigNumber, // fill price <= limitPrice
@@ -365,7 +365,7 @@ export function computeMaxTradeAmountWithPrice(
 //   if (!isAMMSafe(context, p.beta1)) {
 //     return _0
 //   }
-//   context = computeM0(context, p.beta1)
+//   context = computeAMMPoolMargin(context, p.beta1)
 
 //   // case 2: limit by safePos
 //   const safePos2 = computeAMMSafeShortPositionAmount(context, p.beta1)
@@ -397,7 +397,7 @@ export function computeMaxTradeAmountWithPrice(
 // }
 
 // // spread and fees are ignored. add them after calling this function
-// // the returned amount is the amm's perspective
+// // the returned amount is the AMM's perspective
 // export function computeAMMAmountShortClose(
 //   context: AMMTradingContext,
 //   limitPrice: BigNumber, // fill price >= limitPrice
@@ -422,7 +422,7 @@ export function computeMaxTradeAmountWithPrice(
 //       return _0
 //     } else {
 //       // case 3: close by price 
-//       context = computeM0(context, p.beta2)
+//       context = computeAMMPoolMargin(context, p.beta2)
 //       const amount = computeAMMShortInverseVWAP(context, limitPrice, p.beta2, true)
 //       if (amount.gt(_0)) {
 //         context = computeAMMInternalClose(context, amount, p)
@@ -439,7 +439,7 @@ export function computeMaxTradeAmountWithPrice(
 // }
 
 // // spread and fees are ignored. add them after calling this function
-// // the returned amount is the amm's perspective
+// // the returned amount is the AMM's perspective
 // export function computeAMMAmountLongClose(
 //   context: AMMTradingContext,
 //   limitPrice: BigNumber, // fill price <= limitPrice
@@ -464,7 +464,7 @@ export function computeMaxTradeAmountWithPrice(
 //       return _0
 //     } else {
 //       // case 3: close by price 
-//       context = computeM0(context, p.beta2)
+//       context = computeAMMPoolMargin(context, p.beta2)
 //       const amount = computeAMMLongInverseVWAP(context, limitPrice, p.beta2, true)
 //       if (amount.lt(_0)) {
 //         context = computeAMMInternalClose(context, amount, p)
@@ -481,7 +481,7 @@ export function computeMaxTradeAmountWithPrice(
 // }
 
 // // spread and fees are ignored. add them after calling this function
-// // the returned amount is the amm's perspective
+// // the returned amount is the AMM's perspective
 // export function computeAMMAmountLongOpen(
 //   context: AMMTradingContext,
 //   limitPrice: BigNumber, // fill price >= limitPrice
@@ -491,7 +491,7 @@ export function computeMaxTradeAmountWithPrice(
 //   if (!isAMMSafe(context, p.beta1)) {
 //     return _0
 //   }
-//   context = computeM0(context, p.beta1)
+//   context = computeAMMPoolMargin(context, p.beta1)
 
 //   // case 2: limit by safePos
 //   const safePos2 = computeAMMSafeLongPositionAmount(context, p.beta1)
