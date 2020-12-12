@@ -29,6 +29,17 @@ export class BugError extends Error {
   }
 }
 
+/**
+ * Invalid argument or the query condition is impossible.
+ */
+export class InvalidArgumentError extends Error {
+  public constructor(message: string) {
+    super()
+    this.name = message
+  }
+}
+
+
 export interface PerpetualContract {
   contract: ethers.Contract
 }

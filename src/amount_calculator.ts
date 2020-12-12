@@ -11,6 +11,7 @@ import {
 } from './computation'
 import {
   BigNumberish,
+  InvalidArgumentError,
   AccountStorage,
   LiquidityPoolStorage,
   AMMTradingContext,
@@ -86,120 +87,118 @@ export function computeMaxTradeAmountWithPrice(
   return result
 }
 
-// // the returned amount is the trader's perspective
-// export function computeAMMMaxTradeAmount(
-//   p: LiquidityPoolStorage,
-//   marketID: string,
-//   trader: AccountStorage,
-//   maxLeverage: BigNumberish,  // trader's lev
-//   isBuy: boolean,  // trader's direction
-// ): BigNumber {
-//   const normalizeMaxLeverage = normalizeBigNumberish(maxLeverage)
+// the returned amount is the trader's perspective
+export function computeAMMMaxTradeAmount(
+  p: LiquidityPoolStorage,
+  marketID: string,
+  trader: AccountStorage,
+  maxLeverage: BigNumberish,  // trader's lev
+  isBuy: boolean,  // trader's direction
+): BigNumber {
+  const normalizeMaxLeverage = normalizeBigNumberish(maxLeverage)
 
-//   // if AMM is unsafe, return 0
-//   const ammDetails = computeAccount(p, amm)
-//   const ammContext = initAMMTradingContext(p, ammDetails)
-//   if (!isAMMSafe(ammContext, p.beta1)) {
-//     if (isBuy && amm.positionAmount.lt(_0)) {
-//       return _0
-//     }
-//     if (!isBuy && amm.positionAmount.gt(_0)) {
-//       return _0
-//     }
-//   }
+  // if AMM is unsafe, return 0
+  const ammContext = initAMMTradingContext(p, marketID)
+  if (!isAMMSafe(ammContext, ammContext.beta1)) {
+    if (isBuy && ammContext.position1.lt(_0)) {
+      return _0
+    }
+    if (!isBuy && ammContext.position1.gt(_0)) {
+      return _0
+    }
+  }
 
-//   // guess = marginBalance * lev / index
-//   const traderDetails = computeAccount(p, trader)
-//   const guess = traderDetails.accountComputed.marginBalance.times(normalizeMaxLeverage).div(p.indexPrice)
+  // guess = marginBalance * lev / index
+  const traderDetails = computeAccount(p, marketID, trader)
+  const guess = traderDetails.accountComputed.marginBalance.times(normalizeMaxLeverage).div(ammContext.index)
 
-//   // search
-//   function checkTrading(a: number): number {
-//     if (a == 0) {
-//       return 0
-//     }
-//     try {
-//       const context = computeAMMTrade(p, trader, amm, new BigNumber(a))
-//       const newTraderDetails = computeAccount(p, context.takerAccount)
-//       if (!newTraderDetails.accountComputed.isSafe
-//         || newTraderDetails.accountComputed.leverage.gt(normalizeMaxLeverage)) {
-//         return Math.abs(a)
-//       }
-//       return -Math.abs(a) // return a negative value
-//     } catch (e) {
-//       return Math.abs(a) // punish larger a
-//     }
-//   }
-//   const options: any = {
-//     maxIterations: 15
-//   }
-//   if (isBuy) {
-//     options.lowerBound = 0
-//     options.guess = guess.toNumber()
-//   } else {
-//     options.upperBound = 0
-//     options.guess = guess.negated().toNumber()
-//   }
-//   const answer: any = {}
-//   minimize(checkTrading, options, answer)
-//   const result = new BigNumber(answer.argmin as number)
-//   return result
-// }
+  // search
+  function checkTrading(a: number): number {
+    if (a == 0) {
+      return 0
+    }
+    try {
+      const context = computeAMMTrade(p, marketID, trader, new BigNumber(a))
+      const newTraderDetails = computeAccount(p, marketID, context.takerAccount)
+      if (!newTraderDetails.accountComputed.isSafe
+        || newTraderDetails.accountComputed.leverage.gt(normalizeMaxLeverage)) {
+        return Math.abs(a)
+      }
+      return -Math.abs(a) // return a negative value
+    } catch (e) {
+      return Math.abs(a) // punish larger a
+    }
+  }
+  const options: any = {
+    maxIterations: 20
+  }
+  if (isBuy) {
+    options.lowerBound = 0
+    options.guess = guess.toNumber()
+  } else {
+    options.upperBound = 0
+    options.guess = guess.negated().toNumber()
+  }
+  const answer: any = {}
+  minimize(checkTrading, options, answer)
+  const result = new BigNumber(answer.argmin as number)
+  return result
+}
 
-// // the returned amount is the trader's perspective
-// export function computeAMMTradeAmountByMargin(
-//   p: LiquidityPoolStorage,
-//   marketID: string,
-//   deltaMargin: BigNumberish,  // trader's margin change. < 0 if buy, > 0 if sell
-// ): BigNumber {
-//   const normalizeDeltaMargin = normalizeBigNumberish(deltaMargin)
+// the returned amount is the trader's perspective
+export function computeAMMTradeAmountByMargin(
+  p: LiquidityPoolStorage,
+  marketID: string,
+  deltaMargin: BigNumberish,  // trader's margin change. < 0 if buy, > 0 if sell
+): BigNumber {
+  const normalizeDeltaMargin = normalizeBigNumberish(deltaMargin)
 
-//   // if AMM is unsafe, return 0
-//   const ammDetails = computeAccount(p, amm)
-//   const ammContext = initAMMTradingContext(p, ammDetails)
-//   if (!isAMMSafe(ammContext, p.beta1)) {
-//     if (normalizeDeltaMargin.lt(_0) && amm.positionAmount.lt(_0)) {
-//       return _0
-//     }
-//     if (normalizeDeltaMargin.gt(_0) && amm.positionAmount.gt(_0)) {
-//       return _0
-//     }
-//   }
+  // if AMM is unsafe, return 0
+  const ammContext = initAMMTradingContext(p, marketID)
+  if (!isAMMSafe(ammContext, ammContext.beta1)) {
+    if (normalizeDeltaMargin.lt(_0) && ammContext.position1.lt(_0)) {
+      return _0
+    }
+    if (normalizeDeltaMargin.gt(_0) && ammContext.position1.gt(_0)) {
+      return _0
+    }
+  }
 
-//   // guess = deltaMargin / index
-//   const guess = normalizeDeltaMargin.div(p.indexPrice).negated()
+  // guess = deltaMargin / index
+  const guess = normalizeDeltaMargin.div(ammContext.index).negated()
 
-//   // search
-//   function checkTrading(a: number): number {
-//     if (a == 0) {
-//       return 0
-//     }
-//     try {
-//       const price = computeAMMPrice(p, amm, new BigNumber(a))
-//       // err = | expected trader margin - actual trader margin |
-//       const actualTraderMargin = price.deltaAMMMargin.negated()
-//       const err = actualTraderMargin.minus(normalizeDeltaMargin).abs()
-//       return err.toNumber()
-//     } catch (e) {
-//       return Math.abs(a) // punish larger a
-//     }
-//   }
-//   const options: any = {
-//     maxIterations: 15
-//   }
-//   if (normalizeDeltaMargin.lt(_0)) {
-//     // trader buys
-//     options.lowerBound = 0
-//     options.guess = guess.toNumber()
-//   } else {
-//     // trader sells
-//     options.upperBound = 0
-//     options.guess = guess.toNumber()
-//   }
-//   const answer: any = {}
-//   minimize(checkTrading, options, answer)
-//   const result = new BigNumber(answer.argmin as number)
-//   return result
-// }
+  // search
+  function checkTrading(a: number): number {
+    if (a == 0) {
+      return 0
+    }
+    try {
+      const price = computeAMMPrice(p, marketID, new BigNumber(a))
+      // err = | expected trader margin - actual trader margin |
+      const actualTraderMargin = price.deltaAMMMargin.negated()
+      const err = actualTraderMargin.minus(normalizeDeltaMargin).abs()
+      return err.toNumber()
+    } catch (e) {
+      return Math.abs(a) // punish larger a
+    }
+  }
+  const options: any = {
+    maxIterations: 40
+  }
+  if (normalizeDeltaMargin.lt(_0)) {
+    // trader buys
+    options.lowerBound = 0
+    options.guess = guess.toNumber()
+  } else {
+    // trader sells
+    options.upperBound = 0
+    options.guess = guess.toNumber()
+  }
+  const answer: any = {}
+  minimize(checkTrading, options, answer)
+  const result = new BigNumber(answer.argmin as number)
+  return result
+}
 
 // the inverse function of VWAP of AMM pricing function
 // call computeAMMPoolMargin before this function
@@ -232,11 +231,10 @@ export function computeAMMInverseVWAP(
   const c = previousMa1MinusMa2.minus(previousAmount.times(price)).times(context.poolMargin).times(_2).negated()
   const beforeSqrt = a.times(c).times(4).negated().plus(b.times(b))
   if (beforeSqrt.lt(_0)) {
-    console.log(`warn: computeAMMShortInverseVWAP Δ < 0. M = ${context.poolMargin.toFixed()}, `
-      + `pos1 = ${context.position1.toFixed()}, index = ${context.index.toFixed()}, `
-      + `price = ${price.toFixed()}, previousMa1MinusMa2 = ${previousMa1MinusMa2.toFixed()}, `
-      + `previousAmount = ${previousAmount.toFixed()}`)
-    return _0
+    throw new InvalidArgumentError(`computeAMMInverseVWAP: impossible price. `
+      + `index = ${context.index.toFixed()}, price = ${price.toFixed()}, `
+      + `M = ${context.poolMargin.toFixed()}, position1 = ${context.position1.toFixed()}, `
+      + `previousMa1MinusMa2 = ${previousMa1MinusMa2.toFixed()}, previousAmount = ${previousAmount.toFixed()}`)
   }
   let numerator = sqrt(beforeSqrt)
   if (!isAMMBuy) {

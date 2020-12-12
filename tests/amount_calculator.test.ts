@@ -7,8 +7,8 @@ import {
 } from '../src/computation'
 import {
   computeMaxTradeAmountWithPrice,
-  // computeAMMMaxTradeAmount,
-  // computeAMMTradeAmountByMargin,
+  computeAMMMaxTradeAmount,
+  computeAMMTradeAmountByMargin,
   // computeAMMAmountWithPrice,
   computeAMMInverseVWAP,
 } from '../src/amount_calculator'
@@ -191,71 +191,71 @@ describe('computeMaxTradeAmountWithPrice', function () {
   })
 })
 
-// describe('computeAMMMaxTradeAmount', function () {
-//   const targetLeverage = _1
+describe('computeAMMMaxTradeAmount', function () {
+  const targetLeverage = _1
 
-//   it(`safe trader + safe amm, trader buy`, function () {
-//     const amount = computeAMMMaxTradeAmount(poolStorage1, TEST_MARKET_ID, accountStorage1, ammStorage4, targetLeverage, true) // 1.12090
-//     const context = computeAMMTrade(poolStorage1, TEST_MARKET_ID, accountStorage1, ammStorage4, amount)
-//     const newTrader = computeAccount(poolStorage1, TEST_MARKET_ID, context.takerAccount)
-//     expect(amount.gt('1.1')).toBeTruthy()
-//     expect(amount.lt('1.2')).toBeTruthy()
-//     expect(newTrader.accountComputed.leverage.gt('0.9')).toBeTruthy()
-//     expect(newTrader.accountComputed.leverage.lte('1.1')).toBeTruthy()
-//   })
+  it(`safe trader + safe amm, trader buy`, function () {
+    const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_ID, accountStorage1, targetLeverage, true) // 1.12090
+    const context = computeAMMTrade(poolStorage4, TEST_MARKET_ID, accountStorage1, amount)
+    const newTrader = computeAccount(poolStorage4, TEST_MARKET_ID, context.takerAccount)
+    expect(amount.gt('1.0')).toBeTruthy()
+    expect(amount.lt('1.2')).toBeTruthy()
+    expect(newTrader.accountComputed.leverage.gt('0.99')).toBeTruthy()
+    expect(newTrader.accountComputed.leverage.lte('1.01')).toBeTruthy()
+  })
 
-//   it(`safe trader + safe amm, trader sell`, function () {
-//     const amount = computeAMMMaxTradeAmount(poolStorage1, TEST_MARKET_ID, accountStorage1, ammStorage4, targetLeverage, false) // -4.96708
-//     const context = computeAMMTrade(poolStorage1, TEST_MARKET_ID, accountStorage1, ammStorage4, amount)
-//     const newTrader = computeAccount(poolStorage1, TEST_MARKET_ID, context.takerAccount)
-//     expect(amount.lt('-4.9')).toBeTruthy()
-//     expect(amount.gt('-5.0')).toBeTruthy()
-//     expect(newTrader.accountComputed.leverage.gt('0.9')).toBeTruthy()
-//     expect(newTrader.accountComputed.leverage.lte('1.1')).toBeTruthy()
-//   })
+  it(`safe trader + safe amm, trader sell`, function () {
+    const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_ID, accountStorage1, targetLeverage, false) // -4.96708
+    const context = computeAMMTrade(poolStorage4, TEST_MARKET_ID, accountStorage1, amount)
+    const newTrader = computeAccount(poolStorage4, TEST_MARKET_ID, context.takerAccount)
+    expect(amount.lt('-5')).toBeTruthy()
+    expect(amount.gt('-6')).toBeTruthy()
+    expect(newTrader.accountComputed.leverage.gt('0.99')).toBeTruthy()
+    expect(newTrader.accountComputed.leverage.lte('1.01')).toBeTruthy()
+  })
 
-//   it(`safe trader + unsafe amm(holds short), trader buy`, function () {
-//     const amount = computeAMMMaxTradeAmount(poolStorage1, TEST_MARKET_ID, accountStorage1, ammStorage3, targetLeverage, true)
-//     expect(amount.isZero()).toBeTruthy()
-//   })
+  it(`safe trader + unsafe amm(holds short), trader buy`, function () {
+    const amount = computeAMMMaxTradeAmount(poolStorage3, TEST_MARKET_ID, accountStorage1, targetLeverage, true)
+    expect(amount.isZero()).toBeTruthy()
+  })
 
-//   it(`safe trader + unsafe amm(holds long), trader sell`, function () {
-//     const amount = computeAMMMaxTradeAmount(poolStorage1, TEST_MARKET_ID, accountStorage1, ammStorage6, targetLeverage, false)
-//     expect(amount.isZero()).toBeTruthy()
-//   })
-// })
+  it(`safe trader + unsafe amm(holds long), trader sell`, function () {
+    const amount = computeAMMMaxTradeAmount(poolStorage6, TEST_MARKET_ID, accountStorage1, targetLeverage, false)
+    expect(amount.isZero()).toBeTruthy()
+  })
+})
 
-// describe('computeAMMTradeAmountByMargin', function () {
-//   it(`safe trader + safe amm, trader buy`, function () {
-//     const amount = computeAMMTradeAmountByMargin(poolStorage1, TEST_MARKET_ID, ammStorage4, '-100') // 0.0147487
-//     const p = computeAMMPrice(poolStorage1, TEST_MARKET_ID, ammStorage4, amount)
-//     const actualTraderMargin = p.deltaAMMMargin.negated()
-//     expect(amount.lt('0.015')).toBeTruthy()
-//     expect(amount.gt('0.014')).toBeTruthy()
-//     expect(actualTraderMargin.gt('-101')).toBeTruthy()
-//     expect(actualTraderMargin.lt('-99')).toBeTruthy()
-//   })
+describe('computeAMMTradeAmountByMargin', function () {
+  it(`safe trader + safe amm, trader buy`, function () {
+    const amount = computeAMMTradeAmountByMargin(poolStorage4, TEST_MARKET_ID, '-100') // 0.0147487
+    const p = computeAMMPrice(poolStorage4, TEST_MARKET_ID, amount)
+    const actualTraderMargin = p.deltaAMMMargin.negated()
+    expect(amount.lt('0.015')).toBeTruthy()
+    expect(amount.gt('0.014')).toBeTruthy()
+    expect(actualTraderMargin.gt('-100.1')).toBeTruthy()
+    expect(actualTraderMargin.lt('-99.9')).toBeTruthy()
+  })
 
-//   it(`safe trader + safe amm, trader sell`, function () {
-//     const amount = computeAMMTradeAmountByMargin(poolStorage1, TEST_MARKET_ID, ammStorage4, '100') // -0.01525
-//     const p = computeAMMPrice(poolStorage1, TEST_MARKET_ID, ammStorage4, amount)
-//     const actualTraderMargin = p.deltaAMMMargin.negated()
-//     expect(amount.gt('-0.016')).toBeTruthy()
-//     expect(amount.lt('-0.015')).toBeTruthy()
-//     expect(actualTraderMargin.gt('99')).toBeTruthy()
-//     expect(actualTraderMargin.lt('101')).toBeTruthy()
-//   })
+  it(`safe trader + safe amm, trader sell`, function () {
+    const amount = computeAMMTradeAmountByMargin(poolStorage4, TEST_MARKET_ID, '100') // -0.01525
+    const p = computeAMMPrice(poolStorage4, TEST_MARKET_ID, amount)
+    const actualTraderMargin = p.deltaAMMMargin.negated()
+    expect(amount.gt('-0.015')).toBeTruthy()
+    expect(amount.lt('-0.014')).toBeTruthy()
+    expect(actualTraderMargin.gt('99.9')).toBeTruthy()
+    expect(actualTraderMargin.lt('100.1')).toBeTruthy()
+  })
 
-//   it(`safe trader + unsafe amm(holds short), trader buy`, function () {
-//     const amount = computeAMMTradeAmountByMargin(poolStorage1, TEST_MARKET_ID, ammStorage3, '-100')
-//     expect(amount.isZero()).toBeTruthy()
-//   })
+  it(`safe trader + unsafe amm(holds short), trader buy`, function () {
+    const amount = computeAMMTradeAmountByMargin(poolStorage3, TEST_MARKET_ID, '-100')
+    expect(amount.isZero()).toBeTruthy()
+  })
 
-//   it(`safe trader + unsafe amm(holds long), trader sell`, function () {
-//     const amount = computeAMMTradeAmountByMargin(poolStorage1, TEST_MARKET_ID, ammStorage6, '100')
-//     expect(amount.isZero()).toBeTruthy()
-//   })
-// })
+  it(`safe trader + unsafe amm(holds long), trader sell`, function () {
+    const amount = computeAMMTradeAmountByMargin(poolStorage6, TEST_MARKET_ID, '100')
+    expect(amount.isZero()).toBeTruthy()
+  })
+})
 
 describe('computeAMMInverseVWAP', function () {
   it(`short: open without vwap`, function () {
