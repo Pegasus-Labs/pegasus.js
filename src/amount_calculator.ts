@@ -245,221 +245,151 @@ export function computeAMMInverseVWAP(
   return amount.dp(DECIMALS, BigNumber.ROUND_DOWN)
 }
 
-// // the returned amount is the trader's perspective
-// export function computeAMMAmountWithPrice(
-//   p: LiquidityPoolStorage,
-//   marketID: string,
-//   isBuy: boolean,  // trader's direction
-//   limitPrice: BigNumberish,
-// ): BigNumber {
-//   // shift by spread
-//   let normalizedLimitPrice = normalizeBigNumberish(limitPrice)
-//   if (isBuy) {
-//     normalizedLimitPrice = normalizedLimitPrice.div(_1.plus(p.halfSpread))
-//   } else {
-//     normalizedLimitPrice = normalizedLimitPrice.div(_1.minus(p.halfSpread))
-//   }
-
-//   // get amount
-//   let context = initAMMTradingContext(p, amm)
-//   if (context.pos1.lte(_0) && isBuy) {
-//     return computeAMMAmountShortOpen(context, normalizedLimitPrice, p).negated()
-//   } else if (context.pos1.lt(_0) && !isBuy) {
-//     //                    ^^ 0 is another story
-//     return computeAMMAmountShortClose(context, normalizedLimitPrice, p).negated()
-//   } else if (context.pos1.gte(_0) && !isBuy) {
-//     return computeAMMAmountLongOpen(context, normalizedLimitPrice, p).negated()
-//   } else if (context.pos1.gt(_0) && isBuy) {
-//     //                    ^^ 0 is another story
-//     return computeAMMAmountLongClose(context, normalizedLimitPrice, p).negated()
-//   }
-//   throw new Error('bug: unknown trading direction')
-// }
-
-// // spread and fees are ignored. add them after calling this function
-// // the returned amount is the AMM's perspective
-// export function computeAMMAmountShortOpen(
-//   context: AMMTradingContext,
-//   limitPrice: BigNumber, // fill price <= limitPrice
-//   p: PerpetualStorage,
-// ): BigNumber {
-//   // case 1: unsafe open
-//   if (!isAMMSafe(context, p.beta1)) {
-//     return _0
-//   }
-//   context = computeAMMPoolMargin(context, p.beta1)
-
-//   // case 2: limit by safePos
-//   const safePos2 = computeAMMSafeShortPositionAmount(context, p.beta1)
-//   if (safePos2.gt(_0) || safePos2.gt(context.pos1)) {
-//     return _0
-//   }
-//   const maxAmount = safePos2.minus(context.pos1)
-//   if (maxAmount.gte(_0)) {
-//     console.log(`warn: short open, but pos1 ${context.pos1.toFixed()} < safePos2 ${safePos2.toFixed()}`)
-//     return _0
-//   }
-//   const safePos2Context = computeAMMInternalOpen(context, maxAmount, p)
-//   if (!maxAmount.eq(safePos2Context.deltaPosition.minus(context.deltaPosition))) {
-//     throw new BugError('open positions failed')
-//   }
-//   const safePos2Price = safePos2Context.deltaMargin.div(safePos2Context.deltaPosition).abs()
-//   if (safePos2Price.lte(limitPrice)) {
-//     return maxAmount
-//   }
-
-//   // case 3: inverse function of price function
-//   const amount = computeAMMShortInverseVWAP(context, limitPrice, p.beta1, false)
-//   if (amount.gte(_0)) {
-//     // closing
-//     return _0
-//   }
-
-//   return amount
-// }
+// the returned amount is the trader's perspective
+export function computeAMMAmountWithPrice(
+  p: LiquidityPoolStorage,
+  marketID: string,
+  isTraderBuy: boolean,  // trader's direction
+  limitPrice: BigNumberish,
+): BigNumber {
+  if (!p.markets[marketID]) {
+    throw new InvalidArgumentError(`market {marketID} not found in the pool`)
+  }
+  
+  // add spread
+  let normalizedLimitPrice = normalizeBigNumberish(limitPrice)
+  if (isTraderBuy) {
+    normalizedLimitPrice = normalizedLimitPrice.div(_1.plus(p.markets[marketID].halfSpread))
+  } else {
+    normalizedLimitPrice = normalizedLimitPrice.div(_1.minus(p.markets[marketID].halfSpread))
+  }
+  
+  // get amount
+  const isAMMBuy = !isTraderBuy
+  let context = initAMMTradingContext(p, marketID)
+  if (context.position1.lte(_0) && !isAMMBuy) {
+    return computeAMMOpenAmountWithPrice(context, normalizedLimitPrice, isAMMBuy).negated()
+  } else if (context.position1.lt(_0) && isAMMBuy) {
+    //                         ^^ 0 is another story
+    return computeAMMCloseAndOpenAmountWithPrice(context, normalizedLimitPrice, isAMMBuy).negated()
+  } else if (context.position1.gte(_0) && isAMMBuy) {
+    return computeAMMOpenAmountWithPrice(context, normalizedLimitPrice, isAMMBuy).negated()
+  } else if (context.position1.gt(_0) && !isAMMBuy) {
+    //                          ^^ 0 is another story
+    return computeAMMCloseAndOpenAmountWithPrice(context, normalizedLimitPrice, isAMMBuy).negated()
+  }
+  throw new InvalidArgumentError('bug: unknown trading direction')
+}
 
 // // spread and fees are ignored. add them after calling this function
 // // the returned amount is the AMM's perspective
-// export function computeAMMAmountShortClose(
-//   context: AMMTradingContext,
-//   limitPrice: BigNumber, // fill price >= limitPrice
-//   p: PerpetualStorage,
-// ): BigNumber {
-//   if (!context.deltaMargin.isZero() || !context.deltaPosition.isZero()) {
-//     throw new BugError('partial close is not supported')
-//   }
+export function computeAMMOpenAmountWithPrice(
+  context: AMMTradingContext,
+  limitPrice: BigNumber, // fill price <= limitPrice
+  isAMMBuy: boolean,  // AMM's direction
+): BigNumber {
+  if (
+    (isAMMBuy && context.position1.lt(_0) /* short buy */)
+    || (!isAMMBuy && context.position1.gt(_0) /* long sell */)
+  ) {
+    throw new InvalidArgumentError(`this is not opening. pos1: ${context.position1} isBuy: ${isAMMBuy}`)
+  }
 
-//   if (!context.pos1.isZero()) {
-//     // case 1: limit by existing positions
-//     const zeroContext = computeAMMInternalClose(context, context.pos1.negated(), p)
-//     if (zeroContext.deltaPosition.isZero()) {
-//       throw new BugError('close to zero failed')
-//     }
-//     const zeroPrice = zeroContext.deltaMargin.div(zeroContext.deltaPosition).abs()
-//     if (zeroPrice.gte(limitPrice)) {
-//       // close all
-//       context = zeroContext
-//     } else if (!isAMMSafe(context, p.beta2)) {
-//       // case 2: unsafe close, but price not matched
-//       return _0
-//     } else {
-//       // case 3: close by price 
-//       context = computeAMMPoolMargin(context, p.beta2)
-//       const amount = computeAMMShortInverseVWAP(context, limitPrice, p.beta2, true)
-//       if (amount.gt(_0)) {
-//         context = computeAMMInternalClose(context, amount, p)
-//       }
-//     }
-//   }
+  // case 1: unsafe open
+  if (!isAMMSafe(context, context.beta1)) {
+    return _0
+  }
+  context = computeAMMPoolMargin(context, context.beta1)
 
-//   // case 4: open positions
-//   if (context.pos1.gte(_0)) {
-//     const openAmount = computeAMMAmountLongOpen(context, limitPrice, p)
-//     return context.deltaPosition.plus(openAmount)
-//   }
-//   return context.deltaPosition
-// }
+  // case 2: limit by safePos
+  let safePos2: BigNumber
+  if (isAMMBuy) {
+    safePos2 = computeAMMSafeLongPositionAmount(context, context.beta1)
+    if (safePos2.lt(context.position1)) {
+      return _0
+    }
+  } else {
+    safePos2 = computeAMMSafeShortPositionAmount(context, context.beta1)
+    if (safePos2.gt(context.position1)) {
+      return _0
+    }
+  }
+  const maxAmount = safePos2.minus(context.position1)
+  const safePos2Context = computeAMMInternalOpen(context, maxAmount)
+  if (!maxAmount.eq(safePos2Context.deltaPosition.minus(context.deltaPosition))) {
+    throw new BugError('open positions failed')
+  }
+  const safePos2Price = safePos2Context.deltaMargin.div(safePos2Context.deltaPosition).abs()
+  if (
+    (isAMMBuy && safePos2Price.gte(limitPrice) /* long open. trader sell */)
+    || (!isAMMBuy && safePos2Price.lte(limitPrice) /* short open. trader buy */ )
+  ) {
+    return maxAmount
+  }
 
-// // spread and fees are ignored. add them after calling this function
-// // the returned amount is the AMM's perspective
-// export function computeAMMAmountLongClose(
-//   context: AMMTradingContext,
-//   limitPrice: BigNumber, // fill price <= limitPrice
-//   p: PerpetualStorage,
-// ): BigNumber {
-//   if (!context.deltaMargin.isZero() || !context.deltaPosition.isZero()) {
-//     throw new BugError('partial close is not supported')
-//   }
+  // case 3: inverse function of price function
+  const amount = computeAMMInverseVWAP(context, limitPrice, context.beta1, isAMMBuy)
+  if (
+    (isAMMBuy && amount.gt(_0) /* long open success */)
+    || (!isAMMBuy && amount.lt(_0) /* short open success */)
+  ) {
+    return amount
+  }
+  
+  // invalid open. only close is possible
+  return _0
+}
 
-//   if (!context.pos1.isZero()) {
-//     // case 1: limit by existing positions
-//     const zeroContext = computeAMMInternalClose(context, context.pos1.negated(), p)
-//     if (zeroContext.deltaPosition.isZero()) {
-//       throw new BugError('close to zero failed')
-//     }
-//     const zeroPrice = zeroContext.deltaMargin.div(zeroContext.deltaPosition).abs()
-//     if (zeroPrice.lte(limitPrice)) {
-//       // close all
-//       context = zeroContext
-//     } else if (!isAMMSafe(context, p.beta2)) {
-//       // case 2: unsafe close, but price not matched
-//       return _0
-//     } else {
-//       // case 3: close by price 
-//       context = computeAMMPoolMargin(context, p.beta2)
-//       const amount = computeAMMLongInverseVWAP(context, limitPrice, p.beta2, true)
-//       if (amount.lt(_0)) {
-//         context = computeAMMInternalClose(context, amount, p)
-//       }
-//     }
-//   }
+// spread and fees are ignored. add them after calling this function
+// the returned amount is the AMM's perspective
+export function computeAMMCloseAndOpenAmountWithPrice(
+  context: AMMTradingContext,
+  limitPrice: BigNumber, // fill price >= limitPrice
+  isAMMBuy: boolean,  // AMM's direction
+): BigNumber {
+  if (!context.deltaMargin.isZero() || !context.deltaPosition.isZero()) {
+    throw new InvalidArgumentError('partial close is not supported')
+  }
+  if (context.position1.isZero()) {
+    throw new InvalidArgumentError('close from 0 is not supported')
+  }
 
-//   // case 4: open positions
-//   if (context.pos1.lte(_0)) {
-//     const openAmount = computeAMMAmountShortOpen(context, limitPrice, p)
-//     return context.deltaPosition.plus(openAmount)
-//   }
-//   return context.deltaPosition
-// }
+  // case 1: limit by existing positions
+  const zeroContext = computeAMMInternalClose(context, context.position1.negated())
+  if (zeroContext.deltaPosition.isZero()) {
+    throw new BugError('close to zero failed')
+  }
+  const zeroPrice = zeroContext.deltaMargin.div(zeroContext.deltaPosition).abs()
+  if (
+    (isAMMBuy && zeroPrice.gte(limitPrice) /* short close */)
+    || (!isAMMBuy && zeroPrice.lte(limitPrice) /* long close */)
+  ) {
+    // close all
+    context = zeroContext
+  } else if (!isAMMSafe(context, context.beta2)) {
+    // case 2: unsafe close, but price not matched
+    return _0
+  } else {
+    // case 3: close by price
+    context = computeAMMPoolMargin(context, context.beta2)
+    const amount = computeAMMInverseVWAP(context, limitPrice, context.beta2, isAMMBuy)
+    if (
+      (isAMMBuy && amount.gt(_0) /* short close success */)
+      || (!isAMMBuy && amount.lt(_0) /* long close success */)
+    ) {
+      context = computeAMMInternalClose(context, amount)
+    } else {
+      // invalid close. only open is possible
+    }
+  }
 
-// // spread and fees are ignored. add them after calling this function
-// // the returned amount is the AMM's perspective
-// export function computeAMMAmountLongOpen(
-//   context: AMMTradingContext,
-//   limitPrice: BigNumber, // fill price >= limitPrice
-//   p: PerpetualStorage,
-// ): BigNumber {
-//   // case 1: unsafe open
-//   if (!isAMMSafe(context, p.beta1)) {
-//     return _0
-//   }
-//   context = computeAMMPoolMargin(context, p.beta1)
-
-//   // case 2: limit by safePos
-//   const safePos2 = computeAMMSafeLongPositionAmount(context, p.beta1)
-//   if (safePos2.lt(_0) || safePos2.lt(context.pos1)) {
-//     return _0
-//   }
-//   const maxAmount = safePos2.minus(context.pos1)
-//   if (maxAmount.lte(_0)) {
-//     console.log(`warn: long open, but pos1 ${context.pos1.toFixed()} > safePos2 ${safePos2.toFixed()}`)
-//     return _0
-//   }
-//   const safePos2Context = computeAMMInternalOpen(context, maxAmount, p)
-//   if (!maxAmount.eq(safePos2Context.deltaPosition.minus(context.deltaPosition))) {
-//     throw new BugError('open positions failed')
-//   }
-//   const safePos2Price = safePos2Context.deltaMargin.div(safePos2Context.deltaPosition).abs()
-//   if (safePos2Price.gte(limitPrice)) {
-//     return maxAmount
-//   }
-
-//   // case 3: inverse function of price function
-//   const amount = computeAMMLongInverseVWAP(context, limitPrice, p.beta1, false)
-//   if (amount.lte(_0)) {
-//     // closing
-//     return _0
-//   }
-
-//   return amount
-// }
-
-computeAMMTrade
-computeAMMPrice
-initAMMTradingContext
-isAMMSafe
-computeAMMPoolMargin
-computeAMMSafeShortPositionAmount
-computeAMMSafeLongPositionAmount
-computeAMMInternalOpen
-computeAMMInternalClose
-let a : BugError | null = null
-a
-sqrt
-normalizeBigNumberish
-minimize
-DECIMALS
-let b : AMMTradingContext | null = null
-b
-let c: BigNumber | null = null
-c
+  // case 4: open positions
+  if (
+    (isAMMBuy && context.position1.gte(_0) /* cross 0 after short close */)
+    || (!isAMMBuy && context.position1.lte(_0) /* cross 0 after long close */)
+  ) {
+    const openAmount = computeAMMOpenAmountWithPrice(context, limitPrice, isAMMBuy)
+    return context.deltaPosition.plus(openAmount)
+  }
+  return context.deltaPosition
+}
