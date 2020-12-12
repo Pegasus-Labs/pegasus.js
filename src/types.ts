@@ -164,7 +164,7 @@ export interface AMMTradingContext {
 
 export interface AMMTradingResult {
   trader: AccountStorage
-  newAMM: LiquidityPoolStorage
+  newPool: LiquidityPoolStorage
   lpFee: BigNumber
   vaultFee: BigNumber
   operatorFee: BigNumber

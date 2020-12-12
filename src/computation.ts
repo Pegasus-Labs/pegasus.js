@@ -243,7 +243,7 @@ export function computeAMMTrade(
   fakeAMMAccount = computeTradeWithPrice(p, marketID, fakeAMMAccount,
     tradingPrice, deltaAMMAmount, _0)
   fakeAMMAccount.cashBalance = fakeAMMAccount.cashBalance.plus(lpFee)
-  const newAMM: LiquidityPoolStorage = {
+  const newPool: LiquidityPoolStorage = {
     // clone the old pool to keep the return value immutable
     ...p,
     ammCashBalance: fakeAMMAccount.cashBalance,
@@ -255,7 +255,7 @@ export function computeAMMTrade(
 
   return {
     trader,
-    newAMM,
+    newPool,
     lpFee,
     vaultFee,
     operatorFee,
