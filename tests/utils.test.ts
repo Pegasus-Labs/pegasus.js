@@ -1,6 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
-import { BigNumberish } from '../src/types'
+import {
+  BigNumberish,
+  InvalidArgumentError,
+} from '../src/types'
 import {
   normalizeBigNumberish,
   hasTheSameSign,
@@ -131,7 +134,7 @@ describe('sqrt', function () {
   it('sqrt-1', function () {
     expect(() => {
       sqrt(new BigNumber('-1'))
-    }).toThrow('negative sqrt')
+    }).toThrow(InvalidArgumentError)
   })
   it('max num', function () {
     const i = sqrt(new BigNumber('57896044618658097711785492504343953926634.992332820282019728792003956564819967'))
