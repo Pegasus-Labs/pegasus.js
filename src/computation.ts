@@ -10,7 +10,7 @@ import {
   LiquidityPoolStorage,
   BigNumberish,
   AccountComputed,
-  TradingContext,
+  AMMTradingResult,
   InvalidArgumentError,
   BugError,
 } from './types'
@@ -208,7 +208,7 @@ export function computeAMMTrade(
   marketID: string,
   trader: AccountStorage,
   amount: BigNumberish, // trader's perspective
-): TradingContext {
+): AMMTradingResult {
   const normalizedAmount = normalizeBigNumberish(amount)
   if (normalizedAmount.isZero()) {
     throw new InvalidArgumentError(`bad amount ${normalizedAmount.toFixed()}`)
@@ -234,8 +234,28 @@ export function computeAMMTrade(
     p, marketID, trader, tradingPrice, deltaAMMAmount.negated(),
     market.lpFeeRate.plus(market.vaultFeeRate).plus(market.operatorFeeRate))
 
+  // new AMM
+  let fakeAMMAccount: AccountStorage = {
+    cashBalance: p.ammCashBalance,
+    positionAmount: market.ammPositionAmount,
+    entryValue: null, entryFunding: null,
+  }
+  fakeAMMAccount = computeTradeWithPrice(p, marketID, fakeAMMAccount,
+    tradingPrice, deltaAMMAmount, _0)
+  fakeAMMAccount.cashBalance = fakeAMMAccount.cashBalance.plus(lpFee)
+  const newAMM: LiquidityPoolStorage = {
+    // clone the old pool to keep the return value immutable
+    ...p,
+    ammCashBalance: fakeAMMAccount.cashBalance,
+    markets: {
+      ...p.markets,
+      [marketID]: { ...market, ammPositionAmount: fakeAMMAccount.positionAmount },
+    },
+  }
+
   return {
-    takerAccount: trader,
+    trader,
+    newAMM,
     lpFee,
     vaultFee,
     operatorFee,

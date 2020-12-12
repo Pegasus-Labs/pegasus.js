@@ -719,7 +719,10 @@ describe('computeAMMTrade', function () {
     expect(res.operatorFee).toApproximate(new BigNumber('0.3487583925'))
 
     // 7698.86 - 6975.16785 * (-0.5) + 9.9059375 * (-0.5) - 6975.16785 * 0.5 * 0.001
-    expect(res.takerAccount.cashBalance).toApproximate(new BigNumber('11178.003372325'))
+    expect(res.trader.cashBalance).toApproximate(new BigNumber('11178.003372325'))
+    // 83941.29865625 - 6975.16785 * 0.5 + 9.9059375 * (0.5) + 2.4413087475
+    expect(res.newAMM.ammCashBalance).toApproximate(new BigNumber('80461.1090087475'))
+    expect(res.newAMM.markets[TEST_MARKET_ID].ammPositionAmount).toApproximate(new BigNumber('2.8'))
   })
 
   it(`buy without cross 0`, function () {
@@ -730,7 +733,10 @@ describe('computeAMMTrade', function () {
     expect(res.operatorFee).toApproximate(new BigNumber('0.34970361621979023964506576568'))
 
     // 7698.86 - 6994.0723243958047929013153136 * (0.5) + 9.9059375 * (-0.5) - 6994.0723243958047929013153136 * 0.5 * 0.001
-    expect(res.takerAccount.cashBalance).toApproximate(new BigNumber('4203.2797703898997011528916855'))
+    expect(res.trader.cashBalance).toApproximate(new BigNumber('4203.2797703898997011528916855'))
+    // 83941.29865625 - 6994.0723243958047929013153136 * (-0.5) + 9.9059375 * (-0.5) + 2.44792531353853167751546035976
+    expect(res.newAMM.ammCashBalance).toApproximate(new BigNumber('87435.8297750114409281281731172'))
+    expect(res.newAMM.markets[TEST_MARKET_ID].ammPositionAmount).toApproximate(new BigNumber('1.8'))
   })
 
   it(`buy cross 0`, function () {
@@ -741,6 +747,9 @@ describe('computeAMMTrade', function () {
     expect(res.operatorFee).toApproximate(new BigNumber('2.31099235805020655355289557850'))
 
     // 7698.86 - 7003.0071456066865259178653894 * (3.3) + 9.9059375 * (3.3) - 7003.0071456066865259178653894 * 3.3 * 0.001
-    expect(res.takerAccount.cashBalance).toApproximate(new BigNumber('-15401.4839103325676010644847408'))
+    expect(res.trader.cashBalance).toApproximate(new BigNumber('-15401.4839103325676010644847408'))
+    // 83941.29865625 - 7003.0071456066865259178653894 * (-3.3) + 9.9059375 * (-3.3) + 16.1769465063514458748702690495
+    expect(res.newAMM.ammCashBalance).toApproximate(new BigNumber('107034.709589508416981403826054'))
+    expect(res.newAMM.markets[TEST_MARKET_ID].ammPositionAmount).toApproximate(new BigNumber('-1'))
   })
 })

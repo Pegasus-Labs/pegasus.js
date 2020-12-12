@@ -162,8 +162,9 @@ export interface AMMTradingContext {
   positionMarginWithoutCurrent: BigNumber // Σ_j (P_i_j * | N_j | / λ_j) where j ≠ id
 }
 
-export interface TradingContext {
-  takerAccount: AccountStorage
+export interface AMMTradingResult {
+  trader: AccountStorage
+  newAMM: LiquidityPoolStorage
   lpFee: BigNumber
   vaultFee: BigNumber
   operatorFee: BigNumber
