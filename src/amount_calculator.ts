@@ -39,12 +39,12 @@ export function computeMaxTradeAmountWithPrice(
   marketID: string,
   s: AccountStorage,
   price: BigNumberish,
-  maxLeverage: BigNumberish,  // trader's lev
+  traderMaxLeverage: BigNumberish,
   feeRate: BigNumberish,
-  isTraderBuy: boolean,  // trader's direction
+  isTraderBuy: boolean,
 ) {
   const normalizedPrice = normalizeBigNumberish(price)
-  const normalizedMaxLeverage = normalizeBigNumberish(maxLeverage)
+  const normalizedMaxLeverage = normalizeBigNumberish(traderMaxLeverage)
   const normalizedFeeRate = normalizeBigNumberish(feeRate)
   if (normalizedPrice.lte(_0) || normalizedMaxLeverage.lte(_0)) {
     throw Error(`bad price ${normalizedPrice.toFixed()} or maxLeverage ${normalizedMaxLeverage.toFixed()}`)
@@ -92,10 +92,10 @@ export function computeAMMMaxTradeAmount(
   p: LiquidityPoolStorage,
   marketID: string,
   trader: AccountStorage,
-  maxLeverage: BigNumberish,  // trader's lev
-  isTraderBuy: boolean,  // trader's direction
+  traderMaxLeverage: BigNumberish,
+  isTraderBuy: boolean,
 ): BigNumber {
-  const normalizeMaxLeverage = normalizeBigNumberish(maxLeverage)
+  const normalizeMaxLeverage = normalizeBigNumberish(traderMaxLeverage)
 
   // if AMM is unsafe, return 0
   const ammContext = initAMMTradingContext(p, marketID)
@@ -249,7 +249,7 @@ export function computeAMMInverseVWAP(
 export function computeAMMAmountWithPrice(
   p: LiquidityPoolStorage,
   marketID: string,
-  isTraderBuy: boolean,  // trader's direction
+  isTraderBuy: boolean,
   limitPrice: BigNumberish,
 ): BigNumber {
   if (!p.markets[marketID]) {
@@ -285,8 +285,8 @@ export function computeAMMAmountWithPrice(
 // // the returned amount is the AMM's perspective
 export function computeAMMOpenAmountWithPrice(
   context: AMMTradingContext,
-  limitPrice: BigNumber, // fill price <= limitPrice
-  isAMMBuy: boolean,  // AMM's direction
+  limitPrice: BigNumber,
+  isAMMBuy: boolean,
 ): BigNumber {
   if (
     (isAMMBuy && context.position1.lt(_0) /* short buy */)
@@ -344,8 +344,8 @@ export function computeAMMOpenAmountWithPrice(
 // the returned amount is the AMM's perspective
 export function computeAMMCloseAndOpenAmountWithPrice(
   context: AMMTradingContext,
-  limitPrice: BigNumber, // fill price >= limitPrice
-  isAMMBuy: boolean,  // AMM's direction
+  limitPrice: BigNumber,
+  isAMMBuy: boolean,
 ): BigNumber {
   if (!context.deltaMargin.isZero() || !context.deltaPosition.isZero()) {
     throw new InvalidArgumentError('partial close is not supported')
