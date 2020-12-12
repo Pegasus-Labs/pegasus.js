@@ -62,20 +62,20 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketID?: string
     otherIndex, otherPosition, otherHalfSpread, otherBeta1, otherBeta2,
     otherFundingRateCoefficient, otherMaxLeverage,
     cash, poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
-    marginBalanceWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
+    valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
   }
   ret = initAMMTradingContextEagerEvaluation(ret)
   return ret
 }
 
 export function initAMMTradingContextEagerEvaluation(context: AMMTradingContext): AMMTradingContext {
-  let marginBalanceWithoutCurrent = context.cash
+  let valueWithoutCurrent = _0
   let squareValueWithoutCurrent = _0
   let positionMarginWithoutCurrent = _0
   
   for (let j = 0; j < context.otherIndex.length; j++) {
-    // M_c + Σ_j (P_i N) where j ≠ id
-    marginBalanceWithoutCurrent = marginBalanceWithoutCurrent.plus(
+    // Σ_j (P_i N) where j ≠ id
+    valueWithoutCurrent = valueWithoutCurrent.plus(
       context.otherIndex[j].times(context.otherPosition[j])
     )
     // Σ_j (β P_i N^2) where j ≠ id
@@ -91,7 +91,7 @@ export function initAMMTradingContextEagerEvaluation(context: AMMTradingContext)
    
   return {
     ...context,
-    marginBalanceWithoutCurrent,
+    valueWithoutCurrent,
     squareValueWithoutCurrent,
     positionMarginWithoutCurrent,
   }
@@ -147,9 +147,6 @@ export function computeAMMInternalClose(context: AMMTradingContext, amount: BigN
   ret.cash = ret.cash.plus(deltaMargin)
   ret.position1 = position2
 
-  // eager evaluation
-  ret.marginBalanceWithoutCurrent = ret.marginBalanceWithoutCurrent.plus(deltaMargin)
-
   return ret
 }
 
@@ -188,19 +185,17 @@ export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNu
   ret.cash = ret.cash.plus(deltaMargin)
   ret.position1 = position2
 
-  // eager evaluation
-  ret.marginBalanceWithoutCurrent = ret.marginBalanceWithoutCurrent.plus(deltaMargin)
-
   return ret
 }
 
 // do not call this function if !isAMMSafe
 export function computeAMMPoolMargin(context: AMMTradingContext, beta: BigNumber): AMMTradingContext {
-  const marginBalanceWithCurrent = context.marginBalanceWithoutCurrent
+  const marginBalanceWithCurrent = context.cash
+    .plus(context.valueWithoutCurrent)
     .plus(context.index.times(context.position1))
-  const squareWithCurrent = context.squareValueWithoutCurrent
+  const squareValueWithCurrent = context.squareValueWithoutCurrent
     .plus(beta.times(context.index).times(context.position1).times(context.position1))
-  const beforeSqrt = marginBalanceWithCurrent.times(marginBalanceWithCurrent).minus(_2.times(squareWithCurrent))
+  const beforeSqrt = marginBalanceWithCurrent.times(marginBalanceWithCurrent).minus(_2.times(squareValueWithCurrent))
   if (beforeSqrt.lt(_0)) {
     throw new BugError('AMM available margin sqrt < 0')
   }
@@ -209,44 +204,14 @@ export function computeAMMPoolMargin(context: AMMTradingContext, beta: BigNumber
 }
 
 export function isAMMSafe(context: AMMTradingContext, beta: BigNumber): boolean {
-  if (context.position1.isZero()) {
-    // current market pos = 0
-    // (M_c + Σ P_i N) ^ 2 - 2 Σ β P_i N^2 >= 0
-    const beforeSqrt = context.marginBalanceWithoutCurrent
-      .times(context.marginBalanceWithoutCurrent)
-      .minus(_2.times(context.squareValueWithoutCurrent))
-    return beforeSqrt.gte(_0)
-  }
-
-  if (context.position1.lt(_0)) {
-    // short
-    if (context.marginBalanceWithoutCurrent.lt(_0)) {
-      // perpetual should revert before this function. we also mark this as unsafe
-      return false
-    }
-  }
-  
-  // -2 β N marginBalanceWithoutCurrent + β^2 N^2 + 2 squareValueWithoutCurrent
-  let beforeSqrt = _2.negated().times(beta).times(context.position1).times(context.marginBalanceWithoutCurrent)
-  beforeSqrt = beforeSqrt.plus(beta.times(beta).times(context.position1).times(context.position1))
-  beforeSqrt = beforeSqrt.plus(_2.times(context.squareValueWithoutCurrent))
-  if (beforeSqrt.lt(_0)) {
-    // means the curve is always above the x-axis
-    return true
-  }
-
-  // (-marginBalanceWithoutCurrent + β N + sqrt) / N
-  let safeIndex = context.marginBalanceWithoutCurrent.negated()
-  safeIndex = safeIndex.plus(beta.times(context.position1))
-  safeIndex = safeIndex.plus(sqrt(beforeSqrt))
-  safeIndex = safeIndex.div(context.position1)
-  
-  if (context.position1.gt(_0)) {
-    // long
-    return context.index.gte(safeIndex)
-  }
-  // short
-  return context.index.lte(safeIndex)
+  const valueWithCurrent = context.valueWithoutCurrent
+    .plus(context.index.times(context.position1))
+  const squareValueWithCurrent = context.squareValueWithoutCurrent
+    .plus(beta.times(context.index).times(context.position1).times(context.position1))
+  // √(2 Σ(β_j P_i_j N_j)) - Σ(P_i_j N_j). always positive
+  const beforeSqrt = _2.times(squareValueWithCurrent)
+  const safeCash = sqrt(beforeSqrt).minus(valueWithCurrent)
+  return context.cash.gte(safeCash)
 }
 
 // call computeAMMPoolMargin before this function. make sure isAMMSafe before this function
