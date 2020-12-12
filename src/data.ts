@@ -1,4 +1,4 @@
-import { AccountStorage, PerpetualStorage } from './types'
+import { AccountStorage, BugError, PerpetualStorage } from './types'
 import { Perpetual } from './wrapper/Perpetual'
 import { PerpetualFactory } from './wrapper/PerpetualFactory'
 import { BrokerRelay } from './wrapper/BrokerRelay'
@@ -159,7 +159,7 @@ export async function getActivatePerpetuals(
   getAddress(trader)
   const count = (await perpetualMaker.totalActivePerpetualCountForTrader(trader)).toNumber()
   if (count > 1000000) {
-    throw new Error(`activate perpetual count is too large: ${count}`)
+    throw new BugError(`activate perpetual count is too large: ${count}`)
   }
   let ret: string[] = []
   const step = 100

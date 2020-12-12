@@ -1,7 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { _MAX_UINT256, _0, _1, _2, _3, DECIMALS } from './constants'
-import { BigNumberish } from './types'
-import { SignerOrProvider } from './types'
+import { BigNumberish, SignerOrProvider, InvalidArgumentError } from './types'
 import { ethers } from 'ethers'
 
 export async function getContract(
@@ -17,7 +16,7 @@ export function normalizeBigNumberish(bigNumberish: BigNumberish): BigNumber {
     ? bigNumberish
     : new BigNumber(bigNumberish.toString())
   if (bigNumber.isNaN()) {
-    throw Error(`Passed bigNumberish '${bigNumberish}' of type '${typeof bigNumberish}' is not valid.`)
+    throw new InvalidArgumentError(`Passed bigNumberish '${bigNumberish}' of type '${typeof bigNumberish}' is not valid.`)
   }
   return bigNumber
 }
@@ -28,7 +27,7 @@ export function normalizeAddress(address: string): string {
 
 export function hasTheSameSign(x: BigNumber, y: BigNumber): boolean {
   if (x.s === null || y.s === null) {
-    throw Error(`null x or y`)
+    throw new InvalidArgumentError(`null x or y`)
   }
   return (x.s ^ y.s) == 0
 }
@@ -59,7 +58,7 @@ export function mostSignificantBit(x: BigNumber): number {
 
 export function sqrt(y: BigNumber): BigNumber {
   if (y.lt(_0)) {
-    throw new Error('negative sqrt')
+    throw new InvalidArgumentError('negative sqrt')
   }
 
   // we use 10**36 before sqrt

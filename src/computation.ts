@@ -11,6 +11,8 @@ import {
   BigNumberish,
   AccountComputed,
   TradingContext,
+  InvalidArgumentError,
+  BugError,
 } from './types'
 import {
   computeAMMInternalTrade
@@ -20,7 +22,7 @@ import { normalizeBigNumberish, hasTheSameSign, splitAmount } from './utils'
 
 export function computeAccount(p: LiquidityPoolStorage, marketID: string, s: AccountStorage): AccountDetails {
   if (!p.markets[marketID]) {
-    throw new Error(`market {marketID} not found in the pool`)
+    throw new InvalidArgumentError(`market {marketID} not found in the pool`)
   }
   const market = p.markets[marketID]
   const positionValue = market.markPrice.times(s.positionAmount.abs())
@@ -100,7 +102,7 @@ export function computeDecreasePosition(
   amount: BigNumber
 ): AccountStorage {
   if (!p.markets[marketID]) {
-    throw new Error(`market {marketID} not found in the pool`)
+    throw new InvalidArgumentError(`market {marketID} not found in the pool`)
   }
   const market = p.markets[marketID]
   let cashBalance = a.cashBalance
@@ -108,13 +110,13 @@ export function computeDecreasePosition(
   let entryValue = a.entryValue
   let entryFunding = a.entryFunding
   if (oldAmount.isZero() || amount.isZero() || hasTheSameSign(oldAmount, amount)) {
-    throw Error(`bad amount ${amount.toFixed()} to decrease when position is ${oldAmount.toFixed()}.`)
+    throw new InvalidArgumentError(`bad amount ${amount.toFixed()} to decrease when position is ${oldAmount.toFixed()}.`)
   }
   if (price.lte(_0)) {
-    throw Error(`bad price ${price.toFixed()}`)
+    throw new InvalidArgumentError(`bad price ${price.toFixed()}`)
   }
   if (oldAmount.abs().lt(amount.abs())) {
-    throw Error(`position size |${oldAmount.toFixed()}| is less than amount |${amount.toFixed()}|`)
+    throw new InvalidArgumentError(`position size |${oldAmount.toFixed()}| is less than amount |${amount.toFixed()}|`)
   }
   cashBalance = cashBalance.minus(price.times(amount))
   cashBalance = cashBalance.plus(market.accumulatedFundingPerContract.times(amount))
@@ -136,7 +138,7 @@ export function computeIncreasePosition(
   amount: BigNumber
 ): AccountStorage {
   if (!p.markets[marketID]) {
-    throw new Error(`market {marketID} not found in the pool`)
+    throw new InvalidArgumentError(`market {marketID} not found in the pool`)
   }
   const market = p.markets[marketID]
   let cashBalance = a.cashBalance
@@ -144,13 +146,13 @@ export function computeIncreasePosition(
   let entryValue = a.entryValue
   let entryFunding = a.entryFunding
   if (price.lte(_0)) {
-    throw Error(`bad price ${price.toFixed()}`)
+    throw new InvalidArgumentError(`bad price ${price.toFixed()}`)
   }
   if (amount.isZero()) {
-    throw Error(`bad amount`)
+    throw new InvalidArgumentError(`bad amount`)
   }
   if (!oldAmount.isZero() && !hasTheSameSign(oldAmount, amount)) {
-    throw Error(`bad increase size ${amount.toFixed()} where position is ${oldAmount.toFixed()}`)
+    throw new InvalidArgumentError(`bad increase size ${amount.toFixed()} where position is ${oldAmount.toFixed()}`)
   }
   cashBalance = cashBalance.minus(price.times(amount))
   cashBalance = cashBalance.plus(market.accumulatedFundingPerContract.times(amount))
@@ -169,7 +171,7 @@ export function computeFee(price: BigNumberish, amount: BigNumberish, feeRate: B
   const normalizedAmount = normalizeBigNumberish(amount)
   const normalizedFeeRate = normalizeBigNumberish(feeRate)
   if (normalizedPrice.lte(_0) || normalizedAmount.isZero()) {
-    throw Error(`bad price ${normalizedPrice.toFixed()} or amount ${normalizedAmount.toFixed()}`)
+    throw new InvalidArgumentError(`bad price ${normalizedPrice.toFixed()} or amount ${normalizedAmount.toFixed()}`)
   }
   return normalizedPrice.times(normalizedAmount.abs()).times(normalizedFeeRate)
 }
@@ -186,7 +188,7 @@ export function computeTradeWithPrice(
   const normalizedAmount = normalizeBigNumberish(amount)
   const normalizedFeeRate = normalizeBigNumberish(feeRate)
   if (normalizedPrice.lte(_0) || normalizedAmount.isZero()) {
-    throw Error(`bad price ${normalizedPrice.toFixed()} or amount ${normalizedAmount.toFixed()}`)
+    throw new InvalidArgumentError(`bad price ${normalizedPrice.toFixed()} or amount ${normalizedAmount.toFixed()}`)
   }
   let newAccount: AccountStorage = a
   let { close, open } = splitAmount(newAccount.positionAmount, normalizedAmount)
@@ -209,17 +211,17 @@ export function computeAMMTrade(
 ): TradingContext {
   const normalizedAmount = normalizeBigNumberish(amount)
   if (normalizedAmount.isZero()) {
-    throw Error(`bad amount ${normalizedAmount.toFixed()}`)
+    throw new InvalidArgumentError(`bad amount ${normalizedAmount.toFixed()}`)
   }
   if (!p.markets[marketID]) {
-    throw new Error(`market {marketID} not found in the pool`)
+    throw new InvalidArgumentError(`market {marketID} not found in the pool`)
   }
   const market = p.markets[marketID]
 
   // AMM
   const { deltaAMMAmount, tradingPrice } = computeAMMPrice(p, marketID, normalizedAmount)
   if (!deltaAMMAmount.negated().eq(normalizedAmount)) {
-    throw new Error(`trading amount mismatched ${deltaAMMAmount.negated().toFixed()} != ${normalizedAmount.toFixed()}`)
+    throw new BugError(`trading amount mismatched ${deltaAMMAmount.negated().toFixed()} != ${normalizedAmount.toFixed()}`)
   }
 
   // fee
@@ -253,7 +255,7 @@ export function computeAMMPrice(
 } {
   const normalizedAmount = normalizeBigNumberish(amount)
   if (normalizedAmount.isZero()) {
-    throw Error(`bad amount ${normalizedAmount.toFixed()}`)
+    throw new InvalidArgumentError(`bad amount ${normalizedAmount.toFixed()}`)
   }
   const ammTrading = computeAMMInternalTrade(p, marketID, normalizedAmount.negated())
   const deltaAMMMargin = ammTrading.deltaMargin

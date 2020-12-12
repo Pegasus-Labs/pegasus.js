@@ -6,12 +6,12 @@ import { BigNumber } from 'bignumber.js'
 import { DECIMALS, _0, _1, _2, _4 } from './constants'
 import { LiquidityPoolStorage, AMMTradingContext } from './types'
 import { sqrt, splitAmount } from './utils'
-import { InsufficientLiquidityError, BugError } from './types'
+import { InsufficientLiquidityError, BugError, InvalidArgumentError } from './types'
 
 export function initAMMTradingContext(p: LiquidityPoolStorage, marketID?: string): AMMTradingContext {
   if (marketID) {
     if (!p.markets[marketID]) {
-      throw new Error(`market {marketID} not found in the pool`)
+      throw new InvalidArgumentError(`market {marketID} not found in the pool`)
     }
   }
   
