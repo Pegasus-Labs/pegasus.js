@@ -41,7 +41,7 @@ export function computeMaxTradeAmountWithPrice(
   price: BigNumberish,
   maxLeverage: BigNumberish,  // trader's lev
   feeRate: BigNumberish,
-  isBuy: boolean,  // trader's direction
+  isTraderBuy: boolean,  // trader's direction
 ) {
   const normalizedPrice = normalizeBigNumberish(price)
   const normalizedMaxLeverage = normalizeBigNumberish(maxLeverage)
@@ -72,15 +72,15 @@ export function computeMaxTradeAmountWithPrice(
     return _0
   }
   let openAmount = cash.times(normalizedMaxLeverage).div(denominator)
-  if (!isBuy) {
+  if (!isTraderBuy) {
     openAmount = openAmount.negated()
   }
   const result = closeAmount.plus(openAmount)
 
   // check the direction
-  if (isBuy && result.lt(_0)) {
+  if (isTraderBuy && result.lt(_0)) {
     return _0
-  } else if (!isBuy && result.gt(_0)) {
+  } else if (!isTraderBuy && result.gt(_0)) {
     return _0
   }
 
@@ -93,17 +93,17 @@ export function computeAMMMaxTradeAmount(
   marketID: string,
   trader: AccountStorage,
   maxLeverage: BigNumberish,  // trader's lev
-  isBuy: boolean,  // trader's direction
+  isTraderBuy: boolean,  // trader's direction
 ): BigNumber {
   const normalizeMaxLeverage = normalizeBigNumberish(maxLeverage)
 
   // if AMM is unsafe, return 0
   const ammContext = initAMMTradingContext(p, marketID)
   if (!isAMMSafe(ammContext, ammContext.beta1)) {
-    if (isBuy && ammContext.position1.lt(_0)) {
+    if (isTraderBuy && ammContext.position1.lt(_0)) {
       return _0
     }
-    if (!isBuy && ammContext.position1.gt(_0)) {
+    if (!isTraderBuy && ammContext.position1.gt(_0)) {
       return _0
     }
   }
@@ -132,7 +132,7 @@ export function computeAMMMaxTradeAmount(
   const options: any = {
     maxIterations: 20
   }
-  if (isBuy) {
+  if (isTraderBuy) {
     options.lowerBound = 0
     options.guess = guess.toNumber()
   } else {
