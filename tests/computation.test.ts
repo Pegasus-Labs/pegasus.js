@@ -52,6 +52,7 @@ const market1: MarketStorage = {
   ammPositionAmount: _0, // assign me later
 }
 
+// long normal
 // availableCashBalance = 83941.29865625 - (9.9059375 * 2.3) = 83918.515
 // poolMargin = 100000, 100001.851808570406996527364893
 const amm1 = {
@@ -59,8 +60,8 @@ const amm1 = {
   positionAmount: new BigNumber('2.3'),
 }
 
+// short unsafe
 // availableCashBalance = 18119.79134375 - (9.9059375 * (-2.3)) = 18142.575
-// unsafe
 const amm3 = {
   cashBalance: new BigNumber('18119.79134375'),
   positionAmount: new BigNumber('-2.3'),

@@ -10,8 +10,7 @@ import {
   // computeAMMMaxTradeAmount,
   // computeAMMTradeAmountByMargin,
   // computeAMMAmountWithPrice,
-  // computeAMMShortInverseVWAP,
-  // computeAMMLongInverseVWAP,
+  computeAMMInverseVWAP,
 } from '../src/amount_calculator'
 import { computeAMMPoolMargin, initAMMTradingContext } from '../src/amm'
 import { _0, _1 } from '../src/constants'
@@ -56,35 +55,47 @@ const market1: MarketStorage = {
 }
 
 // short normal
-// availableCashBalance = 83941.29865625 - (9.9059375 * 2.3) = 83918.515
-// poolMargin = 100000, 100001.851808570406996527364893
+// availableCashBalance = 116095.73134375 - (9.9059375 * (-2.3)) = 116118.515
+// poolMargin = 100000, 100001.8518085704069965273648933
 const amm1 = {
-  cashBalance: new BigNumber('83941.29865625'),
-  positionAmount: new BigNumber('2.3'),
+  cashBalance: new BigNumber('116095.73134375'),
+  positionAmount: new BigNumber('-2.3'),
 }
 
 // short unsafe
-// availableCashBalance = 18119.79134375 - (9.9059375 * (-2.3)) = 18142.575
+// availableCashBalance = 16096.21634375 - (9.9059375 * (-2.3)) = 16119
 const amm3 = {
-  cashBalance: new BigNumber('18119.79134375'),
+  cashBalance: new BigNumber('16096.21634375'),
   positionAmount: new BigNumber('-2.3'),
 }
 
 // long normal
-// availableCashBalance = 18119.79134375 - (9.9059375 * (-2.3)) = 18142.575
+// availableCashBalance = 83941.29865625 - (9.9059375 * 2.3) = 83918.515
+// poolMargin = 100000, 100001.8518085704069965273648933
 const amm4 = {
-  cashBalance: new BigNumber('18119.79134375'),
+  cashBalance: new BigNumber('83941.29865625'),
   positionAmount: new BigNumber('2.3'),
 }
 
 // long unsafe
-// availableCashBalance = 18119.79134375 - (9.9059375 * (-2.3)) = 18142.575
+// availableCashBalance = -13977.21634375 - (9.9059375 * (2.3)) = -14000
 const amm6 = {
-  cashBalance: new BigNumber('18119.79134375'),
+  cashBalance: new BigNumber('-13977.21634375'),
   positionAmount: new BigNumber('2.3'),
 }
 
 const TEST_MARKET_ID = '0x0'
+
+const poolStorage0: LiquidityPoolStorage = {
+  collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
+  ammCashBalance: new BigNumber('100000'),
+  markets: {
+    [TEST_MARKET_ID]: {
+      ...market1,
+      ammPositionAmount: _0,
+    }
+  },
+}
 
 const poolStorage1: LiquidityPoolStorage = {
   collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
@@ -246,89 +257,61 @@ describe('computeMaxTradeAmountWithPrice', function () {
 //   })
 // })
 
-// describe('computeAMMShortInverseVWAP', function () {
-//   it(`newly open`, function () {
-//     const price = new BigNumber('8600')
-//     const ammDetails = computeAccount(poolStorage1, TEST_MARKET_ID, ammStorage1)
-//     const context = computeM0(initAMMTradingContext(poolStorage1, TEST_MARKET_ID, ammDetails), perpetualStorage.beta1)
-//     const amount = computeAMMShortInverseVWAP(context, price, perpetualStorage.beta1, false)
-//     expect(amount).toApproximate(normalizeBigNumberish('-1.150442655750823901'))
-//     const trade = computeAMMTrade(poolStorage1, TEST_MARKET_ID, accountStorage1, ammStorage1, amount.negated())
-//     expect(trade.tradingPrice).toApproximate(price.times(_1.plus(perpetualStorage.halfSpread)))
-//   })
+describe('computeAMMInverseVWAP', function () {
+  it(`short: open without vwap`, function () {
+    const price = new BigNumber('7050')
+    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage1, TEST_MARKET_ID), market1.beta1)
+    const amount = computeAMMInverseVWAP(context, price, market1.beta1, false)
+    expect(amount).toApproximate(normalizeBigNumberish('-9.68571428571428571428571429'))
+    const trade = computeAMMTrade(poolStorage1, TEST_MARKET_ID, accountStorage1, amount.negated())
+    expect(trade.tradingPrice).toApproximate(price.times(_1.plus(market1.halfSpread)))
+  })
 
-//   it(`open with vwap`, function () {
-//     const price = new BigNumber('8600')
-//     const ammDetails = computeAccount(poolStorage1, TEST_MARKET_ID, ammStorage1)
-//     const context = computeM0(initAMMTradingContext(poolStorage1, TEST_MARKET_ID, ammDetails), perpetualStorage.beta1)
-//     context.deltaMargin = new BigNumber('8590')
-//     context.deltaPosition = new BigNumber('-1')
-//     const amount = computeAMMShortInverseVWAP(context, price, perpetualStorage.beta1, false)
-//     expect(amount).toApproximate(normalizeBigNumberish('-1.166700495274031079648097380'))
-//   })
+  it(`short: open with vwap`, function () {
+    const price = new BigNumber('7050')
+    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage0, TEST_MARKET_ID), market1.beta1)
+    context.deltaMargin = new BigNumber('6950')
+    context.deltaPosition = new BigNumber('-1')
+    const amount = computeAMMInverseVWAP(context, price, market1.beta1, false)
+    expect(amount).toApproximate(normalizeBigNumberish('-16.06428285485485457978127589'))
+  })
 
-//   it(`denominator = 0`, function () {
-//     const price = new BigNumber('5600')
-//     const ammDetails = computeAccount(poolStorage1, TEST_MARKET_ID, ammStorage1)
-//     const context = computeM0(initAMMTradingContext(poolStorage1, TEST_MARKET_ID, ammDetails), perpetualStorage.beta1)
-//     context.deltaMargin = new BigNumber('5550')
-//     context.deltaPosition = new BigNumber('-1')
-//     const amount = computeAMMShortInverseVWAP(context, price, perpetualStorage.beta1, false)
-//     expect(amount).toApproximate(normalizeBigNumberish('0.019968285737965901480859663290'))
-//   })
+  it(`short: close`, function () {
+    const price = new BigNumber('7010')
+    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage1, TEST_MARKET_ID), market1.beta2)
+    const amount = computeAMMInverseVWAP(context, price, market1.beta2, true)
+    expect(amount).toApproximate(normalizeBigNumberish('1.42533803782316168264992492'))
+    const trade = computeAMMTrade(poolStorage1, TEST_MARKET_ID, accountStorage1, amount.negated())
+    expect(trade.tradingPrice).toApproximate(price.times(_1.minus(market1.halfSpread)))
+  })
 
-//   it(`newly close`, function () {
-//     const price = new BigNumber('7496.94559507299850561599560184')
-//     const ammDetails = computeAccount(poolStorage1, TEST_MARKET_ID, ammStorage1)
-//     const context = computeM0(initAMMTradingContext(poolStorage1, TEST_MARKET_ID, ammDetails), perpetualStorage.beta2)
-//     const amount = computeAMMShortInverseVWAP(context, price, perpetualStorage.beta2, true)
-//     expect(amount).toApproximate(normalizeBigNumberish('0.1'))
-//     const trade = computeAMMTrade(poolStorage1, TEST_MARKET_ID, accountStorage1, ammStorage1, amount.negated())
-//     expect(trade.tradingPrice).toApproximate(price.times(_1.minus(perpetualStorage.halfSpread)))
-//   })
-// })
+  it(`long: open without vwap`, function () {
+    const price = new BigNumber('6950')
+    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage4, TEST_MARKET_ID), market1.beta1)
+    const amount = computeAMMInverseVWAP(context, price, market1.beta1, true)
+    expect(amount).toApproximate(normalizeBigNumberish('9.68571428571428571428571429'))
+    const trade = computeAMMTrade(poolStorage4, TEST_MARKET_ID, accountStorage1, amount.negated())
+    expect(trade.tradingPrice).toApproximate(price.times(_1.minus(market1.halfSpread)))
+  })
 
-// describe('computeAMMLongInverseVWAP', function () {
-//   it(`newly open`, function () {
-//     const price = new BigNumber('6400')
-//     const ammDetails = computeAccount(poolStorage1, TEST_MARKET_ID, ammStorage4)
-//     const context = computeM0(initAMMTradingContext(poolStorage1, TEST_MARKET_ID, ammDetails), perpetualStorage.beta1)
-//     const amount = computeAMMLongInverseVWAP(context, price, perpetualStorage.beta1, false)
-//     expect(amount).toApproximate(normalizeBigNumberish('1.448990370102629051'))
-//     const trade = computeAMMTrade(poolStorage1, TEST_MARKET_ID, accountStorage1, ammStorage4, amount.negated())
-//     expect(trade.tradingPrice).toApproximate(price.times(_1.minus(perpetualStorage.halfSpread)))
-//   })
+  it(`long: open with vwap`, function () {
+    const price = new BigNumber('6950')
+    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage0, TEST_MARKET_ID), market1.beta1)
+    context.deltaMargin = new BigNumber('-7050')
+    context.deltaPosition = new BigNumber('1')
+    const amount = computeAMMInverseVWAP(context, price, market1.beta1, true)
+    expect(amount).toApproximate(normalizeBigNumberish('16.06428285485485457978127589'))
+  })
 
-//   it(`open with vwap`, function () {
-//     const price = new BigNumber('6400')
-//     const ammDetails = computeAccount(poolStorage1, TEST_MARKET_ID, ammStorage4)
-//     const context = computeM0(initAMMTradingContext(poolStorage1, TEST_MARKET_ID, ammDetails), perpetualStorage.beta1)
-//     context.deltaMargin = new BigNumber('-6410')
-//     context.deltaPosition = new BigNumber('1')
-//     const amount = computeAMMLongInverseVWAP(context, price, perpetualStorage.beta1, false)
-//     expect(amount).toApproximate(normalizeBigNumberish('1.5056824943534932257'))
-//   })
-
-//   it(`denominator = 0`, function () {
-//     const price = new BigNumber('8750')
-//     const ammDetails = computeAccount(poolStorage1, TEST_MARKET_ID, ammStorage4)
-//     const context = computeM0(initAMMTradingContext(poolStorage1, TEST_MARKET_ID, ammDetails), perpetualStorage.beta1)
-//     context.deltaMargin = new BigNumber('-8760')
-//     context.deltaPosition = new BigNumber('1')
-//     const amount = computeAMMLongInverseVWAP(context, price, perpetualStorage.beta1, false)
-//     expect(amount).toApproximate(normalizeBigNumberish('0.0045694996651542960242353'))
-//   })
-
-//   it(`newly close`, function () {
-//     const price = new BigNumber('6778.41582553989229623003259')
-//     const ammDetails = computeAccount(poolStorage1, TEST_MARKET_ID, ammStorage4)
-//     const context = computeM0(initAMMTradingContext(poolStorage1, TEST_MARKET_ID, ammDetails), perpetualStorage.beta2)
-//     const amount = computeAMMLongInverseVWAP(context, price, perpetualStorage.beta2, true)
-//     expect(amount).toApproximate(normalizeBigNumberish('-0.1'))
-//     const trade = computeAMMTrade(poolStorage1, TEST_MARKET_ID, accountStorage1, ammStorage4, amount.negated())
-//     expect(trade.tradingPrice).toApproximate(price.times(_1.plus(perpetualStorage.halfSpread)))
-//   })
-// })
+  it(`long: close`, function () {
+    const price = new BigNumber('6990')
+    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage4, TEST_MARKET_ID), market1.beta2)
+    const amount = computeAMMInverseVWAP(context, price, market1.beta2, false)
+    expect(amount).toApproximate(normalizeBigNumberish('-1.42533803782316168264992492'))
+    const trade = computeAMMTrade(poolStorage4, TEST_MARKET_ID, accountStorage1, amount.negated())
+    expect(trade.tradingPrice).toApproximate(price.times(_1.plus(market1.halfSpread)))
+  })
+})
 
 // describe('computeAMMAmountWithPrice - amm holds short, trader buys', function () {
 //   it(`amm unsafe`, function () {
@@ -354,7 +337,7 @@ describe('computeMaxTradeAmountWithPrice', function () {
 //   })
 
 //   it(`normal`, function () {
-//     const limitPrice = (new BigNumber(8600)).times(_1.plus(perpetualStorage.halfSpread))
+//     const limitPrice = (new BigNumber(8600)).times(_1.plus(market1.halfSpread))
 //     const ammDetails = computeAccount(poolStorage1, TEST_MARKET_ID, ammStorage1)
 //     const amount = computeAMMAmountWithPrice(poolStorage1, TEST_MARKET_ID, ammDetails, true, limitPrice)
 //     // -2.3 => -4.578554661208745284
@@ -364,7 +347,7 @@ describe('computeMaxTradeAmountWithPrice', function () {
 //   })
 
 //   it(`no solution`, function () {
-//     const limitPrice = new BigNumber(7010).times(_1.plus(perpetualStorage.halfSpread))
+//     const limitPrice = new BigNumber(7010).times(_1.plus(market1.halfSpread))
 //     const ammDetails = computeAccount(poolStorage1, TEST_MARKET_ID, ammStorage1)
 //     const amount = computeAMMAmountWithPrice(poolStorage1, TEST_MARKET_ID, ammDetails, true, limitPrice)
 //     expect(amount.isZero()).toBeTruthy()
@@ -387,7 +370,7 @@ describe('computeMaxTradeAmountWithPrice', function () {
 //   })
 
 //   it(`amm unsafe close + open`, function () {
-//     const limitPrice = new BigNumber(6999).times(_1.minus(perpetualStorage.halfSpread))
+//     const limitPrice = new BigNumber(6999).times(_1.minus(market1.halfSpread))
 //     const ammDetails = computeAccount(poolStorage1, TEST_MARKET_ID, ammStorage3)
 //     const amount = computeAMMAmountWithPrice(poolStorage1, TEST_MARKET_ID, ammDetails, false, limitPrice)
 //     expect(amount).toApproximate(normalizeBigNumberish('-1.016044559439571046')) // close -1 + open -0.016044559439571046
@@ -396,7 +379,7 @@ describe('computeMaxTradeAmountWithPrice', function () {
 //   })
 
 //   it(`close only`, function () {
-//     const limitPrice = new BigNumber('7496.94559507299850561599560184').times(_1.minus(perpetualStorage.halfSpread))
+//     const limitPrice = new BigNumber('7496.94559507299850561599560184').times(_1.minus(market1.halfSpread))
 //     const ammDetails = computeAccount(poolStorage1, TEST_MARKET_ID, ammStorage1)
 //     const amount = computeAMMAmountWithPrice(poolStorage1, TEST_MARKET_ID, ammDetails, false, limitPrice)
 //     expect(amount).toApproximate(normalizeBigNumberish('-0.1'))
@@ -405,7 +388,7 @@ describe('computeMaxTradeAmountWithPrice', function () {
 //   })
 
 //   it(`close + open`, function () {
-//     const limitPrice = new BigNumber(6999).times(_1.minus(perpetualStorage.halfSpread))
+//     const limitPrice = new BigNumber(6999).times(_1.minus(market1.halfSpread))
 //     const ammDetails = computeAccount(poolStorage1, TEST_MARKET_ID, ammStorage1)
 //     const amount = computeAMMAmountWithPrice(poolStorage1, TEST_MARKET_ID, ammDetails, false, limitPrice)
 //     expect(amount).toApproximate(normalizeBigNumberish('-4.072429388483517252')) // close -2.3 + open -1.772429388483517252
@@ -430,7 +413,7 @@ describe('computeMaxTradeAmountWithPrice', function () {
 //   })
 
 //   it(`amm unsafe - close + open`, function () {
-//     const limitPrice = new BigNumber(7001).times(_1.plus(perpetualStorage.halfSpread))
+//     const limitPrice = new BigNumber(7001).times(_1.plus(market1.halfSpread))
 //     const ammDetails = computeAccount(poolStorage1, TEST_MARKET_ID, ammStorage6)
 //     const amount = computeAMMAmountWithPrice(poolStorage1, TEST_MARKET_ID, ammDetails, true, limitPrice)
 //     expect(amount).toApproximate(normalizeBigNumberish('1.035909706138829466')) // close 1 + open 0.035909706138829466
@@ -439,7 +422,7 @@ describe('computeMaxTradeAmountWithPrice', function () {
 //   })
 
 //   it(`close only`, function () {
-//     const limitPrice = new BigNumber('6778.41582553989229623003259').times(_1.plus(perpetualStorage.halfSpread))
+//     const limitPrice = new BigNumber('6778.41582553989229623003259').times(_1.plus(market1.halfSpread))
 //     const ammDetails = computeAccount(poolStorage1, TEST_MARKET_ID, ammStorage4)
 //     const amount = computeAMMAmountWithPrice(poolStorage1, TEST_MARKET_ID, ammDetails, true, limitPrice)
 //     expect(amount).toApproximate(normalizeBigNumberish('0.1')) // close 1
@@ -448,7 +431,7 @@ describe('computeMaxTradeAmountWithPrice', function () {
 //   })
 
 //   it(`close + open`, function () {
-//     const limitPrice = new BigNumber(7001).times(_1.plus(perpetualStorage.halfSpread))
+//     const limitPrice = new BigNumber(7001).times(_1.plus(market1.halfSpread))
 //     const ammDetails = computeAccount(poolStorage1, TEST_MARKET_ID, ammStorage4)
 //     const amount = computeAMMAmountWithPrice(poolStorage1, TEST_MARKET_ID, ammDetails, true, limitPrice)
 //     expect(amount).toApproximate(normalizeBigNumberish('3.948030273926512578')) // close 2.3 + open 1.648030273926512578
@@ -481,7 +464,7 @@ describe('computeMaxTradeAmountWithPrice', function () {
 //   })
 
 //   it(`normal`, function () {
-//     const limitPrice = (new BigNumber(6400)).times(_1.minus(perpetualStorage.halfSpread))
+//     const limitPrice = (new BigNumber(6400)).times(_1.minus(market1.halfSpread))
 //     const ammDetails = computeAccount(poolStorage1, TEST_MARKET_ID, ammStorage4)
 //     const amount = computeAMMAmountWithPrice(poolStorage1, TEST_MARKET_ID, ammDetails, false, limitPrice)
 //     expect(amount).toApproximate(normalizeBigNumberish('-1.448990370102629051'))
@@ -490,7 +473,7 @@ describe('computeMaxTradeAmountWithPrice', function () {
 //   })
 
 //   it(`no solution`, function () {
-//     const limitPrice = new BigNumber(6990).times(_1.minus(perpetualStorage.halfSpread))
+//     const limitPrice = new BigNumber(6990).times(_1.minus(market1.halfSpread))
 //     const ammDetails = computeAccount(poolStorage1, TEST_MARKET_ID, ammStorage4)
 //     const amount = computeAMMAmountWithPrice(poolStorage1, TEST_MARKET_ID, ammDetails, false, limitPrice)
 //     expect(amount.isZero()).toBeTruthy()
@@ -517,3 +500,4 @@ computeAMMTrade
 computeAMMPrice
 normalizeBigNumberish
 initAMMTradingContext
+poolStorage0

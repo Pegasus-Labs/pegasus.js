@@ -201,127 +201,51 @@ export function computeMaxTradeAmountWithPrice(
 //   return result
 // }
 
-// // the inverse function of VWAP when AMM holds short
-// // call computeM0 before this function
-// // the returned amount(= pos2 - pos1) is the amm's perspective
-// // make sure ammSafe before this function
-// export function computeAMMShortInverseVWAP(
-//   context: AMMTradingContext,
-//   price: BigNumber,
-//   beta: BigNumber,
-//   isClosing: boolean,
-// ): BigNumber {
-//   const { index, pos1, m0 } = context
-//   const previousMa1MinusMa2 = context.deltaMargin.negated()
-//   const previousAmount = context.deltaPosition
-//   /*
-//   D = previousMa1MinusMa2 - previousAmount price;
-//   E = beta - 1;
-//   F = m0 + i pos1;
-//   A = i F (i E + price);
-//   B = i^3 E pos1^2 + m0^2 price + 
-//     i^2 pos1 (-D + 2 E m0 + pos1 price) - 
-//     i m0 (D + m0 - 2 pos1 price);
-//   C = F^2 D;
-//   sols = 1/(2 A) (-B - sqrt(B^2 + 4 A C));
-//   */
-//   const d = previousMa1MinusMa2.minus(previousAmount.times(price))
-//   const e = beta.minus(_1)
-//   const f = index.times(pos1).plus(m0)
-//   const a = index.times(e).plus(price).times(f).times(index)
-//   let denominator = a.times(_2)
-//   if (denominator.isZero()) {
-//     /*
-//     G = i E previousAmount + previousMa1MinusMa2;
-//     sols = -(F^2 G)/i /(beta m0^2 + F G)
-//     */
-//     const g = index.times(e).times(previousAmount).plus(previousMa1MinusMa2)
-//     let denominator2 = beta.times(m0).times(m0).plus(f.times(g))
-//     if (denominator2.isZero()) {
-//       // no solution
-//       // TODO: do we need an exception?
-//       console.log(`warn: computeAMMShortInverseVWAP denominator2 = 0. m0 = ${m0.toFixed()}, pos1 = ${pos1.toFixed()}, index = ${index.toFixed()}, price = ${price.toFixed()}, previousMa1MinusMa2 = ${previousMa1MinusMa2.toFixed()}, previousAmount = ${previousAmount.toFixed()}`)
-//       return _0
-//     }
-//     const amount = f.times(f).times(g).div(index).div(denominator2)
-//     return amount.dp(DECIMALS, BigNumber.ROUND_DOWN)
-//   }
-//   let b = index.times(index).times(index).times(e).times(pos1).times(pos1)
-//   b = b.plus(m0.times(m0).times(price))
-//   b = b.plus(pos1.times(price).plus(e.times(m0).times(_2)).minus(d).times(pos1).times(index).times(index))
-//   b = b.minus(d.plus(m0).minus(pos1.times(price).times(_2)).times(m0).times(index))
-//   const c = f.times(f).times(d)
-//   const beforeSqrt = a.times(c).times(4).plus(b.times(b))
-//   if (beforeSqrt.lt(_0)) {
-//     console.log(`warn: computeAMMShortInverseVWAP Δ < 0. m0 = ${m0.toFixed()}, pos1 = ${pos1.toFixed()}, index = ${index.toFixed()}, price = ${price.toFixed()}, previousMa1MinusMa2 = ${previousMa1MinusMa2.toFixed()}, previousAmount = ${previousAmount.toFixed()}`)
-//     return _0
-//   }
-//   let numerator = sqrt(beforeSqrt)
-//   if (isClosing) {
-//     numerator = numerator.negated()
-//   }
-//   numerator = numerator.plus(b).negated()
-//   const amount = numerator.div(denominator)
-//   return amount.dp(DECIMALS, BigNumber.ROUND_DOWN)
-// }
+// the inverse function of VWAP of AMM pricing function
+// call computeAMMPoolMargin before this function
+// the returned amount(= pos2 - pos1) is the AMM's perspective
+// make sure ammSafe before this function
+export function computeAMMInverseVWAP(
+  context: AMMTradingContext,
+  price: BigNumber,
+  beta: BigNumber,
+  isAMMBuy: boolean,
+): BigNumber {
+  const previousMa1MinusMa2 = context.deltaMargin.negated()
+  const previousAmount = context.deltaPosition
 
-// // the inverse function of VWAP when AMM holds long
-// // call computeM0 before this function
-// // the returned amount(= pos2 - pos1) is the amm's perspective
-// // 
-// export function computeAMMLongInverseVWAP(
-//   context: AMMTradingContext,
-//   price: BigNumber,
-//   beta: BigNumber,
-//   isClosing: boolean,
-// ): BigNumber {
-//   const { index, m0, ma1 } = context
-//   const previousMa1MinusMa2 = context.deltaMargin.negated()
-//   const previousAmount = context.deltaPosition
-//   /*
-//   D = previousMa1MinusMa2 - previousAmount price;
-//   A = ma1 price (i + (-1 + beta) price);
-//   B = i ma1 (D + ma1) - beta m0^2 price + (-1 + beta) ma1 (2 D + ma1) price;
-//   C = D (ma1 (ma1 + D) + beta (m0^2 - ma1 (ma1 + D)));
-//   sols = 1/(2 A) (B + sqrt(B^2 + 4 A C));
-//   */
-//   const d = previousMa1MinusMa2.minus(previousAmount.times(price))
-//   const a = beta.minus(_1).times(price).plus(index).times(ma1).times(price)
-//   let b = ma1.plus(d).times(index).times(ma1)
-//   b = b.minus(beta.times(m0).times(m0).times(price))
-//   b = b.plus(beta.minus(_1).times(ma1).times(_2.times(d).plus(ma1)).times(price))
-//   let c = ma1.plus(d).times(ma1).negated().plus(m0.times(m0)).times(beta)
-//   c = c.plus(ma1.plus(d).times(ma1))
-//   c = c.times(d)
-//   let denominator = a.times(_2)
-//   if (denominator.isZero()) {
-//     // G = i previousAmount + previousMa1MinusMa2 (beta - 1);
-//     // H = beta m0^2 - ma1 G;
-//     // sols = kappaG (-H + ma1^2 (k - 1))/i/H
-//     const g = index.times(previousAmount).plus(beta.minus(_1).times(previousMa1MinusMa2))
-//     const h = beta.times(m0).times(m0).minus(ma1.times(g))
-//     if (h.isZero()) {
-//       // no solution
-//       // TODO: do we need an exception?
-//       console.log(`warn: computeAMMLongInverseVWAP denominator2 = 0. m0 = ${m0.toFixed()}, ma1 = ${ma1.toFixed()}, index = ${index.toFixed()}, price = ${price.toFixed()}, previousMa1MinusMa2 = ${previousMa1MinusMa2.toFixed()}, previousAmount = ${previousAmount.toFixed()}`)
-//       return _0
-//     }
-//     const amount = beta.minus(_1).times(ma1).times(ma1).minus(h).times(g).div(index).div(h)
-//     return amount.dp(DECIMALS, BigNumber.ROUND_DOWN)
-//   }
-//   let beforeSqrt = a.times(c).times(4).plus(b.times(b))
-//   if (beforeSqrt.lt(_0)) {
-//     console.log(`warn: computeAMMLongInverseVWAP Δ < 0. m0 = ${m0.toFixed()}, ma1 = ${ma1.toFixed()}, index = ${index.toFixed()}, price = ${price.toFixed()}, previousMa1MinusMa2 = ${previousMa1MinusMa2.toFixed()}, previousAmount = ${previousAmount.toFixed()}`)
-//     return _0
-//   }
-//   let numerator = sqrt(beforeSqrt)
-//   if (isClosing) {
-//     numerator = numerator.negated()
-//   }
-//   numerator = numerator.plus(b)
-//   const amount = numerator.div(denominator)
-//   return amount.dp(DECIMALS, BigNumber.ROUND_DOWN)
-// }
+  /*
+  A = P_i β;
+  B = -2 P_i M + 2 A N1 + 2 M price;
+  C = -2 M (previousMa1MinusMa2 - previousAmount price);
+  sols = (-B ± sqrt(B^2 - 4 A C)) / (2 A);
+  */
+  const a = context.index.times(beta)
+  let denominator = a.times(_2)
+  if (denominator.isZero()) {
+    throw Error(`bad market parameter beta ${beta.toFixed()} or index ${context.index}.`)
+  }
+  let b = context.index.times(context.poolMargin).negated()
+  b = b.plus(a.times(context.position1))
+  b = b.plus(context.poolMargin.times(price))
+  b = b.times(_2)
+  const c = previousMa1MinusMa2.minus(previousAmount.times(price)).times(context.poolMargin).times(_2).negated()
+  const beforeSqrt = a.times(c).times(4).negated().plus(b.times(b))
+  if (beforeSqrt.lt(_0)) {
+    console.log(`warn: computeAMMShortInverseVWAP Δ < 0. M = ${context.poolMargin.toFixed()}, `
+      + `pos1 = ${context.position1.toFixed()}, index = ${context.index.toFixed()}, `
+      + `price = ${price.toFixed()}, previousMa1MinusMa2 = ${previousMa1MinusMa2.toFixed()}, `
+      + `previousAmount = ${previousAmount.toFixed()}`)
+    return _0
+  }
+  let numerator = sqrt(beforeSqrt)
+  if (!isAMMBuy) {
+    numerator = numerator.negated()
+  }
+  numerator = numerator.minus(b)
+  const amount = numerator.div(denominator)
+  return amount.dp(DECIMALS, BigNumber.ROUND_DOWN)
+}
 
 // // the returned amount is the trader's perspective
 // export function computeAMMAmountWithPrice(
