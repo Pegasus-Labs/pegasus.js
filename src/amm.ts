@@ -82,7 +82,6 @@ export function initAMMTradingContextEagerEvaluation(context: AMMTradingContext)
     squareValueWithoutCurrent = squareValueWithoutCurrent.plus(
       context.otherBeta1[j].times(context.otherIndex[j]).times(context.otherPosition[j]).times(context.otherPosition[j])
     )
-
     // Σ_j (P_i_j * | N_j | / λ_j) where j ≠ id
     positionMarginWithoutCurrent = positionMarginWithoutCurrent.plus(
       context.otherIndex[j].times(context.otherPosition[j].abs()).div(context.otherMaxLeverage[j])
