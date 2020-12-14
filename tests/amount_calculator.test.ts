@@ -195,9 +195,9 @@ describe('computeAMMMaxTradeAmount', function () {
   const targetLeverage = _1
 
   it(`safe trader + safe amm, trader buy`, function () {
-    const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_ID, accountStorage1, targetLeverage, true) // 1.12090
+    const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_ID, accountStorage1, targetLeverage, true) // 1.1
     const context = computeAMMTrade(poolStorage4, TEST_MARKET_ID, accountStorage1, amount)
-    const newTrader = computeAccount(poolStorage4, TEST_MARKET_ID, context.takerAccount)
+    const newTrader = computeAccount(poolStorage4, TEST_MARKET_ID, context.trader)
     expect(amount.gt('1.0')).toBeTruthy()
     expect(amount.lt('1.2')).toBeTruthy()
     expect(newTrader.accountComputed.leverage.gt('0.99')).toBeTruthy()
@@ -205,9 +205,9 @@ describe('computeAMMMaxTradeAmount', function () {
   })
 
   it(`safe trader + safe amm, trader sell`, function () {
-    const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_ID, accountStorage1, targetLeverage, false) // -4.96708
+    const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_ID, accountStorage1, targetLeverage, false) // -5.6
     const context = computeAMMTrade(poolStorage4, TEST_MARKET_ID, accountStorage1, amount)
-    const newTrader = computeAccount(poolStorage4, TEST_MARKET_ID, context.takerAccount)
+    const newTrader = computeAccount(poolStorage4, TEST_MARKET_ID, context.trader)
     expect(amount.lt('-5')).toBeTruthy()
     expect(amount.gt('-6')).toBeTruthy()
     expect(newTrader.accountComputed.leverage.gt('0.99')).toBeTruthy()
