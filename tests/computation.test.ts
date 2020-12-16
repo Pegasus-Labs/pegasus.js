@@ -47,7 +47,7 @@ const market1: MarketStorage = {
   state: MarketState.NORMAL,
   markPrice: new BigNumber(6965),
   indexPrice: new BigNumber(7000),
-  accumulatedFundingPerContract: new BigNumber('9.9059375'),
+  unitAccumulativeFunding: new BigNumber('9.9059375'),
 
   ammPositionAmount: _0, // assign me later
 }
@@ -372,7 +372,7 @@ describe('computeTradeWithPrice', function () {
   }
 
   //console.log(fundingResult.markPrice.toString())
-  //fundingResult.accumulatedFundingPerContract = 9.9059375
+  //fundingResult.unitAccumulativeFunding = 9.9059375
   //fundingResult.markPrice = 6965
   //new BigNumber('23694.9847500349122')
   const tradeCases: Array<TradeCase> = [

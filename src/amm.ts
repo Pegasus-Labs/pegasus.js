@@ -36,7 +36,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketIndex?: str
   let cash = p.poolCashBalance
   for (let id in p.markets) {
     const market = p.markets[id]
-    cash = cash.minus(market.accumulatedFundingPerContract.times(market.ammPositionAmount))
+    cash = cash.minus(market.unitAccumulativeFunding.times(market.ammPositionAmount))
     if (id === marketIndex) {
       index = market.indexPrice
       position1 = market.ammPositionAmount

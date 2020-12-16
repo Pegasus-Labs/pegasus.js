@@ -32,7 +32,7 @@ export function computeAccount(p: LiquidityPoolStorage, marketIndex: number, s: 
   if (!s.positionAmount.isZero()) {
     reservedCash = market.keeperGasReward
   }
-  const availableCashBalance = s.cashBalance.minus(s.positionAmount.times(market.accumulatedFundingPerContract))
+  const availableCashBalance = s.cashBalance.minus(s.positionAmount.times(market.unitAccumulativeFunding))
   const marginBalance = availableCashBalance.plus(market.markPrice.times(s.positionAmount))
   const maxWithdrawable = BigNumber.max(_0, marginBalance.minus(positionMargin).minus(reservedCash))
   const availableMargin = BigNumber.max(_0, maxWithdrawable)
@@ -42,7 +42,7 @@ export function computeAccount(p: LiquidityPoolStorage, marketIndex: number, s: 
   
   let fundingPNL: BigNumber | null = null
   if (s.entryFunding) {
-    fundingPNL = s.entryFunding.minus(s.positionAmount.times(market.accumulatedFundingPerContract))
+    fundingPNL = s.entryFunding.minus(s.positionAmount.times(market.unitAccumulativeFunding))
   }
   
   let entryPrice: BigNumber | null = null
@@ -119,7 +119,7 @@ export function computeDecreasePosition(
     throw new InvalidArgumentError(`position size |${oldAmount.toFixed()}| is less than amount |${amount.toFixed()}|`)
   }
   cashBalance = cashBalance.minus(price.times(amount))
-  cashBalance = cashBalance.plus(market.accumulatedFundingPerContract.times(amount))
+  cashBalance = cashBalance.plus(market.unitAccumulativeFunding.times(amount))
   const positionAmount = oldAmount.plus(amount)
   entryFunding = entryFunding
     ? entryFunding.times(positionAmount).div(oldAmount)
@@ -155,12 +155,12 @@ export function computeIncreasePosition(
     throw new InvalidArgumentError(`bad increase size ${amount.toFixed()} where position is ${oldAmount.toFixed()}`)
   }
   cashBalance = cashBalance.minus(price.times(amount))
-  cashBalance = cashBalance.plus(market.accumulatedFundingPerContract.times(amount))
+  cashBalance = cashBalance.plus(market.unitAccumulativeFunding.times(amount))
   entryValue = entryValue
     ? entryValue.plus(price.times(amount))
     : null
   entryFunding = entryFunding
-    ? entryFunding.plus(market.accumulatedFundingPerContract.times(amount))
+    ? entryFunding.plus(market.unitAccumulativeFunding.times(amount))
     : null
   const positionAmount = oldAmount.plus(amount)
   return { cashBalance, entryValue, positionAmount, entryFunding }

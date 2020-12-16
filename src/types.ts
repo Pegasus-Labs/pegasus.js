@@ -84,7 +84,7 @@ export interface MarketStorage {
   state: MarketState
   markPrice: BigNumber
   indexPrice: BigNumber
-  accumulatedFundingPerContract: BigNumber
+  unitAccumulativeFunding: BigNumber
   
   halfSpread: BigNumber // α
   openSlippageFactor: BigNumber // β1

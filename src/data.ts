@@ -1,16 +1,20 @@
-import { AccountStorage, BugError, InvalidArgumentError, LiquidityPoolStorage, MarketTuple } from './types'
+import { AccountStorage, BugError, InvalidArgumentError, LiquidityPoolStorage, MarketState, MarketTuple } from './types'
 import { BrokerRelay } from './wrapper/BrokerRelay'
 import { BrokerRelayFactory } from './wrapper/BrokerRelayFactory'
 import { LiquidityPool } from './wrapper/LiquidityPool'
 import { LiquidityPoolFactory } from './wrapper/LiquidityPoolFactory'
 import { PoolFactory } from './wrapper/PoolFactory'
 import { PoolFactoryFactory } from './wrapper/PoolFactoryFactory'
+import { IOracle } from './wrapper/IOracle'
+import { IOracleFactory } from './wrapper/IOracleFactory'
 import { SignerOrProvider } from './types'
 import { ethers } from 'ethers'
 import { normalizeBigNumberish } from './utils'
 import { BigNumber } from 'bignumber.js'
 import { getAddress } from "@ethersproject/address"
 import { DECIMALS } from './constants'
+import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
+import { exception } from 'console'
 
 export function getLiquidityPoolContract(
   contractAddress: string,
@@ -33,15 +37,30 @@ export function getPoolFactoryContract(
   return PoolFactoryFactory.connect(contractAddress, signerOrProvider)
 }
 
+interface MarketInfoAbi {
+  state: number;
+  oracle: string;
+  markPrice: EthersBigNumber;
+  indexPrice: EthersBigNumber;
+  unitAccumulativeFunding: EthersBigNumber;
+  fundingRate: EthersBigNumber;
+  coreParameters: [ EthersBigNumber, EthersBigNumber, EthersBigNumber, EthersBigNumber, EthersBigNumber, EthersBigNumber, EthersBigNumber, EthersBigNumber ];
+  riskParameters: [ EthersBigNumber, EthersBigNumber, EthersBigNumber, EthersBigNumber, EthersBigNumber ];
+  0: number; 1: string; 2: EthersBigNumber; 3: EthersBigNumber; 4: EthersBigNumber; 5: EthersBigNumber;
+  6: [ EthersBigNumber, EthersBigNumber, EthersBigNumber, EthersBigNumber, EthersBigNumber, EthersBigNumber, EthersBigNumber, EthersBigNumber ];
+  7: [EthersBigNumber, EthersBigNumber, EthersBigNumber, EthersBigNumber, EthersBigNumber];
+}
+
 export async function getLiquidityPool(
   liquidityPool: LiquidityPool
 ): Promise<LiquidityPoolStorage> {
+  // pool
   const poolData = await Promise.all([
     liquidityPool.liquidityPoolInfo(),
     liquidityPool.shareToken(),
     liquidityPool.governor(),
   ])
-  let pool = {
+  let pool: LiquidityPoolStorage = {
     operatorAddress: poolData[0].operator,
     collateralTokenAddress: poolData[0].collateral,
     shareTokenAddress: poolData[1],
@@ -59,16 +78,55 @@ export async function getLiquidityPool(
     markets: [],
   }
 
+  // markets
   const marketCount = poolData[0].marketCount.toNumber()
   if (marketCount > 10000) {
     throw new BugError(`market count is too large: ${marketCount}`)
   }
+  const marketsInfoPromise: Promise<MarketInfoAbi>[] = []
+  for (let i = 0; i < marketCount; i++) {
+    marketsInfoPromise.push(liquidityPool.callStatic.marketInfo(i))
+  }
+  const marketsInfo = await Promise.all(marketsInfoPromise)
+  marketsInfo.forEach((market, i) => {
+    if (market.state < MarketState.INIT || market.state > MarketState.CLEARED) {
+      throw new Error(`unrecognized market state: ${market.state}`)
+    }
+    pool.markets[i] = {
+      oracleAddress: market.oracle,
+      underlyingSymbol: "assigned later",
+      initialMarginRate: BigNumber
+      maintenanceMarginRate: BigNumber
+      operatorFeeRate: BigNumber
+      lpFeeRate: BigNumber
+      referrerRebateRate: BigNumber
+      liquidationPenaltyRate: BigNumber
+      keeperGasReward: BigNumber
+      insuranceFundRate: BigNumber
 
-  
+      state: market.state as MarketState,
+      markPrice: normalizeBigNumberish(market.markPrice).shiftedBy(-DECIMALS),
+      indexPrice: normalizeBigNumberish(market.indexPrice).shiftedBy(-DECIMALS),
+      unitAccumulativeFunding: normalizeBigNumberish(market.unitAccumulativeFunding).shiftedBy(-DECIMALS),
+      
+      halfSpread: BigNumber // α
+      openSlippageFactor: BigNumber // β1
+      closeSlippageFactor: BigNumber // β2
+      fundingRateLimit: BigNumber // γ
+      maxLeverage: BigNumber  // λ
 
-  // liquidityPool.callStatic.state(),
-  // liquidityPool.callStatic.fundingState(),
+      ammPositionAmount: BigNumber
 
+
+      
+      
+      unitAccumulativeFunding: EthersBigNumber;
+      fundingRate: EthersBigNumber;
+      coreParameters: [ EthersBigNumber, EthersBigNumber, EthersBigNumber, EthersBigNumber, EthersBigNumber, EthersBigNumber, EthersBigNumber, EthersBigNumber ];
+      riskParameters:
+
+    })
+  })
 
   {
     vaultFeeRate: BigNumber;
@@ -110,9 +168,22 @@ export async function getLiquidityPool(
     insuranceFund2: normalizeBigNumberish(result[2].donatedInsuranceFund).shiftedBy(-DECIMALS),
     markPrice: normalizeBigNumberish(result[2].markPrice).shiftedBy(-DECIMALS),
     indexPrice: normalizeBigNumberish(result[2].indexPrice).shiftedBy(-DECIMALS),
-    accumulatedFundingPerContract: normalizeBigNumberish(result[3].unitAccumulativeFunding).shiftedBy(-DECIMALS),
+    unitAccumulativeFunding: normalizeBigNumberish(result[3].unitAccumulativeFunding).shiftedBy(-DECIMALS),
     fundingTime: result[3].fundingTime.toNumber(),
   }
+
+
+
+  // underlying symbol
+  const oracleInfoPromise: Promise<string>[] = []
+  for (let i = 0; i < marketCount; i++) {
+    const oracle = IOracleFactory.connect(pool.markets[i].oracleAddress, signerOrProvider)
+    oracleInfoPromise.push(oracle.underlyingAsset())
+  }
+  const oracleInfo = await Promise.all(oracleInfo)
+  oracleInfo.forEach((symbol, i) => {
+    pool.markets[i].underlyingSymbol = symbol
+  })
 
   return pool
 }

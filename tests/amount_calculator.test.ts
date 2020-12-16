@@ -49,7 +49,7 @@ const market1: MarketStorage = {
   state: MarketState.NORMAL,
   markPrice: new BigNumber(6965),
   indexPrice: new BigNumber(7000),
-  accumulatedFundingPerContract: new BigNumber('9.9059375'),
+  unitAccumulativeFunding: new BigNumber('9.9059375'),
 
   ammPositionAmount: _0, // assign me later
 }
