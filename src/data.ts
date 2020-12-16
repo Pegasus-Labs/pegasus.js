@@ -11,11 +11,11 @@ import { BigNumber } from 'bignumber.js'
 import { getAddress } from "@ethersproject/address"
 import { DECIMALS } from './constants'
 
-export function getPerpetualContract(
-  perpetualAddress: string,
+export function getLiquidityPoolContract(
+  contractAddress: string,
   signerOrProvider: SignerOrProvider
-): Perpetual {
-  return PerpetualFactory.connect(perpetualAddress, signerOrProvider)
+): LiquidityPool {
+  return LiquidityPoolFactory.connect(contractAddress, signerOrProvider)
 }
 
 export function getBrokerRelayContract(
@@ -25,49 +25,27 @@ export function getBrokerRelayContract(
   return BrokerRelayFactory.connect(contractAddress, signerOrProvider)
 }
 
-export function getPerpetualMakerContract(
-  contractAddress: string,
-  signerOrProvider: SignerOrProvider
-): PerpetualMaker {
-  return PerpetualMakerFactory.connect(contractAddress, signerOrProvider)
-}
-
-export async function getPerpetualStorageMock(
-  perpetual: Perpetual
-): Promise<PerpetualStorage> {
-  perpetual // just ref
-
-  return {
-    // perpetual
-    underlyingSymbol: 'ETH',
-    collateralTokenAddress: '0xf9bf6031fBDfBA94c29C3b2A399D97B22595CD79', // USDT
-    shareTokenAddress: '',
-    oracleAddress: '',
-    initialMarginRate: normalizeBigNumberish(0.1),
-    maintenanceMarginRate: normalizeBigNumberish(0.075),
-    operatorFeeRate: normalizeBigNumberish(0.0001),
-    vaultFeeRate: normalizeBigNumberish(0.0001),
-    lpFeeRate: normalizeBigNumberish(0.0008),
-    referrerRebateRate: normalizeBigNumberish(0.0002),
-    liquidatorPenaltyRate: normalizeBigNumberish(0.075),
-    keeperGasReward: normalizeBigNumberish(0.5),
-
-    // amm
-    halfSpread: normalizeBigNumberish(0.001),
-    beta1: normalizeBigNumberish(0.12),
-    beta2: normalizeBigNumberish(0.06),
-    fundingRateCoefficient: normalizeBigNumberish(0.1),
-    targetLeverage: normalizeBigNumberish(5),
-
-    isEmergency: false,
-    isGlobalSettled: false,
-    insuranceFund1: normalizeBigNumberish(10000),
-    insuranceFund2: normalizeBigNumberish(10000),
-    markPrice: normalizeBigNumberish(100),
-    indexPrice: normalizeBigNumberish(100),
-    accumulatedFundingPerContract: normalizeBigNumberish(1),
-    fundingTime: Date.now() / 1000,
+export async function getReaderContract(
+  signerOrProvider: SignerOrProvider,
+  contractAddress?: string
+): Promise<BrokerRelay> {
+  if (!contractAddress) {
+    let chainId = 0
+    if (signerOrProvider instanceof ethers.Signer) {
+      if (!signerOrProvider.provider) {
+        throw new InvalidArgumentError('the given Signer does not have a Provider')
+      }
+      chainId = (await signerOrProvider.provider.getNetwork()).chainId
+    } else {
+      chainId = (await signerOrProvider.getNetwork()).chainId
+    }
+    contractAddress = CHAIN_ID_TO_READER_ADDRESS[chainId]
+    if (!contractAddress) {
+      throw new InvalidArgumentError(`unknown chainId ${chainId}`)
+    }
   }
+
+  return BrokerRelayFactory.connect(contractAddress, signerOrProvider)
 }
 
 export async function getPerpetualStorage(
