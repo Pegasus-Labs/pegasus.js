@@ -35,7 +35,7 @@ const market1: MarketStorage = {
   halfSpread: new BigNumber(0.001),
   beta1: new BigNumber(100),
   beta2: new BigNumber(90),
-  fundingRateCoefficient: new BigNumber(0.005),
+  fundingRateLimit: new BigNumber(0.005),
   maxLeverage: new BigNumber(5),
   lpFeeRate: new BigNumber(0.0007),
   vaultFeeRate: new BigNumber(0.0002),

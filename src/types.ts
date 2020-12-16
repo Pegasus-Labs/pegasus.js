@@ -83,7 +83,7 @@ export interface MarketStorage {
   halfSpread: BigNumber
   beta1: BigNumber
   beta2: BigNumber
-  fundingRateCoefficient: BigNumber
+  fundingRateLimit: BigNumber
   maxLeverage: BigNumber
 
   ammPositionAmount: BigNumber
@@ -136,7 +136,7 @@ export interface AMMTradingContext {
   halfSpread: BigNumber // α_m
   beta1: BigNumber // β1_m
   beta2: BigNumber // β2_m
-  fundingRateCoefficient: BigNumber // γ_m
+  fundingRateLimit: BigNumber // γ_m
   maxLeverage: BigNumber // λ_m
 
   // other markets

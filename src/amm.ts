@@ -20,7 +20,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketID?: string
   let halfSpread = _0
   let beta1 = _0
   let beta2 = _0
-  let fundingRateCoefficient = _0
+  let fundingRateLimit = _0
   let maxLeverage = _0
  
   let otherIndex: BigNumber[] = []
@@ -43,7 +43,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketID?: string
       halfSpread = market.halfSpread
       beta1 = market.beta1
       beta2 = market.beta2
-      fundingRateCoefficient = market.fundingRateCoefficient
+      fundingRateLimit = market.fundingRateLimit
       maxLeverage = market.maxLeverage
     } else {
       otherIndex.push(market.indexPrice)
@@ -51,14 +51,14 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketID?: string
       otherHalfSpread.push(market.halfSpread)
       otherBeta1.push(market.beta1)
       otherBeta2.push(market.beta2)
-      otherFundingRateCoefficient.push(market.fundingRateCoefficient)
+      otherFundingRateCoefficient.push(market.fundingRateLimit)
       otherMaxLeverage.push(market.maxLeverage)
     }
   }
    
   let ret = {
     index, position1, halfSpread, beta1, beta2,
-    fundingRateCoefficient, maxLeverage,
+    fundingRateLimit, maxLeverage,
     otherIndex, otherPosition, otherHalfSpread, otherBeta1, otherBeta2,
     otherFundingRateCoefficient, otherMaxLeverage,
     cash, poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
@@ -308,12 +308,17 @@ export function computeFundingRate(p: LiquidityPoolStorage, marketID: string): B
     if (context.position1.isZero()) {
       return _0
     } else if (context.position1.gt(_0)) {
-      return context.fundingRateCoefficient.negated()
+      return context.fundingRateLimit.negated()
     } else {
-      return context.fundingRateCoefficient
+      return context.fundingRateLimit
     }
   }
   
   context = computeAMMPoolMargin(context, context.beta1)
-  return context.fundingRateCoefficient.times(context.index).times(context.position1).div(context.poolMargin).negated()
+  let fr = context.fundingRateLimit
+    .times(context.index).times(context.position1)
+    .div(context.poolMargin).negated()
+  fr = BigNumber.minimum(fr, context.fundingRateLimit)
+  fr = BigNumber.maximum(fr, context.fundingRateLimit.negated())
+  return fr
 }
