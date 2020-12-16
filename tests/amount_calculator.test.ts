@@ -31,12 +31,12 @@ const market1: MarketStorage = {
 
   initialMarginRate: new BigNumber(0.1),
   maintenanceMarginRate: new BigNumber(0.05),
-  liquidatorPenaltyRate: new BigNumber(0.005),
+  liquidationPenaltyRate: new BigNumber(0.005),
   keeperGasReward: new BigNumber(1),
 
   halfSpread: new BigNumber(0.001),
-  beta1: new BigNumber(100),
-  beta2: new BigNumber(90),
+  openSlippageFactor: new BigNumber(100),
+  closeSlippageFactor: new BigNumber(90),
   fundingRateLimit: new BigNumber(0.005),
   maxLeverage: new BigNumber(5),
   lpFeeRate: new BigNumber(0.0007),
@@ -260,8 +260,8 @@ describe('computeAMMTradeAmountByMargin', function () {
 describe('computeAMMInverseVWAP', function () {
   it(`short: open without vwap`, function () {
     const price = new BigNumber('7050')
-    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage1, TEST_MARKET_INDEX0), market1.beta1)
-    const amount = computeAMMInverseVWAP(context, price, market1.beta1, false)
+    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage1, TEST_MARKET_INDEX0), market1.openSlippageFactor)
+    const amount = computeAMMInverseVWAP(context, price, market1.openSlippageFactor, false)
     expect(amount).toApproximate(normalizeBigNumberish('-9.68571428571428571428571429'))
     const trade = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, amount.negated())
     expect(trade.tradingPrice).toApproximate(price.times(_1.plus(market1.halfSpread)))
@@ -269,17 +269,17 @@ describe('computeAMMInverseVWAP', function () {
 
   it(`short: open with vwap`, function () {
     const price = new BigNumber('7050')
-    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage0, TEST_MARKET_INDEX0), market1.beta1)
+    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage0, TEST_MARKET_INDEX0), market1.openSlippageFactor)
     context.deltaMargin = new BigNumber('6950')
     context.deltaPosition = new BigNumber('-1')
-    const amount = computeAMMInverseVWAP(context, price, market1.beta1, false)
+    const amount = computeAMMInverseVWAP(context, price, market1.openSlippageFactor, false)
     expect(amount).toApproximate(normalizeBigNumberish('-16.06428285485485457978127589'))
   })
 
   it(`short: close`, function () {
     const price = new BigNumber('7010')
-    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage1, TEST_MARKET_INDEX0), market1.beta2)
-    const amount = computeAMMInverseVWAP(context, price, market1.beta2, true)
+    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage1, TEST_MARKET_INDEX0), market1.closeSlippageFactor)
+    const amount = computeAMMInverseVWAP(context, price, market1.closeSlippageFactor, true)
     expect(amount).toApproximate(normalizeBigNumberish('1.42533803782316168264992492'))
     const trade = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, amount.negated())
     expect(trade.tradingPrice).toApproximate(price.times(_1.minus(market1.halfSpread)))
@@ -287,8 +287,8 @@ describe('computeAMMInverseVWAP', function () {
 
   it(`long: open without vwap`, function () {
     const price = new BigNumber('6950')
-    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage4, TEST_MARKET_INDEX0), market1.beta1)
-    const amount = computeAMMInverseVWAP(context, price, market1.beta1, true)
+    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage4, TEST_MARKET_INDEX0), market1.openSlippageFactor)
+    const amount = computeAMMInverseVWAP(context, price, market1.openSlippageFactor, true)
     expect(amount).toApproximate(normalizeBigNumberish('9.68571428571428571428571429'))
     const trade = computeAMMTrade(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, amount.negated())
     expect(trade.tradingPrice).toApproximate(price.times(_1.minus(market1.halfSpread)))
@@ -296,17 +296,17 @@ describe('computeAMMInverseVWAP', function () {
 
   it(`long: open with vwap`, function () {
     const price = new BigNumber('6950')
-    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage0, TEST_MARKET_INDEX0), market1.beta1)
+    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage0, TEST_MARKET_INDEX0), market1.openSlippageFactor)
     context.deltaMargin = new BigNumber('-7050')
     context.deltaPosition = new BigNumber('1')
-    const amount = computeAMMInverseVWAP(context, price, market1.beta1, true)
+    const amount = computeAMMInverseVWAP(context, price, market1.openSlippageFactor, true)
     expect(amount).toApproximate(normalizeBigNumberish('16.06428285485485457978127589'))
   })
 
   it(`long: close`, function () {
     const price = new BigNumber('6990')
-    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage4, TEST_MARKET_INDEX0), market1.beta2)
-    const amount = computeAMMInverseVWAP(context, price, market1.beta2, false)
+    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage4, TEST_MARKET_INDEX0), market1.closeSlippageFactor)
+    const amount = computeAMMInverseVWAP(context, price, market1.closeSlippageFactor, false)
     expect(amount).toApproximate(normalizeBigNumberish('-1.42533803782316168264992492'))
     const trade = computeAMMTrade(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, amount.negated())
     expect(trade.tradingPrice).toApproximate(price.times(_1.plus(market1.halfSpread)))

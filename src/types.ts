@@ -39,16 +39,16 @@ export class InvalidArgumentError extends Error {
   }
 }
 
-
-export interface PerpetualContract {
-  contract: ethers.Contract
-}
-
 export enum MarketState {
   INIT,
   NORMAL,
   EMERGENCY,
   CLEARED,
+}
+
+export interface MarketTuple {
+  sharedLiquidityPool: string
+  marketIndex: number
 }
 
 export interface LiquidityPoolStorage {
@@ -65,11 +65,10 @@ export interface LiquidityPoolStorage {
   poolCashBalance: BigNumber
   totalClaimableFee: BigNumber
   fundingTime: number
-  priceUpdateTime: number
   
   markets: { [marketIndex: number]: MarketStorage }
 }
- 
+
 export interface MarketStorage {
   oracleAddress: string
   underlyingSymbol: string
@@ -78,19 +77,20 @@ export interface MarketStorage {
   operatorFeeRate: BigNumber
   lpFeeRate: BigNumber
   referrerRebateRate: BigNumber
-  liquidatorPenaltyRate: BigNumber
+  liquidationPenaltyRate: BigNumber
   keeperGasReward: BigNumber
+  insuranceFundRate: BigNumber
 
   state: MarketState
   markPrice: BigNumber
   indexPrice: BigNumber
   accumulatedFundingPerContract: BigNumber
   
-  halfSpread: BigNumber
-  beta1: BigNumber
-  beta2: BigNumber
-  fundingRateLimit: BigNumber
-  maxLeverage: BigNumber
+  halfSpread: BigNumber // α
+  openSlippageFactor: BigNumber // β1
+  closeSlippageFactor: BigNumber // β2
+  fundingRateLimit: BigNumber // γ
+  maxLeverage: BigNumber  // λ
 
   ammPositionAmount: BigNumber
 }
@@ -140,8 +140,8 @@ export interface AMMTradingContext {
   index: BigNumber // P_i_m
   position1: BigNumber // N_m
   halfSpread: BigNumber // α_m
-  beta1: BigNumber // β1_m
-  beta2: BigNumber // β2_m
+  openSlippageFactor: BigNumber // β1_m
+  closeSlippageFactor: BigNumber // β2_m
   fundingRateLimit: BigNumber // γ_m
   maxLeverage: BigNumber // λ_m
 
@@ -149,8 +149,8 @@ export interface AMMTradingContext {
   otherIndex: BigNumber[] // P_i_j
   otherPosition: BigNumber[] // N_j
   otherHalfSpread: BigNumber[] // α_j
-  otherBeta1: BigNumber[] // β1_j
-  otherBeta2: BigNumber[] // β2_j
+  otherOpenSlippageFactor: BigNumber[] // β1_j
+  otherCloseSlippageFactor: BigNumber[] // β2_j
   otherFundingRateCoefficient: BigNumber[] // γ_j
   otherMaxLeverage: BigNumber[] // λ_j
   

@@ -29,12 +29,12 @@ const market1: MarketStorage = {
 
   initialMarginRate: new BigNumber(0.1),
   maintenanceMarginRate: new BigNumber(0.05),
-  liquidatorPenaltyRate: new BigNumber(0.005),
+  liquidationPenaltyRate: new BigNumber(0.005),
   keeperGasReward: new BigNumber(2),
 
   halfSpread: new BigNumber(0.001),
-  beta1: new BigNumber(100),
-  beta2: new BigNumber(90),
+  openSlippageFactor: new BigNumber(100),
+  closeSlippageFactor: new BigNumber(90),
   fundingRateLimit: new BigNumber(0.005),
   maxLeverage: new BigNumber(3),
   lpFeeRate: new BigNumber(0.0008),
@@ -146,7 +146,7 @@ const poolStorage6: LiquidityPoolStorage = {
 }
 
 describe('computeM0', function () {
-  const beta1 = new BigNumber('100')
+  const openSlippageFactor = new BigNumber('100')
 
   interface ComputeAccountCase {
     amm: LiquidityPoolStorage
@@ -205,11 +205,11 @@ describe('computeM0', function () {
       const context1 = initAMMTradingContext(element.amm, TEST_MARKET_INDEX0)
       expect(context1.cash).toApproximate(normalizeBigNumberish(element.availableCash))
 
-      const safe = isAMMSafe(context1, beta1)
+      const safe = isAMMSafe(context1, openSlippageFactor)
       expect(safe).toEqual(element.isAMMSafe)
 
       if (element.isAMMSafe) {
-        const context2 = computeAMMPoolMargin(context1, beta1)
+        const context2 = computeAMMPoolMargin(context1, openSlippageFactor)
         expect(context2.poolMargin).toApproximate(normalizeBigNumberish(element.poolMargin))
       }
     })
@@ -226,11 +226,11 @@ describe('isAMMSafe', function () {
       otherIndex: [ new BigNumber('100') ],
       otherPosition: [ new BigNumber('1') ],
       otherHalfSpread: [ _0 ],
-      beta1: new BigNumber('1000'),
-      beta2: new BigNumber('1000'),
+      openSlippageFactor: new BigNumber('1000'),
+      closeSlippageFactor: new BigNumber('1000'),
       halfSpread: _0, fundingRateLimit: _0, maxLeverage: _0,
-      otherBeta1: [ new BigNumber('100') ],
-      otherBeta2: [ new BigNumber('100') ],
+      otherOpenSlippageFactor: [ new BigNumber('100') ],
+      otherCloseSlippageFactor: [ new BigNumber('100') ],
       otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
@@ -245,11 +245,11 @@ describe('isAMMSafe', function () {
       otherIndex: [ new BigNumber('100') ],
       otherPosition: [ new BigNumber('1000') ],
       otherHalfSpread: [ _0 ],
-      beta1: new BigNumber('100'),
-      beta2: new BigNumber('100'),
+      openSlippageFactor: new BigNumber('100'),
+      closeSlippageFactor: new BigNumber('100'),
       halfSpread: _0, fundingRateLimit: _0, maxLeverage: _0,
-      otherBeta1: [ new BigNumber('100') ],
-      otherBeta2: [ new BigNumber('100') ],
+      otherOpenSlippageFactor: [ new BigNumber('100') ],
+      otherCloseSlippageFactor: [ new BigNumber('100') ],
       otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
@@ -264,11 +264,11 @@ describe('isAMMSafe', function () {
       otherIndex: [ new BigNumber('100') ],
       otherPosition: [ new BigNumber('1000') ],
       otherHalfSpread: [ _0 ],
-      beta1: new BigNumber('100'),
-      beta2: new BigNumber('100'),
+      openSlippageFactor: new BigNumber('100'),
+      closeSlippageFactor: new BigNumber('100'),
       halfSpread: _0, fundingRateLimit: _0, maxLeverage: _0,
-      otherBeta1: [ new BigNumber('100') ],
-      otherBeta2: [ new BigNumber('100') ],
+      otherOpenSlippageFactor: [ new BigNumber('100') ],
+      otherCloseSlippageFactor: [ new BigNumber('100') ],
       otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
@@ -284,11 +284,11 @@ describe('isAMMSafe', function () {
       otherIndex: [ new BigNumber('100') ],
       otherPosition: [ new BigNumber('-1001') ],
       otherHalfSpread: [ _0 ],
-      beta1: new BigNumber('1000'),
-      beta2: new BigNumber('1000'),
+      openSlippageFactor: new BigNumber('1000'),
+      closeSlippageFactor: new BigNumber('1000'),
       halfSpread: _0, fundingRateLimit: _0, maxLeverage: _0,
-      otherBeta1: [ new BigNumber('100') ],
-      otherBeta2: [ new BigNumber('100') ],
+      otherOpenSlippageFactor: [ new BigNumber('100') ],
+      otherCloseSlippageFactor: [ new BigNumber('100') ],
       otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
@@ -303,11 +303,11 @@ describe('isAMMSafe', function () {
       otherIndex: [ new BigNumber('100') ],
       otherPosition: [ new BigNumber('-100') ],
       otherHalfSpread: [ _0 ],
-      beta1: new BigNumber('100'),
-      beta2: new BigNumber('100'),
+      openSlippageFactor: new BigNumber('100'),
+      closeSlippageFactor: new BigNumber('100'),
       halfSpread: _0, fundingRateLimit: _0, maxLeverage: _0,
-      otherBeta1: [ new BigNumber('100') ],
-      otherBeta2: [ new BigNumber('100') ],
+      otherOpenSlippageFactor: [ new BigNumber('100') ],
+      otherCloseSlippageFactor: [ new BigNumber('100') ],
       otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
@@ -322,11 +322,11 @@ describe('isAMMSafe', function () {
       otherIndex: [ new BigNumber('100') ],
       otherPosition: [ new BigNumber('-100') ],
       otherHalfSpread: [ _0 ],
-      beta1: new BigNumber('100'),
-      beta2: new BigNumber('100'),
+      openSlippageFactor: new BigNumber('100'),
+      closeSlippageFactor: new BigNumber('100'),
       halfSpread: _0, fundingRateLimit: _0, maxLeverage: _0,
-      otherBeta1: [ new BigNumber('100') ],
-      otherBeta2: [ new BigNumber('100') ],
+      otherOpenSlippageFactor: [ new BigNumber('100') ],
+      otherCloseSlippageFactor: [ new BigNumber('100') ],
       otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
@@ -336,7 +336,7 @@ describe('isAMMSafe', function () {
 })
 
 describe('computeDeltaMargin', function () {
-  const beta1 = new BigNumber('100')
+  const openSlippageFactor = new BigNumber('100')
   interface ComputeAccountCase {
     name: string
     amm: LiquidityPoolStorage
@@ -363,8 +363,8 @@ describe('computeDeltaMargin', function () {
 
   successCases.forEach(element => {
     it(element.name, function () {
-      const context = computeAMMPoolMargin(initAMMTradingContext(element.amm, TEST_MARKET_INDEX0), beta1)
-      const deltaMargin = computeDeltaMargin(context, beta1, element.pos2)
+      const context = computeAMMPoolMargin(initAMMTradingContext(element.amm, TEST_MARKET_INDEX0), openSlippageFactor)
+      const deltaMargin = computeDeltaMargin(context, openSlippageFactor, element.pos2)
       expect(deltaMargin).toApproximate(normalizeBigNumberish(element.deltaMargin))
     })
   })
@@ -400,10 +400,10 @@ describe('safePosition', function () {
       markets: {
         [TEST_MARKET_INDEX0]: {
           ...poolStorage1.markets[TEST_MARKET_INDEX0], maxLeverage: new BigNumber('0.5'), indexPrice: new BigNumber(100),
-          ammPositionAmount: new BigNumber('-10'), beta1: beta },
+          ammPositionAmount: new BigNumber('-10'), openSlippageFactor: beta },
         [TEST_MARKET_INDEX1]: {
           ...poolStorage1.markets[TEST_MARKET_INDEX1], indexPrice: new BigNumber('90'),
-          ammPositionAmount: new BigNumber('85.5148648938521'), beta1: new BigNumber('200'), },
+          ammPositionAmount: new BigNumber('85.5148648938521'), openSlippageFactor: new BigNumber('200'), },
       }
     }, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
@@ -442,10 +442,10 @@ describe('safePosition', function () {
     const context = computeAMMPoolMargin(initAMMTradingContext({
       ...poolStorage4,
       markets: {
-        [TEST_MARKET_INDEX0]: { ...poolStorage4.markets[TEST_MARKET_INDEX0], beta1: beta },
+        [TEST_MARKET_INDEX0]: { ...poolStorage4.markets[TEST_MARKET_INDEX0], openSlippageFactor: beta },
         [TEST_MARKET_INDEX1]: {
           ...poolStorage4.markets[TEST_MARKET_INDEX1], indexPrice: new BigNumber('10'),
-          ammPositionAmount: new BigNumber('-109'), beta1: new BigNumber('30'), },
+          ammPositionAmount: new BigNumber('-109'), openSlippageFactor: new BigNumber('30'), },
       }
     }, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()

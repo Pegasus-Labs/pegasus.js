@@ -18,16 +18,16 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketIndex?: str
   let index = _0
   let position1 = _0
   let halfSpread = _0
-  let beta1 = _0
-  let beta2 = _0
+  let openSlippageFactor = _0
+  let closeSlippageFactor = _0
   let fundingRateLimit = _0
   let maxLeverage = _0
  
   let otherIndex: BigNumber[] = []
   let otherPosition: BigNumber[] = []
   let otherHalfSpread: BigNumber[] = []
-  let otherBeta1: BigNumber[] = []
-  let otherBeta2: BigNumber[] = []
+  let otherOpenSlippageFactor: BigNumber[] = []
+  let otherCloseSlippageFactor: BigNumber[] = []
   let otherFundingRateCoefficient: BigNumber[] = []
   let otherMaxLeverage: BigNumber[] = []
 
@@ -41,25 +41,25 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketIndex?: str
       index = market.indexPrice
       position1 = market.ammPositionAmount
       halfSpread = market.halfSpread
-      beta1 = market.beta1
-      beta2 = market.beta2
+      openSlippageFactor = market.openSlippageFactor
+      closeSlippageFactor = market.closeSlippageFactor
       fundingRateLimit = market.fundingRateLimit
       maxLeverage = market.maxLeverage
     } else {
       otherIndex.push(market.indexPrice)
       otherPosition.push(market.ammPositionAmount)
       otherHalfSpread.push(market.halfSpread)
-      otherBeta1.push(market.beta1)
-      otherBeta2.push(market.beta2)
+      otherOpenSlippageFactor.push(market.openSlippageFactor)
+      otherCloseSlippageFactor.push(market.closeSlippageFactor)
       otherFundingRateCoefficient.push(market.fundingRateLimit)
       otherMaxLeverage.push(market.maxLeverage)
     }
   }
    
   let ret = {
-    index, position1, halfSpread, beta1, beta2,
+    index, position1, halfSpread, openSlippageFactor, closeSlippageFactor,
     fundingRateLimit, maxLeverage,
-    otherIndex, otherPosition, otherHalfSpread, otherBeta1, otherBeta2,
+    otherIndex, otherPosition, otherHalfSpread, otherOpenSlippageFactor, otherCloseSlippageFactor,
     otherFundingRateCoefficient, otherMaxLeverage,
     cash, poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
     valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
@@ -80,7 +80,7 @@ export function initAMMTradingContextEagerEvaluation(context: AMMTradingContext)
     )
     // Σ_j (β P_i N^2) where j ≠ id
     squareValueWithoutCurrent = squareValueWithoutCurrent.plus(
-      context.otherBeta1[j].times(context.otherIndex[j]).times(context.otherPosition[j]).times(context.otherPosition[j])
+      context.otherOpenSlippageFactor[j].times(context.otherIndex[j]).times(context.otherPosition[j]).times(context.otherPosition[j])
     )
     // Σ_j (P_i_j * | N_j | / λ_j) where j ≠ id
     positionMarginWithoutCurrent = positionMarginWithoutCurrent.plus(
@@ -126,7 +126,7 @@ export function computeAMMInternalTrade(p: LiquidityPoolStorage, marketIndex: nu
 
 // the amount is the AMM's perspective
 export function computeAMMInternalClose(context: AMMTradingContext, amount: BigNumber): AMMTradingContext {
-  const beta = context.beta2
+  const beta = context.closeSlippageFactor
   let ret: AMMTradingContext = { ...context }
   const { index } = ret
   const position2 = ret.position1.plus(amount)
@@ -151,7 +151,7 @@ export function computeAMMInternalClose(context: AMMTradingContext, amount: BigN
 
 // the amount is the AMM's perspective
 export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNumber): AMMTradingContext {
-  const beta = context.beta1
+  const beta = context.openSlippageFactor
   let ret: AMMTradingContext = { ...context }
   const position2 = ret.position1.plus(amount)
   let deltaMargin = _0
@@ -304,7 +304,7 @@ export function computeDeltaMargin(context: AMMTradingContext, beta: BigNumber, 
 
 export function computeFundingRate(p: LiquidityPoolStorage, marketIndex: number): BigNumber {
   let context = initAMMTradingContext(p, marketIndex)  
-  if (!isAMMSafe(context, context.beta1)) {
+  if (!isAMMSafe(context, context.openSlippageFactor)) {
     if (context.position1.isZero()) {
       return _0
     } else if (context.position1.gt(_0)) {
@@ -314,7 +314,7 @@ export function computeFundingRate(p: LiquidityPoolStorage, marketIndex: number)
     }
   }
   
-  context = computeAMMPoolMargin(context, context.beta1)
+  context = computeAMMPoolMargin(context, context.openSlippageFactor)
   let fr = context.fundingRateLimit
     .times(context.index).times(context.position1)
     .div(context.poolMargin).negated()

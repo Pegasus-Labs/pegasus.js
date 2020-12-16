@@ -29,12 +29,12 @@ const market1: MarketStorage = {
 
   initialMarginRate: new BigNumber(0.1),
   maintenanceMarginRate: new BigNumber(0.05),
-  liquidatorPenaltyRate: new BigNumber(0.005),
+  liquidationPenaltyRate: new BigNumber(0.005),
   keeperGasReward: new BigNumber(1),
 
   halfSpread: new BigNumber(0.001),
-  beta1: new BigNumber(100),
-  beta2: new BigNumber(90),
+  openSlippageFactor: new BigNumber(100),
+  closeSlippageFactor: new BigNumber(90),
   fundingRateLimit: new BigNumber(0.005),
   maxLeverage: new BigNumber(5),
   lpFeeRate: new BigNumber(0.0007),

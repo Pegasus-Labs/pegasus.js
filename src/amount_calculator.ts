@@ -99,7 +99,7 @@ export function computeAMMMaxTradeAmount(
 
   // if AMM is unsafe, return 0
   const ammContext = initAMMTradingContext(p, marketIndex)
-  if (!isAMMSafe(ammContext, ammContext.beta1)) {
+  if (!isAMMSafe(ammContext, ammContext.openSlippageFactor)) {
     if (isTraderBuy && ammContext.position1.lt(_0)) {
       return _0
     }
@@ -155,7 +155,7 @@ export function computeAMMTradeAmountByMargin(
 
   // if AMM is unsafe, return 0
   const ammContext = initAMMTradingContext(p, marketIndex)
-  if (!isAMMSafe(ammContext, ammContext.beta1)) {
+  if (!isAMMSafe(ammContext, ammContext.openSlippageFactor)) {
     if (normalizeDeltaMargin.lt(_0) && ammContext.position1.lt(_0)) {
       return _0
     }
@@ -296,20 +296,20 @@ export function computeAMMOpenAmountWithPrice(
   }
 
   // case 1: unsafe open
-  if (!isAMMSafe(context, context.beta1)) {
+  if (!isAMMSafe(context, context.openSlippageFactor)) {
     return _0
   }
-  context = computeAMMPoolMargin(context, context.beta1)
+  context = computeAMMPoolMargin(context, context.openSlippageFactor)
 
   // case 2: limit by safePos
   let safePos2: BigNumber
   if (isAMMBuy) {
-    safePos2 = computeAMMSafeLongPositionAmount(context, context.beta1)
+    safePos2 = computeAMMSafeLongPositionAmount(context, context.openSlippageFactor)
     if (safePos2.lt(context.position1)) {
       return _0
     }
   } else {
-    safePos2 = computeAMMSafeShortPositionAmount(context, context.beta1)
+    safePos2 = computeAMMSafeShortPositionAmount(context, context.openSlippageFactor)
     if (safePos2.gt(context.position1)) {
       return _0
     }
@@ -328,7 +328,7 @@ export function computeAMMOpenAmountWithPrice(
   }
 
   // case 3: inverse function of price function
-  const amount = computeAMMInverseVWAP(context, limitPrice, context.beta1, isAMMBuy)
+  const amount = computeAMMInverseVWAP(context, limitPrice, context.openSlippageFactor, isAMMBuy)
   if (
     (isAMMBuy && amount.gt(_0) /* long open success */)
     || (!isAMMBuy && amount.lt(_0) /* short open success */)
@@ -366,13 +366,13 @@ export function computeAMMCloseAndOpenAmountWithPrice(
   ) {
     // close all
     context = zeroContext
-  } else if (!isAMMSafe(context, context.beta2)) {
+  } else if (!isAMMSafe(context, context.closeSlippageFactor)) {
     // case 2: unsafe close, but price not matched
     return _0
   } else {
     // case 3: close by price
-    context = computeAMMPoolMargin(context, context.beta2)
-    const amount = computeAMMInverseVWAP(context, limitPrice, context.beta2, isAMMBuy)
+    context = computeAMMPoolMargin(context, context.closeSlippageFactor)
+    const amount = computeAMMInverseVWAP(context, limitPrice, context.closeSlippageFactor, isAMMBuy)
     if (
       (isAMMBuy && amount.gt(_0) /* short close success */)
       || (!isAMMBuy && amount.lt(_0) /* long close success */)
