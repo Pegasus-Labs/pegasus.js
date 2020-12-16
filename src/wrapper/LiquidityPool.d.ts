@@ -23,6 +23,7 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface LiquidityPoolInterface extends ethers.utils.Interface {
   functions: {
+    "activeAccountCount(uint256)": FunctionFragment;
     "addLiquidity(int256)": FunctionFragment;
     "adjustMarketRiskParameter(uint256,bytes32,int256)": FunctionFragment;
     "brokerTrade(tuple,int256,bytes)": FunctionFragment;
@@ -38,19 +39,22 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "liquidateByAMM(uint256,address,uint256)": FunctionFragment;
     "liquidateByTrader(uint256,address,int256,int256,uint256)": FunctionFragment;
     "liquidityPoolInfo()": FunctionFragment;
-    "listUnclearedTraders(uint256,uint256,uint256)": FunctionFragment;
+    "listActiveAccounts(uint256,uint256,uint256)": FunctionFragment;
     "marginAccount(uint256,address)": FunctionFragment;
     "marketInfo(uint256)": FunctionFragment;
     "removeLiquidity(int256)": FunctionFragment;
     "settle(uint256,address)": FunctionFragment;
     "shareToken()": FunctionFragment;
     "trade(uint256,address,int256,int256,uint256,address,bool)": FunctionFragment;
-    "unclearedTraderCount(uint256)": FunctionFragment;
     "updateMarketParameter(uint256,bytes32,int256)": FunctionFragment;
     "updateMarketRiskParameter(uint256,bytes32,int256,int256,int256)": FunctionFragment;
     "withdraw(uint256,address,int256)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "activeAccountCount",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "addLiquidity",
     values: [BigNumberish]
@@ -71,8 +75,10 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        data: BytesLike;
+        minTradeAmount: BigNumberish;
+        tradeGasLimit: BigNumberish;
         chainID: BigNumberish;
+        data: BytesLike;
       },
       BigNumberish,
       BytesLike
@@ -136,7 +142,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "listUnclearedTraders",
+    functionFragment: "listActiveAccounts",
     values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
@@ -172,10 +178,6 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "unclearedTraderCount",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "updateMarketParameter",
     values: [BigNumberish, BytesLike, BigNumberish]
   ): string;
@@ -188,6 +190,10 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     values: [BigNumberish, string, BigNumberish]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "activeAccountCount",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "addLiquidity",
     data: BytesLike
@@ -231,7 +237,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "listUnclearedTraders",
+    functionFragment: "listActiveAccounts",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -246,10 +252,6 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "settle", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "shareToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "trade", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "unclearedTraderCount",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "updateMarketParameter",
     data: BytesLike
@@ -309,6 +311,20 @@ export class LiquidityPool extends Contract {
   interface: LiquidityPoolInterface;
 
   functions: {
+    activeAccountCount(
+      marketIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "activeAccountCount(uint256)"(
+      marketIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
     addLiquidity(
       cashToAdd: BigNumberish,
       overrides?: PayableOverrides
@@ -343,8 +359,10 @@ export class LiquidityPool extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        data: BytesLike;
+        minTradeAmount: BigNumberish;
+        tradeGasLimit: BigNumberish;
         chainID: BigNumberish;
+        data: BytesLike;
       },
       amount: BigNumberish,
       signature: BytesLike,
@@ -361,8 +379,10 @@ export class LiquidityPool extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        data: BytesLike;
+        minTradeAmount: BigNumberish;
+        tradeGasLimit: BigNumberish;
         chainID: BigNumberish;
+        data: BytesLike;
       },
       amount: BigNumberish,
       signature: BytesLike,
@@ -578,7 +598,8 @@ export class LiquidityPool extends Contract {
       donatedInsuranceFund: BigNumber;
       totalClaimableFee: BigNumber;
       poolCashBalance: BigNumber;
-      poolCollateral: BigNumber;
+      fundingTime: BigNumber;
+      priceUpdateTime: BigNumber;
       marketCount: BigNumber;
       0: string;
       1: string;
@@ -592,6 +613,7 @@ export class LiquidityPool extends Contract {
       9: BigNumber;
       10: BigNumber;
       11: BigNumber;
+      12: BigNumber;
     }>;
 
     "liquidityPoolInfo()"(
@@ -607,7 +629,8 @@ export class LiquidityPool extends Contract {
       donatedInsuranceFund: BigNumber;
       totalClaimableFee: BigNumber;
       poolCashBalance: BigNumber;
-      poolCollateral: BigNumber;
+      fundingTime: BigNumber;
+      priceUpdateTime: BigNumber;
       marketCount: BigNumber;
       0: string;
       1: string;
@@ -621,22 +644,23 @@ export class LiquidityPool extends Contract {
       9: BigNumber;
       10: BigNumber;
       11: BigNumber;
+      12: BigNumber;
     }>;
 
-    listUnclearedTraders(
+    listActiveAccounts(
       marketIndex: BigNumberish,
       start: BigNumberish,
-      count: BigNumberish,
+      end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       result: string[];
       0: string[];
     }>;
 
-    "listUnclearedTraders(uint256,uint256,uint256)"(
+    "listActiveAccounts(uint256,uint256,uint256)"(
       marketIndex: BigNumberish,
       start: BigNumberish,
-      count: BigNumberish,
+      end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       result: string[];
@@ -731,20 +755,6 @@ export class LiquidityPool extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    unclearedTraderCount(
-      marketIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "unclearedTraderCount(uint256)"(
-      marketIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
     updateMarketParameter(
       marketIndex: BigNumberish,
       key: BytesLike,
@@ -792,6 +802,16 @@ export class LiquidityPool extends Contract {
     ): Promise<ContractTransaction>;
   };
 
+  activeAccountCount(
+    marketIndex: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "activeAccountCount(uint256)"(
+    marketIndex: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   addLiquidity(
     cashToAdd: BigNumberish,
     overrides?: PayableOverrides
@@ -826,8 +846,10 @@ export class LiquidityPool extends Contract {
       referrer: string;
       amount: BigNumberish;
       priceLimit: BigNumberish;
-      data: BytesLike;
+      minTradeAmount: BigNumberish;
+      tradeGasLimit: BigNumberish;
       chainID: BigNumberish;
+      data: BytesLike;
     },
     amount: BigNumberish,
     signature: BytesLike,
@@ -844,8 +866,10 @@ export class LiquidityPool extends Contract {
       referrer: string;
       amount: BigNumberish;
       priceLimit: BigNumberish;
-      data: BytesLike;
+      minTradeAmount: BigNumberish;
+      tradeGasLimit: BigNumberish;
       chainID: BigNumberish;
+      data: BytesLike;
     },
     amount: BigNumberish,
     signature: BytesLike,
@@ -1046,7 +1070,8 @@ export class LiquidityPool extends Contract {
     donatedInsuranceFund: BigNumber;
     totalClaimableFee: BigNumber;
     poolCashBalance: BigNumber;
-    poolCollateral: BigNumber;
+    fundingTime: BigNumber;
+    priceUpdateTime: BigNumber;
     marketCount: BigNumber;
     0: string;
     1: string;
@@ -1060,6 +1085,7 @@ export class LiquidityPool extends Contract {
     9: BigNumber;
     10: BigNumber;
     11: BigNumber;
+    12: BigNumber;
   }>;
 
   "liquidityPoolInfo()"(
@@ -1075,7 +1101,8 @@ export class LiquidityPool extends Contract {
     donatedInsuranceFund: BigNumber;
     totalClaimableFee: BigNumber;
     poolCashBalance: BigNumber;
-    poolCollateral: BigNumber;
+    fundingTime: BigNumber;
+    priceUpdateTime: BigNumber;
     marketCount: BigNumber;
     0: string;
     1: string;
@@ -1089,19 +1116,20 @@ export class LiquidityPool extends Contract {
     9: BigNumber;
     10: BigNumber;
     11: BigNumber;
+    12: BigNumber;
   }>;
 
-  listUnclearedTraders(
+  listActiveAccounts(
     marketIndex: BigNumberish,
     start: BigNumberish,
-    count: BigNumberish,
+    end: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string[]>;
 
-  "listUnclearedTraders(uint256,uint256,uint256)"(
+  "listActiveAccounts(uint256,uint256,uint256)"(
     marketIndex: BigNumberish,
     start: BigNumberish,
-    count: BigNumberish,
+    end: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string[]>;
 
@@ -1185,16 +1213,6 @@ export class LiquidityPool extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  unclearedTraderCount(
-    marketIndex: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "unclearedTraderCount(uint256)"(
-    marketIndex: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   updateMarketParameter(
     marketIndex: BigNumberish,
     key: BytesLike,
@@ -1242,6 +1260,16 @@ export class LiquidityPool extends Contract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    activeAccountCount(
+      marketIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "activeAccountCount(uint256)"(
+      marketIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     addLiquidity(
       cashToAdd: BigNumberish,
       overrides?: CallOverrides
@@ -1276,8 +1304,10 @@ export class LiquidityPool extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        data: BytesLike;
+        minTradeAmount: BigNumberish;
+        tradeGasLimit: BigNumberish;
         chainID: BigNumberish;
+        data: BytesLike;
       },
       amount: BigNumberish,
       signature: BytesLike,
@@ -1294,8 +1324,10 @@ export class LiquidityPool extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        data: BytesLike;
+        minTradeAmount: BigNumberish;
+        tradeGasLimit: BigNumberish;
         chainID: BigNumberish;
+        data: BytesLike;
       },
       amount: BigNumberish,
       signature: BytesLike,
@@ -1496,7 +1528,8 @@ export class LiquidityPool extends Contract {
       donatedInsuranceFund: BigNumber;
       totalClaimableFee: BigNumber;
       poolCashBalance: BigNumber;
-      poolCollateral: BigNumber;
+      fundingTime: BigNumber;
+      priceUpdateTime: BigNumber;
       marketCount: BigNumber;
       0: string;
       1: string;
@@ -1510,6 +1543,7 @@ export class LiquidityPool extends Contract {
       9: BigNumber;
       10: BigNumber;
       11: BigNumber;
+      12: BigNumber;
     }>;
 
     "liquidityPoolInfo()"(
@@ -1525,7 +1559,8 @@ export class LiquidityPool extends Contract {
       donatedInsuranceFund: BigNumber;
       totalClaimableFee: BigNumber;
       poolCashBalance: BigNumber;
-      poolCollateral: BigNumber;
+      fundingTime: BigNumber;
+      priceUpdateTime: BigNumber;
       marketCount: BigNumber;
       0: string;
       1: string;
@@ -1539,19 +1574,20 @@ export class LiquidityPool extends Contract {
       9: BigNumber;
       10: BigNumber;
       11: BigNumber;
+      12: BigNumber;
     }>;
 
-    listUnclearedTraders(
+    listActiveAccounts(
       marketIndex: BigNumberish,
       start: BigNumberish,
-      count: BigNumberish,
+      end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string[]>;
 
-    "listUnclearedTraders(uint256,uint256,uint256)"(
+    "listActiveAccounts(uint256,uint256,uint256)"(
       marketIndex: BigNumberish,
       start: BigNumberish,
-      count: BigNumberish,
+      end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string[]>;
 
@@ -1582,16 +1618,12 @@ export class LiquidityPool extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       state: number;
-      collateral: string;
       oracle: string;
       markPrice: BigNumber;
       indexPrice: BigNumber;
       unitAccumulativeFunding: BigNumber;
       fundingRate: BigNumber;
-      fundingTime: BigNumber;
       coreParameters: [
-        BigNumber,
-        BigNumber,
         BigNumber,
         BigNumber,
         BigNumber,
@@ -1604,15 +1636,11 @@ export class LiquidityPool extends Contract {
       riskParameters: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
       0: number;
       1: string;
-      2: string;
+      2: BigNumber;
       3: BigNumber;
       4: BigNumber;
       5: BigNumber;
-      6: BigNumber;
-      7: BigNumber;
-      8: [
-        BigNumber,
-        BigNumber,
+      6: [
         BigNumber,
         BigNumber,
         BigNumber,
@@ -1622,7 +1650,7 @@ export class LiquidityPool extends Contract {
         BigNumber,
         BigNumber
       ];
-      9: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
+      7: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
     }>;
 
     "marketInfo(uint256)"(
@@ -1630,16 +1658,12 @@ export class LiquidityPool extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       state: number;
-      collateral: string;
       oracle: string;
       markPrice: BigNumber;
       indexPrice: BigNumber;
       unitAccumulativeFunding: BigNumber;
       fundingRate: BigNumber;
-      fundingTime: BigNumber;
       coreParameters: [
-        BigNumber,
-        BigNumber,
         BigNumber,
         BigNumber,
         BigNumber,
@@ -1652,15 +1676,11 @@ export class LiquidityPool extends Contract {
       riskParameters: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
       0: number;
       1: string;
-      2: string;
+      2: BigNumber;
       3: BigNumber;
       4: BigNumber;
       5: BigNumber;
-      6: BigNumber;
-      7: BigNumber;
-      8: [
-        BigNumber,
-        BigNumber,
+      6: [
         BigNumber,
         BigNumber,
         BigNumber,
@@ -1670,7 +1690,7 @@ export class LiquidityPool extends Contract {
         BigNumber,
         BigNumber
       ];
-      9: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
+      7: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
     }>;
 
     removeLiquidity(
@@ -1720,16 +1740,6 @@ export class LiquidityPool extends Contract {
       isCloseOnly: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    unclearedTraderCount(
-      marketIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "unclearedTraderCount(uint256)"(
-      marketIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     updateMarketParameter(
       marketIndex: BigNumberish,
@@ -1850,6 +1860,16 @@ export class LiquidityPool extends Contract {
   };
 
   estimateGas: {
+    activeAccountCount(
+      marketIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "activeAccountCount(uint256)"(
+      marketIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     addLiquidity(
       cashToAdd: BigNumberish,
       overrides?: PayableOverrides
@@ -1884,8 +1904,10 @@ export class LiquidityPool extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        data: BytesLike;
+        minTradeAmount: BigNumberish;
+        tradeGasLimit: BigNumberish;
         chainID: BigNumberish;
+        data: BytesLike;
       },
       amount: BigNumberish,
       signature: BytesLike,
@@ -1902,8 +1924,10 @@ export class LiquidityPool extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        data: BytesLike;
+        minTradeAmount: BigNumberish;
+        tradeGasLimit: BigNumberish;
         chainID: BigNumberish;
+        data: BytesLike;
       },
       amount: BigNumberish,
       signature: BytesLike,
@@ -2095,17 +2119,17 @@ export class LiquidityPool extends Contract {
 
     "liquidityPoolInfo()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    listUnclearedTraders(
+    listActiveAccounts(
       marketIndex: BigNumberish,
       start: BigNumberish,
-      count: BigNumberish,
+      end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "listUnclearedTraders(uint256,uint256,uint256)"(
+    "listActiveAccounts(uint256,uint256,uint256)"(
       marketIndex: BigNumberish,
       start: BigNumberish,
-      count: BigNumberish,
+      end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2179,16 +2203,6 @@ export class LiquidityPool extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    unclearedTraderCount(
-      marketIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "unclearedTraderCount(uint256)"(
-      marketIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     updateMarketParameter(
       marketIndex: BigNumberish,
       key: BytesLike,
@@ -2237,6 +2251,16 @@ export class LiquidityPool extends Contract {
   };
 
   populateTransaction: {
+    activeAccountCount(
+      marketIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "activeAccountCount(uint256)"(
+      marketIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     addLiquidity(
       cashToAdd: BigNumberish,
       overrides?: PayableOverrides
@@ -2271,8 +2295,10 @@ export class LiquidityPool extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        data: BytesLike;
+        minTradeAmount: BigNumberish;
+        tradeGasLimit: BigNumberish;
         chainID: BigNumberish;
+        data: BytesLike;
       },
       amount: BigNumberish,
       signature: BytesLike,
@@ -2289,8 +2315,10 @@ export class LiquidityPool extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        data: BytesLike;
+        minTradeAmount: BigNumberish;
+        tradeGasLimit: BigNumberish;
         chainID: BigNumberish;
+        data: BytesLike;
       },
       amount: BigNumberish,
       signature: BytesLike,
@@ -2487,17 +2515,17 @@ export class LiquidityPool extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    listUnclearedTraders(
+    listActiveAccounts(
       marketIndex: BigNumberish,
       start: BigNumberish,
-      count: BigNumberish,
+      end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "listUnclearedTraders(uint256,uint256,uint256)"(
+    "listActiveAccounts(uint256,uint256,uint256)"(
       marketIndex: BigNumberish,
       start: BigNumberish,
-      count: BigNumberish,
+      end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2569,16 +2597,6 @@ export class LiquidityPool extends Contract {
       referrer: string,
       isCloseOnly: boolean,
       overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    unclearedTraderCount(
-      marketIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "unclearedTraderCount(uint256)"(
-      marketIndex: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     updateMarketParameter(
