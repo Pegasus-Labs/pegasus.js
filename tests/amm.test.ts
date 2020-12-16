@@ -52,8 +52,8 @@ const market1: MarketStorage = {
   ammPositionAmount: _0, // assign me later
 }
 
-const TEST_MARKET_ID = '0x0'
-const TEST_MARKET_ID2 = '0x1'
+const TEST_MARKET_INDEX0 = 0
+const TEST_MARKET_INDEX1 = 1
 
 // [0] zero
 // available cash = 10000
@@ -61,10 +61,10 @@ const TEST_MARKET_ID2 = '0x1'
 // max pos2 = 100, -141.42135623730950488
 const poolStorage0: LiquidityPoolStorage = {
   collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
-  ammCashBalance: new BigNumber('10000'),
+  poolCashBalance: new BigNumber('10000'),
   markets: {
-    [TEST_MARKET_ID]: { ...market1, ammPositionAmount: _0 },
-    [TEST_MARKET_ID2]: { ...market1, ammPositionAmount: _0 },
+    [TEST_MARKET_INDEX0]: { ...market1, ammPositionAmount: _0 },
+    [TEST_MARKET_INDEX1]: { ...market1, ammPositionAmount: _0 },
   },
 }
 
@@ -74,10 +74,10 @@ const poolStorage0: LiquidityPoolStorage = {
 // max pos2 = -141.067359796658844252
 const poolStorage1: LiquidityPoolStorage = {
   collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
-  ammCashBalance: new BigNumber('10100'),
+  poolCashBalance: new BigNumber('10100'),
   markets: {
-    [TEST_MARKET_ID]: { ...market1, ammPositionAmount: new BigNumber('-10') },
-    [TEST_MARKET_ID2]: { ...market1, ammPositionAmount: new BigNumber('10') },
+    [TEST_MARKET_INDEX0]: { ...market1, ammPositionAmount: new BigNumber('-10') },
+    [TEST_MARKET_INDEX1]: { ...market1, ammPositionAmount: new BigNumber('10') },
   },
 }
 
@@ -87,10 +87,10 @@ const poolStorage1: LiquidityPoolStorage = {
 // max pos2 = -130.759540184393963844
 const poolStorage2: LiquidityPoolStorage = {
   collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
-  ammCashBalance: new BigNumber('14599'),
+  poolCashBalance: new BigNumber('14599'),
   markets: {
-    [TEST_MARKET_ID]: { ...market1, ammPositionAmount: new BigNumber('-50') },
-    [TEST_MARKET_ID2]: { ...market1, ammPositionAmount: new BigNumber('10') },
+    [TEST_MARKET_INDEX0]: { ...market1, ammPositionAmount: new BigNumber('-50') },
+    [TEST_MARKET_INDEX1]: { ...market1, ammPositionAmount: new BigNumber('10') },
   },
 }
 
@@ -99,10 +99,10 @@ const poolStorage2: LiquidityPoolStorage = {
 // available margin = unsafe / unsafe
 const poolStorage3: LiquidityPoolStorage = {
   collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
-  ammCashBalance: new BigNumber('16753.12619691409782671538929731'),
+  poolCashBalance: new BigNumber('16753.12619691409782671538929731'),
   markets: {
-    [TEST_MARKET_ID]: { ...market1, ammPositionAmount: new BigNumber('-80') },
-    [TEST_MARKET_ID2]: { ...market1, ammPositionAmount: new BigNumber('10') },
+    [TEST_MARKET_INDEX0]: { ...market1, ammPositionAmount: new BigNumber('-80') },
+    [TEST_MARKET_INDEX1]: { ...market1, ammPositionAmount: new BigNumber('10') },
   },
 }
 
@@ -112,10 +112,10 @@ const poolStorage3: LiquidityPoolStorage = {
 // max pos2 = 100
 const poolStorage4: LiquidityPoolStorage = {
   collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
-  ammCashBalance: new BigNumber('8138'),
+  poolCashBalance: new BigNumber('8138'),
   markets: {
-    [TEST_MARKET_ID]: { ...market1, ammPositionAmount: new BigNumber('10') },
-    [TEST_MARKET_ID2]: { ...market1, ammPositionAmount: new BigNumber('10') },
+    [TEST_MARKET_INDEX0]: { ...market1, ammPositionAmount: new BigNumber('10') },
+    [TEST_MARKET_INDEX1]: { ...market1, ammPositionAmount: new BigNumber('10') },
   },
 }
 
@@ -125,10 +125,10 @@ const poolStorage4: LiquidityPoolStorage = {
 // max pos2 = 48.933134623172520854
 const poolStorage5: LiquidityPoolStorage = {
   collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
-  ammCashBalance: new BigNumber('1664'),
+  poolCashBalance: new BigNumber('1664'),
   markets: {
-    [TEST_MARKET_ID]: { ...market1, ammPositionAmount: new BigNumber('50') },
-    [TEST_MARKET_ID2]: { ...market1, ammPositionAmount: new BigNumber('10') },
+    [TEST_MARKET_INDEX0]: { ...market1, ammPositionAmount: new BigNumber('50') },
+    [TEST_MARKET_INDEX1]: { ...market1, ammPositionAmount: new BigNumber('10') },
   },
 }
 
@@ -138,10 +138,10 @@ const poolStorage5: LiquidityPoolStorage = {
 // available margin = unsafe / unsafe
 const poolStorage6: LiquidityPoolStorage = {
   collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
-  ammCashBalance: new BigNumber('1925'),
+  poolCashBalance: new BigNumber('1925'),
   markets: {
-    [TEST_MARKET_ID]: { ...market1, ammPositionAmount: new BigNumber('80') },
-    [TEST_MARKET_ID2]: { ...market1, ammPositionAmount: new BigNumber('10') },
+    [TEST_MARKET_INDEX0]: { ...market1, ammPositionAmount: new BigNumber('80') },
+    [TEST_MARKET_INDEX1]: { ...market1, ammPositionAmount: new BigNumber('10') },
   },
 }
 
@@ -202,7 +202,7 @@ describe('computeM0', function () {
 
   successCases.forEach((element, index) => {
     it(`${index}`, function () {
-      const context1 = initAMMTradingContext(element.amm, TEST_MARKET_ID)
+      const context1 = initAMMTradingContext(element.amm, TEST_MARKET_INDEX0)
       expect(context1.cash).toApproximate(normalizeBigNumberish(element.availableCash))
 
       const safe = isAMMSafe(context1, beta1)
@@ -363,7 +363,7 @@ describe('computeDeltaMargin', function () {
 
   successCases.forEach(element => {
     it(element.name, function () {
-      const context = computeAMMPoolMargin(initAMMTradingContext(element.amm, TEST_MARKET_ID), beta1)
+      const context = computeAMMPoolMargin(initAMMTradingContext(element.amm, TEST_MARKET_INDEX0), beta1)
       const deltaMargin = computeDeltaMargin(context, beta1, element.pos2)
       expect(deltaMargin).toApproximate(normalizeBigNumberish(element.deltaMargin))
     })
@@ -373,7 +373,7 @@ describe('computeDeltaMargin', function () {
 describe('safePosition', function () {
   it('short: condition3 √, condition2 ×. condition 3 selected', function () {
     const beta = new BigNumber('100')
-    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage1, TEST_MARKET_ID), beta)
+    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage1, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
     const pos2 = computeAMMSafeShortPositionAmount(context, beta)
     expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('-141.067359796658844252321636909')))
@@ -384,10 +384,10 @@ describe('safePosition', function () {
     const context = computeAMMPoolMargin(initAMMTradingContext({
       ...poolStorage1,
       markets: {
-        [TEST_MARKET_ID]: { ...poolStorage1.markets[TEST_MARKET_ID], maxLeverage: new BigNumber('0.5'), },
-        [TEST_MARKET_ID2]: poolStorage1.markets[TEST_MARKET_ID2],
+        [TEST_MARKET_INDEX0]: { ...poolStorage1.markets[TEST_MARKET_INDEX0], maxLeverage: new BigNumber('0.5'), },
+        [TEST_MARKET_INDEX1]: poolStorage1.markets[TEST_MARKET_INDEX1],
       }
-    }, TEST_MARKET_ID), beta)
+    }, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
     const pos2 = computeAMMSafeShortPositionAmount(context, beta)
     expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('-56.589168238006977708561982164')))
@@ -398,14 +398,14 @@ describe('safePosition', function () {
     const context = computeAMMPoolMargin(initAMMTradingContext({
       ...poolStorage1,
       markets: {
-        [TEST_MARKET_ID]: {
-          ...poolStorage1.markets[TEST_MARKET_ID], maxLeverage: new BigNumber('0.5'), indexPrice: new BigNumber(100),
+        [TEST_MARKET_INDEX0]: {
+          ...poolStorage1.markets[TEST_MARKET_INDEX0], maxLeverage: new BigNumber('0.5'), indexPrice: new BigNumber(100),
           ammPositionAmount: new BigNumber('-10'), beta1: beta },
-        [TEST_MARKET_ID2]: {
-          ...poolStorage1.markets[TEST_MARKET_ID2], indexPrice: new BigNumber('90'),
+        [TEST_MARKET_INDEX1]: {
+          ...poolStorage1.markets[TEST_MARKET_INDEX1], indexPrice: new BigNumber('90'),
           ammPositionAmount: new BigNumber('85.5148648938521'), beta1: new BigNumber('200'), },
       }
-    }, TEST_MARKET_ID), beta)
+    }, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
     const pos2 = computeAMMSafeShortPositionAmount(context, beta)
     expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('-69.2197544117782')))
@@ -417,7 +417,7 @@ describe('safePosition', function () {
 
   it('long: condition3 √, condition2 ×, condition 1 selected', function () {
     const beta = new BigNumber('100')
-    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage4, TEST_MARKET_ID), beta)
+    const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage4, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
     const pos2 = computeAMMSafeLongPositionAmount(context, beta)
     expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('100')))
@@ -428,10 +428,10 @@ describe('safePosition', function () {
     const context = computeAMMPoolMargin(initAMMTradingContext({
       ...poolStorage4,
       markets: {
-        [TEST_MARKET_ID]: { ...poolStorage4.markets[TEST_MARKET_ID], maxLeverage: new BigNumber('0.5'), },
-        [TEST_MARKET_ID2]: poolStorage4.markets[TEST_MARKET_ID2],
+        [TEST_MARKET_INDEX0]: { ...poolStorage4.markets[TEST_MARKET_INDEX0], maxLeverage: new BigNumber('0.5'), },
+        [TEST_MARKET_INDEX1]: poolStorage4.markets[TEST_MARKET_INDEX1],
       }
-    }, TEST_MARKET_ID), beta)
+    }, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
     const pos2 = computeAMMSafeLongPositionAmount(context, beta)
     expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('56.589168238006977708561982164')))
@@ -442,12 +442,12 @@ describe('safePosition', function () {
     const context = computeAMMPoolMargin(initAMMTradingContext({
       ...poolStorage4,
       markets: {
-        [TEST_MARKET_ID]: { ...poolStorage4.markets[TEST_MARKET_ID], beta1: beta },
-        [TEST_MARKET_ID2]: {
-          ...poolStorage4.markets[TEST_MARKET_ID2], indexPrice: new BigNumber('10'),
+        [TEST_MARKET_INDEX0]: { ...poolStorage4.markets[TEST_MARKET_INDEX0], beta1: beta },
+        [TEST_MARKET_INDEX1]: {
+          ...poolStorage4.markets[TEST_MARKET_INDEX1], indexPrice: new BigNumber('10'),
           ammPositionAmount: new BigNumber('-109'), beta1: new BigNumber('30'), },
       }
-    }, TEST_MARKET_ID), beta)
+    }, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
     const pos2 = computeAMMSafeLongPositionAmount(context, beta)
     expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('176.61598769492977')))
@@ -533,7 +533,7 @@ describe('trade - success', function () {
 
   successCases.forEach(element => {
     it(element.name, function () {
-      const context = computeAMMInternalTrade(element.amm, TEST_MARKET_ID, element.amount)
+      const context = computeAMMInternalTrade(element.amm, TEST_MARKET_INDEX0, element.amount)
       expect(context.deltaMargin).toApproximate(normalizeBigNumberish(element.deltaMargin))
     })
   })
@@ -582,7 +582,7 @@ describe('trade - fail', function () {
   failCases.forEach(element => {
     it(element.name, () => {
       expect((): void => {
-        computeAMMInternalTrade(element.amm, TEST_MARKET_ID, element.amount)
+        computeAMMInternalTrade(element.amm, TEST_MARKET_INDEX0, element.amount)
       }).toThrow(InsufficientLiquidityError)
     })
   })
@@ -590,13 +590,13 @@ describe('trade - fail', function () {
 
 describe('computeFundingRate', function () {
   it('normal', () => {
-    expect(computeFundingRate(poolStorage0, TEST_MARKET_ID)).toApproximate(normalizeBigNumberish('0'))
-    expect(computeFundingRate(poolStorage1, TEST_MARKET_ID)).toApproximate(normalizeBigNumberish('0.0005'))
-    expect(computeFundingRate(poolStorage2, TEST_MARKET_ID)).toApproximate(normalizeBigNumberish('0.00269597158238683137'))
-    expect(computeFundingRate(poolStorage3, TEST_MARKET_ID)).toApproximate(normalizeBigNumberish('0.005'))
-    expect(computeFundingRate(poolStorage4, TEST_MARKET_ID)).toApproximate(normalizeBigNumberish('-0.0005'))
-    expect(computeFundingRate(poolStorage5, TEST_MARKET_ID)).toApproximate(normalizeBigNumberish('-0.00510901257246682291'))
-    expect(computeFundingRate(poolStorage6, TEST_MARKET_ID)).toApproximate(normalizeBigNumberish('-0.005'))
+    expect(computeFundingRate(poolStorage0, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('0'))
+    expect(computeFundingRate(poolStorage1, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('0.0005'))
+    expect(computeFundingRate(poolStorage2, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('0.00269597158238683137'))
+    expect(computeFundingRate(poolStorage3, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('0.005'))
+    expect(computeFundingRate(poolStorage4, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('-0.0005'))
+    expect(computeFundingRate(poolStorage5, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('-0.00510901257246682291'))
+    expect(computeFundingRate(poolStorage6, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('-0.005'))
   })
 })
 

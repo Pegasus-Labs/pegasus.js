@@ -52,22 +52,30 @@ export enum MarketState {
 }
 
 export interface LiquidityPoolStorage {
+  operatorAddress: string
   collateralTokenAddress: string
   shareTokenAddress: string
+  governorAddress: string
+  vaultAddress: string
 
-  ammCashBalance: BigNumber
+  vaultFeeRate: BigNumber
+  insuranceFund: BigNumber
+  insuranceFundCap: BigNumber
+  donatedInsuranceFund: BigNumber
+  poolCashBalance: BigNumber
+  totalClaimableFee: BigNumber
   fundingTime: number
-
-  markets: { [marketID: string]: MarketStorage }
+  priceUpdateTime: number
+  
+  markets: { [marketIndex: number]: MarketStorage }
 }
-
+ 
 export interface MarketStorage {
   oracleAddress: string
   underlyingSymbol: string
   initialMarginRate: BigNumber
   maintenanceMarginRate: BigNumber
   operatorFeeRate: BigNumber
-  vaultFeeRate: BigNumber
   lpFeeRate: BigNumber
   referrerRebateRate: BigNumber
   liquidatorPenaltyRate: BigNumber
@@ -77,9 +85,7 @@ export interface MarketStorage {
   markPrice: BigNumber
   indexPrice: BigNumber
   accumulatedFundingPerContract: BigNumber
-  insuranceFund1: BigNumber
-  insuranceFund2: BigNumber
-
+  
   halfSpread: BigNumber
   beta1: BigNumber
   beta2: BigNumber

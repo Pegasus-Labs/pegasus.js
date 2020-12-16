@@ -8,10 +8,10 @@ import { LiquidityPoolStorage, AMMTradingContext } from './types'
 import { sqrt, splitAmount } from './utils'
 import { InsufficientLiquidityError, BugError, InvalidArgumentError } from './types'
 
-export function initAMMTradingContext(p: LiquidityPoolStorage, marketID?: string): AMMTradingContext {
-  if (marketID) {
-    if (!p.markets[marketID]) {
-      throw new InvalidArgumentError(`market {marketID} not found in the pool`)
+export function initAMMTradingContext(p: LiquidityPoolStorage, marketIndex?: string): AMMTradingContext {
+  if (marketIndex) {
+    if (!p.markets[marketIndex]) {
+      throw new InvalidArgumentError(`market {marketIndex} not found in the pool`)
     }
   }
   
@@ -33,11 +33,11 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketID?: string
 
   // split markets into current market and other markets
   // M_c = ammCash - Σ accumulatedFunding * N
-  let cash = p.ammCashBalance
+  let cash = p.poolCashBalance
   for (let id in p.markets) {
     const market = p.markets[id]
     cash = cash.minus(market.accumulatedFundingPerContract.times(market.ammPositionAmount))
-    if (id === marketID) {
+    if (id === marketIndex) {
       index = market.indexPrice
       position1 = market.ammPositionAmount
       halfSpread = market.halfSpread
@@ -97,8 +97,8 @@ export function initAMMTradingContextEagerEvaluation(context: AMMTradingContext)
 }
 
 // the amount is the AMM's perspective
-export function computeAMMInternalTrade(p: LiquidityPoolStorage, marketID: string, amount: BigNumber): AMMTradingContext {
-  let context = initAMMTradingContext(p, marketID)
+export function computeAMMInternalTrade(p: LiquidityPoolStorage, marketIndex: number, amount: BigNumber): AMMTradingContext {
+  let context = initAMMTradingContext(p, marketIndex)
   const { close, open } = splitAmount(context.position1, amount)
   if (close.isZero() && open.isZero()) {
     throw new BugError('AMM trade: trading amount = 0')
@@ -302,8 +302,8 @@ export function computeDeltaMargin(context: AMMTradingContext, beta: BigNumber, 
   return ret.dp(DECIMALS)
 }
 
-export function computeFundingRate(p: LiquidityPoolStorage, marketID: string): BigNumber {
-  let context = initAMMTradingContext(p, marketID)  
+export function computeFundingRate(p: LiquidityPoolStorage, marketIndex: number): BigNumber {
+  let context = initAMMTradingContext(p, marketIndex)  
   if (!isAMMSafe(context, context.beta1)) {
     if (context.position1.isZero()) {
       return _0

@@ -36,7 +36,7 @@ const minimize = require('minimize-golden-section-1d')
 //       is designed for "stop order". when stop order matches, the mark price is near the trading price.
 export function computeMaxTradeAmountWithPrice(
   p: LiquidityPoolStorage,
-  marketID: string,
+  marketIndex: number,
   s: AccountStorage,
   price: BigNumberish,
   traderMaxLeverage: BigNumberish,
@@ -54,9 +54,9 @@ export function computeMaxTradeAmountWithPrice(
   let newAccount = s
   let closeAmount = newAccount.positionAmount.negated()
   if (!closeAmount.isZero()) {
-    newAccount = computeTradeWithPrice(p, marketID, s, normalizedPrice, closeAmount, normalizedFeeRate)
+    newAccount = computeTradeWithPrice(p, marketIndex, s, normalizedPrice, closeAmount, normalizedFeeRate)
   }
-  const newDetails = computeAccount(p, marketID, newAccount)
+  const newDetails = computeAccount(p, marketIndex, newAccount)
 
   // open again
   //                        price | x |
@@ -90,7 +90,7 @@ export function computeMaxTradeAmountWithPrice(
 // the returned amount is the trader's perspective
 export function computeAMMMaxTradeAmount(
   p: LiquidityPoolStorage,
-  marketID: string,
+  marketIndex: number,
   trader: AccountStorage,
   traderMaxLeverage: BigNumberish,
   isTraderBuy: boolean,
@@ -98,7 +98,7 @@ export function computeAMMMaxTradeAmount(
   const normalizeMaxLeverage = normalizeBigNumberish(traderMaxLeverage)
 
   // if AMM is unsafe, return 0
-  const ammContext = initAMMTradingContext(p, marketID)
+  const ammContext = initAMMTradingContext(p, marketIndex)
   if (!isAMMSafe(ammContext, ammContext.beta1)) {
     if (isTraderBuy && ammContext.position1.lt(_0)) {
       return _0
@@ -109,7 +109,7 @@ export function computeAMMMaxTradeAmount(
   }
 
   // guess = marginBalance * lev / index
-  const traderDetails = computeAccount(p, marketID, trader)
+  const traderDetails = computeAccount(p, marketIndex, trader)
   const guess = traderDetails.accountComputed.marginBalance.times(normalizeMaxLeverage).div(ammContext.index)
 
   // search
@@ -118,8 +118,8 @@ export function computeAMMMaxTradeAmount(
       return 0
     }
     try {
-      const context = computeAMMTrade(p, marketID, trader, new BigNumber(a))
-      const newTraderDetails = computeAccount(p, marketID, context.trader)
+      const context = computeAMMTrade(p, marketIndex, trader, new BigNumber(a))
+      const newTraderDetails = computeAccount(p, marketIndex, context.trader)
       if (!newTraderDetails.accountComputed.isSafe
         || newTraderDetails.accountComputed.leverage.gt(normalizeMaxLeverage)) {
         return Math.abs(a)
@@ -148,13 +148,13 @@ export function computeAMMMaxTradeAmount(
 // the returned amount is the trader's perspective
 export function computeAMMTradeAmountByMargin(
   p: LiquidityPoolStorage,
-  marketID: string,
+  marketIndex: number,
   deltaMargin: BigNumberish,  // trader's margin change. < 0 if buy, > 0 if sell
 ): BigNumber {
   const normalizeDeltaMargin = normalizeBigNumberish(deltaMargin)
 
   // if AMM is unsafe, return 0
-  const ammContext = initAMMTradingContext(p, marketID)
+  const ammContext = initAMMTradingContext(p, marketIndex)
   if (!isAMMSafe(ammContext, ammContext.beta1)) {
     if (normalizeDeltaMargin.lt(_0) && ammContext.position1.lt(_0)) {
       return _0
@@ -173,7 +173,7 @@ export function computeAMMTradeAmountByMargin(
       return 0
     }
     try {
-      const price = computeAMMPrice(p, marketID, new BigNumber(a))
+      const price = computeAMMPrice(p, marketIndex, new BigNumber(a))
       // err = | expected trader margin - actual trader margin |
       const actualTraderMargin = price.deltaAMMMargin.negated()
       const err = actualTraderMargin.minus(normalizeDeltaMargin).abs()
@@ -248,25 +248,25 @@ export function computeAMMInverseVWAP(
 // the returned amount is the trader's perspective
 export function computeAMMAmountWithPrice(
   p: LiquidityPoolStorage,
-  marketID: string,
+  marketIndex: number,
   isTraderBuy: boolean,
   limitPrice: BigNumberish,
 ): BigNumber {
-  if (!p.markets[marketID]) {
-    throw new InvalidArgumentError(`market {marketID} not found in the pool`)
+  if (!p.markets[marketIndex]) {
+    throw new InvalidArgumentError(`market {marketIndex} not found in the pool`)
   }
   
   // add spread
   let normalizedLimitPrice = normalizeBigNumberish(limitPrice)
   if (isTraderBuy) {
-    normalizedLimitPrice = normalizedLimitPrice.div(_1.plus(p.markets[marketID].halfSpread))
+    normalizedLimitPrice = normalizedLimitPrice.div(_1.plus(p.markets[marketIndex].halfSpread))
   } else {
-    normalizedLimitPrice = normalizedLimitPrice.div(_1.minus(p.markets[marketID].halfSpread))
+    normalizedLimitPrice = normalizedLimitPrice.div(_1.minus(p.markets[marketIndex].halfSpread))
   }
   
   // get amount
   const isAMMBuy = !isTraderBuy
-  let context = initAMMTradingContext(p, marketID)
+  let context = initAMMTradingContext(p, marketIndex)
   if (context.position1.lte(_0) && !isAMMBuy) {
     return computeAMMOpenAmountWithPrice(context, normalizedLimitPrice, isAMMBuy).negated()
   } else if (context.position1.lt(_0) && isAMMBuy) {

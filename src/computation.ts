@@ -20,11 +20,11 @@ import {
 import { _0, _1 } from './constants'
 import { normalizeBigNumberish, hasTheSameSign, splitAmount } from './utils'
 
-export function computeAccount(p: LiquidityPoolStorage, marketID: string, s: AccountStorage): AccountDetails {
-  if (!p.markets[marketID]) {
-    throw new InvalidArgumentError(`market {marketID} not found in the pool`)
+export function computeAccount(p: LiquidityPoolStorage, marketIndex: number, s: AccountStorage): AccountDetails {
+  if (!p.markets[marketIndex]) {
+    throw new InvalidArgumentError(`market {marketIndex} not found in the pool`)
   }
-  const market = p.markets[marketID]
+  const market = p.markets[marketIndex]
   const positionValue = market.markPrice.times(s.positionAmount.abs())
   const positionMargin = positionValue.times(market.initialMarginRate)
   const maintenanceMargin = positionValue.times(market.maintenanceMarginRate)
@@ -96,15 +96,15 @@ export function computeAccount(p: LiquidityPoolStorage, marketID: string, s: Acc
 
 export function computeDecreasePosition(
   p: LiquidityPoolStorage,
-  marketID: string,
+  marketIndex: number,
   a: AccountStorage,
   price: BigNumber,
   amount: BigNumber
 ): AccountStorage {
-  if (!p.markets[marketID]) {
-    throw new InvalidArgumentError(`market {marketID} not found in the pool`)
+  if (!p.markets[marketIndex]) {
+    throw new InvalidArgumentError(`market {marketIndex} not found in the pool`)
   }
-  const market = p.markets[marketID]
+  const market = p.markets[marketIndex]
   let cashBalance = a.cashBalance
   const oldAmount = a.positionAmount
   let entryValue = a.entryValue
@@ -132,15 +132,15 @@ export function computeDecreasePosition(
 
 export function computeIncreasePosition(
   p: LiquidityPoolStorage,
-  marketID: string,
+  marketIndex: number,
   a: AccountStorage,
   price: BigNumber,
   amount: BigNumber
 ): AccountStorage {
-  if (!p.markets[marketID]) {
-    throw new InvalidArgumentError(`market {marketID} not found in the pool`)
+  if (!p.markets[marketIndex]) {
+    throw new InvalidArgumentError(`market {marketIndex} not found in the pool`)
   }
-  const market = p.markets[marketID]
+  const market = p.markets[marketIndex]
   let cashBalance = a.cashBalance
   const oldAmount = a.positionAmount
   let entryValue = a.entryValue
@@ -178,7 +178,7 @@ export function computeFee(price: BigNumberish, amount: BigNumberish, feeRate: B
 
 export function computeTradeWithPrice(
   p: LiquidityPoolStorage,
-  marketID: string,
+  marketIndex: number,
   a: AccountStorage,
   price: BigNumberish,
   amount: BigNumberish,
@@ -193,10 +193,10 @@ export function computeTradeWithPrice(
   let newAccount: AccountStorage = a
   let { close, open } = splitAmount(newAccount.positionAmount, normalizedAmount)
   if (!close.isZero()) {
-    newAccount = computeDecreasePosition(p, marketID, newAccount, normalizedPrice, close)
+    newAccount = computeDecreasePosition(p, marketIndex, newAccount, normalizedPrice, close)
   }
   if (!open.isZero()) {
-    newAccount = computeIncreasePosition(p, marketID, newAccount, normalizedPrice, open)
+    newAccount = computeIncreasePosition(p, marketIndex, newAccount, normalizedPrice, open)
   }
   const fee = computeFee(normalizedPrice, normalizedAmount, normalizedFeeRate)
   newAccount.cashBalance = newAccount.cashBalance.minus(fee)
@@ -205,7 +205,7 @@ export function computeTradeWithPrice(
 
 export function computeAMMTrade(
   p: LiquidityPoolStorage,
-  marketID: string,
+  marketIndex: number,
   trader: AccountStorage,
   amount: BigNumberish, // trader's perspective
 ): AMMTradingResult {
@@ -213,13 +213,13 @@ export function computeAMMTrade(
   if (normalizedAmount.isZero()) {
     throw new InvalidArgumentError(`bad amount ${normalizedAmount.toFixed()}`)
   }
-  if (!p.markets[marketID]) {
-    throw new InvalidArgumentError(`market {marketID} not found in the pool`)
+  if (!p.markets[marketIndex]) {
+    throw new InvalidArgumentError(`market {marketIndex} not found in the pool`)
   }
-  const market = p.markets[marketID]
+  const market = p.markets[marketIndex]
 
   // AMM
-  const { deltaAMMAmount, tradingPrice } = computeAMMPrice(p, marketID, normalizedAmount)
+  const { deltaAMMAmount, tradingPrice } = computeAMMPrice(p, marketIndex, normalizedAmount)
   if (!deltaAMMAmount.negated().eq(normalizedAmount)) {
     throw new BugError(`trading amount mismatched ${deltaAMMAmount.negated().toFixed()} != ${normalizedAmount.toFixed()}`)
   }
@@ -231,25 +231,25 @@ export function computeAMMTrade(
 
   // trader
   trader = computeTradeWithPrice(
-    p, marketID, trader, tradingPrice, deltaAMMAmount.negated(),
+    p, marketIndex, trader, tradingPrice, deltaAMMAmount.negated(),
     market.lpFeeRate.plus(market.vaultFeeRate).plus(market.operatorFeeRate))
 
   // new AMM
   let fakeAMMAccount: AccountStorage = {
-    cashBalance: p.ammCashBalance,
+    cashBalance: p.poolCashBalance,
     positionAmount: market.ammPositionAmount,
     entryValue: null, entryFunding: null,
   }
-  fakeAMMAccount = computeTradeWithPrice(p, marketID, fakeAMMAccount,
+  fakeAMMAccount = computeTradeWithPrice(p, marketIndex, fakeAMMAccount,
     tradingPrice, deltaAMMAmount, _0)
   fakeAMMAccount.cashBalance = fakeAMMAccount.cashBalance.plus(lpFee)
   const newPool: LiquidityPoolStorage = {
     // clone the old pool to keep the return value immutable
     ...p,
-    ammCashBalance: fakeAMMAccount.cashBalance,
+    poolCashBalance: fakeAMMAccount.cashBalance,
     markets: {
       ...p.markets,
-      [marketID]: { ...market, ammPositionAmount: fakeAMMAccount.positionAmount },
+      [marketIndex]: { ...market, ammPositionAmount: fakeAMMAccount.positionAmount },
     },
   }
 
@@ -266,7 +266,7 @@ export function computeAMMTrade(
 // don't forget to transfer lpFees into amm after calling this function
 export function computeAMMPrice(
   p: LiquidityPoolStorage,
-  marketID: string,
+  marketIndex: number,
   amount: BigNumberish, // trader's perspective
 ): {
   deltaAMMAmount: BigNumber,
@@ -277,7 +277,7 @@ export function computeAMMPrice(
   if (normalizedAmount.isZero()) {
     throw new InvalidArgumentError(`bad amount ${normalizedAmount.toFixed()}`)
   }
-  const ammTrading = computeAMMInternalTrade(p, marketID, normalizedAmount.negated())
+  const ammTrading = computeAMMInternalTrade(p, marketIndex, normalizedAmount.negated())
   const deltaAMMMargin = ammTrading.deltaMargin
   const deltaAMMAmount = ammTrading.deltaPosition
   const tradingPrice = deltaAMMMargin.div(deltaAMMAmount).abs()

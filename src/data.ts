@@ -1,11 +1,12 @@
-import { AccountStorage, BugError, PerpetualStorage } from './types'
-import { Perpetual } from './wrapper/Perpetual'
-import { PerpetualFactory } from './wrapper/PerpetualFactory'
+import { AccountStorage, BugError, InvalidArgumentError, LiquidityPoolStorage } from './types'
 import { BrokerRelay } from './wrapper/BrokerRelay'
 import { BrokerRelayFactory } from './wrapper/BrokerRelayFactory'
-import { PerpetualMaker } from './wrapper/PerpetualMaker'
-import { PerpetualMakerFactory } from './wrapper/PerpetualMakerFactory'
+import { LiquidityPool } from './wrapper/LiquidityPool'
+import { LiquidityPoolFactory } from './wrapper/LiquidityPoolFactory'
+import { PoolFactory } from './wrapper/PoolFactory'
+import { PoolFactoryFactory } from './wrapper/PoolFactoryFactory'
 import { SignerOrProvider } from './types'
+import { ethers } from 'ethers'
 import { normalizeBigNumberish } from './utils'
 import { BigNumber } from 'bignumber.js'
 import { getAddress } from "@ethersproject/address"
@@ -25,32 +26,9 @@ export function getBrokerRelayContract(
   return BrokerRelayFactory.connect(contractAddress, signerOrProvider)
 }
 
-export async function getReaderContract(
-  signerOrProvider: SignerOrProvider,
-  contractAddress?: string
-): Promise<BrokerRelay> {
-  if (!contractAddress) {
-    let chainId = 0
-    if (signerOrProvider instanceof ethers.Signer) {
-      if (!signerOrProvider.provider) {
-        throw new InvalidArgumentError('the given Signer does not have a Provider')
-      }
-      chainId = (await signerOrProvider.provider.getNetwork()).chainId
-    } else {
-      chainId = (await signerOrProvider.getNetwork()).chainId
-    }
-    contractAddress = CHAIN_ID_TO_READER_ADDRESS[chainId]
-    if (!contractAddress) {
-      throw new InvalidArgumentError(`unknown chainId ${chainId}`)
-    }
-  }
-
-  return BrokerRelayFactory.connect(contractAddress, signerOrProvider)
-}
-
 export async function getPerpetualStorage(
   perpetual: Perpetual
-): Promise<PerpetualStorage> {
+): Promise<LiquidityPoolStorage> {
   const result = await Promise.all([
     perpetual.information(),
     perpetual.shareToken(),
@@ -77,7 +55,7 @@ export async function getPerpetualStorage(
     halfSpread: normalizeBigNumberish(result[0].riskParameter[0]).shiftedBy(-DECIMALS),
     beta1: normalizeBigNumberish(result[0].riskParameter[1]).shiftedBy(-DECIMALS),
     beta2: normalizeBigNumberish(result[0].riskParameter[2]).shiftedBy(-DECIMALS),
-    fundingRateCoefficient: normalizeBigNumberish(result[0].riskParameter[3]).shiftedBy(-DECIMALS),
+    fundingRateLimit: normalizeBigNumberish(result[0].riskParameter[3]).shiftedBy(-DECIMALS),
     targetLeverage: normalizeBigNumberish(result[0].riskParameter[4]).shiftedBy(-DECIMALS),
 
     // state
@@ -92,34 +70,19 @@ export async function getPerpetualStorage(
   }
 }
 
-export async function getAccountStorageMock(
-  perpetual: Perpetual,
-  userAddress: string
-): Promise<AccountStorage> {
-  perpetual // just ref
-  userAddress // just ref
-
-  return {
-    cashBalance: normalizeBigNumberish(1000000),
-    entryFundingLoss: normalizeBigNumberish(10),
-    entryValue: normalizeBigNumberish(1000),
-    positionAmount: normalizeBigNumberish(10)
-  }
-}
-
-export async function getAccountStorage(
-  perpetual: Perpetual,
-  userAddress: string
-): Promise<AccountStorage> {
-  const marginAccount = await perpetual.marginAccount(userAddress)
+// export async function getAccountStorage(
+//   perpetual: Perpetual,
+//   userAddress: string
+// ): Promise<AccountStorage> {
+//   const marginAccount = await perpetual.marginAccount(userAddress)
  
-  return {
-    cashBalance: normalizeBigNumberish(marginAccount.cashBalance).shiftedBy(-DECIMALS),
-    positionAmount: normalizeBigNumberish(marginAccount.positionAmount).shiftedBy(-DECIMALS),
-    entryFundingLoss: normalizeBigNumberish(marginAccount.entryFunding).shiftedBy(-DECIMALS),
-    entryValue: null,
-  }
-}
+//   return {
+//     cashBalance: normalizeBigNumberish(marginAccount.cashBalance).shiftedBy(-DECIMALS),
+//     positionAmount: normalizeBigNumberish(marginAccount.positionAmount).shiftedBy(-DECIMALS),
+//     entryValue: null,
+//     entryFunding: null,
+//   }
+// }
 
 export async function getBrokerRelayBalanceOf(
   brokerRelay: BrokerRelay,
@@ -130,12 +93,15 @@ export async function getBrokerRelayBalanceOf(
   return normalizeBigNumberish(balance).shiftedBy(-DECIMALS)
 }
 
-export async function getActivatePerpetuals(
-  perpetualMaker: PerpetualMaker,
+export async function listActivatePerpetuals(
+  liquidityPool: LiquidityPool,
   trader: string
 ): Promise<string[]> {
+
+  ILiquidityPool(liquidityPool).activeAccountCount(marketIndex);
+
   getAddress(trader)
-  const count = (await perpetualMaker.totalActivePerpetualCountForTrader(trader)).toNumber()
+  const count = (await liquidityPool.totalActivePerpetualCountForTrader(trader)).toNumber()
   if (count > 1000000) {
     throw new BugError(`activate perpetual count is too large: ${count}`)
   }
@@ -143,8 +109,54 @@ export async function getActivatePerpetuals(
   const step = 100
   for (let begin = 0; begin < count; begin = ret.length) {
     let end = Math.min(begin + step, count)
-    const ids = await perpetualMaker.listActivePerpetualForTrader(trader, begin, end)
+    const ids = await liquidityPool.listActivePerpetualForTrader(trader, begin, end)
     ret = ret.concat(ids)
+
+    ILiquidityPool pool = ILiquidityPool(liquidityPool);
+        address[] memory accounts = pool.listActiveAccounts(marketIndex, begin, end);
+        uint256 count = accounts.length;
+        marginAccounts = new MarginAccount[](count);
+        for (uint256 i = 0; i < count; i++) {
+            (marginAccounts[i].cashBalance, marginAccounts[i].positionAmount) = pool.marginAccount(
+                marketIndex,
+                accounts[i]
+            );
+        }
+  }
+  return ret
+}
+
+export async function listActivateAccount(
+  liquidityPool: LiquidityPool,
+  market
+  trader: string
+): Promise<string[]> {
+  liquidityPool
+
+  ILiquidityPool(liquidityPool).activeAccountCount(marketIndex);
+
+  getAddress(trader)
+  const count = (await liquidityPool.activeAccountCount(trader)).toNumber()
+  if (count > 1000000) {
+    throw new BugError(`activate perpetual count is too large: ${count}`)
+  }
+  let ret: string[] = []
+  const step = 100
+  for (let begin = 0; begin < count; begin = ret.length) {
+    let end = Math.min(begin + step, count)
+    const ids = await liquidityPool.listActiveAccounts(trader, begin, end)
+    ret = ret.concat(ids)
+    
+    ILiquidityPool pool = ILiquidityPool(liquidityPool);
+        address[] memory accounts = pool.listActiveAccounts(marketIndex, begin, end);
+        uint256 count = accounts.length;
+        marginAccounts = new MarginAccount[](count);
+        for (uint256 i = 0; i < count; i++) {
+            (marginAccounts[i].cashBalance, marginAccounts[i].positionAmount) = pool.marginAccount(
+                marketIndex,
+                accounts[i]
+            );
+        }
   }
   return ret
 }
