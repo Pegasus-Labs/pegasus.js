@@ -39,8 +39,8 @@ const defaultPool: LiquidityPoolStorage = {
   totalClaimableFee: _0,
   poolCashBalance: _0, // set me later
   fundingTime: 1579601290,
-  
-  markets: [] // set me later
+
+  markets: new Map() // set me later
 }
 
 const market1: MarketStorage = {
@@ -75,12 +75,9 @@ const TEST_MARKET_INDEX0 = 0
 const poolStorage0: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('100000'),
-  markets: {
-    [TEST_MARKET_INDEX0]: {
-      ...market1,
-      ammPositionAmount: _0,
-    }
-  },
+  markets: new Map([
+    [TEST_MARKET_INDEX0, { ...market1, ammPositionAmount: _0, }],
+  ]),
 }
 
 // short normal
@@ -89,12 +86,9 @@ const poolStorage0: LiquidityPoolStorage = {
 const poolStorage1: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('116095.73134375'),
-  markets: {
-    [TEST_MARKET_INDEX0]: {
-      ...market1,
-      ammPositionAmount: new BigNumber('-2.3'),
-    }
-  },
+  markets: new Map([
+    [TEST_MARKET_INDEX0, { ...market1, ammPositionAmount: new BigNumber('-2.3'), }],
+  ]),
 }
 
 
@@ -103,12 +97,9 @@ const poolStorage1: LiquidityPoolStorage = {
 const poolStorage3: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('16096.21634375'),
-  markets: {
-    [TEST_MARKET_INDEX0]: {
-      ...market1,
-      ammPositionAmount: new BigNumber('-2.3'),
-    }
-  },
+  markets: new Map([
+    [TEST_MARKET_INDEX0, { ...market1, ammPositionAmount: new BigNumber('-2.3'), }],
+  ]),
 }
 
 // long normal
@@ -117,12 +108,9 @@ const poolStorage3: LiquidityPoolStorage = {
 const poolStorage4: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('83941.29865625'),
-  markets: {
-    [TEST_MARKET_INDEX0]: {
-      ...market1,
-      ammPositionAmount: new BigNumber('2.3'),
-    }
-  },
+  markets: new Map([
+    [TEST_MARKET_INDEX0, { ...market1, ammPositionAmount: new BigNumber('2.3'), }],
+  ]),
 }
 
 // long unsafe
@@ -130,12 +118,9 @@ const poolStorage4: LiquidityPoolStorage = {
 const poolStorage6: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('-13977.21634375'),
-  markets: {
-    [TEST_MARKET_INDEX0]: {
-      ...market1,
-      ammPositionAmount: new BigNumber('2.3'),
-    }
-  },
+  markets: new Map([
+    [TEST_MARKET_INDEX0, { ...market1, ammPositionAmount: new BigNumber('2.3'), }],
+  ]),
 }
 
 const accountStorage1: AccountStorage = {

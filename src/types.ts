@@ -66,7 +66,7 @@ export interface LiquidityPoolStorage {
   poolCashBalance: BigNumber
   fundingTime: number
   
-  markets: { [marketIndex: number]: MarketStorage }
+  markets: Map<number, MarketStorage>
 }
 
 export interface MarketStorage {

@@ -21,10 +21,10 @@ import { _0, _1 } from './constants'
 import { normalizeBigNumberish, hasTheSameSign, splitAmount } from './utils'
 
 export function computeAccount(p: LiquidityPoolStorage, marketIndex: number, s: AccountStorage): AccountDetails {
-  if (!p.markets[marketIndex]) {
+  const market = p.markets.get(marketIndex)
+  if (!market) {
     throw new InvalidArgumentError(`market {marketIndex} not found in the pool`)
   }
-  const market = p.markets[marketIndex]
   const positionValue = market.markPrice.times(s.positionAmount.abs())
   const positionMargin = positionValue.times(market.initialMarginRate)
   const maintenanceMargin = positionValue.times(market.maintenanceMarginRate)
@@ -101,10 +101,10 @@ export function computeDecreasePosition(
   price: BigNumber,
   amount: BigNumber
 ): AccountStorage {
-  if (!p.markets[marketIndex]) {
+  const market = p.markets.get(marketIndex)
+  if (!market) {
     throw new InvalidArgumentError(`market {marketIndex} not found in the pool`)
   }
-  const market = p.markets[marketIndex]
   let cashBalance = a.cashBalance
   const oldAmount = a.positionAmount
   let entryValue = a.entryValue
@@ -137,10 +137,10 @@ export function computeIncreasePosition(
   price: BigNumber,
   amount: BigNumber
 ): AccountStorage {
-  if (!p.markets[marketIndex]) {
+  const market = p.markets.get(marketIndex)
+  if (!market) {
     throw new InvalidArgumentError(`market {marketIndex} not found in the pool`)
   }
-  const market = p.markets[marketIndex]
   let cashBalance = a.cashBalance
   const oldAmount = a.positionAmount
   let entryValue = a.entryValue
@@ -213,10 +213,10 @@ export function computeAMMTrade(
   if (normalizedAmount.isZero()) {
     throw new InvalidArgumentError(`bad amount ${normalizedAmount.toFixed()}`)
   }
-  if (!p.markets[marketIndex]) {
+  const market = p.markets.get(marketIndex)
+  if (!market) {
     throw new InvalidArgumentError(`market {marketIndex} not found in the pool`)
   }
-  const market = p.markets[marketIndex]
 
   // AMM
   const { deltaAMMAmount, tradingPrice } = computeAMMPrice(p, marketIndex, normalizedAmount)
@@ -226,13 +226,13 @@ export function computeAMMTrade(
 
   // fee
   const lpFee = computeFee(tradingPrice, deltaAMMAmount, market.lpFeeRate)
-  const vaultFee = computeFee(tradingPrice, deltaAMMAmount, market.vaultFeeRate)
+  const vaultFee = computeFee(tradingPrice, deltaAMMAmount, p.vaultFeeRate)
   const operatorFee = computeFee(tradingPrice, deltaAMMAmount, market.operatorFeeRate)
 
   // trader
   trader = computeTradeWithPrice(
     p, marketIndex, trader, tradingPrice, deltaAMMAmount.negated(),
-    market.lpFeeRate.plus(market.vaultFeeRate).plus(market.operatorFeeRate))
+    market.lpFeeRate.plus(p.vaultFeeRate).plus(market.operatorFeeRate))
 
   // new AMM
   let fakeAMMAccount: AccountStorage = {
@@ -247,11 +247,9 @@ export function computeAMMTrade(
     // clone the old pool to keep the return value immutable
     ...p,
     poolCashBalance: fakeAMMAccount.cashBalance,
-    markets: {
-      ...p.markets,
-      [marketIndex]: { ...market, ammPositionAmount: fakeAMMAccount.positionAmount },
-    },
+    markets: new Map(p.markets)
   }
+  newPool.markets.set(marketIndex, { ...market, ammPositionAmount: fakeAMMAccount.positionAmount })
 
   return {
     trader,

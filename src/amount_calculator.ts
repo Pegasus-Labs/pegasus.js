@@ -252,16 +252,17 @@ export function computeAMMAmountWithPrice(
   isTraderBuy: boolean,
   limitPrice: BigNumberish,
 ): BigNumber {
-  if (!p.markets[marketIndex]) {
+  const market = p.markets.get(marketIndex)
+  if (!market) {
     throw new InvalidArgumentError(`market {marketIndex} not found in the pool`)
   }
   
   // add spread
   let normalizedLimitPrice = normalizeBigNumberish(limitPrice)
   if (isTraderBuy) {
-    normalizedLimitPrice = normalizedLimitPrice.div(_1.plus(p.markets[marketIndex].halfSpread))
+    normalizedLimitPrice = normalizedLimitPrice.div(_1.plus(market.halfSpread))
   } else {
-    normalizedLimitPrice = normalizedLimitPrice.div(_1.minus(p.markets[marketIndex].halfSpread))
+    normalizedLimitPrice = normalizedLimitPrice.div(_1.minus(market.halfSpread))
   }
   
   // get amount

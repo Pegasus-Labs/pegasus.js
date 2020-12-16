@@ -77,38 +77,39 @@ export async function getLiquidityPool(
     poolCashBalance: normalizeBigNumberish(pool.poolCashBalance).shiftedBy(-DECIMALS),
     fundingTime: pool.fundingTime.toNumber(),
 
-    markets: pool.marketStorages.map(m => {
-      if (m.state < MarketState.INIT || m.state > MarketState.CLEARED) {
-        throw new Error(`unrecognized market state: ${m.state}`)
-      }
-      return {
-        underlyingSymbol: m.underlyingAsset,
-        state: m.state as MarketState,
-        oracle: m.oracle,
-
-        markPrice: normalizeBigNumberish(m.markPrice).shiftedBy(-DECIMALS),
-        indexPrice: normalizeBigNumberish(m.indexPrice).shiftedBy(-DECIMALS),
-        unitAccumulativeFunding: normalizeBigNumberish(m.unitAccumulativeFunding).shiftedBy(-DECIMALS),
-
-        initialMarginRate: normalizeBigNumberish(m.initialMarginRate).shiftedBy(-DECIMALS),
-        maintenanceMarginRate: normalizeBigNumberish(m.maintenanceMarginRate).shiftedBy(-DECIMALS),
-        operatorFeeRate: normalizeBigNumberish(m.operatorFeeRate).shiftedBy(-DECIMALS),
-        lpFeeRate: normalizeBigNumberish(m.lpFeeRate).shiftedBy(-DECIMALS),
-        referrerRebateRate: normalizeBigNumberish(m.referrerRebateRate).shiftedBy(-DECIMALS),
-        liquidationPenaltyRate: normalizeBigNumberish(m.liquidationPenaltyRate).shiftedBy(-DECIMALS),
-        keeperGasReward: normalizeBigNumberish(m.keeperGasReward).shiftedBy(-DECIMALS),
-        insuranceFundRate: normalizeBigNumberish(m.insuranceFundRate).shiftedBy(-DECIMALS),
-        
-        halfSpread: normalizeBigNumberish(m.halfSpread).shiftedBy(-DECIMALS),
-        openSlippageFactor: normalizeBigNumberish(m.openSlippageFactor).shiftedBy(-DECIMALS),
-        closeSlippageFactor: normalizeBigNumberish(m.closeSlippageFactor).shiftedBy(-DECIMALS),
-        fundingRateLimit: normalizeBigNumberish(m.fundingRateLimit).shiftedBy(-DECIMALS),
-        maxLeverage: normalizeBigNumberish(m.maxLeverage).shiftedBy(-DECIMALS),
-
-        ammPositionAmount: normalizeBigNumberish(m.ammPositionAmount).shiftedBy(-DECIMALS),
-      }
-    })
+    markets: new Map(),
   }
+  pool.marketStorages.forEach((m, i) => {
+    if (m.state < MarketState.INIT || m.state > MarketState.CLEARED) {
+      throw new Error(`unrecognized market state: ${m.state}`)
+    }
+    ret.markets.set(i, {
+      underlyingSymbol: m.underlyingAsset,
+      state: m.state as MarketState,
+      oracle: m.oracle,
+
+      markPrice: normalizeBigNumberish(m.markPrice).shiftedBy(-DECIMALS),
+      indexPrice: normalizeBigNumberish(m.indexPrice).shiftedBy(-DECIMALS),
+      unitAccumulativeFunding: normalizeBigNumberish(m.unitAccumulativeFunding).shiftedBy(-DECIMALS),
+
+      initialMarginRate: normalizeBigNumberish(m.initialMarginRate).shiftedBy(-DECIMALS),
+      maintenanceMarginRate: normalizeBigNumberish(m.maintenanceMarginRate).shiftedBy(-DECIMALS),
+      operatorFeeRate: normalizeBigNumberish(m.operatorFeeRate).shiftedBy(-DECIMALS),
+      lpFeeRate: normalizeBigNumberish(m.lpFeeRate).shiftedBy(-DECIMALS),
+      referrerRebateRate: normalizeBigNumberish(m.referrerRebateRate).shiftedBy(-DECIMALS),
+      liquidationPenaltyRate: normalizeBigNumberish(m.liquidationPenaltyRate).shiftedBy(-DECIMALS),
+      keeperGasReward: normalizeBigNumberish(m.keeperGasReward).shiftedBy(-DECIMALS),
+      insuranceFundRate: normalizeBigNumberish(m.insuranceFundRate).shiftedBy(-DECIMALS),
+      
+      halfSpread: normalizeBigNumberish(m.halfSpread).shiftedBy(-DECIMALS),
+      openSlippageFactor: normalizeBigNumberish(m.openSlippageFactor).shiftedBy(-DECIMALS),
+      closeSlippageFactor: normalizeBigNumberish(m.closeSlippageFactor).shiftedBy(-DECIMALS),
+      fundingRateLimit: normalizeBigNumberish(m.fundingRateLimit).shiftedBy(-DECIMALS),
+      maxLeverage: normalizeBigNumberish(m.maxLeverage).shiftedBy(-DECIMALS),
+
+      ammPositionAmount: normalizeBigNumberish(m.ammPositionAmount).shiftedBy(-DECIMALS),
+    })
+  })
   return ret
 }
 

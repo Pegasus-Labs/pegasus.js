@@ -10,7 +10,7 @@ import { InsufficientLiquidityError, BugError, InvalidArgumentError } from './ty
 
 export function initAMMTradingContext(p: LiquidityPoolStorage, marketIndex?: number): AMMTradingContext {
   if (marketIndex) {
-    if (!p.markets[marketIndex]) {
+    if (!p.markets.get(marketIndex)) {
       throw new InvalidArgumentError(`market {marketIndex} not found in the pool`)
     }
   }
@@ -34,8 +34,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketIndex?: num
   // split markets into current market and other markets
   // M_c = ammCash - Σ accumulatedFunding * N
   let cash = p.poolCashBalance
-  for (let id in p.markets) {
-    const market = p.markets[id]
+  p.markets.forEach((market, id) => {
     cash = cash.minus(market.unitAccumulativeFunding.times(market.ammPositionAmount))
     if (id === marketIndex) {
       index = market.indexPrice
@@ -54,7 +53,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketIndex?: num
       otherFundingRateCoefficient.push(market.fundingRateLimit)
       otherMaxLeverage.push(market.maxLeverage)
     }
-  }
+  })
    
   let ret = {
     index, position1, halfSpread, openSlippageFactor, closeSlippageFactor,

@@ -38,7 +38,7 @@ const defaultPool: LiquidityPoolStorage = {
   poolCashBalance: _0, // set me later
   fundingTime: 1579601290,
   
-  markets: [] // set me later
+  markets: new Map() // set me later
 }
 
 const market1: MarketStorage = {
@@ -78,10 +78,10 @@ const TEST_MARKET_INDEX1 = 1
 const poolStorage0: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('10000'),
-  markets: {
-    [TEST_MARKET_INDEX0]: { ...market1, ammPositionAmount: _0 },
-    [TEST_MARKET_INDEX1]: { ...market1, ammPositionAmount: _0 },
-  },
+  markets: new Map([
+    [TEST_MARKET_INDEX0, { ...market1, ammPositionAmount: _0 }],
+    [TEST_MARKET_INDEX1, { ...market1, ammPositionAmount: _0 }],
+  ]),
 }
 
 // [1] short 1: normal
@@ -91,10 +91,10 @@ const poolStorage0: LiquidityPoolStorage = {
 const poolStorage1: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('10100'),
-  markets: {
-    [TEST_MARKET_INDEX0]: { ...market1, ammPositionAmount: new BigNumber('-10') },
-    [TEST_MARKET_INDEX1]: { ...market1, ammPositionAmount: new BigNumber('10') },
-  },
+  markets: new Map([
+    [TEST_MARKET_INDEX0, { ...market1, ammPositionAmount: new BigNumber('-10') }],
+    [TEST_MARKET_INDEX1, { ...market1, ammPositionAmount: new BigNumber('10') }],
+  ]),
 }
 
 // [2] short 2: loss but safe
@@ -104,10 +104,10 @@ const poolStorage1: LiquidityPoolStorage = {
 const poolStorage2: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('14599'),
-  markets: {
-    [TEST_MARKET_INDEX0]: { ...market1, ammPositionAmount: new BigNumber('-50') },
-    [TEST_MARKET_INDEX1]: { ...market1, ammPositionAmount: new BigNumber('10') },
-  },
+  markets: new Map([
+    [TEST_MARKET_INDEX0, { ...market1, ammPositionAmount: new BigNumber('-50') }],
+    [TEST_MARKET_INDEX1, { ...market1, ammPositionAmount: new BigNumber('10') }],
+  ]),
 }
 
 // [3] short 3: unsafe
@@ -116,10 +116,10 @@ const poolStorage2: LiquidityPoolStorage = {
 const poolStorage3: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('16753.12619691409782671538929731'),
-  markets: {
-    [TEST_MARKET_INDEX0]: { ...market1, ammPositionAmount: new BigNumber('-80') },
-    [TEST_MARKET_INDEX1]: { ...market1, ammPositionAmount: new BigNumber('10') },
-  },
+  markets: new Map([
+    [TEST_MARKET_INDEX0, { ...market1, ammPositionAmount: new BigNumber('-80') }],
+    [TEST_MARKET_INDEX1, { ...market1, ammPositionAmount: new BigNumber('10') }],
+  ]),
 }
 
 // [4] long 1: normal
@@ -129,10 +129,10 @@ const poolStorage3: LiquidityPoolStorage = {
 const poolStorage4: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('8138'),
-  markets: {
-    [TEST_MARKET_INDEX0]: { ...market1, ammPositionAmount: new BigNumber('10') },
-    [TEST_MARKET_INDEX1]: { ...market1, ammPositionAmount: new BigNumber('10') },
-  },
+  markets: new Map([
+    [TEST_MARKET_INDEX0, { ...market1, ammPositionAmount: new BigNumber('10') }],
+    [TEST_MARKET_INDEX1, { ...market1, ammPositionAmount: new BigNumber('10') }],
+  ]),
 }
 
 // [5] long 2: loss but safe
@@ -142,10 +142,10 @@ const poolStorage4: LiquidityPoolStorage = {
 const poolStorage5: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('1664'),
-  markets: {
-    [TEST_MARKET_INDEX0]: { ...market1, ammPositionAmount: new BigNumber('50') },
-    [TEST_MARKET_INDEX1]: { ...market1, ammPositionAmount: new BigNumber('10') },
-  },
+  markets: new Map([
+    [TEST_MARKET_INDEX0, { ...market1, ammPositionAmount: new BigNumber('50') }],
+    [TEST_MARKET_INDEX1, { ...market1, ammPositionAmount: new BigNumber('10') }],
+  ]),
 }
 
 // [6]
@@ -155,10 +155,10 @@ const poolStorage5: LiquidityPoolStorage = {
 const poolStorage6: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('1925'),
-  markets: {
-    [TEST_MARKET_INDEX0]: { ...market1, ammPositionAmount: new BigNumber('80') },
-    [TEST_MARKET_INDEX1]: { ...market1, ammPositionAmount: new BigNumber('10') },
-  },
+  markets: new Map([
+    [TEST_MARKET_INDEX0, { ...market1, ammPositionAmount: new BigNumber('80') }],
+    [TEST_MARKET_INDEX1, { ...market1, ammPositionAmount: new BigNumber('10') }],
+  ]),
 }
 
 describe('computeM0', function () {
@@ -399,10 +399,12 @@ describe('safePosition', function () {
     const beta = new BigNumber('100')
     const context = computeAMMPoolMargin(initAMMTradingContext({
       ...poolStorage1,
-      markets: {
-        [TEST_MARKET_INDEX0]: { ...poolStorage1.markets[TEST_MARKET_INDEX0], maxLeverage: new BigNumber('0.5'), },
-        [TEST_MARKET_INDEX1]: poolStorage1.markets[TEST_MARKET_INDEX1],
-      }
+      markets: new Map([
+        [TEST_MARKET_INDEX0, {
+          ...poolStorage1.markets.get(TEST_MARKET_INDEX0) as MarketStorage,
+          maxLeverage: new BigNumber('0.5'), }],
+        [TEST_MARKET_INDEX1, poolStorage1.markets.get(TEST_MARKET_INDEX1) as MarketStorage],
+      ])
     }, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
     const pos2 = computeAMMSafeShortPositionAmount(context, beta)
@@ -413,14 +415,16 @@ describe('safePosition', function () {
     const beta = new BigNumber('142.6933822319389')
     const context = computeAMMPoolMargin(initAMMTradingContext({
       ...poolStorage1,
-      markets: {
-        [TEST_MARKET_INDEX0]: {
-          ...poolStorage1.markets[TEST_MARKET_INDEX0], maxLeverage: new BigNumber('0.5'), indexPrice: new BigNumber(100),
-          ammPositionAmount: new BigNumber('-10'), openSlippageFactor: beta },
-        [TEST_MARKET_INDEX1]: {
-          ...poolStorage1.markets[TEST_MARKET_INDEX1], indexPrice: new BigNumber('90'),
-          ammPositionAmount: new BigNumber('85.5148648938521'), openSlippageFactor: new BigNumber('200'), },
-      }
+      markets: new Map([
+        [TEST_MARKET_INDEX0, {
+          ...poolStorage1.markets.get(TEST_MARKET_INDEX0) as MarketStorage,
+          maxLeverage: new BigNumber('0.5'), indexPrice: new BigNumber(100),
+          ammPositionAmount: new BigNumber('-10'), openSlippageFactor: beta }],
+        [TEST_MARKET_INDEX1, {
+          ...poolStorage1.markets.get(TEST_MARKET_INDEX1) as MarketStorage,
+          indexPrice: new BigNumber('90'),
+          ammPositionAmount: new BigNumber('85.5148648938521'), openSlippageFactor: new BigNumber('200'), }],
+        ])
     }, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
     const pos2 = computeAMMSafeShortPositionAmount(context, beta)
@@ -443,10 +447,12 @@ describe('safePosition', function () {
     const beta = new BigNumber('100')
     const context = computeAMMPoolMargin(initAMMTradingContext({
       ...poolStorage4,
-      markets: {
-        [TEST_MARKET_INDEX0]: { ...poolStorage4.markets[TEST_MARKET_INDEX0], maxLeverage: new BigNumber('0.5'), },
-        [TEST_MARKET_INDEX1]: poolStorage4.markets[TEST_MARKET_INDEX1],
-      }
+      markets: new Map([
+        [TEST_MARKET_INDEX0, {
+          ...poolStorage4.markets.get(TEST_MARKET_INDEX0) as MarketStorage,
+          maxLeverage: new BigNumber('0.5'), }],
+        [TEST_MARKET_INDEX1, poolStorage4.markets.get(TEST_MARKET_INDEX1) as MarketStorage],
+      ])
     }, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
     const pos2 = computeAMMSafeLongPositionAmount(context, beta)
@@ -457,12 +463,15 @@ describe('safePosition', function () {
     const beta = new BigNumber('39.77')
     const context = computeAMMPoolMargin(initAMMTradingContext({
       ...poolStorage4,
-      markets: {
-        [TEST_MARKET_INDEX0]: { ...poolStorage4.markets[TEST_MARKET_INDEX0], openSlippageFactor: beta },
-        [TEST_MARKET_INDEX1]: {
-          ...poolStorage4.markets[TEST_MARKET_INDEX1], indexPrice: new BigNumber('10'),
-          ammPositionAmount: new BigNumber('-109'), openSlippageFactor: new BigNumber('30'), },
-      }
+      markets: new Map([
+        [TEST_MARKET_INDEX0, {
+          ...poolStorage4.markets.get(TEST_MARKET_INDEX0) as MarketStorage,
+          openSlippageFactor: beta }],
+        [TEST_MARKET_INDEX1, {
+          ...poolStorage4.markets.get(TEST_MARKET_INDEX1) as MarketStorage,
+          indexPrice: new BigNumber('10'),
+          ammPositionAmount: new BigNumber('-109'), openSlippageFactor: new BigNumber('30'), }],
+        ])
     }, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
     const pos2 = computeAMMSafeLongPositionAmount(context, beta)
@@ -611,7 +620,7 @@ describe('computeFundingRate', function () {
     expect(computeFundingRate(poolStorage2, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('0.00269597158238683137'))
     expect(computeFundingRate(poolStorage3, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('0.005'))
     expect(computeFundingRate(poolStorage4, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('-0.0005'))
-    expect(computeFundingRate(poolStorage5, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('-0.00510901257246682291'))
+    expect(computeFundingRate(poolStorage5, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('-0.005')) // clip
     expect(computeFundingRate(poolStorage6, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('-0.005'))
   })
 })
