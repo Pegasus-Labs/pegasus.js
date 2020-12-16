@@ -17,7 +17,7 @@ describe('symbol', function () {
 
   it('SAI', async function () {
     const c = getERC20Contract('0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359', getDefaultProvider('mainnet'))
-    expect(await erc20Symbol(c)).toBe('SAI')
+    expect(await erc20Symbol(c)).toBe('DAI')
   })
 
   it('MKR', async function () {
