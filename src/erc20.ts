@@ -1,9 +1,11 @@
-import { ethers } from 'ethers'
-import { SignerOrProvider } from './types'
-import { ERC20_ABI } from './constants'
-import { normalizeBigNumberish } from './utils'
 import BigNumber from 'bignumber.js'
+import { ethers } from 'ethers'
 import { CallOverrides } from "@ethersproject/contracts"
+import { Provider } from '@ethersproject/providers'
+import { parseBytes32String } from '@ethersproject/strings'
+import { SignerOrProvider } from './types'
+import { ERC20_ABI, ERC20_BYTES32_ABI } from './constants'
+import { normalizeBigNumberish } from './utils'
 
 export function getERC20Contract(
   erc20Address: string,
@@ -12,10 +14,34 @@ export function getERC20Contract(
   return new ethers.Contract(erc20Address, ERC20_ABI, signerOrProvider)
 }
 
+export function getERC20Bytes32Contract(
+  erc20Address: string,
+  signerOrProvider: SignerOrProvider
+): ethers.Contract {
+  return new ethers.Contract(erc20Address, ERC20_BYTES32_ABI, signerOrProvider)
+}
+
 export async function erc20Symbol(
   erc20Contract: ethers.Contract
 ): Promise<string> {
-  return await erc20Contract.symbol()
+  try {
+    return await erc20Contract.symbol()
+  } catch (err) {
+    if (err.code === 'CALL_EXCEPTION') {
+      return erc20SymbolBytes32(erc20Contract.address, erc20Contract.provider)
+    } else {
+      throw err
+    }
+  }
+}
+
+export async function erc20SymbolBytes32(
+  erc20Address: string,
+  provider: Provider
+): Promise<string> {
+  const erc20Contract = new ethers.Contract(erc20Address, ERC20_BYTES32_ABI, provider)
+  const bytes32 = await erc20Contract.symbol()
+  return parseBytes32String(bytes32)
 }
 
 export async function erc20Decimals(
