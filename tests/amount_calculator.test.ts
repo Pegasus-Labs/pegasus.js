@@ -25,69 +25,55 @@ import { extendExpect } from './helper'
 
 extendExpect()
 
+const defaultPool: LiquidityPoolStorage = {
+  operator: '0x0',
+  collateral: '0x0',
+  vault: '0x0',
+  governor: '0x0',
+  shareToken: '0x0',
+
+  vaultFeeRate: new BigNumber(0.0002),
+  insuranceFundCap: new BigNumber(10000),
+  insuranceFund: _0,
+  donatedInsuranceFund: _0,
+  totalClaimableFee: _0,
+  poolCashBalance: _0, // set me later
+  fundingTime: 1579601290,
+  
+  markets: [] // set me later
+}
+
 const market1: MarketStorage = {
   underlyingSymbol: 'T',
-  oracleAddress: '0x0',
+  state: MarketState.NORMAL,
+  oracle: "0x0",
+
+  markPrice: new BigNumber(6965),
+  indexPrice: new BigNumber(7000),
+  unitAccumulativeFunding: new BigNumber('9.9059375'),
 
   initialMarginRate: new BigNumber(0.1),
   maintenanceMarginRate: new BigNumber(0.05),
+  operatorFeeRate: new BigNumber(0.0001),
+  lpFeeRate: new BigNumber(0.0007),
+  referrerRebateRate: new BigNumber(0.0000),
   liquidationPenaltyRate: new BigNumber(0.005),
   keeperGasReward: new BigNumber(1),
+  insuranceFundRate: new BigNumber(0.0001),
 
   halfSpread: new BigNumber(0.001),
   openSlippageFactor: new BigNumber(100),
   closeSlippageFactor: new BigNumber(90),
   fundingRateLimit: new BigNumber(0.005),
   maxLeverage: new BigNumber(5),
-  lpFeeRate: new BigNumber(0.0007),
-  vaultFeeRate: new BigNumber(0.0002),
-  operatorFeeRate: new BigNumber(0.0001),
-  referrerRebateRate: new BigNumber(0.0000),
-
-  insuranceFund1: new BigNumber('0.0'),
-  insuranceFund2: new BigNumber('0.0'),
-  state: MarketState.NORMAL,
-  markPrice: new BigNumber(6965),
-  indexPrice: new BigNumber(7000),
-  unitAccumulativeFunding: new BigNumber('9.9059375'),
 
   ammPositionAmount: _0, // assign me later
-}
-
-// short normal
-// availableCashBalance = 116095.73134375 - (9.9059375 * (-2.3)) = 116118.515
-// poolMargin = 100000, 100001.8518085704069965273648933
-const amm1 = {
-  cashBalance: new BigNumber('116095.73134375'),
-  positionAmount: new BigNumber('-2.3'),
-}
-
-// short unsafe
-// availableCashBalance = 16096.21634375 - (9.9059375 * (-2.3)) = 16119
-const amm3 = {
-  cashBalance: new BigNumber('16096.21634375'),
-  positionAmount: new BigNumber('-2.3'),
-}
-
-// long normal
-// availableCashBalance = 83941.29865625 - (9.9059375 * 2.3) = 83918.515
-// poolMargin = 100000, 100001.8518085704069965273648933
-const amm4 = {
-  cashBalance: new BigNumber('83941.29865625'),
-  positionAmount: new BigNumber('2.3'),
-}
-
-// long unsafe
-// availableCashBalance = -13977.21634375 - (9.9059375 * (2.3)) = -14000
-const amm6 = {
-  cashBalance: new BigNumber('-13977.21634375'),
-  positionAmount: new BigNumber('2.3'),
 }
 
 const TEST_MARKET_INDEX0 = 0
 
 const poolStorage0: LiquidityPoolStorage = {
-  collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
+  ...defaultPool,
   poolCashBalance: new BigNumber('100000'),
   markets: {
     [TEST_MARKET_INDEX0]: {
@@ -97,46 +83,57 @@ const poolStorage0: LiquidityPoolStorage = {
   },
 }
 
+// short normal
+// availableCashBalance = 116095.73134375 - (9.9059375 * (-2.3)) = 116118.515
+// poolMargin = 100000, 100001.8518085704069965273648933
 const poolStorage1: LiquidityPoolStorage = {
-  collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
-  poolCashBalance: amm1.cashBalance,
+  ...defaultPool,
+  poolCashBalance: new BigNumber('116095.73134375'),
   markets: {
     [TEST_MARKET_INDEX0]: {
       ...market1,
-      ammPositionAmount: amm1.positionAmount,
+      ammPositionAmount: new BigNumber('-2.3'),
     }
   },
 }
 
+
+// short unsafe
+// availableCashBalance = 16096.21634375 - (9.9059375 * (-2.3)) = 16119
 const poolStorage3: LiquidityPoolStorage = {
-  collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
-  poolCashBalance: amm3.cashBalance,
+  ...defaultPool,
+  poolCashBalance: new BigNumber('16096.21634375'),
   markets: {
     [TEST_MARKET_INDEX0]: {
       ...market1,
-      ammPositionAmount: amm3.positionAmount,
+      ammPositionAmount: new BigNumber('-2.3'),
     }
   },
 }
 
+// long normal
+// availableCashBalance = 83941.29865625 - (9.9059375 * 2.3) = 83918.515
+// poolMargin = 100000, 100001.8518085704069965273648933
 const poolStorage4: LiquidityPoolStorage = {
-  collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
-  poolCashBalance: amm4.cashBalance,
+  ...defaultPool,
+  poolCashBalance: new BigNumber('83941.29865625'),
   markets: {
     [TEST_MARKET_INDEX0]: {
       ...market1,
-      ammPositionAmount: amm4.positionAmount,
+      ammPositionAmount: new BigNumber('2.3'),
     }
   },
 }
 
+// long unsafe
+// availableCashBalance = -13977.21634375 - (9.9059375 * (2.3)) = -14000
 const poolStorage6: LiquidityPoolStorage = {
-  collateralTokenAddress: '0x0', shareTokenAddress: '0x0', fundingTime: 1579601290,
-  poolCashBalance: amm6.cashBalance,
+  ...defaultPool,
+  poolCashBalance: new BigNumber('-13977.21634375'),
   markets: {
     [TEST_MARKET_INDEX0]: {
       ...market1,
-      ammPositionAmount: amm6.positionAmount,
+      ammPositionAmount: new BigNumber('2.3'),
     }
   },
 }

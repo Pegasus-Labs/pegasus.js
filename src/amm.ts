@@ -8,7 +8,7 @@ import { LiquidityPoolStorage, AMMTradingContext } from './types'
 import { sqrt, splitAmount } from './utils'
 import { InsufficientLiquidityError, BugError, InvalidArgumentError } from './types'
 
-export function initAMMTradingContext(p: LiquidityPoolStorage, marketIndex?: string): AMMTradingContext {
+export function initAMMTradingContext(p: LiquidityPoolStorage, marketIndex?: number): AMMTradingContext {
   if (marketIndex) {
     if (!p.markets[marketIndex]) {
       throw new InvalidArgumentError(`market {marketIndex} not found in the pool`)

@@ -54,7 +54,6 @@ export async function getReaderContract(
       throw new InvalidArgumentError(`unknown chainId ${chainId}`)
     }
   }
-
   return ReaderFactory.connect(contractAddress, signerOrProvider)
 }
   
