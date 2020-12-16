@@ -47,7 +47,8 @@ interface BrokerRelayInterface extends ethers.utils.Interface {
         trader: string;
         broker: string;
         relayer: string;
-        perpetual: string;
+        liquidityPool: string;
+        marketIndex: BigNumberish;
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
@@ -150,7 +151,8 @@ export class BrokerRelay extends Contract {
         trader: string;
         broker: string;
         relayer: string;
-        perpetual: string;
+        liquidityPool: string;
+        marketIndex: BigNumberish;
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
@@ -168,7 +170,8 @@ export class BrokerRelay extends Contract {
         trader: string;
         broker: string;
         relayer: string;
-        perpetual: string;
+        liquidityPool: string;
+        marketIndex: BigNumberish;
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
@@ -216,7 +219,8 @@ export class BrokerRelay extends Contract {
       trader: string;
       broker: string;
       relayer: string;
-      perpetual: string;
+      liquidityPool: string;
+      marketIndex: BigNumberish;
       referrer: string;
       amount: BigNumberish;
       priceLimit: BigNumberish;
@@ -234,7 +238,8 @@ export class BrokerRelay extends Contract {
       trader: string;
       broker: string;
       relayer: string;
-      perpetual: string;
+      liquidityPool: string;
+      marketIndex: BigNumberish;
       referrer: string;
       amount: BigNumberish;
       priceLimit: BigNumberish;
@@ -282,7 +287,8 @@ export class BrokerRelay extends Contract {
         trader: string;
         broker: string;
         relayer: string;
-        perpetual: string;
+        liquidityPool: string;
+        marketIndex: BigNumberish;
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
@@ -300,7 +306,8 @@ export class BrokerRelay extends Contract {
         trader: string;
         broker: string;
         relayer: string;
-        perpetual: string;
+        liquidityPool: string;
+        marketIndex: BigNumberish;
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
@@ -367,7 +374,8 @@ export class BrokerRelay extends Contract {
         trader: string;
         broker: string;
         relayer: string;
-        perpetual: string;
+        liquidityPool: string;
+        marketIndex: BigNumberish;
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
@@ -385,7 +393,8 @@ export class BrokerRelay extends Contract {
         trader: string;
         broker: string;
         relayer: string;
-        perpetual: string;
+        liquidityPool: string;
+        marketIndex: BigNumberish;
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
@@ -442,7 +451,8 @@ export class BrokerRelay extends Contract {
         trader: string;
         broker: string;
         relayer: string;
-        perpetual: string;
+        liquidityPool: string;
+        marketIndex: BigNumberish;
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
@@ -460,7 +470,8 @@ export class BrokerRelay extends Contract {
         trader: string;
         broker: string;
         relayer: string;
-        perpetual: string;
+        liquidityPool: string;
+        marketIndex: BigNumberish;
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;

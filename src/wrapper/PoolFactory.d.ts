@@ -20,78 +20,74 @@ import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
-interface PerpetualMakerInterface extends ethers.utils.Interface {
+interface PoolFactoryInterface extends ethers.utils.Interface {
   functions: {
-    "activeProxy(address)": FunctionFragment;
+    "accessController()": FunctionFragment;
+    "activateSharedLiquidityPoolFor(address,uint256)": FunctionFragment;
+    "activeSharedLiquidityPoolCountOf(address)": FunctionFragment;
     "addVersion(address,uint256,string)": FunctionFragment;
-    "createPerpetual(address,int256[7],int256[5],int256[5],int256[5],uint256)": FunctionFragment;
-    "createPerpetualWith(address,address,int256[7],int256[5],int256[5],int256[5],uint256)": FunctionFragment;
-    "deactiveProxy(address)": FunctionFragment;
+    "createSharedLiquidityPool(address,uint256)": FunctionFragment;
+    "createSharedLiquidityPoolWith(address,address,uint256)": FunctionFragment;
+    "deactivateSharedLiquidityPoolFor(address,uint256)": FunctionFragment;
     "describe(address)": FunctionFragment;
+    "findSharedLiquidityPoolByIndex(uint256)": FunctionFragment;
+    "isActiveSharedLiquidityPoolOf(address,address,uint256)": FunctionFragment;
+    "isSharedLiquidityPool(address)": FunctionFragment;
     "isVersionCompatibleWith(address,address)": FunctionFragment;
     "isVersionValid(address)": FunctionFragment;
     "latestVersion()": FunctionFragment;
-    "listActivePerpetualForTrader(address,uint256,uint256)": FunctionFragment;
-    "listPerpetuals(uint256,uint256)": FunctionFragment;
+    "listActiveSharedLiquidityPoolsOf(address,uint256,uint256)": FunctionFragment;
+    "listSharedLiquidityPools(uint256,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "totalActivePerpetualCountForTrader(address)": FunctionFragment;
-    "totalPerpetualCount()": FunctionFragment;
+    "sharedLiquidityPoolCount()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "vault()": FunctionFragment;
     "vaultFeeRate()": FunctionFragment;
     "weth()": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "activeProxy", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "accessController",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "activateSharedLiquidityPoolFor",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "activeSharedLiquidityPoolCountOf",
+    values: [string]
+  ): string;
   encodeFunctionData(
     functionFragment: "addVersion",
     values: [string, BigNumberish, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "createPerpetual",
-    values: [
-      string,
-      [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      [BigNumberish, BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      [BigNumberish, BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      [BigNumberish, BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      BigNumberish
-    ]
+    functionFragment: "createSharedLiquidityPool",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "createPerpetualWith",
-    values: [
-      string,
-      string,
-      [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      [BigNumberish, BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      [BigNumberish, BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      [BigNumberish, BigNumberish, BigNumberish, BigNumberish, BigNumberish],
-      BigNumberish
-    ]
+    functionFragment: "createSharedLiquidityPoolWith",
+    values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "deactiveProxy",
-    values: [string]
+    functionFragment: "deactivateSharedLiquidityPoolFor",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "describe", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "findSharedLiquidityPoolByIndex",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isActiveSharedLiquidityPoolOf",
+    values: [string, string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isSharedLiquidityPool",
+    values: [string]
+  ): string;
   encodeFunctionData(
     functionFragment: "isVersionCompatibleWith",
     values: [string, string]
@@ -105,11 +101,11 @@ interface PerpetualMakerInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "listActivePerpetualForTrader",
+    functionFragment: "listActiveSharedLiquidityPoolsOf",
     values: [string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "listPerpetuals",
+    functionFragment: "listSharedLiquidityPools",
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -118,11 +114,7 @@ interface PerpetualMakerInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "totalActivePerpetualCountForTrader",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "totalPerpetualCount",
+    functionFragment: "sharedLiquidityPoolCount",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -137,23 +129,43 @@ interface PerpetualMakerInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "weth", values?: undefined): string;
 
   decodeFunctionResult(
-    functionFragment: "activeProxy",
+    functionFragment: "accessController",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "activateSharedLiquidityPoolFor",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "activeSharedLiquidityPoolCountOf",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "addVersion", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "createPerpetual",
+    functionFragment: "createSharedLiquidityPool",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "createPerpetualWith",
+    functionFragment: "createSharedLiquidityPoolWith",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "deactiveProxy",
+    functionFragment: "deactivateSharedLiquidityPoolFor",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "describe", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "findSharedLiquidityPoolByIndex",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isActiveSharedLiquidityPoolOf",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isSharedLiquidityPool",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "isVersionCompatibleWith",
     data: BytesLike
@@ -167,11 +179,11 @@ interface PerpetualMakerInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "listActivePerpetualForTrader",
+    functionFragment: "listActiveSharedLiquidityPoolsOf",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "listPerpetuals",
+    functionFragment: "listSharedLiquidityPools",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -180,11 +192,7 @@ interface PerpetualMakerInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "totalActivePerpetualCountForTrader",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "totalPerpetualCount",
+    functionFragment: "sharedLiquidityPoolCount",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -200,16 +208,16 @@ interface PerpetualMakerInterface extends ethers.utils.Interface {
 
   events: {
     "AddVersion(address)": EventFragment;
-    "CreatePerpetual(address,address,address,address,address,address,int256[7],int256[5])": EventFragment;
+    "CreateSharedLiquidityPool(address,address,address,address,address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "AddVersion"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "CreatePerpetual"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "CreateSharedLiquidityPool"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
 
-export class PerpetualMaker extends Contract {
+export class PoolFactory extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -220,18 +228,46 @@ export class PerpetualMaker extends Contract {
   removeAllListeners(eventName: EventFilter | string): this;
   removeListener(eventName: any, listener: Listener): this;
 
-  interface: PerpetualMakerInterface;
+  interface: PoolFactoryInterface;
 
   functions: {
-    activeProxy(
+    accessController(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "accessController()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    activateSharedLiquidityPoolFor(
       trader: string,
+      marketIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "activeProxy(address)"(
+    "activateSharedLiquidityPoolFor(address,uint256)"(
       trader: string,
+      marketIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    activeSharedLiquidityPoolCountOf(
+      trader: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "activeSharedLiquidityPoolCountOf(address)"(
+      trader: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
 
     addVersion(
       implementation: string,
@@ -247,159 +283,41 @@ export class PerpetualMaker extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    createPerpetual(
-      oracle: string,
-      coreParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      riskParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      minRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      maxRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+    createSharedLiquidityPool(
+      collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "createPerpetual(address,int256[7],int256[5],int256[5],int256[5],uint256)"(
-      oracle: string,
-      coreParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      riskParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      minRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      maxRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+    "createSharedLiquidityPool(address,uint256)"(
+      collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    createPerpetualWith(
+    createSharedLiquidityPoolWith(
       implementation: string,
-      oracle: string,
-      coreParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      riskParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      minRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      maxRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+      collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "createPerpetualWith(address,address,int256[7],int256[5],int256[5],int256[5],uint256)"(
+    "createSharedLiquidityPoolWith(address,address,uint256)"(
       implementation: string,
-      oracle: string,
-      coreParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      riskParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      minRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      maxRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+      collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    deactiveProxy(
+    deactivateSharedLiquidityPoolFor(
       trader: string,
+      marketIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "deactiveProxy(address)"(
+    "deactivateSharedLiquidityPoolFor(address,uint256)"(
       trader: string,
+      marketIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -429,6 +347,52 @@ export class PerpetualMaker extends Contract {
       1: BigNumber;
       2: BigNumber;
       3: string;
+    }>;
+
+    findSharedLiquidityPoolByIndex(
+      guid: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "findSharedLiquidityPoolByIndex(uint256)"(
+      guid: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    isActiveSharedLiquidityPoolOf(
+      trader: string,
+      sharedLiquidityPool: string,
+      marketIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "isActiveSharedLiquidityPoolOf(address,address,uint256)"(
+      trader: string,
+      sharedLiquidityPool: string,
+      marketIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    isSharedLiquidityPool(
+      sharedLiquidityPool: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "isSharedLiquidityPool(address)"(
+      sharedLiquidityPool: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
     }>;
 
     isVersionCompatibleWith(
@@ -473,37 +437,61 @@ export class PerpetualMaker extends Contract {
       0: string;
     }>;
 
-    listActivePerpetualForTrader(
+    listActiveSharedLiquidityPoolsOf(
       trader: string,
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      0: string[];
+      result: {
+        sharedLiquidityPool: string;
+        marketIndex: BigNumber;
+        0: string;
+        1: BigNumber;
+      }[];
+      0: {
+        sharedLiquidityPool: string;
+        marketIndex: BigNumber;
+        0: string;
+        1: BigNumber;
+      }[];
     }>;
 
-    "listActivePerpetualForTrader(address,uint256,uint256)"(
+    "listActiveSharedLiquidityPoolsOf(address,uint256,uint256)"(
       trader: string,
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      0: string[];
+      result: {
+        sharedLiquidityPool: string;
+        marketIndex: BigNumber;
+        0: string;
+        1: BigNumber;
+      }[];
+      0: {
+        sharedLiquidityPool: string;
+        marketIndex: BigNumber;
+        0: string;
+        1: BigNumber;
+      }[];
     }>;
 
-    listPerpetuals(
+    listSharedLiquidityPools(
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
+      result: string[];
       0: string[];
     }>;
 
-    "listPerpetuals(uint256,uint256)"(
+    "listSharedLiquidityPools(uint256,uint256)"(
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
+      result: string[];
       0: string[];
     }>;
 
@@ -523,27 +511,13 @@ export class PerpetualMaker extends Contract {
 
     "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-    totalActivePerpetualCountForTrader(
-      trader: string,
+    sharedLiquidityPoolCount(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    "totalActivePerpetualCountForTrader(address)"(
-      trader: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    totalPerpetualCount(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "totalPerpetualCount()"(
+    "sharedLiquidityPoolCount()"(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
@@ -596,15 +570,31 @@ export class PerpetualMaker extends Contract {
     }>;
   };
 
-  activeProxy(
+  accessController(overrides?: CallOverrides): Promise<string>;
+
+  "accessController()"(overrides?: CallOverrides): Promise<string>;
+
+  activateSharedLiquidityPoolFor(
     trader: string,
+    marketIndex: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "activeProxy(address)"(
+  "activateSharedLiquidityPoolFor(address,uint256)"(
     trader: string,
+    marketIndex: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  activeSharedLiquidityPoolCountOf(
+    trader: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "activeSharedLiquidityPoolCountOf(address)"(
+    trader: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   addVersion(
     implementation: string,
@@ -620,159 +610,41 @@ export class PerpetualMaker extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  createPerpetual(
-    oracle: string,
-    coreParams: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ],
-    riskParams: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ],
-    minRiskParamValues: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ],
-    maxRiskParamValues: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ],
+  createSharedLiquidityPool(
+    collateral: string,
     nonce: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "createPerpetual(address,int256[7],int256[5],int256[5],int256[5],uint256)"(
-    oracle: string,
-    coreParams: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ],
-    riskParams: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ],
-    minRiskParamValues: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ],
-    maxRiskParamValues: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ],
+  "createSharedLiquidityPool(address,uint256)"(
+    collateral: string,
     nonce: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  createPerpetualWith(
+  createSharedLiquidityPoolWith(
     implementation: string,
-    oracle: string,
-    coreParams: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ],
-    riskParams: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ],
-    minRiskParamValues: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ],
-    maxRiskParamValues: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ],
+    collateral: string,
     nonce: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "createPerpetualWith(address,address,int256[7],int256[5],int256[5],int256[5],uint256)"(
+  "createSharedLiquidityPoolWith(address,address,uint256)"(
     implementation: string,
-    oracle: string,
-    coreParams: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ],
-    riskParams: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ],
-    minRiskParamValues: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ],
-    maxRiskParamValues: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ],
+    collateral: string,
     nonce: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  deactiveProxy(
+  deactivateSharedLiquidityPoolFor(
     trader: string,
+    marketIndex: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "deactiveProxy(address)"(
+  "deactivateSharedLiquidityPoolFor(address,uint256)"(
     trader: string,
+    marketIndex: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -804,6 +676,40 @@ export class PerpetualMaker extends Contract {
     3: string;
   }>;
 
+  findSharedLiquidityPoolByIndex(
+    guid: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "findSharedLiquidityPoolByIndex(uint256)"(
+    guid: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  isActiveSharedLiquidityPoolOf(
+    trader: string,
+    sharedLiquidityPool: string,
+    marketIndex: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  "isActiveSharedLiquidityPoolOf(address,address,uint256)"(
+    trader: string,
+    sharedLiquidityPool: string,
+    marketIndex: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  isSharedLiquidityPool(
+    sharedLiquidityPool: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  "isSharedLiquidityPool(address)"(
+    sharedLiquidityPool: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   isVersionCompatibleWith(
     base: string,
     target: string,
@@ -830,27 +736,41 @@ export class PerpetualMaker extends Contract {
 
   "latestVersion()"(overrides?: CallOverrides): Promise<string>;
 
-  listActivePerpetualForTrader(
+  listActiveSharedLiquidityPoolsOf(
     trader: string,
     begin: BigNumberish,
     end: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<string[]>;
+  ): Promise<
+    {
+      sharedLiquidityPool: string;
+      marketIndex: BigNumber;
+      0: string;
+      1: BigNumber;
+    }[]
+  >;
 
-  "listActivePerpetualForTrader(address,uint256,uint256)"(
+  "listActiveSharedLiquidityPoolsOf(address,uint256,uint256)"(
     trader: string,
     begin: BigNumberish,
     end: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<string[]>;
+  ): Promise<
+    {
+      sharedLiquidityPool: string;
+      marketIndex: BigNumber;
+      0: string;
+      1: BigNumber;
+    }[]
+  >;
 
-  listPerpetuals(
+  listSharedLiquidityPools(
     begin: BigNumberish,
     end: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string[]>;
 
-  "listPerpetuals(uint256,uint256)"(
+  "listSharedLiquidityPools(uint256,uint256)"(
     begin: BigNumberish,
     end: BigNumberish,
     overrides?: CallOverrides
@@ -864,19 +784,9 @@ export class PerpetualMaker extends Contract {
 
   "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-  totalActivePerpetualCountForTrader(
-    trader: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  sharedLiquidityPoolCount(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "totalActivePerpetualCountForTrader(address)"(
-    trader: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  totalPerpetualCount(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "totalPerpetualCount()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "sharedLiquidityPoolCount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   transferOwnership(
     newOwner: string,
@@ -901,12 +811,31 @@ export class PerpetualMaker extends Contract {
   "weth()"(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
-    activeProxy(trader: string, overrides?: CallOverrides): Promise<boolean>;
+    accessController(overrides?: CallOverrides): Promise<string>;
 
-    "activeProxy(address)"(
+    "accessController()"(overrides?: CallOverrides): Promise<string>;
+
+    activateSharedLiquidityPoolFor(
       trader: string,
+      marketIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    "activateSharedLiquidityPoolFor(address,uint256)"(
+      trader: string,
+      marketIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    activeSharedLiquidityPoolCountOf(
+      trader: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "activeSharedLiquidityPoolCountOf(address)"(
+      trader: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     addVersion(
       implementation: string,
@@ -922,156 +851,41 @@ export class PerpetualMaker extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    createPerpetual(
-      oracle: string,
-      coreParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      riskParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      minRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      maxRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+    createSharedLiquidityPool(
+      collateral: string,
       nonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    "createPerpetual(address,int256[7],int256[5],int256[5],int256[5],uint256)"(
-      oracle: string,
-      coreParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      riskParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      minRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      maxRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+    "createSharedLiquidityPool(address,uint256)"(
+      collateral: string,
       nonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    createPerpetualWith(
+    createSharedLiquidityPoolWith(
       implementation: string,
-      oracle: string,
-      coreParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      riskParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      minRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      maxRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+      collateral: string,
       nonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    "createPerpetualWith(address,address,int256[7],int256[5],int256[5],int256[5],uint256)"(
+    "createSharedLiquidityPoolWith(address,address,uint256)"(
       implementation: string,
-      oracle: string,
-      coreParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      riskParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      minRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      maxRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+      collateral: string,
       nonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    deactiveProxy(trader: string, overrides?: CallOverrides): Promise<boolean>;
-
-    "deactiveProxy(address)"(
+    deactivateSharedLiquidityPoolFor(
       trader: string,
+      marketIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "deactivateSharedLiquidityPoolFor(address,uint256)"(
+      trader: string,
+      marketIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -1102,6 +916,40 @@ export class PerpetualMaker extends Contract {
       2: BigNumber;
       3: string;
     }>;
+
+    findSharedLiquidityPoolByIndex(
+      guid: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "findSharedLiquidityPoolByIndex(uint256)"(
+      guid: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    isActiveSharedLiquidityPoolOf(
+      trader: string,
+      sharedLiquidityPool: string,
+      marketIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "isActiveSharedLiquidityPoolOf(address,address,uint256)"(
+      trader: string,
+      sharedLiquidityPool: string,
+      marketIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    isSharedLiquidityPool(
+      sharedLiquidityPool: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "isSharedLiquidityPool(address)"(
+      sharedLiquidityPool: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     isVersionCompatibleWith(
       base: string,
@@ -1129,27 +977,41 @@ export class PerpetualMaker extends Contract {
 
     "latestVersion()"(overrides?: CallOverrides): Promise<string>;
 
-    listActivePerpetualForTrader(
+    listActiveSharedLiquidityPoolsOf(
       trader: string,
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<string[]>;
+    ): Promise<
+      {
+        sharedLiquidityPool: string;
+        marketIndex: BigNumber;
+        0: string;
+        1: BigNumber;
+      }[]
+    >;
 
-    "listActivePerpetualForTrader(address,uint256,uint256)"(
+    "listActiveSharedLiquidityPoolsOf(address,uint256,uint256)"(
       trader: string,
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<string[]>;
+    ): Promise<
+      {
+        sharedLiquidityPool: string;
+        marketIndex: BigNumber;
+        0: string;
+        1: BigNumber;
+      }[]
+    >;
 
-    listPerpetuals(
+    listSharedLiquidityPools(
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string[]>;
 
-    "listPerpetuals(uint256,uint256)"(
+    "listSharedLiquidityPools(uint256,uint256)"(
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
@@ -1163,19 +1025,9 @@ export class PerpetualMaker extends Contract {
 
     "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
 
-    totalActivePerpetualCountForTrader(
-      trader: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    sharedLiquidityPoolCount(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "totalActivePerpetualCountForTrader(address)"(
-      trader: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    totalPerpetualCount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "totalPerpetualCount()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "sharedLiquidityPoolCount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: string,
@@ -1203,15 +1055,12 @@ export class PerpetualMaker extends Contract {
   filters: {
     AddVersion(implementation: null): EventFilter;
 
-    CreatePerpetual(
-      perpetual: null,
+    CreateSharedLiquidityPool(
+      sharedLiquidityPool: null,
       governor: null,
       shareToken: null,
       operator: null,
-      oracle: null,
-      collateral: null,
-      coreParams: null,
-      riskParams: null
+      collateral: null
     ): EventFilter;
 
     OwnershipTransferred(
@@ -1221,11 +1070,30 @@ export class PerpetualMaker extends Contract {
   };
 
   estimateGas: {
-    activeProxy(trader: string, overrides?: Overrides): Promise<BigNumber>;
+    accessController(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "activeProxy(address)"(
+    "accessController()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    activateSharedLiquidityPoolFor(
       trader: string,
+      marketIndex: BigNumberish,
       overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "activateSharedLiquidityPoolFor(address,uint256)"(
+      trader: string,
+      marketIndex: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    activeSharedLiquidityPoolCountOf(
+      trader: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "activeSharedLiquidityPoolCountOf(address)"(
+      trader: string,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     addVersion(
@@ -1242,156 +1110,41 @@ export class PerpetualMaker extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    createPerpetual(
-      oracle: string,
-      coreParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      riskParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      minRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      maxRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+    createSharedLiquidityPool(
+      collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "createPerpetual(address,int256[7],int256[5],int256[5],int256[5],uint256)"(
-      oracle: string,
-      coreParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      riskParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      minRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      maxRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+    "createSharedLiquidityPool(address,uint256)"(
+      collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    createPerpetualWith(
+    createSharedLiquidityPoolWith(
       implementation: string,
-      oracle: string,
-      coreParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      riskParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      minRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      maxRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+      collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "createPerpetualWith(address,address,int256[7],int256[5],int256[5],int256[5],uint256)"(
+    "createSharedLiquidityPoolWith(address,address,uint256)"(
       implementation: string,
-      oracle: string,
-      coreParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      riskParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      minRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      maxRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+      collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    deactiveProxy(trader: string, overrides?: Overrides): Promise<BigNumber>;
-
-    "deactiveProxy(address)"(
+    deactivateSharedLiquidityPoolFor(
       trader: string,
+      marketIndex: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "deactivateSharedLiquidityPoolFor(address,uint256)"(
+      trader: string,
+      marketIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1402,6 +1155,40 @@ export class PerpetualMaker extends Contract {
 
     "describe(address)"(
       implementation: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    findSharedLiquidityPoolByIndex(
+      guid: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "findSharedLiquidityPoolByIndex(uint256)"(
+      guid: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isActiveSharedLiquidityPoolOf(
+      trader: string,
+      sharedLiquidityPool: string,
+      marketIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "isActiveSharedLiquidityPoolOf(address,address,uint256)"(
+      trader: string,
+      sharedLiquidityPool: string,
+      marketIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isSharedLiquidityPool(
+      sharedLiquidityPool: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "isSharedLiquidityPool(address)"(
+      sharedLiquidityPool: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1431,27 +1218,27 @@ export class PerpetualMaker extends Contract {
 
     "latestVersion()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    listActivePerpetualForTrader(
+    listActiveSharedLiquidityPoolsOf(
       trader: string,
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "listActivePerpetualForTrader(address,uint256,uint256)"(
+    "listActiveSharedLiquidityPoolsOf(address,uint256,uint256)"(
       trader: string,
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    listPerpetuals(
+    listSharedLiquidityPools(
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "listPerpetuals(uint256,uint256)"(
+    "listSharedLiquidityPools(uint256,uint256)"(
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
@@ -1465,19 +1252,9 @@ export class PerpetualMaker extends Contract {
 
     "renounceOwnership()"(overrides?: Overrides): Promise<BigNumber>;
 
-    totalActivePerpetualCountForTrader(
-      trader: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    sharedLiquidityPoolCount(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "totalActivePerpetualCountForTrader(address)"(
-      trader: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    totalPerpetualCount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "totalPerpetualCount()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "sharedLiquidityPoolCount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: string,
@@ -1503,14 +1280,32 @@ export class PerpetualMaker extends Contract {
   };
 
   populateTransaction: {
-    activeProxy(
+    accessController(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "accessController()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    activateSharedLiquidityPoolFor(
       trader: string,
+      marketIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "activeProxy(address)"(
+    "activateSharedLiquidityPoolFor(address,uint256)"(
       trader: string,
+      marketIndex: BigNumberish,
       overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    activeSharedLiquidityPoolCountOf(
+      trader: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "activeSharedLiquidityPoolCountOf(address)"(
+      trader: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     addVersion(
@@ -1527,159 +1322,41 @@ export class PerpetualMaker extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    createPerpetual(
-      oracle: string,
-      coreParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      riskParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      minRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      maxRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+    createSharedLiquidityPool(
+      collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "createPerpetual(address,int256[7],int256[5],int256[5],int256[5],uint256)"(
-      oracle: string,
-      coreParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      riskParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      minRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      maxRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+    "createSharedLiquidityPool(address,uint256)"(
+      collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    createPerpetualWith(
+    createSharedLiquidityPoolWith(
       implementation: string,
-      oracle: string,
-      coreParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      riskParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      minRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      maxRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+      collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "createPerpetualWith(address,address,int256[7],int256[5],int256[5],int256[5],uint256)"(
+    "createSharedLiquidityPoolWith(address,address,uint256)"(
       implementation: string,
-      oracle: string,
-      coreParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      riskParams: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      minRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
-      maxRiskParamValues: [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish
-      ],
+      collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    deactiveProxy(
+    deactivateSharedLiquidityPoolFor(
       trader: string,
+      marketIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "deactiveProxy(address)"(
+    "deactivateSharedLiquidityPoolFor(address,uint256)"(
       trader: string,
+      marketIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -1690,6 +1367,40 @@ export class PerpetualMaker extends Contract {
 
     "describe(address)"(
       implementation: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    findSharedLiquidityPoolByIndex(
+      guid: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "findSharedLiquidityPoolByIndex(uint256)"(
+      guid: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isActiveSharedLiquidityPoolOf(
+      trader: string,
+      sharedLiquidityPool: string,
+      marketIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isActiveSharedLiquidityPoolOf(address,address,uint256)"(
+      trader: string,
+      sharedLiquidityPool: string,
+      marketIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isSharedLiquidityPool(
+      sharedLiquidityPool: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isSharedLiquidityPool(address)"(
+      sharedLiquidityPool: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1719,27 +1430,27 @@ export class PerpetualMaker extends Contract {
 
     "latestVersion()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    listActivePerpetualForTrader(
+    listActiveSharedLiquidityPoolsOf(
       trader: string,
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "listActivePerpetualForTrader(address,uint256,uint256)"(
+    "listActiveSharedLiquidityPoolsOf(address,uint256,uint256)"(
       trader: string,
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    listPerpetuals(
+    listSharedLiquidityPools(
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "listPerpetuals(uint256,uint256)"(
+    "listSharedLiquidityPools(uint256,uint256)"(
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
@@ -1753,21 +1464,11 @@ export class PerpetualMaker extends Contract {
 
     "renounceOwnership()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
-    totalActivePerpetualCountForTrader(
-      trader: string,
+    sharedLiquidityPoolCount(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "totalActivePerpetualCountForTrader(address)"(
-      trader: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    totalPerpetualCount(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "totalPerpetualCount()"(
+    "sharedLiquidityPoolCount()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
