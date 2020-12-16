@@ -3,18 +3,20 @@ import { DECIMALS } from './constants'
 import { BigNumberish } from './types'
 import { normalizeBigNumberish } from './utils'
 import BigNumber from 'bignumber.js'
-import type { Perpetual } from './wrapper/Perpetual'
+import type { LiquidityPool } from './wrapper/LiquidityPool'
 import type { BrokerRelay } from './wrapper/BrokerRelay'
 import { Overrides, PayableOverrides } from "@ethersproject/contracts"
 import { getAddress } from "@ethersproject/address"
 
 export async function perpetualTrade(
-  perpetual: Perpetual,
+  liquidityPool: LiquidityPool,
+  marketIndex: number,
   trader: string,
   tradeAmount: BigNumberish, // +1.23 means buy, -1.23 means sell
   limitPrice: BigNumberish,
   deadline: number,
   referrer: string,
+  isCloseOnly: boolean,
   overrides?: Overrides,
 ): Promise<ethers.providers.TransactionResponse> {
   getAddress(trader)
@@ -25,11 +27,15 @@ export async function perpetualTrade(
   const largeLimitPrice = normalizeBigNumberish(limitPrice)
     .shiftedBy(DECIMALS)
     .dp(0, BigNumber.ROUND_DOWN)
-  return await perpetual.trade(trader, largeAmount.toFixed(), largeLimitPrice.toFixed(), deadline, referrer, overrides)
+  return await liquidityPool.trade(
+    marketIndex, trader, largeAmount.toFixed(), largeLimitPrice.toFixed(),
+    deadline, referrer, isCloseOnly,
+    overrides)
 }
 
 export async function perpetualDeposit(
-  perpetual: Perpetual,
+  liquidityPool: LiquidityPool,
+  marketIndex: number,
   trader: string,
   collateralAmount: BigNumberish, // should be a decimal number (ie: 1.234)
   collateralDecimals: number,
@@ -39,11 +45,12 @@ export async function perpetualDeposit(
   const largeAmount = normalizeBigNumberish(collateralAmount)
     .shiftedBy(collateralDecimals)
     .dp(0, BigNumber.ROUND_DOWN)
-  return await perpetual.deposit(trader, largeAmount.toFixed(), overrides)
+  return await liquidityPool.deposit(marketIndex, trader, largeAmount.toFixed(), overrides)
 }
 
 export async function perpetualDepositEth(
-  perpetual: Perpetual,
+  liquidityPool: LiquidityPool,
+  marketIndex: number,
   trader: string,
   collateralAmount: BigNumberish, // should be a decimal number (ie: 1.234)
   overrides?: PayableOverrides,
@@ -56,11 +63,12 @@ export async function perpetualDepositEth(
     overrides = {}
   }
   overrides.value = largeAmount.toFixed()
-  return await perpetual.deposit(trader, '0', overrides)
+  return await liquidityPool.deposit(marketIndex, trader, '0', overrides)
 }
 
 export async function perpetualWithdraw(
-  perpetual: Perpetual,
+  liquidityPool: LiquidityPool,
+  marketIndex: number,
   trader: string,
   collateralAmount: BigNumberish, // should be a decimal number (ie: 1.234)
   collateralDecimals: number,
@@ -69,7 +77,7 @@ export async function perpetualWithdraw(
   const largeAmount = normalizeBigNumberish(collateralAmount)
     .shiftedBy(collateralDecimals)
     .dp(0, BigNumber.ROUND_DOWN)
-  return await perpetual.withdraw(trader, largeAmount.toFixed(), overrides)
+  return await liquidityPool.withdraw(marketIndex, trader, largeAmount.toFixed(), overrides)
 }
 
 export async function brokerRelayDeposit(
