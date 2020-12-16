@@ -52,26 +52,32 @@ export interface MarketTuple {
 }
 
 export interface LiquidityPoolStorage {
-  operatorAddress: string
-  collateralTokenAddress: string
-  shareTokenAddress: string
-  governorAddress: string
-  vaultAddress: string
+  operator: string
+  collateral: string
+  vault: string
+  governor: string
+  shareToken: string
 
   vaultFeeRate: BigNumber
-  insuranceFund: BigNumber
   insuranceFundCap: BigNumber
+  insuranceFund: BigNumber
   donatedInsuranceFund: BigNumber
-  poolCashBalance: BigNumber
   totalClaimableFee: BigNumber
+  poolCashBalance: BigNumber
   fundingTime: number
   
   markets: { [marketIndex: number]: MarketStorage }
 }
 
 export interface MarketStorage {
-  oracleAddress: string
   underlyingSymbol: string
+  state: MarketState
+  oracle: string
+
+  markPrice: BigNumber
+  indexPrice: BigNumber
+  unitAccumulativeFunding: BigNumber
+
   initialMarginRate: BigNumber
   maintenanceMarginRate: BigNumber
   operatorFeeRate: BigNumber
@@ -80,11 +86,6 @@ export interface MarketStorage {
   liquidationPenaltyRate: BigNumber
   keeperGasReward: BigNumber
   insuranceFundRate: BigNumber
-
-  state: MarketState
-  markPrice: BigNumber
-  indexPrice: BigNumber
-  unitAccumulativeFunding: BigNumber
   
   halfSpread: BigNumber // α
   openSlippageFactor: BigNumber // β1

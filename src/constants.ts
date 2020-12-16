@@ -16,3 +16,7 @@ export const _INF: BigNumber = new BigNumber('Infinity')
 export const _MAX_UINT256: BigNumber = new BigNumber(
   '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
 )
+
+export const CHAIN_ID_TO_READER_ADDRESS: { [chainID: number]: string } = {
+  1337: '0x12A79AFc9dF8b8D984b9C1fB41418ecf837d8DF8',
+}

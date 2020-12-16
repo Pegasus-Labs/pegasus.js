@@ -52,10 +52,8 @@ interface BrokerRelayInterface extends ethers.utils.Interface {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        minTradeAmount: BigNumberish;
-        tradeGasLimit: BigNumberish;
-        chainID: BigNumberish;
         data: BytesLike;
+        chainID: BigNumberish;
       }[],
       BigNumberish[],
       BytesLike[],
@@ -83,7 +81,7 @@ interface BrokerRelayInterface extends ethers.utils.Interface {
 
   events: {
     "Deposit(address,uint256)": EventFragment;
-    "TradeFailed(bytes32,tuple,int256,string)": EventFragment;
+    "TradeFailed(bytes32,tuple,int256)": EventFragment;
     "TradeSuccess(bytes32,tuple,int256,uint256)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
     "Withdraw(address,uint256)": EventFragment;
@@ -158,10 +156,8 @@ export class BrokerRelay extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        minTradeAmount: BigNumberish;
-        tradeGasLimit: BigNumberish;
-        chainID: BigNumberish;
         data: BytesLike;
+        chainID: BigNumberish;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
@@ -179,10 +175,8 @@ export class BrokerRelay extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        minTradeAmount: BigNumberish;
-        tradeGasLimit: BigNumberish;
-        chainID: BigNumberish;
         data: BytesLike;
+        chainID: BigNumberish;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
@@ -230,10 +224,8 @@ export class BrokerRelay extends Contract {
       referrer: string;
       amount: BigNumberish;
       priceLimit: BigNumberish;
-      minTradeAmount: BigNumberish;
-      tradeGasLimit: BigNumberish;
-      chainID: BigNumberish;
       data: BytesLike;
+      chainID: BigNumberish;
     }[],
     amounts: BigNumberish[],
     signatures: BytesLike[],
@@ -251,10 +243,8 @@ export class BrokerRelay extends Contract {
       referrer: string;
       amount: BigNumberish;
       priceLimit: BigNumberish;
-      minTradeAmount: BigNumberish;
-      tradeGasLimit: BigNumberish;
-      chainID: BigNumberish;
       data: BytesLike;
+      chainID: BigNumberish;
     }[],
     amounts: BigNumberish[],
     signatures: BytesLike[],
@@ -302,10 +292,8 @@ export class BrokerRelay extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        minTradeAmount: BigNumberish;
-        tradeGasLimit: BigNumberish;
-        chainID: BigNumberish;
         data: BytesLike;
+        chainID: BigNumberish;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
@@ -323,10 +311,8 @@ export class BrokerRelay extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        minTradeAmount: BigNumberish;
-        tradeGasLimit: BigNumberish;
-        chainID: BigNumberish;
         data: BytesLike;
+        chainID: BigNumberish;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
@@ -349,12 +335,7 @@ export class BrokerRelay extends Contract {
   filters: {
     Deposit(trader: null, amount: null): EventFilter;
 
-    TradeFailed(
-      orderHash: null,
-      order: null,
-      amount: null,
-      reason: null
-    ): EventFilter;
+    TradeFailed(orderHash: null, order: null, amount: null): EventFilter;
 
     TradeSuccess(
       orderHash: null,
@@ -398,10 +379,8 @@ export class BrokerRelay extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        minTradeAmount: BigNumberish;
-        tradeGasLimit: BigNumberish;
-        chainID: BigNumberish;
         data: BytesLike;
+        chainID: BigNumberish;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
@@ -419,10 +398,8 @@ export class BrokerRelay extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        minTradeAmount: BigNumberish;
-        tradeGasLimit: BigNumberish;
-        chainID: BigNumberish;
         data: BytesLike;
+        chainID: BigNumberish;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
@@ -479,10 +456,8 @@ export class BrokerRelay extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        minTradeAmount: BigNumberish;
-        tradeGasLimit: BigNumberish;
-        chainID: BigNumberish;
         data: BytesLike;
+        chainID: BigNumberish;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
@@ -500,10 +475,8 @@ export class BrokerRelay extends Contract {
         referrer: string;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        minTradeAmount: BigNumberish;
-        tradeGasLimit: BigNumberish;
-        chainID: BigNumberish;
         data: BytesLike;
+        chainID: BigNumberish;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],

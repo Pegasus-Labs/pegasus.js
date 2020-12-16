@@ -20,27 +20,30 @@ import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
-interface PoolFactoryInterface extends ethers.utils.Interface {
+interface PoolCreatorInterface extends ethers.utils.Interface {
   functions: {
     "accessController()": FunctionFragment;
-    "activateSharedLiquidityPoolFor(address,uint256)": FunctionFragment;
-    "activeSharedLiquidityPoolCountOf(address)": FunctionFragment;
+    "activateLiquidityPoolFor(address,uint256)": FunctionFragment;
+    "activeLiquidityPoolCountOf(address)": FunctionFragment;
     "addVersion(address,uint256,string)": FunctionFragment;
-    "createSharedLiquidityPool(address,uint256)": FunctionFragment;
-    "createSharedLiquidityPoolWith(address,address,uint256)": FunctionFragment;
-    "deactivateSharedLiquidityPoolFor(address,uint256)": FunctionFragment;
+    "createLiquidityPool(address,uint256)": FunctionFragment;
+    "createLiquidityPoolWith(address,address,uint256)": FunctionFragment;
+    "deactivateLiquidityPoolFor(address,uint256)": FunctionFragment;
     "describe(address)": FunctionFragment;
-    "findSharedLiquidityPoolByIndex(uint256)": FunctionFragment;
-    "isActiveSharedLiquidityPoolOf(address,address,uint256)": FunctionFragment;
-    "isSharedLiquidityPool(address)": FunctionFragment;
+    "findLiquidityPoolByIndex(uint256)": FunctionFragment;
+    "grantPrivilege(address,uint256)": FunctionFragment;
+    "isActiveLiquidityPoolOf(address,address,uint256)": FunctionFragment;
+    "isGranted(address,address,uint256)": FunctionFragment;
+    "isLiquidityPool(address)": FunctionFragment;
     "isVersionCompatibleWith(address,address)": FunctionFragment;
     "isVersionValid(address)": FunctionFragment;
     "latestVersion()": FunctionFragment;
-    "listActiveSharedLiquidityPoolsOf(address,uint256,uint256)": FunctionFragment;
-    "listSharedLiquidityPools(uint256,uint256)": FunctionFragment;
+    "liquidityPoolCount()": FunctionFragment;
+    "listActiveLiquidityPoolsOf(address,uint256,uint256)": FunctionFragment;
+    "listLiquidityPools(uint256,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "sharedLiquidityPoolCount()": FunctionFragment;
+    "revokePrivilege(address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "vault()": FunctionFragment;
     "vaultFeeRate()": FunctionFragment;
@@ -52,11 +55,11 @@ interface PoolFactoryInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "activateSharedLiquidityPoolFor",
+    functionFragment: "activateLiquidityPoolFor",
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "activeSharedLiquidityPoolCountOf",
+    functionFragment: "activeLiquidityPoolCountOf",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -64,28 +67,36 @@ interface PoolFactoryInterface extends ethers.utils.Interface {
     values: [string, BigNumberish, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "createSharedLiquidityPool",
+    functionFragment: "createLiquidityPool",
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "createSharedLiquidityPoolWith",
+    functionFragment: "createLiquidityPoolWith",
     values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "deactivateSharedLiquidityPoolFor",
+    functionFragment: "deactivateLiquidityPoolFor",
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "describe", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "findSharedLiquidityPoolByIndex",
+    functionFragment: "findLiquidityPoolByIndex",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "isActiveSharedLiquidityPoolOf",
+    functionFragment: "grantPrivilege",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isActiveLiquidityPoolOf",
     values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "isSharedLiquidityPool",
+    functionFragment: "isGranted",
+    values: [string, string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isLiquidityPool",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -101,11 +112,15 @@ interface PoolFactoryInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "listActiveSharedLiquidityPoolsOf",
+    functionFragment: "liquidityPoolCount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "listActiveLiquidityPoolsOf",
     values: [string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "listSharedLiquidityPools",
+    functionFragment: "listLiquidityPools",
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -114,8 +129,8 @@ interface PoolFactoryInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "sharedLiquidityPoolCount",
-    values?: undefined
+    functionFragment: "revokePrivilege",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
@@ -133,37 +148,42 @@ interface PoolFactoryInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "activateSharedLiquidityPoolFor",
+    functionFragment: "activateLiquidityPoolFor",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "activeSharedLiquidityPoolCountOf",
+    functionFragment: "activeLiquidityPoolCountOf",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "addVersion", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "createSharedLiquidityPool",
+    functionFragment: "createLiquidityPool",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "createSharedLiquidityPoolWith",
+    functionFragment: "createLiquidityPoolWith",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "deactivateSharedLiquidityPoolFor",
+    functionFragment: "deactivateLiquidityPoolFor",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "describe", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "findSharedLiquidityPoolByIndex",
+    functionFragment: "findLiquidityPoolByIndex",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "isActiveSharedLiquidityPoolOf",
+    functionFragment: "grantPrivilege",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "isSharedLiquidityPool",
+    functionFragment: "isActiveLiquidityPoolOf",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "isGranted", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "isLiquidityPool",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -179,11 +199,15 @@ interface PoolFactoryInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "listActiveSharedLiquidityPoolsOf",
+    functionFragment: "liquidityPoolCount",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "listSharedLiquidityPools",
+    functionFragment: "listActiveLiquidityPoolsOf",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "listLiquidityPools",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -192,7 +216,7 @@ interface PoolFactoryInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "sharedLiquidityPoolCount",
+    functionFragment: "revokePrivilege",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -208,16 +232,20 @@ interface PoolFactoryInterface extends ethers.utils.Interface {
 
   events: {
     "AddVersion(address)": EventFragment;
-    "CreateSharedLiquidityPool(address,address,address,address,address)": EventFragment;
+    "CreateLiquidityPool(address,address,address,address,address)": EventFragment;
+    "GrantPrivilege(address,address,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
+    "RevokePrivilege(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "AddVersion"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "CreateSharedLiquidityPool"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "CreateLiquidityPool"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "GrantPrivilege"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RevokePrivilege"): EventFragment;
 }
 
-export class PoolFactory extends Contract {
+export class PoolCreator extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -228,7 +256,7 @@ export class PoolFactory extends Contract {
   removeAllListeners(eventName: EventFilter | string): this;
   removeListener(eventName: any, listener: Listener): this;
 
-  interface: PoolFactoryInterface;
+  interface: PoolCreatorInterface;
 
   functions: {
     accessController(
@@ -243,26 +271,26 @@ export class PoolFactory extends Contract {
       0: string;
     }>;
 
-    activateSharedLiquidityPoolFor(
+    activateLiquidityPoolFor(
       trader: string,
       marketIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "activateSharedLiquidityPoolFor(address,uint256)"(
+    "activateLiquidityPoolFor(address,uint256)"(
       trader: string,
       marketIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    activeSharedLiquidityPoolCountOf(
+    activeLiquidityPoolCountOf(
       trader: string,
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    "activeSharedLiquidityPoolCountOf(address)"(
+    "activeLiquidityPoolCountOf(address)"(
       trader: string,
       overrides?: CallOverrides
     ): Promise<{
@@ -283,39 +311,39 @@ export class PoolFactory extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    createSharedLiquidityPool(
+    createLiquidityPool(
       collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "createSharedLiquidityPool(address,uint256)"(
+    "createLiquidityPool(address,uint256)"(
       collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    createSharedLiquidityPoolWith(
+    createLiquidityPoolWith(
       implementation: string,
       collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "createSharedLiquidityPoolWith(address,address,uint256)"(
+    "createLiquidityPoolWith(address,address,uint256)"(
       implementation: string,
       collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    deactivateSharedLiquidityPoolFor(
+    deactivateLiquidityPoolFor(
       trader: string,
       marketIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "deactivateSharedLiquidityPoolFor(address,uint256)"(
+    "deactivateLiquidityPoolFor(address,uint256)"(
       trader: string,
       marketIndex: BigNumberish,
       overrides?: Overrides
@@ -349,47 +377,77 @@ export class PoolFactory extends Contract {
       3: string;
     }>;
 
-    findSharedLiquidityPoolByIndex(
+    findLiquidityPoolByIndex(
       guid: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    "findSharedLiquidityPoolByIndex(uint256)"(
+    "findLiquidityPoolByIndex(uint256)"(
       guid: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    isActiveSharedLiquidityPoolOf(
+    grantPrivilege(
       trader: string,
-      sharedLiquidityPool: string,
+      privilege: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "grantPrivilege(address,uint256)"(
+      trader: string,
+      privilege: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    isActiveLiquidityPoolOf(
+      trader: string,
+      liquidityPool: string,
       marketIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       0: boolean;
     }>;
 
-    "isActiveSharedLiquidityPoolOf(address,address,uint256)"(
+    "isActiveLiquidityPoolOf(address,address,uint256)"(
       trader: string,
-      sharedLiquidityPool: string,
+      liquidityPool: string,
       marketIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       0: boolean;
     }>;
 
-    isSharedLiquidityPool(
-      sharedLiquidityPool: string,
+    isGranted(
+      owner: string,
+      trader: string,
+      privilege: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       0: boolean;
     }>;
 
-    "isSharedLiquidityPool(address)"(
-      sharedLiquidityPool: string,
+    "isGranted(address,address,uint256)"(
+      owner: string,
+      trader: string,
+      privilege: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    isLiquidityPool(
+      liquidityPool: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "isLiquidityPool(address)"(
+      liquidityPool: string,
       overrides?: CallOverrides
     ): Promise<{
       0: boolean;
@@ -437,47 +495,59 @@ export class PoolFactory extends Contract {
       0: string;
     }>;
 
-    listActiveSharedLiquidityPoolsOf(
+    liquidityPoolCount(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "liquidityPoolCount()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    listActiveLiquidityPoolsOf(
       trader: string,
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       result: {
-        sharedLiquidityPool: string;
+        liquidityPool: string;
         marketIndex: BigNumber;
         0: string;
         1: BigNumber;
       }[];
       0: {
-        sharedLiquidityPool: string;
+        liquidityPool: string;
         marketIndex: BigNumber;
         0: string;
         1: BigNumber;
       }[];
     }>;
 
-    "listActiveSharedLiquidityPoolsOf(address,uint256,uint256)"(
+    "listActiveLiquidityPoolsOf(address,uint256,uint256)"(
       trader: string,
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       result: {
-        sharedLiquidityPool: string;
+        liquidityPool: string;
         marketIndex: BigNumber;
         0: string;
         1: BigNumber;
       }[];
       0: {
-        sharedLiquidityPool: string;
+        liquidityPool: string;
         marketIndex: BigNumber;
         0: string;
         1: BigNumber;
       }[];
     }>;
 
-    listSharedLiquidityPools(
+    listLiquidityPools(
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
@@ -486,7 +556,7 @@ export class PoolFactory extends Contract {
       0: string[];
     }>;
 
-    "listSharedLiquidityPools(uint256,uint256)"(
+    "listLiquidityPools(uint256,uint256)"(
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
@@ -511,17 +581,17 @@ export class PoolFactory extends Contract {
 
     "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-    sharedLiquidityPoolCount(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
+    revokePrivilege(
+      trader: string,
+      privilege: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
-    "sharedLiquidityPoolCount()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
+    "revokePrivilege(address,uint256)"(
+      trader: string,
+      privilege: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     transferOwnership(
       newOwner: string,
@@ -574,24 +644,24 @@ export class PoolFactory extends Contract {
 
   "accessController()"(overrides?: CallOverrides): Promise<string>;
 
-  activateSharedLiquidityPoolFor(
+  activateLiquidityPoolFor(
     trader: string,
     marketIndex: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "activateSharedLiquidityPoolFor(address,uint256)"(
+  "activateLiquidityPoolFor(address,uint256)"(
     trader: string,
     marketIndex: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  activeSharedLiquidityPoolCountOf(
+  activeLiquidityPoolCountOf(
     trader: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  "activeSharedLiquidityPoolCountOf(address)"(
+  "activeLiquidityPoolCountOf(address)"(
     trader: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
@@ -610,39 +680,39 @@ export class PoolFactory extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  createSharedLiquidityPool(
+  createLiquidityPool(
     collateral: string,
     nonce: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "createSharedLiquidityPool(address,uint256)"(
+  "createLiquidityPool(address,uint256)"(
     collateral: string,
     nonce: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  createSharedLiquidityPoolWith(
+  createLiquidityPoolWith(
     implementation: string,
     collateral: string,
     nonce: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "createSharedLiquidityPoolWith(address,address,uint256)"(
+  "createLiquidityPoolWith(address,address,uint256)"(
     implementation: string,
     collateral: string,
     nonce: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  deactivateSharedLiquidityPoolFor(
+  deactivateLiquidityPoolFor(
     trader: string,
     marketIndex: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "deactivateSharedLiquidityPoolFor(address,uint256)"(
+  "deactivateLiquidityPoolFor(address,uint256)"(
     trader: string,
     marketIndex: BigNumberish,
     overrides?: Overrides
@@ -676,37 +746,63 @@ export class PoolFactory extends Contract {
     3: string;
   }>;
 
-  findSharedLiquidityPoolByIndex(
+  findLiquidityPoolByIndex(
     guid: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
 
-  "findSharedLiquidityPoolByIndex(uint256)"(
+  "findLiquidityPoolByIndex(uint256)"(
     guid: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
 
-  isActiveSharedLiquidityPoolOf(
+  grantPrivilege(
     trader: string,
-    sharedLiquidityPool: string,
+    privilege: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "grantPrivilege(address,uint256)"(
+    trader: string,
+    privilege: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  isActiveLiquidityPoolOf(
+    trader: string,
+    liquidityPool: string,
     marketIndex: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  "isActiveSharedLiquidityPoolOf(address,address,uint256)"(
+  "isActiveLiquidityPoolOf(address,address,uint256)"(
     trader: string,
-    sharedLiquidityPool: string,
+    liquidityPool: string,
     marketIndex: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  isSharedLiquidityPool(
-    sharedLiquidityPool: string,
+  isGranted(
+    owner: string,
+    trader: string,
+    privilege: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  "isSharedLiquidityPool(address)"(
-    sharedLiquidityPool: string,
+  "isGranted(address,address,uint256)"(
+    owner: string,
+    trader: string,
+    privilege: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  isLiquidityPool(
+    liquidityPool: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  "isLiquidityPool(address)"(
+    liquidityPool: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -736,41 +832,35 @@ export class PoolFactory extends Contract {
 
   "latestVersion()"(overrides?: CallOverrides): Promise<string>;
 
-  listActiveSharedLiquidityPoolsOf(
+  liquidityPoolCount(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "liquidityPoolCount()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  listActiveLiquidityPoolsOf(
     trader: string,
     begin: BigNumberish,
     end: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
-    {
-      sharedLiquidityPool: string;
-      marketIndex: BigNumber;
-      0: string;
-      1: BigNumber;
-    }[]
+    { liquidityPool: string; marketIndex: BigNumber; 0: string; 1: BigNumber }[]
   >;
 
-  "listActiveSharedLiquidityPoolsOf(address,uint256,uint256)"(
+  "listActiveLiquidityPoolsOf(address,uint256,uint256)"(
     trader: string,
     begin: BigNumberish,
     end: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
-    {
-      sharedLiquidityPool: string;
-      marketIndex: BigNumber;
-      0: string;
-      1: BigNumber;
-    }[]
+    { liquidityPool: string; marketIndex: BigNumber; 0: string; 1: BigNumber }[]
   >;
 
-  listSharedLiquidityPools(
+  listLiquidityPools(
     begin: BigNumberish,
     end: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string[]>;
 
-  "listSharedLiquidityPools(uint256,uint256)"(
+  "listLiquidityPools(uint256,uint256)"(
     begin: BigNumberish,
     end: BigNumberish,
     overrides?: CallOverrides
@@ -784,9 +874,17 @@ export class PoolFactory extends Contract {
 
   "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-  sharedLiquidityPoolCount(overrides?: CallOverrides): Promise<BigNumber>;
+  revokePrivilege(
+    trader: string,
+    privilege: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  "sharedLiquidityPoolCount()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "revokePrivilege(address,uint256)"(
+    trader: string,
+    privilege: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   transferOwnership(
     newOwner: string,
@@ -815,24 +913,24 @@ export class PoolFactory extends Contract {
 
     "accessController()"(overrides?: CallOverrides): Promise<string>;
 
-    activateSharedLiquidityPoolFor(
+    activateLiquidityPoolFor(
       trader: string,
       marketIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    "activateSharedLiquidityPoolFor(address,uint256)"(
+    "activateLiquidityPoolFor(address,uint256)"(
       trader: string,
       marketIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    activeSharedLiquidityPoolCountOf(
+    activeLiquidityPoolCountOf(
       trader: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "activeSharedLiquidityPoolCountOf(address)"(
+    "activeLiquidityPoolCountOf(address)"(
       trader: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -851,39 +949,39 @@ export class PoolFactory extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    createSharedLiquidityPool(
+    createLiquidityPool(
       collateral: string,
       nonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    "createSharedLiquidityPool(address,uint256)"(
+    "createLiquidityPool(address,uint256)"(
       collateral: string,
       nonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    createSharedLiquidityPoolWith(
+    createLiquidityPoolWith(
       implementation: string,
       collateral: string,
       nonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    "createSharedLiquidityPoolWith(address,address,uint256)"(
+    "createLiquidityPoolWith(address,address,uint256)"(
       implementation: string,
       collateral: string,
       nonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    deactivateSharedLiquidityPoolFor(
+    deactivateLiquidityPoolFor(
       trader: string,
       marketIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    "deactivateSharedLiquidityPoolFor(address,uint256)"(
+    "deactivateLiquidityPoolFor(address,uint256)"(
       trader: string,
       marketIndex: BigNumberish,
       overrides?: CallOverrides
@@ -917,37 +1015,63 @@ export class PoolFactory extends Contract {
       3: string;
     }>;
 
-    findSharedLiquidityPoolByIndex(
+    findLiquidityPoolByIndex(
       guid: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    "findSharedLiquidityPoolByIndex(uint256)"(
+    "findLiquidityPoolByIndex(uint256)"(
       guid: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    isActiveSharedLiquidityPoolOf(
+    grantPrivilege(
       trader: string,
-      sharedLiquidityPool: string,
+      privilege: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "grantPrivilege(address,uint256)"(
+      trader: string,
+      privilege: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    isActiveLiquidityPoolOf(
+      trader: string,
+      liquidityPool: string,
       marketIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    "isActiveSharedLiquidityPoolOf(address,address,uint256)"(
+    "isActiveLiquidityPoolOf(address,address,uint256)"(
       trader: string,
-      sharedLiquidityPool: string,
+      liquidityPool: string,
       marketIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    isSharedLiquidityPool(
-      sharedLiquidityPool: string,
+    isGranted(
+      owner: string,
+      trader: string,
+      privilege: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    "isSharedLiquidityPool(address)"(
-      sharedLiquidityPool: string,
+    "isGranted(address,address,uint256)"(
+      owner: string,
+      trader: string,
+      privilege: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    isLiquidityPool(
+      liquidityPool: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "isLiquidityPool(address)"(
+      liquidityPool: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -977,41 +1101,45 @@ export class PoolFactory extends Contract {
 
     "latestVersion()"(overrides?: CallOverrides): Promise<string>;
 
-    listActiveSharedLiquidityPoolsOf(
+    liquidityPoolCount(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "liquidityPoolCount()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    listActiveLiquidityPoolsOf(
       trader: string,
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
       {
-        sharedLiquidityPool: string;
+        liquidityPool: string;
         marketIndex: BigNumber;
         0: string;
         1: BigNumber;
       }[]
     >;
 
-    "listActiveSharedLiquidityPoolsOf(address,uint256,uint256)"(
+    "listActiveLiquidityPoolsOf(address,uint256,uint256)"(
       trader: string,
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
       {
-        sharedLiquidityPool: string;
+        liquidityPool: string;
         marketIndex: BigNumber;
         0: string;
         1: BigNumber;
       }[]
     >;
 
-    listSharedLiquidityPools(
+    listLiquidityPools(
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string[]>;
 
-    "listSharedLiquidityPools(uint256,uint256)"(
+    "listLiquidityPools(uint256,uint256)"(
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
@@ -1025,9 +1153,17 @@ export class PoolFactory extends Contract {
 
     "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
 
-    sharedLiquidityPoolCount(overrides?: CallOverrides): Promise<BigNumber>;
+    revokePrivilege(
+      trader: string,
+      privilege: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    "sharedLiquidityPoolCount()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "revokePrivilege(address,uint256)"(
+      trader: string,
+      privilege: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     transferOwnership(
       newOwner: string,
@@ -1055,17 +1191,29 @@ export class PoolFactory extends Contract {
   filters: {
     AddVersion(implementation: null): EventFilter;
 
-    CreateSharedLiquidityPool(
-      sharedLiquidityPool: null,
+    CreateLiquidityPool(
+      liquidityPool: null,
       governor: null,
       shareToken: null,
       operator: null,
       collateral: null
     ): EventFilter;
 
+    GrantPrivilege(
+      owner: string | null,
+      trader: string | null,
+      privilege: null
+    ): EventFilter;
+
     OwnershipTransferred(
       previousOwner: string | null,
       newOwner: string | null
+    ): EventFilter;
+
+    RevokePrivilege(
+      owner: string | null,
+      trader: string | null,
+      privilege: null
     ): EventFilter;
   };
 
@@ -1074,24 +1222,24 @@ export class PoolFactory extends Contract {
 
     "accessController()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    activateSharedLiquidityPoolFor(
+    activateLiquidityPoolFor(
       trader: string,
       marketIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "activateSharedLiquidityPoolFor(address,uint256)"(
+    "activateLiquidityPoolFor(address,uint256)"(
       trader: string,
       marketIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    activeSharedLiquidityPoolCountOf(
+    activeLiquidityPoolCountOf(
       trader: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "activeSharedLiquidityPoolCountOf(address)"(
+    "activeLiquidityPoolCountOf(address)"(
       trader: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1110,39 +1258,39 @@ export class PoolFactory extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    createSharedLiquidityPool(
+    createLiquidityPool(
       collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "createSharedLiquidityPool(address,uint256)"(
+    "createLiquidityPool(address,uint256)"(
       collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    createSharedLiquidityPoolWith(
+    createLiquidityPoolWith(
       implementation: string,
       collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "createSharedLiquidityPoolWith(address,address,uint256)"(
+    "createLiquidityPoolWith(address,address,uint256)"(
       implementation: string,
       collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    deactivateSharedLiquidityPoolFor(
+    deactivateLiquidityPoolFor(
       trader: string,
       marketIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "deactivateSharedLiquidityPoolFor(address,uint256)"(
+    "deactivateLiquidityPoolFor(address,uint256)"(
       trader: string,
       marketIndex: BigNumberish,
       overrides?: Overrides
@@ -1158,37 +1306,63 @@ export class PoolFactory extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    findSharedLiquidityPoolByIndex(
+    findLiquidityPoolByIndex(
       guid: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "findSharedLiquidityPoolByIndex(uint256)"(
+    "findLiquidityPoolByIndex(uint256)"(
       guid: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    isActiveSharedLiquidityPoolOf(
+    grantPrivilege(
       trader: string,
-      sharedLiquidityPool: string,
+      privilege: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "grantPrivilege(address,uint256)"(
+      trader: string,
+      privilege: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    isActiveLiquidityPoolOf(
+      trader: string,
+      liquidityPool: string,
       marketIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "isActiveSharedLiquidityPoolOf(address,address,uint256)"(
+    "isActiveLiquidityPoolOf(address,address,uint256)"(
       trader: string,
-      sharedLiquidityPool: string,
+      liquidityPool: string,
       marketIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    isSharedLiquidityPool(
-      sharedLiquidityPool: string,
+    isGranted(
+      owner: string,
+      trader: string,
+      privilege: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "isSharedLiquidityPool(address)"(
-      sharedLiquidityPool: string,
+    "isGranted(address,address,uint256)"(
+      owner: string,
+      trader: string,
+      privilege: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isLiquidityPool(
+      liquidityPool: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "isLiquidityPool(address)"(
+      liquidityPool: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1218,27 +1392,31 @@ export class PoolFactory extends Contract {
 
     "latestVersion()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    listActiveSharedLiquidityPoolsOf(
+    liquidityPoolCount(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "liquidityPoolCount()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    listActiveLiquidityPoolsOf(
       trader: string,
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "listActiveSharedLiquidityPoolsOf(address,uint256,uint256)"(
+    "listActiveLiquidityPoolsOf(address,uint256,uint256)"(
       trader: string,
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    listSharedLiquidityPools(
+    listLiquidityPools(
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "listSharedLiquidityPools(uint256,uint256)"(
+    "listLiquidityPools(uint256,uint256)"(
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
@@ -1252,9 +1430,17 @@ export class PoolFactory extends Contract {
 
     "renounceOwnership()"(overrides?: Overrides): Promise<BigNumber>;
 
-    sharedLiquidityPoolCount(overrides?: CallOverrides): Promise<BigNumber>;
+    revokePrivilege(
+      trader: string,
+      privilege: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
-    "sharedLiquidityPoolCount()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "revokePrivilege(address,uint256)"(
+      trader: string,
+      privilege: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: string,
@@ -1286,24 +1472,24 @@ export class PoolFactory extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    activateSharedLiquidityPoolFor(
+    activateLiquidityPoolFor(
       trader: string,
       marketIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "activateSharedLiquidityPoolFor(address,uint256)"(
+    "activateLiquidityPoolFor(address,uint256)"(
       trader: string,
       marketIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    activeSharedLiquidityPoolCountOf(
+    activeLiquidityPoolCountOf(
       trader: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "activeSharedLiquidityPoolCountOf(address)"(
+    "activeLiquidityPoolCountOf(address)"(
       trader: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1322,39 +1508,39 @@ export class PoolFactory extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    createSharedLiquidityPool(
+    createLiquidityPool(
       collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "createSharedLiquidityPool(address,uint256)"(
+    "createLiquidityPool(address,uint256)"(
       collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    createSharedLiquidityPoolWith(
+    createLiquidityPoolWith(
       implementation: string,
       collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "createSharedLiquidityPoolWith(address,address,uint256)"(
+    "createLiquidityPoolWith(address,address,uint256)"(
       implementation: string,
       collateral: string,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    deactivateSharedLiquidityPoolFor(
+    deactivateLiquidityPoolFor(
       trader: string,
       marketIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "deactivateSharedLiquidityPoolFor(address,uint256)"(
+    "deactivateLiquidityPoolFor(address,uint256)"(
       trader: string,
       marketIndex: BigNumberish,
       overrides?: Overrides
@@ -1370,37 +1556,63 @@ export class PoolFactory extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    findSharedLiquidityPoolByIndex(
+    findLiquidityPoolByIndex(
       guid: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "findSharedLiquidityPoolByIndex(uint256)"(
+    "findLiquidityPoolByIndex(uint256)"(
       guid: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    isActiveSharedLiquidityPoolOf(
+    grantPrivilege(
       trader: string,
-      sharedLiquidityPool: string,
+      privilege: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "grantPrivilege(address,uint256)"(
+      trader: string,
+      privilege: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    isActiveLiquidityPoolOf(
+      trader: string,
+      liquidityPool: string,
       marketIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "isActiveSharedLiquidityPoolOf(address,address,uint256)"(
+    "isActiveLiquidityPoolOf(address,address,uint256)"(
       trader: string,
-      sharedLiquidityPool: string,
+      liquidityPool: string,
       marketIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    isSharedLiquidityPool(
-      sharedLiquidityPool: string,
+    isGranted(
+      owner: string,
+      trader: string,
+      privilege: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "isSharedLiquidityPool(address)"(
-      sharedLiquidityPool: string,
+    "isGranted(address,address,uint256)"(
+      owner: string,
+      trader: string,
+      privilege: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isLiquidityPool(
+      liquidityPool: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isLiquidityPool(address)"(
+      liquidityPool: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1430,27 +1642,35 @@ export class PoolFactory extends Contract {
 
     "latestVersion()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    listActiveSharedLiquidityPoolsOf(
+    liquidityPoolCount(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "liquidityPoolCount()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    listActiveLiquidityPoolsOf(
       trader: string,
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "listActiveSharedLiquidityPoolsOf(address,uint256,uint256)"(
+    "listActiveLiquidityPoolsOf(address,uint256,uint256)"(
       trader: string,
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    listSharedLiquidityPools(
+    listLiquidityPools(
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "listSharedLiquidityPools(uint256,uint256)"(
+    "listLiquidityPools(uint256,uint256)"(
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
@@ -1464,12 +1684,16 @@ export class PoolFactory extends Contract {
 
     "renounceOwnership()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
-    sharedLiquidityPoolCount(
-      overrides?: CallOverrides
+    revokePrivilege(
+      trader: string,
+      privilege: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "sharedLiquidityPoolCount()"(
-      overrides?: CallOverrides
+    "revokePrivilege(address,uint256)"(
+      trader: string,
+      privilege: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     transferOwnership(
