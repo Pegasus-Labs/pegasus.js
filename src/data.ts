@@ -18,6 +18,7 @@ export function getLiquidityPoolContract(
   contractAddress: string,
   signerOrProvider: SignerOrProvider
 ): LiquidityPool {
+  getAddress(contractAddress)
   return LiquidityPoolFactory.connect(contractAddress, signerOrProvider)
 }
 
@@ -25,6 +26,7 @@ export function getBrokerRelayContract(
   contractAddress: string,
   signerOrProvider: SignerOrProvider
 ): BrokerRelay {
+  getAddress(contractAddress)
   return BrokerRelayFactory.connect(contractAddress, signerOrProvider)
 }
 
@@ -32,6 +34,7 @@ export function getPoolCreatorContract(
   contractAddress: string,
   signerOrProvider: SignerOrProvider
 ): PoolCreator {
+  getAddress(contractAddress)
   return PoolCreatorFactory.connect(contractAddress, signerOrProvider)
 }
 
@@ -61,6 +64,7 @@ export async function getLiquidityPool(
   reader: Reader,
   liquidityPoolAddress: string
 ): Promise<LiquidityPoolStorage> {
+  getAddress(liquidityPoolAddress)
   const pool = await reader.callStatic.getLiquidityPoolStorage(liquidityPoolAddress)
   const ret: LiquidityPoolStorage = {
     operator: pool.operator,
@@ -119,6 +123,8 @@ export async function getAccountStorage(
   perpetualIndex: number,  
   traderAddress: string
 ): Promise<AccountStorage> {
+  getAddress(liquidityPoolAddress)
+  getAddress(traderAddress)
   const marginAccount = await reader.getAccountStorage(
     liquidityPoolAddress, perpetualIndex, traderAddress)
   return {
