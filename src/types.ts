@@ -40,10 +40,7 @@ export class InvalidArgumentError extends Error {
 }
 
 export enum PerpetualState {
-  INIT,
-  NORMAL,
-  EMERGENCY,
-  CLEARED,
+  INVALID, INITIALIZING, NORMAL, EMERGENCY, CLEARED
 }
 
 export interface PerpetualID {
