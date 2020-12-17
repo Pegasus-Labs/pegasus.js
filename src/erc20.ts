@@ -85,6 +85,6 @@ export async function totalSupply(
   erc20Contract: ethers.Contract,
   decimals: number,
 ): Promise<BigNumber> {
-  const totalSupply = erc20Contract.totalSupply()
+  const totalSupply = await erc20Contract.totalSupply()
   return normalizeBigNumberish(totalSupply).shiftedBy(-decimals)
 }
