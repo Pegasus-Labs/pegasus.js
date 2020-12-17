@@ -80,7 +80,7 @@ export async function getLiquidityPool(
     perpetuals: new Map(),
   }
   pool.perpetualStorages.forEach((m, i) => {
-    if (m.state < PerpetualState.INIT || m.state > PerpetualState.CLEARED) {
+    if (m.state < PerpetualState.INVALID || m.state > PerpetualState.CLEARED) {
       throw new Error(`unrecognized perpetual state: ${m.state}`)
     }
     ret.perpetuals.set(i, {
