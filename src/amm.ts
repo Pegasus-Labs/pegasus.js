@@ -8,10 +8,10 @@ import { LiquidityPoolStorage, AMMTradingContext } from './types'
 import { sqrt, splitAmount } from './utils'
 import { InsufficientLiquidityError, BugError, InvalidArgumentError } from './types'
 
-export function initAMMTradingContext(p: LiquidityPoolStorage, marketIndex?: number): AMMTradingContext {
-  if (marketIndex) {
-    if (!p.markets.get(marketIndex)) {
-      throw new InvalidArgumentError(`market {marketIndex} not found in the pool`)
+export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: number): AMMTradingContext {
+  if (perpetualIndex) {
+    if (!p.perpetuals.get(perpetualIndex)) {
+      throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
     }
   }
   
@@ -31,27 +31,27 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, marketIndex?: num
   let otherFundingRateCoefficient: BigNumber[] = []
   let otherMaxLeverage: BigNumber[] = []
 
-  // split markets into current market and other markets
+  // split perpetuals into current perpetual and other perpetuals
   // M_c = ammCash - Σ accumulatedFunding * N
   let cash = p.poolCashBalance
-  p.markets.forEach((market, id) => {
-    cash = cash.minus(market.unitAccumulativeFunding.times(market.ammPositionAmount))
-    if (id === marketIndex) {
-      index = market.indexPrice
-      position1 = market.ammPositionAmount
-      halfSpread = market.halfSpread
-      openSlippageFactor = market.openSlippageFactor
-      closeSlippageFactor = market.closeSlippageFactor
-      fundingRateLimit = market.fundingRateLimit
-      maxLeverage = market.maxLeverage
+  p.perpetuals.forEach((perpetual, id) => {
+    cash = cash.minus(perpetual.unitAccumulativeFunding.times(perpetual.ammPositionAmount))
+    if (id === perpetualIndex) {
+      index = perpetual.indexPrice
+      position1 = perpetual.ammPositionAmount
+      halfSpread = perpetual.halfSpread
+      openSlippageFactor = perpetual.openSlippageFactor
+      closeSlippageFactor = perpetual.closeSlippageFactor
+      fundingRateLimit = perpetual.fundingRateLimit
+      maxLeverage = perpetual.maxLeverage
     } else {
-      otherIndex.push(market.indexPrice)
-      otherPosition.push(market.ammPositionAmount)
-      otherHalfSpread.push(market.halfSpread)
-      otherOpenSlippageFactor.push(market.openSlippageFactor)
-      otherCloseSlippageFactor.push(market.closeSlippageFactor)
-      otherFundingRateCoefficient.push(market.fundingRateLimit)
-      otherMaxLeverage.push(market.maxLeverage)
+      otherIndex.push(perpetual.indexPrice)
+      otherPosition.push(perpetual.ammPositionAmount)
+      otherHalfSpread.push(perpetual.halfSpread)
+      otherOpenSlippageFactor.push(perpetual.openSlippageFactor)
+      otherCloseSlippageFactor.push(perpetual.closeSlippageFactor)
+      otherFundingRateCoefficient.push(perpetual.fundingRateLimit)
+      otherMaxLeverage.push(perpetual.maxLeverage)
     }
   })
    
@@ -96,8 +96,8 @@ export function initAMMTradingContextEagerEvaluation(context: AMMTradingContext)
 }
 
 // the amount is the AMM's perspective
-export function computeAMMInternalTrade(p: LiquidityPoolStorage, marketIndex: number, amount: BigNumber): AMMTradingContext {
-  let context = initAMMTradingContext(p, marketIndex)
+export function computeAMMInternalTrade(p: LiquidityPoolStorage, perpetualIndex: number, amount: BigNumber): AMMTradingContext {
+  let context = initAMMTradingContext(p, perpetualIndex)
   const { close, open } = splitAmount(context.position1, amount)
   if (close.isZero() && open.isZero()) {
     throw new BugError('AMM trade: trading amount = 0')
@@ -301,8 +301,8 @@ export function computeDeltaMargin(context: AMMTradingContext, beta: BigNumber, 
   return ret.dp(DECIMALS)
 }
 
-export function computeFundingRate(p: LiquidityPoolStorage, marketIndex: number): BigNumber {
-  let context = initAMMTradingContext(p, marketIndex)  
+export function computeFundingRate(p: LiquidityPoolStorage, perpetualIndex: number): BigNumber {
+  let context = initAMMTradingContext(p, perpetualIndex)  
   if (!isAMMSafe(context, context.openSlippageFactor)) {
     if (context.position1.isZero()) {
       return _0

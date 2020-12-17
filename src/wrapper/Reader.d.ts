@@ -63,7 +63,7 @@ export class Reader extends Contract {
   functions: {
     getAccountStorage(
       liquidityPool: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       account: string,
       overrides?: CallOverrides
     ): Promise<{
@@ -83,7 +83,7 @@ export class Reader extends Contract {
 
     "getAccountStorage(address,uint256,address)"(
       liquidityPool: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       account: string,
       overrides?: CallOverrides
     ): Promise<{
@@ -114,7 +114,7 @@ export class Reader extends Contract {
 
   getAccountStorage(
     liquidityPool: string,
-    marketIndex: BigNumberish,
+    perpetualIndex: BigNumberish,
     account: string,
     overrides?: CallOverrides
   ): Promise<{
@@ -126,7 +126,7 @@ export class Reader extends Contract {
 
   "getAccountStorage(address,uint256,address)"(
     liquidityPool: string,
-    marketIndex: BigNumberish,
+    perpetualIndex: BigNumberish,
     account: string,
     overrides?: CallOverrides
   ): Promise<{
@@ -149,7 +149,7 @@ export class Reader extends Contract {
   callStatic: {
     getAccountStorage(
       liquidityPool: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       account: string,
       overrides?: CallOverrides
     ): Promise<{
@@ -161,7 +161,7 @@ export class Reader extends Contract {
 
     "getAccountStorage(address,uint256,address)"(
       liquidityPool: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       account: string,
       overrides?: CallOverrides
     ): Promise<{
@@ -187,7 +187,7 @@ export class Reader extends Contract {
       totalClaimableFee: BigNumber;
       poolCashBalance: BigNumber;
       fundingTime: BigNumber;
-      marketStorages: {
+      perpetualStorages: {
         underlyingAsset: string;
         state: number;
         oracle: string;
@@ -301,7 +301,7 @@ export class Reader extends Contract {
       totalClaimableFee: BigNumber;
       poolCashBalance: BigNumber;
       fundingTime: BigNumber;
-      marketStorages: {
+      perpetualStorages: {
         underlyingAsset: string;
         state: number;
         oracle: string;
@@ -405,14 +405,14 @@ export class Reader extends Contract {
   estimateGas: {
     getAccountStorage(
       liquidityPool: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     "getAccountStorage(address,uint256,address)"(
       liquidityPool: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -431,14 +431,14 @@ export class Reader extends Contract {
   populateTransaction: {
     getAccountStorage(
       liquidityPool: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     "getAccountStorage(address,uint256,address)"(
       liquidityPool: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

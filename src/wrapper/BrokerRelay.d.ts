@@ -23,22 +23,12 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface BrokerRelayInterface extends ethers.utils.Interface {
   functions: {
-    "SUPPORTED_MAX_ORDER_VERSION()": FunctionFragment;
-    "SUPPORTED_MIN_ORDER_VERSION()": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "batchTrade(tuple[],int256[],bytes[],uint256[])": FunctionFragment;
     "deposit()": FunctionFragment;
     "withdraw(uint256)": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "SUPPORTED_MAX_ORDER_VERSION",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "SUPPORTED_MIN_ORDER_VERSION",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(
     functionFragment: "batchTrade",
@@ -47,13 +37,15 @@ interface BrokerRelayInterface extends ethers.utils.Interface {
         trader: string;
         broker: string;
         relayer: string;
-        liquidityPool: string;
-        marketIndex: BigNumberish;
         referrer: string;
+        liquidityPool: string;
+        perpetualIndex: BigNumberish;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        data: BytesLike;
+        minTradeAmount: BigNumberish;
+        tradeGasLimit: BigNumberish;
         chainID: BigNumberish;
+        data: BytesLike;
       }[],
       BigNumberish[],
       BytesLike[],
@@ -66,14 +58,6 @@ interface BrokerRelayInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: "SUPPORTED_MAX_ORDER_VERSION",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "SUPPORTED_MIN_ORDER_VERSION",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "batchTrade", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
@@ -81,7 +65,7 @@ interface BrokerRelayInterface extends ethers.utils.Interface {
 
   events: {
     "Deposit(address,uint256)": EventFragment;
-    "TradeFailed(bytes32,tuple,int256)": EventFragment;
+    "TradeFailed(bytes32,tuple,int256,string)": EventFragment;
     "TradeSuccess(bytes32,tuple,int256,uint256)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
     "Withdraw(address,uint256)": EventFragment;
@@ -108,30 +92,6 @@ export class BrokerRelay extends Contract {
   interface: BrokerRelayInterface;
 
   functions: {
-    SUPPORTED_MAX_ORDER_VERSION(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: number;
-    }>;
-
-    "SUPPORTED_MAX_ORDER_VERSION()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: number;
-    }>;
-
-    SUPPORTED_MIN_ORDER_VERSION(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: number;
-    }>;
-
-    "SUPPORTED_MIN_ORDER_VERSION()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: number;
-    }>;
-
     balanceOf(
       trader: string,
       overrides?: CallOverrides
@@ -151,13 +111,15 @@ export class BrokerRelay extends Contract {
         trader: string;
         broker: string;
         relayer: string;
-        liquidityPool: string;
-        marketIndex: BigNumberish;
         referrer: string;
+        liquidityPool: string;
+        perpetualIndex: BigNumberish;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        data: BytesLike;
+        minTradeAmount: BigNumberish;
+        tradeGasLimit: BigNumberish;
         chainID: BigNumberish;
+        data: BytesLike;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
@@ -170,13 +132,15 @@ export class BrokerRelay extends Contract {
         trader: string;
         broker: string;
         relayer: string;
-        liquidityPool: string;
-        marketIndex: BigNumberish;
         referrer: string;
+        liquidityPool: string;
+        perpetualIndex: BigNumberish;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        data: BytesLike;
+        minTradeAmount: BigNumberish;
+        tradeGasLimit: BigNumberish;
         chainID: BigNumberish;
+        data: BytesLike;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
@@ -199,14 +163,6 @@ export class BrokerRelay extends Contract {
     ): Promise<ContractTransaction>;
   };
 
-  SUPPORTED_MAX_ORDER_VERSION(overrides?: CallOverrides): Promise<number>;
-
-  "SUPPORTED_MAX_ORDER_VERSION()"(overrides?: CallOverrides): Promise<number>;
-
-  SUPPORTED_MIN_ORDER_VERSION(overrides?: CallOverrides): Promise<number>;
-
-  "SUPPORTED_MIN_ORDER_VERSION()"(overrides?: CallOverrides): Promise<number>;
-
   balanceOf(trader: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   "balanceOf(address)"(
@@ -219,13 +175,15 @@ export class BrokerRelay extends Contract {
       trader: string;
       broker: string;
       relayer: string;
-      liquidityPool: string;
-      marketIndex: BigNumberish;
       referrer: string;
+      liquidityPool: string;
+      perpetualIndex: BigNumberish;
       amount: BigNumberish;
       priceLimit: BigNumberish;
-      data: BytesLike;
+      minTradeAmount: BigNumberish;
+      tradeGasLimit: BigNumberish;
       chainID: BigNumberish;
+      data: BytesLike;
     }[],
     amounts: BigNumberish[],
     signatures: BytesLike[],
@@ -238,13 +196,15 @@ export class BrokerRelay extends Contract {
       trader: string;
       broker: string;
       relayer: string;
-      liquidityPool: string;
-      marketIndex: BigNumberish;
       referrer: string;
+      liquidityPool: string;
+      perpetualIndex: BigNumberish;
       amount: BigNumberish;
       priceLimit: BigNumberish;
-      data: BytesLike;
+      minTradeAmount: BigNumberish;
+      tradeGasLimit: BigNumberish;
       chainID: BigNumberish;
+      data: BytesLike;
     }[],
     amounts: BigNumberish[],
     signatures: BytesLike[],
@@ -267,14 +227,6 @@ export class BrokerRelay extends Contract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    SUPPORTED_MAX_ORDER_VERSION(overrides?: CallOverrides): Promise<number>;
-
-    "SUPPORTED_MAX_ORDER_VERSION()"(overrides?: CallOverrides): Promise<number>;
-
-    SUPPORTED_MIN_ORDER_VERSION(overrides?: CallOverrides): Promise<number>;
-
-    "SUPPORTED_MIN_ORDER_VERSION()"(overrides?: CallOverrides): Promise<number>;
-
     balanceOf(trader: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "balanceOf(address)"(
@@ -287,13 +239,15 @@ export class BrokerRelay extends Contract {
         trader: string;
         broker: string;
         relayer: string;
-        liquidityPool: string;
-        marketIndex: BigNumberish;
         referrer: string;
+        liquidityPool: string;
+        perpetualIndex: BigNumberish;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        data: BytesLike;
+        minTradeAmount: BigNumberish;
+        tradeGasLimit: BigNumberish;
         chainID: BigNumberish;
+        data: BytesLike;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
@@ -306,13 +260,15 @@ export class BrokerRelay extends Contract {
         trader: string;
         broker: string;
         relayer: string;
-        liquidityPool: string;
-        marketIndex: BigNumberish;
         referrer: string;
+        liquidityPool: string;
+        perpetualIndex: BigNumberish;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        data: BytesLike;
+        minTradeAmount: BigNumberish;
+        tradeGasLimit: BigNumberish;
         chainID: BigNumberish;
+        data: BytesLike;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
@@ -335,7 +291,12 @@ export class BrokerRelay extends Contract {
   filters: {
     Deposit(trader: null, amount: null): EventFilter;
 
-    TradeFailed(orderHash: null, order: null, amount: null): EventFilter;
+    TradeFailed(
+      orderHash: null,
+      order: null,
+      amount: null,
+      reason: null
+    ): EventFilter;
 
     TradeSuccess(
       orderHash: null,
@@ -350,18 +311,6 @@ export class BrokerRelay extends Contract {
   };
 
   estimateGas: {
-    SUPPORTED_MAX_ORDER_VERSION(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "SUPPORTED_MAX_ORDER_VERSION()"(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    SUPPORTED_MIN_ORDER_VERSION(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "SUPPORTED_MIN_ORDER_VERSION()"(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     balanceOf(trader: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "balanceOf(address)"(
@@ -374,13 +323,15 @@ export class BrokerRelay extends Contract {
         trader: string;
         broker: string;
         relayer: string;
-        liquidityPool: string;
-        marketIndex: BigNumberish;
         referrer: string;
+        liquidityPool: string;
+        perpetualIndex: BigNumberish;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        data: BytesLike;
+        minTradeAmount: BigNumberish;
+        tradeGasLimit: BigNumberish;
         chainID: BigNumberish;
+        data: BytesLike;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
@@ -393,13 +344,15 @@ export class BrokerRelay extends Contract {
         trader: string;
         broker: string;
         relayer: string;
-        liquidityPool: string;
-        marketIndex: BigNumberish;
         referrer: string;
+        liquidityPool: string;
+        perpetualIndex: BigNumberish;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        data: BytesLike;
+        minTradeAmount: BigNumberish;
+        tradeGasLimit: BigNumberish;
         chainID: BigNumberish;
+        data: BytesLike;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
@@ -420,22 +373,6 @@ export class BrokerRelay extends Contract {
   };
 
   populateTransaction: {
-    SUPPORTED_MAX_ORDER_VERSION(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "SUPPORTED_MAX_ORDER_VERSION()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    SUPPORTED_MIN_ORDER_VERSION(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "SUPPORTED_MIN_ORDER_VERSION()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     balanceOf(
       trader: string,
       overrides?: CallOverrides
@@ -451,13 +388,15 @@ export class BrokerRelay extends Contract {
         trader: string;
         broker: string;
         relayer: string;
-        liquidityPool: string;
-        marketIndex: BigNumberish;
         referrer: string;
+        liquidityPool: string;
+        perpetualIndex: BigNumberish;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        data: BytesLike;
+        minTradeAmount: BigNumberish;
+        tradeGasLimit: BigNumberish;
         chainID: BigNumberish;
+        data: BytesLike;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
@@ -470,13 +409,15 @@ export class BrokerRelay extends Contract {
         trader: string;
         broker: string;
         relayer: string;
-        liquidityPool: string;
-        marketIndex: BigNumberish;
         referrer: string;
+        liquidityPool: string;
+        perpetualIndex: BigNumberish;
         amount: BigNumberish;
         priceLimit: BigNumberish;
-        data: BytesLike;
+        minTradeAmount: BigNumberish;
+        tradeGasLimit: BigNumberish;
         chainID: BigNumberish;
+        data: BytesLike;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],

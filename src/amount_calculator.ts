@@ -36,7 +36,7 @@ const minimize = require('minimize-golden-section-1d')
 //       is designed for "stop order". when stop order matches, the mark price is near the trading price.
 export function computeMaxTradeAmountWithPrice(
   p: LiquidityPoolStorage,
-  marketIndex: number,
+  perpetualIndex: number,
   s: AccountStorage,
   price: BigNumberish,
   traderMaxLeverage: BigNumberish,
@@ -54,9 +54,9 @@ export function computeMaxTradeAmountWithPrice(
   let newAccount = s
   let closeAmount = newAccount.positionAmount.negated()
   if (!closeAmount.isZero()) {
-    newAccount = computeTradeWithPrice(p, marketIndex, s, normalizedPrice, closeAmount, normalizedFeeRate)
+    newAccount = computeTradeWithPrice(p, perpetualIndex, s, normalizedPrice, closeAmount, normalizedFeeRate)
   }
-  const newDetails = computeAccount(p, marketIndex, newAccount)
+  const newDetails = computeAccount(p, perpetualIndex, newAccount)
 
   // open again
   //                        price | x |
@@ -90,7 +90,7 @@ export function computeMaxTradeAmountWithPrice(
 // the returned amount is the trader's perspective
 export function computeAMMMaxTradeAmount(
   p: LiquidityPoolStorage,
-  marketIndex: number,
+  perpetualIndex: number,
   trader: AccountStorage,
   traderMaxLeverage: BigNumberish,
   isTraderBuy: boolean,
@@ -98,7 +98,7 @@ export function computeAMMMaxTradeAmount(
   const normalizeMaxLeverage = normalizeBigNumberish(traderMaxLeverage)
 
   // if AMM is unsafe, return 0
-  const ammContext = initAMMTradingContext(p, marketIndex)
+  const ammContext = initAMMTradingContext(p, perpetualIndex)
   if (!isAMMSafe(ammContext, ammContext.openSlippageFactor)) {
     if (isTraderBuy && ammContext.position1.lt(_0)) {
       return _0
@@ -109,7 +109,7 @@ export function computeAMMMaxTradeAmount(
   }
 
   // guess = marginBalance * lev / index
-  const traderDetails = computeAccount(p, marketIndex, trader)
+  const traderDetails = computeAccount(p, perpetualIndex, trader)
   const guess = traderDetails.accountComputed.marginBalance.times(normalizeMaxLeverage).div(ammContext.index)
 
   // search
@@ -118,8 +118,8 @@ export function computeAMMMaxTradeAmount(
       return 0
     }
     try {
-      const context = computeAMMTrade(p, marketIndex, trader, new BigNumber(a))
-      const newTraderDetails = computeAccount(p, marketIndex, context.trader)
+      const context = computeAMMTrade(p, perpetualIndex, trader, new BigNumber(a))
+      const newTraderDetails = computeAccount(p, perpetualIndex, context.trader)
       if (!newTraderDetails.accountComputed.isSafe
         || newTraderDetails.accountComputed.leverage.gt(normalizeMaxLeverage)) {
         return Math.abs(a)
@@ -148,13 +148,13 @@ export function computeAMMMaxTradeAmount(
 // the returned amount is the trader's perspective
 export function computeAMMTradeAmountByMargin(
   p: LiquidityPoolStorage,
-  marketIndex: number,
+  perpetualIndex: number,
   deltaMargin: BigNumberish,  // trader's margin change. < 0 if buy, > 0 if sell
 ): BigNumber {
   const normalizeDeltaMargin = normalizeBigNumberish(deltaMargin)
 
   // if AMM is unsafe, return 0
-  const ammContext = initAMMTradingContext(p, marketIndex)
+  const ammContext = initAMMTradingContext(p, perpetualIndex)
   if (!isAMMSafe(ammContext, ammContext.openSlippageFactor)) {
     if (normalizeDeltaMargin.lt(_0) && ammContext.position1.lt(_0)) {
       return _0
@@ -173,7 +173,7 @@ export function computeAMMTradeAmountByMargin(
       return 0
     }
     try {
-      const price = computeAMMPrice(p, marketIndex, new BigNumber(a))
+      const price = computeAMMPrice(p, perpetualIndex, new BigNumber(a))
       // err = | expected trader margin - actual trader margin |
       const actualTraderMargin = price.deltaAMMMargin.negated()
       const err = actualTraderMargin.minus(normalizeDeltaMargin).abs()
@@ -222,7 +222,7 @@ export function computeAMMInverseVWAP(
   const a = context.index.times(beta)
   let denominator = a.times(_2)
   if (denominator.isZero()) {
-    throw Error(`bad market parameter beta ${beta.toFixed()} or index ${context.index}.`)
+    throw Error(`bad perpetual parameter beta ${beta.toFixed()} or index ${context.index}.`)
   }
   let b = context.index.times(context.poolMargin).negated()
   b = b.plus(a.times(context.position1))
@@ -248,26 +248,26 @@ export function computeAMMInverseVWAP(
 // the returned amount is the trader's perspective
 export function computeAMMAmountWithPrice(
   p: LiquidityPoolStorage,
-  marketIndex: number,
+  perpetualIndex: number,
   isTraderBuy: boolean,
   limitPrice: BigNumberish,
 ): BigNumber {
-  const market = p.markets.get(marketIndex)
-  if (!market) {
-    throw new InvalidArgumentError(`market {marketIndex} not found in the pool`)
+  const perpetual = p.perpetuals.get(perpetualIndex)
+  if (!perpetual) {
+    throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
   }
   
   // add spread
   let normalizedLimitPrice = normalizeBigNumberish(limitPrice)
   if (isTraderBuy) {
-    normalizedLimitPrice = normalizedLimitPrice.div(_1.plus(market.halfSpread))
+    normalizedLimitPrice = normalizedLimitPrice.div(_1.plus(perpetual.halfSpread))
   } else {
-    normalizedLimitPrice = normalizedLimitPrice.div(_1.minus(market.halfSpread))
+    normalizedLimitPrice = normalizedLimitPrice.div(_1.minus(perpetual.halfSpread))
   }
   
   // get amount
   const isAMMBuy = !isTraderBuy
-  let context = initAMMTradingContext(p, marketIndex)
+  let context = initAMMTradingContext(p, perpetualIndex)
   if (context.position1.lte(_0) && !isAMMBuy) {
     return computeAMMOpenAmountWithPrice(context, normalizedLimitPrice, isAMMBuy).negated()
   } else if (context.position1.lt(_0) && isAMMBuy) {

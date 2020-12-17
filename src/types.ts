@@ -39,16 +39,16 @@ export class InvalidArgumentError extends Error {
   }
 }
 
-export enum MarketState {
+export enum PerpetualState {
   INIT,
   NORMAL,
   EMERGENCY,
   CLEARED,
 }
 
-export interface MarketTuple {
+export interface PerpetualID {
   sharedLiquidityPool: string
-  marketIndex: number
+  perpetualIndex: number
 }
 
 export interface LiquidityPoolStorage {
@@ -66,12 +66,12 @@ export interface LiquidityPoolStorage {
   poolCashBalance: BigNumber
   fundingTime: number
   
-  markets: Map<number, MarketStorage>
+  perpetuals: Map<number, PerpetualStorage>
 }
 
-export interface MarketStorage {
+export interface PerpetualStorage {
   underlyingSymbol: string
-  state: MarketState
+  state: PerpetualState
   oracle: string
 
   markPrice: BigNumber
@@ -137,7 +137,7 @@ export interface TradeCost {
 }
 
 export interface AMMTradingContext {
-  // current trading market
+  // current trading perpetual
   index: BigNumber // P_i_m
   position1: BigNumber // N_m
   halfSpread: BigNumber // α_m
@@ -146,7 +146,7 @@ export interface AMMTradingContext {
   fundingRateLimit: BigNumber // γ_m
   maxLeverage: BigNumber // λ_m
 
-  // other markets
+  // other perpetuals
   otherIndex: BigNumber[] // P_i_j
   otherPosition: BigNumber[] // N_j
   otherHalfSpread: BigNumber[] // α_j

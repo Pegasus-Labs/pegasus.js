@@ -3,7 +3,7 @@ import { getAddress } from "@ethersproject/address"
 import { BigNumber } from 'bignumber.js'
 import { normalizeBigNumberish } from './utils'
 import { _0, DECIMALS, CHAIN_ID_TO_READER_ADDRESS } from './constants'
-import { AccountStorage, LiquidityPoolStorage, MarketState, MarketTuple } from './types'
+import { AccountStorage, LiquidityPoolStorage, PerpetualState, PerpetualID } from './types'
 import { InvalidArgumentError, BugError, SignerOrProvider } from './types'
 import { BrokerRelay } from './wrapper/BrokerRelay'
 import { BrokerRelayFactory } from './wrapper/BrokerRelayFactory'
@@ -77,15 +77,15 @@ export async function getLiquidityPool(
     poolCashBalance: normalizeBigNumberish(pool.poolCashBalance).shiftedBy(-DECIMALS),
     fundingTime: pool.fundingTime.toNumber(),
 
-    markets: new Map(),
+    perpetuals: new Map(),
   }
-  pool.marketStorages.forEach((m, i) => {
-    if (m.state < MarketState.INIT || m.state > MarketState.CLEARED) {
-      throw new Error(`unrecognized market state: ${m.state}`)
+  pool.perpetualStorages.forEach((m, i) => {
+    if (m.state < PerpetualState.INIT || m.state > PerpetualState.CLEARED) {
+      throw new Error(`unrecognized perpetual state: ${m.state}`)
     }
-    ret.markets.set(i, {
+    ret.perpetuals.set(i, {
       underlyingSymbol: m.underlyingAsset,
-      state: m.state as MarketState,
+      state: m.state as PerpetualState,
       oracle: m.oracle,
 
       markPrice: normalizeBigNumberish(m.markPrice).shiftedBy(-DECIMALS),
@@ -116,11 +116,11 @@ export async function getLiquidityPool(
 export async function getAccountStorage(
   reader: Reader,
   liquidityPoolAddress: string,
-  marketIndex: number,  
+  perpetualIndex: number,  
   traderAddress: string
 ): Promise<AccountStorage> {
   const marginAccount = await reader.getAccountStorage(
-    liquidityPoolAddress, marketIndex, traderAddress)
+    liquidityPoolAddress, perpetualIndex, traderAddress)
   return {
     cashBalance: normalizeBigNumberish(marginAccount.cashBalance).shiftedBy(-DECIMALS),
     positionAmount: normalizeBigNumberish(marginAccount.positionAmount).shiftedBy(-DECIMALS),
@@ -141,13 +141,13 @@ export async function getBrokerRelayBalanceOf(
 export async function listActivatePerpetuals(
   poolCreator: PoolCreator,
   trader: string
-): Promise<MarketTuple[]> {
+): Promise<PerpetualID[]> {
   getAddress(trader)
   const count = (await poolCreator.activeLiquidityPoolCountOf(trader)).toNumber()
   if (count > 10000) {
     throw new BugError(`activate pool count is too large: ${count}`)
   }
-  let ret: MarketTuple[] = []
+  let ret: PerpetualID[] = []
   const step = 100
   for (let begin = 0; begin < count; begin = ret.length) {
     let end = Math.min(begin + step, count)
@@ -155,7 +155,7 @@ export async function listActivatePerpetuals(
     ids.forEach(j => {
       ret.push({
         sharedLiquidityPool: j.liquidityPool,
-        marketIndex: j.marketIndex.toNumber(),
+        perpetualIndex: j.perpetualIndex.toNumber(),
       })
     })
   }

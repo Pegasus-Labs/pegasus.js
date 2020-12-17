@@ -12,8 +12,8 @@ import {
 } from '../src/amm'
 import { _0, _1 } from '../src/constants'
 import {
-  MarketState,
-  MarketStorage,
+  PerpetualState,
+  PerpetualStorage,
   LiquidityPoolStorage,
   AMMTradingContext,
   InsufficientLiquidityError,
@@ -38,12 +38,12 @@ const defaultPool: LiquidityPoolStorage = {
   poolCashBalance: _0, // set me later
   fundingTime: 1579601290,
   
-  markets: new Map() // set me later
+  perpetuals: new Map() // set me later
 }
 
-const market1: MarketStorage = {
+const perpetual1: PerpetualStorage = {
   underlyingSymbol: 'T',
-  state: MarketState.NORMAL,
+  state: PerpetualState.NORMAL,
   oracle: "0x0",
 
   markPrice: new BigNumber(95),
@@ -78,9 +78,9 @@ const TEST_MARKET_INDEX1 = 1
 const poolStorage0: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('10000'),
-  markets: new Map([
-    [TEST_MARKET_INDEX0, { ...market1, ammPositionAmount: _0 }],
-    [TEST_MARKET_INDEX1, { ...market1, ammPositionAmount: _0 }],
+  perpetuals: new Map([
+    [TEST_MARKET_INDEX0, { ...perpetual1, ammPositionAmount: _0 }],
+    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: _0 }],
   ]),
 }
 
@@ -91,9 +91,9 @@ const poolStorage0: LiquidityPoolStorage = {
 const poolStorage1: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('10100'),
-  markets: new Map([
-    [TEST_MARKET_INDEX0, { ...market1, ammPositionAmount: new BigNumber('-10') }],
-    [TEST_MARKET_INDEX1, { ...market1, ammPositionAmount: new BigNumber('10') }],
+  perpetuals: new Map([
+    [TEST_MARKET_INDEX0, { ...perpetual1, ammPositionAmount: new BigNumber('-10') }],
+    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: new BigNumber('10') }],
   ]),
 }
 
@@ -104,9 +104,9 @@ const poolStorage1: LiquidityPoolStorage = {
 const poolStorage2: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('14599'),
-  markets: new Map([
-    [TEST_MARKET_INDEX0, { ...market1, ammPositionAmount: new BigNumber('-50') }],
-    [TEST_MARKET_INDEX1, { ...market1, ammPositionAmount: new BigNumber('10') }],
+  perpetuals: new Map([
+    [TEST_MARKET_INDEX0, { ...perpetual1, ammPositionAmount: new BigNumber('-50') }],
+    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: new BigNumber('10') }],
   ]),
 }
 
@@ -116,9 +116,9 @@ const poolStorage2: LiquidityPoolStorage = {
 const poolStorage3: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('16753.12619691409782671538929731'),
-  markets: new Map([
-    [TEST_MARKET_INDEX0, { ...market1, ammPositionAmount: new BigNumber('-80') }],
-    [TEST_MARKET_INDEX1, { ...market1, ammPositionAmount: new BigNumber('10') }],
+  perpetuals: new Map([
+    [TEST_MARKET_INDEX0, { ...perpetual1, ammPositionAmount: new BigNumber('-80') }],
+    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: new BigNumber('10') }],
   ]),
 }
 
@@ -129,9 +129,9 @@ const poolStorage3: LiquidityPoolStorage = {
 const poolStorage4: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('8138'),
-  markets: new Map([
-    [TEST_MARKET_INDEX0, { ...market1, ammPositionAmount: new BigNumber('10') }],
-    [TEST_MARKET_INDEX1, { ...market1, ammPositionAmount: new BigNumber('10') }],
+  perpetuals: new Map([
+    [TEST_MARKET_INDEX0, { ...perpetual1, ammPositionAmount: new BigNumber('10') }],
+    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: new BigNumber('10') }],
   ]),
 }
 
@@ -142,9 +142,9 @@ const poolStorage4: LiquidityPoolStorage = {
 const poolStorage5: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('1664'),
-  markets: new Map([
-    [TEST_MARKET_INDEX0, { ...market1, ammPositionAmount: new BigNumber('50') }],
-    [TEST_MARKET_INDEX1, { ...market1, ammPositionAmount: new BigNumber('10') }],
+  perpetuals: new Map([
+    [TEST_MARKET_INDEX0, { ...perpetual1, ammPositionAmount: new BigNumber('50') }],
+    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: new BigNumber('10') }],
   ]),
 }
 
@@ -155,9 +155,9 @@ const poolStorage5: LiquidityPoolStorage = {
 const poolStorage6: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('1925'),
-  markets: new Map([
-    [TEST_MARKET_INDEX0, { ...market1, ammPositionAmount: new BigNumber('80') }],
-    [TEST_MARKET_INDEX1, { ...market1, ammPositionAmount: new BigNumber('10') }],
+  perpetuals: new Map([
+    [TEST_MARKET_INDEX0, { ...perpetual1, ammPositionAmount: new BigNumber('80') }],
+    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: new BigNumber('10') }],
   ]),
 }
 
@@ -399,11 +399,11 @@ describe('safePosition', function () {
     const beta = new BigNumber('100')
     const context = computeAMMPoolMargin(initAMMTradingContext({
       ...poolStorage1,
-      markets: new Map([
+      perpetuals: new Map([
         [TEST_MARKET_INDEX0, {
-          ...poolStorage1.markets.get(TEST_MARKET_INDEX0) as MarketStorage,
+          ...poolStorage1.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage,
           maxLeverage: new BigNumber('0.5'), }],
-        [TEST_MARKET_INDEX1, poolStorage1.markets.get(TEST_MARKET_INDEX1) as MarketStorage],
+        [TEST_MARKET_INDEX1, poolStorage1.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage],
       ])
     }, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
@@ -415,13 +415,13 @@ describe('safePosition', function () {
     const beta = new BigNumber('142.6933822319389')
     const context = computeAMMPoolMargin(initAMMTradingContext({
       ...poolStorage1,
-      markets: new Map([
+      perpetuals: new Map([
         [TEST_MARKET_INDEX0, {
-          ...poolStorage1.markets.get(TEST_MARKET_INDEX0) as MarketStorage,
+          ...poolStorage1.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage,
           maxLeverage: new BigNumber('0.5'), indexPrice: new BigNumber(100),
           ammPositionAmount: new BigNumber('-10'), openSlippageFactor: beta }],
         [TEST_MARKET_INDEX1, {
-          ...poolStorage1.markets.get(TEST_MARKET_INDEX1) as MarketStorage,
+          ...poolStorage1.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage,
           indexPrice: new BigNumber('90'),
           ammPositionAmount: new BigNumber('85.5148648938521'), openSlippageFactor: new BigNumber('200'), }],
         ])
@@ -447,11 +447,11 @@ describe('safePosition', function () {
     const beta = new BigNumber('100')
     const context = computeAMMPoolMargin(initAMMTradingContext({
       ...poolStorage4,
-      markets: new Map([
+      perpetuals: new Map([
         [TEST_MARKET_INDEX0, {
-          ...poolStorage4.markets.get(TEST_MARKET_INDEX0) as MarketStorage,
+          ...poolStorage4.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage,
           maxLeverage: new BigNumber('0.5'), }],
-        [TEST_MARKET_INDEX1, poolStorage4.markets.get(TEST_MARKET_INDEX1) as MarketStorage],
+        [TEST_MARKET_INDEX1, poolStorage4.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage],
       ])
     }, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
@@ -463,12 +463,12 @@ describe('safePosition', function () {
     const beta = new BigNumber('39.77')
     const context = computeAMMPoolMargin(initAMMTradingContext({
       ...poolStorage4,
-      markets: new Map([
+      perpetuals: new Map([
         [TEST_MARKET_INDEX0, {
-          ...poolStorage4.markets.get(TEST_MARKET_INDEX0) as MarketStorage,
+          ...poolStorage4.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage,
           openSlippageFactor: beta }],
         [TEST_MARKET_INDEX1, {
-          ...poolStorage4.markets.get(TEST_MARKET_INDEX1) as MarketStorage,
+          ...poolStorage4.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage,
           indexPrice: new BigNumber('10'),
           ammPositionAmount: new BigNumber('-109'), openSlippageFactor: new BigNumber('30'), }],
         ])

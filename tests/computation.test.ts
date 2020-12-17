@@ -11,8 +11,8 @@ import {
 import { _0, _1 } from '../src/constants'
 import {
   BigNumberish,
-  MarketState,
-  MarketStorage,
+  PerpetualState,
+  PerpetualStorage,
   LiquidityPoolStorage,
   AccountStorage,
   AccountComputed,
@@ -38,12 +38,12 @@ const defaultPool: LiquidityPoolStorage = {
   poolCashBalance: _0, // set me later
   fundingTime: 1579601290,
   
-  markets: new Map() // set me later
+  perpetuals: new Map() // set me later
 }
 
-const market1: MarketStorage = {
+const perpetual1: PerpetualStorage = {
   underlyingSymbol: 'T',
-  state: MarketState.NORMAL,
+  state: PerpetualState.NORMAL,
   oracle: "0x0",
 
   markPrice: new BigNumber(6965),
@@ -76,9 +76,9 @@ const TEST_MARKET_INDEX0 = 0
 const poolStorage1: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('83941.29865625'),
-  markets: new Map([
+  perpetuals: new Map([
     [TEST_MARKET_INDEX0, {
-      ...market1,
+      ...perpetual1,
       ammPositionAmount: new BigNumber('2.3'),
     }]
   ]),
@@ -89,9 +89,9 @@ const poolStorage1: LiquidityPoolStorage = {
 const poolStorage3: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('18119.79134375'),
-  markets: new Map([
+  perpetuals: new Map([
     [TEST_MARKET_INDEX0, {
-      ...market1,
+      ...perpetual1,
       ammPositionAmount: new BigNumber('-2.3'),
     }]
   ]),
@@ -728,7 +728,7 @@ describe('computeAMMTrade', function () {
     expect(res.trader.cashBalance).toApproximate(new BigNumber('11178.003372325'))
     // 83941.29865625 - 6975.16785 * 0.5 + 9.9059375 * (0.5) + 2.4413087475
     expect(res.newPool.poolCashBalance).toApproximate(new BigNumber('80461.1090087475'))
-    expect(res.newPool.markets.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('2.8'))
+    expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('2.8'))
   })
 
   it(`buy without cross 0`, function () {
@@ -742,7 +742,7 @@ describe('computeAMMTrade', function () {
     expect(res.trader.cashBalance).toApproximate(new BigNumber('4203.2797703898997011528916855'))
     // 83941.29865625 - 6994.0723243958047929013153136 * (-0.5) + 9.9059375 * (-0.5) + 2.44792531353853167751546035976
     expect(res.newPool.poolCashBalance).toApproximate(new BigNumber('87435.8297750114409281281731172'))
-    expect(res.newPool.markets.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('1.8'))
+    expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('1.8'))
   })
 
   it(`buy cross 0`, function () {
@@ -756,14 +756,14 @@ describe('computeAMMTrade', function () {
     expect(res.trader.cashBalance).toApproximate(new BigNumber('-15401.4839103325676010644847408'))
     // 83941.29865625 - 7003.0071456066865259178653894 * (-3.3) + 9.9059375 * (-3.3) + 16.1769465063514458748702690495
     expect(res.newPool.poolCashBalance).toApproximate(new BigNumber('107034.709589508416981403826054'))
-    expect(res.newPool.markets.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('-1'))
+    expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('-1'))
   })
 
   it(`(saw) buy+sell`, function () {
     const res1 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '0.5')
     expect(res1.tradingPrice).toApproximate(new BigNumber('6994.072324395804792901315313'))
     expect(res1.newPool.poolCashBalance).toApproximate(new BigNumber('87435.8297750114409281281731172')) // see the above case
-    expect(res1.newPool.markets.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('1.8'))
+    expect(res1.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('1.8'))
 
     // availableCash = 87435.8297750114409281281731172 - 9.9059375 * (1.8) = 87417.9990875114409281281731172
     // m0 = 100006.659842687308144102615419, price = 6985.6509556237825881158066171 * (1 - α)
@@ -774,6 +774,6 @@ describe('computeAMMTrade', function () {
     expect(res2.trader.cashBalance).toApproximate(new BigNumber('7684.1701213216450245139732453'))
     // 87435.8297750114409281281731172 - 6978.6653046681588055276908105 * (0.5) + 9.9059375 * (0.5) + 6978.6653046681588055276908105 * 0.5 * 0.0007
     expect(res2.newPool.poolCashBalance).toApproximate(new BigNumber('83953.8926242839953809462624037'))
-    expect(res2.newPool.markets.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('2.3'))
+    expect(res2.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('2.3'))
   })
 })

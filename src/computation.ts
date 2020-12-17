@@ -20,20 +20,20 @@ import {
 import { _0, _1 } from './constants'
 import { normalizeBigNumberish, hasTheSameSign, splitAmount } from './utils'
 
-export function computeAccount(p: LiquidityPoolStorage, marketIndex: number, s: AccountStorage): AccountDetails {
-  const market = p.markets.get(marketIndex)
-  if (!market) {
-    throw new InvalidArgumentError(`market {marketIndex} not found in the pool`)
+export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, s: AccountStorage): AccountDetails {
+  const perpetual = p.perpetuals.get(perpetualIndex)
+  if (!perpetual) {
+    throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
   }
-  const positionValue = market.markPrice.times(s.positionAmount.abs())
-  const positionMargin = positionValue.times(market.initialMarginRate)
-  const maintenanceMargin = positionValue.times(market.maintenanceMarginRate)
+  const positionValue = perpetual.markPrice.times(s.positionAmount.abs())
+  const positionMargin = positionValue.times(perpetual.initialMarginRate)
+  const maintenanceMargin = positionValue.times(perpetual.maintenanceMarginRate)
   let reservedCash = _0
   if (!s.positionAmount.isZero()) {
-    reservedCash = market.keeperGasReward
+    reservedCash = perpetual.keeperGasReward
   }
-  const availableCashBalance = s.cashBalance.minus(s.positionAmount.times(market.unitAccumulativeFunding))
-  const marginBalance = availableCashBalance.plus(market.markPrice.times(s.positionAmount))
+  const availableCashBalance = s.cashBalance.minus(s.positionAmount.times(perpetual.unitAccumulativeFunding))
+  const marginBalance = availableCashBalance.plus(perpetual.markPrice.times(s.positionAmount))
   const maxWithdrawable = BigNumber.max(_0, marginBalance.minus(positionMargin).minus(reservedCash))
   const availableMargin = BigNumber.max(_0, maxWithdrawable)
   const withdrawableBalance = maxWithdrawable
@@ -42,7 +42,7 @@ export function computeAccount(p: LiquidityPoolStorage, marketIndex: number, s: 
   
   let fundingPNL: BigNumber | null = null
   if (s.entryFunding) {
-    fundingPNL = s.entryFunding.minus(s.positionAmount.times(market.unitAccumulativeFunding))
+    fundingPNL = s.entryFunding.minus(s.positionAmount.times(perpetual.unitAccumulativeFunding))
   }
   
   let entryPrice: BigNumber | null = null
@@ -53,7 +53,7 @@ export function computeAccount(p: LiquidityPoolStorage, marketIndex: number, s: 
     entryPrice = (s.positionAmount.isZero() ? _0 : s.entryValue.div(s.positionAmount))
   }
   if (s.entryValue) {
-    pnl1 = market.markPrice.times(s.positionAmount).minus(s.entryValue)
+    pnl1 = perpetual.markPrice.times(s.positionAmount).minus(s.entryValue)
   }
   if (pnl1 && fundingPNL) {
     pnl2 = pnl1.plus(fundingPNL)
@@ -65,7 +65,7 @@ export function computeAccount(p: LiquidityPoolStorage, marketIndex: number, s: 
 
   let liquidationPrice = _0
   if (!s.positionAmount.isZero()) {
-    const t = s.positionAmount.abs().times(market.maintenanceMarginRate).minus(s.positionAmount)
+    const t = s.positionAmount.abs().times(perpetual.maintenanceMarginRate).minus(s.positionAmount)
     liquidationPrice = availableCashBalance.minus(reservedCash).div(t)
     if (liquidationPrice.isNegative()) {
       liquidationPrice = _0
@@ -96,14 +96,14 @@ export function computeAccount(p: LiquidityPoolStorage, marketIndex: number, s: 
 
 export function computeDecreasePosition(
   p: LiquidityPoolStorage,
-  marketIndex: number,
+  perpetualIndex: number,
   a: AccountStorage,
   price: BigNumber,
   amount: BigNumber
 ): AccountStorage {
-  const market = p.markets.get(marketIndex)
-  if (!market) {
-    throw new InvalidArgumentError(`market {marketIndex} not found in the pool`)
+  const perpetual = p.perpetuals.get(perpetualIndex)
+  if (!perpetual) {
+    throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
   }
   let cashBalance = a.cashBalance
   const oldAmount = a.positionAmount
@@ -119,7 +119,7 @@ export function computeDecreasePosition(
     throw new InvalidArgumentError(`position size |${oldAmount.toFixed()}| is less than amount |${amount.toFixed()}|`)
   }
   cashBalance = cashBalance.minus(price.times(amount))
-  cashBalance = cashBalance.plus(market.unitAccumulativeFunding.times(amount))
+  cashBalance = cashBalance.plus(perpetual.unitAccumulativeFunding.times(amount))
   const positionAmount = oldAmount.plus(amount)
   entryFunding = entryFunding
     ? entryFunding.times(positionAmount).div(oldAmount)
@@ -132,14 +132,14 @@ export function computeDecreasePosition(
 
 export function computeIncreasePosition(
   p: LiquidityPoolStorage,
-  marketIndex: number,
+  perpetualIndex: number,
   a: AccountStorage,
   price: BigNumber,
   amount: BigNumber
 ): AccountStorage {
-  const market = p.markets.get(marketIndex)
-  if (!market) {
-    throw new InvalidArgumentError(`market {marketIndex} not found in the pool`)
+  const perpetual = p.perpetuals.get(perpetualIndex)
+  if (!perpetual) {
+    throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
   }
   let cashBalance = a.cashBalance
   const oldAmount = a.positionAmount
@@ -155,12 +155,12 @@ export function computeIncreasePosition(
     throw new InvalidArgumentError(`bad increase size ${amount.toFixed()} where position is ${oldAmount.toFixed()}`)
   }
   cashBalance = cashBalance.minus(price.times(amount))
-  cashBalance = cashBalance.plus(market.unitAccumulativeFunding.times(amount))
+  cashBalance = cashBalance.plus(perpetual.unitAccumulativeFunding.times(amount))
   entryValue = entryValue
     ? entryValue.plus(price.times(amount))
     : null
   entryFunding = entryFunding
-    ? entryFunding.plus(market.unitAccumulativeFunding.times(amount))
+    ? entryFunding.plus(perpetual.unitAccumulativeFunding.times(amount))
     : null
   const positionAmount = oldAmount.plus(amount)
   return { cashBalance, entryValue, positionAmount, entryFunding }
@@ -178,7 +178,7 @@ export function computeFee(price: BigNumberish, amount: BigNumberish, feeRate: B
 
 export function computeTradeWithPrice(
   p: LiquidityPoolStorage,
-  marketIndex: number,
+  perpetualIndex: number,
   a: AccountStorage,
   price: BigNumberish,
   amount: BigNumberish,
@@ -193,10 +193,10 @@ export function computeTradeWithPrice(
   let newAccount: AccountStorage = a
   let { close, open } = splitAmount(newAccount.positionAmount, normalizedAmount)
   if (!close.isZero()) {
-    newAccount = computeDecreasePosition(p, marketIndex, newAccount, normalizedPrice, close)
+    newAccount = computeDecreasePosition(p, perpetualIndex, newAccount, normalizedPrice, close)
   }
   if (!open.isZero()) {
-    newAccount = computeIncreasePosition(p, marketIndex, newAccount, normalizedPrice, open)
+    newAccount = computeIncreasePosition(p, perpetualIndex, newAccount, normalizedPrice, open)
   }
   const fee = computeFee(normalizedPrice, normalizedAmount, normalizedFeeRate)
   newAccount.cashBalance = newAccount.cashBalance.minus(fee)
@@ -205,7 +205,7 @@ export function computeTradeWithPrice(
 
 export function computeAMMTrade(
   p: LiquidityPoolStorage,
-  marketIndex: number,
+  perpetualIndex: number,
   trader: AccountStorage,
   amount: BigNumberish, // trader's perspective
 ): AMMTradingResult {
@@ -213,43 +213,43 @@ export function computeAMMTrade(
   if (normalizedAmount.isZero()) {
     throw new InvalidArgumentError(`bad amount ${normalizedAmount.toFixed()}`)
   }
-  const market = p.markets.get(marketIndex)
-  if (!market) {
-    throw new InvalidArgumentError(`market {marketIndex} not found in the pool`)
+  const perpetual = p.perpetuals.get(perpetualIndex)
+  if (!perpetual) {
+    throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
   }
 
   // AMM
-  const { deltaAMMAmount, tradingPrice } = computeAMMPrice(p, marketIndex, normalizedAmount)
+  const { deltaAMMAmount, tradingPrice } = computeAMMPrice(p, perpetualIndex, normalizedAmount)
   if (!deltaAMMAmount.negated().eq(normalizedAmount)) {
     throw new BugError(`trading amount mismatched ${deltaAMMAmount.negated().toFixed()} != ${normalizedAmount.toFixed()}`)
   }
 
   // fee
-  const lpFee = computeFee(tradingPrice, deltaAMMAmount, market.lpFeeRate)
+  const lpFee = computeFee(tradingPrice, deltaAMMAmount, perpetual.lpFeeRate)
   const vaultFee = computeFee(tradingPrice, deltaAMMAmount, p.vaultFeeRate)
-  const operatorFee = computeFee(tradingPrice, deltaAMMAmount, market.operatorFeeRate)
+  const operatorFee = computeFee(tradingPrice, deltaAMMAmount, perpetual.operatorFeeRate)
 
   // trader
   trader = computeTradeWithPrice(
-    p, marketIndex, trader, tradingPrice, deltaAMMAmount.negated(),
-    market.lpFeeRate.plus(p.vaultFeeRate).plus(market.operatorFeeRate))
+    p, perpetualIndex, trader, tradingPrice, deltaAMMAmount.negated(),
+    perpetual.lpFeeRate.plus(p.vaultFeeRate).plus(perpetual.operatorFeeRate))
 
   // new AMM
   let fakeAMMAccount: AccountStorage = {
     cashBalance: p.poolCashBalance,
-    positionAmount: market.ammPositionAmount,
+    positionAmount: perpetual.ammPositionAmount,
     entryValue: null, entryFunding: null,
   }
-  fakeAMMAccount = computeTradeWithPrice(p, marketIndex, fakeAMMAccount,
+  fakeAMMAccount = computeTradeWithPrice(p, perpetualIndex, fakeAMMAccount,
     tradingPrice, deltaAMMAmount, _0)
   fakeAMMAccount.cashBalance = fakeAMMAccount.cashBalance.plus(lpFee)
   const newPool: LiquidityPoolStorage = {
     // clone the old pool to keep the return value immutable
     ...p,
     poolCashBalance: fakeAMMAccount.cashBalance,
-    markets: new Map(p.markets)
+    perpetuals: new Map(p.perpetuals)
   }
-  newPool.markets.set(marketIndex, { ...market, ammPositionAmount: fakeAMMAccount.positionAmount })
+  newPool.perpetuals.set(perpetualIndex, { ...perpetual, ammPositionAmount: fakeAMMAccount.positionAmount })
 
   return {
     trader,
@@ -264,7 +264,7 @@ export function computeAMMTrade(
 // don't forget to transfer lpFees into amm after calling this function
 export function computeAMMPrice(
   p: LiquidityPoolStorage,
-  marketIndex: number,
+  perpetualIndex: number,
   amount: BigNumberish, // trader's perspective
 ): {
   deltaAMMAmount: BigNumber,
@@ -275,7 +275,7 @@ export function computeAMMPrice(
   if (normalizedAmount.isZero()) {
     throw new InvalidArgumentError(`bad amount ${normalizedAmount.toFixed()}`)
   }
-  const ammTrading = computeAMMInternalTrade(p, marketIndex, normalizedAmount.negated())
+  const ammTrading = computeAMMInternalTrade(p, perpetualIndex, normalizedAmount.negated())
   const deltaAMMMargin = ammTrading.deltaMargin
   const deltaAMMAmount = ammTrading.deltaPosition
   const tradingPrice = deltaAMMMargin.div(deltaAMMAmount).abs()

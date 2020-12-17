@@ -273,13 +273,13 @@ export class PoolCreator extends Contract {
 
     activateLiquidityPoolFor(
       trader: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "activateLiquidityPoolFor(address,uint256)"(
       trader: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -339,13 +339,13 @@ export class PoolCreator extends Contract {
 
     deactivateLiquidityPoolFor(
       trader: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "deactivateLiquidityPoolFor(address,uint256)"(
       trader: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -406,7 +406,7 @@ export class PoolCreator extends Contract {
     isActiveLiquidityPoolOf(
       trader: string,
       liquidityPool: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       0: boolean;
@@ -415,7 +415,7 @@ export class PoolCreator extends Contract {
     "isActiveLiquidityPoolOf(address,address,uint256)"(
       trader: string,
       liquidityPool: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       0: boolean;
@@ -515,13 +515,13 @@ export class PoolCreator extends Contract {
     ): Promise<{
       result: {
         liquidityPool: string;
-        marketIndex: BigNumber;
+        perpetualIndex: BigNumber;
         0: string;
         1: BigNumber;
       }[];
       0: {
         liquidityPool: string;
-        marketIndex: BigNumber;
+        perpetualIndex: BigNumber;
         0: string;
         1: BigNumber;
       }[];
@@ -535,13 +535,13 @@ export class PoolCreator extends Contract {
     ): Promise<{
       result: {
         liquidityPool: string;
-        marketIndex: BigNumber;
+        perpetualIndex: BigNumber;
         0: string;
         1: BigNumber;
       }[];
       0: {
         liquidityPool: string;
-        marketIndex: BigNumber;
+        perpetualIndex: BigNumber;
         0: string;
         1: BigNumber;
       }[];
@@ -646,13 +646,13 @@ export class PoolCreator extends Contract {
 
   activateLiquidityPoolFor(
     trader: string,
-    marketIndex: BigNumberish,
+    perpetualIndex: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "activateLiquidityPoolFor(address,uint256)"(
     trader: string,
-    marketIndex: BigNumberish,
+    perpetualIndex: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -708,13 +708,13 @@ export class PoolCreator extends Contract {
 
   deactivateLiquidityPoolFor(
     trader: string,
-    marketIndex: BigNumberish,
+    perpetualIndex: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "deactivateLiquidityPoolFor(address,uint256)"(
     trader: string,
-    marketIndex: BigNumberish,
+    perpetualIndex: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -771,14 +771,14 @@ export class PoolCreator extends Contract {
   isActiveLiquidityPoolOf(
     trader: string,
     liquidityPool: string,
-    marketIndex: BigNumberish,
+    perpetualIndex: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   "isActiveLiquidityPoolOf(address,address,uint256)"(
     trader: string,
     liquidityPool: string,
-    marketIndex: BigNumberish,
+    perpetualIndex: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -842,7 +842,12 @@ export class PoolCreator extends Contract {
     end: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
-    { liquidityPool: string; marketIndex: BigNumber; 0: string; 1: BigNumber }[]
+    {
+      liquidityPool: string;
+      perpetualIndex: BigNumber;
+      0: string;
+      1: BigNumber;
+    }[]
   >;
 
   "listActiveLiquidityPoolsOf(address,uint256,uint256)"(
@@ -851,7 +856,12 @@ export class PoolCreator extends Contract {
     end: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
-    { liquidityPool: string; marketIndex: BigNumber; 0: string; 1: BigNumber }[]
+    {
+      liquidityPool: string;
+      perpetualIndex: BigNumber;
+      0: string;
+      1: BigNumber;
+    }[]
   >;
 
   listLiquidityPools(
@@ -915,13 +925,13 @@ export class PoolCreator extends Contract {
 
     activateLiquidityPoolFor(
       trader: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     "activateLiquidityPoolFor(address,uint256)"(
       trader: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -977,13 +987,13 @@ export class PoolCreator extends Contract {
 
     deactivateLiquidityPoolFor(
       trader: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     "deactivateLiquidityPoolFor(address,uint256)"(
       trader: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -1040,14 +1050,14 @@ export class PoolCreator extends Contract {
     isActiveLiquidityPoolOf(
       trader: string,
       liquidityPool: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     "isActiveLiquidityPoolOf(address,address,uint256)"(
       trader: string,
       liquidityPool: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -1113,7 +1123,7 @@ export class PoolCreator extends Contract {
     ): Promise<
       {
         liquidityPool: string;
-        marketIndex: BigNumber;
+        perpetualIndex: BigNumber;
         0: string;
         1: BigNumber;
       }[]
@@ -1127,7 +1137,7 @@ export class PoolCreator extends Contract {
     ): Promise<
       {
         liquidityPool: string;
-        marketIndex: BigNumber;
+        perpetualIndex: BigNumber;
         0: string;
         1: BigNumber;
       }[]
@@ -1224,13 +1234,13 @@ export class PoolCreator extends Contract {
 
     activateLiquidityPoolFor(
       trader: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "activateLiquidityPoolFor(address,uint256)"(
       trader: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1286,13 +1296,13 @@ export class PoolCreator extends Contract {
 
     deactivateLiquidityPoolFor(
       trader: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "deactivateLiquidityPoolFor(address,uint256)"(
       trader: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1331,14 +1341,14 @@ export class PoolCreator extends Contract {
     isActiveLiquidityPoolOf(
       trader: string,
       liquidityPool: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     "isActiveLiquidityPoolOf(address,address,uint256)"(
       trader: string,
       liquidityPool: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1474,13 +1484,13 @@ export class PoolCreator extends Contract {
 
     activateLiquidityPoolFor(
       trader: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "activateLiquidityPoolFor(address,uint256)"(
       trader: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -1536,13 +1546,13 @@ export class PoolCreator extends Contract {
 
     deactivateLiquidityPoolFor(
       trader: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "deactivateLiquidityPoolFor(address,uint256)"(
       trader: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -1581,14 +1591,14 @@ export class PoolCreator extends Contract {
     isActiveLiquidityPoolOf(
       trader: string,
       liquidityPool: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     "isActiveLiquidityPoolOf(address,address,uint256)"(
       trader: string,
       liquidityPool: string,
-      marketIndex: BigNumberish,
+      perpetualIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
