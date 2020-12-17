@@ -154,7 +154,7 @@ export async function listActivatePerpetuals(
     const ids = await poolCreator.listActiveLiquidityPoolsOf(trader, begin, end)
     ids.forEach(j => {
       ret.push({
-        sharedLiquidityPool: j.liquidityPool,
+        liquidityPoolAddress: j.liquidityPool,
         perpetualIndex: j.perpetualIndex.toNumber(),
       })
     })

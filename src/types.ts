@@ -47,7 +47,7 @@ export enum PerpetualState {
 }
 
 export interface PerpetualID {
-  sharedLiquidityPool: string
+  liquidityPoolAddress: string
   perpetualIndex: number
 }
 
