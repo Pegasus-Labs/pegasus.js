@@ -123,6 +123,40 @@ export function computeAMMInternalTrade(p: LiquidityPoolStorage, perpetualIndex:
   return context
 }
 
+// get the price if ΔN -> 0. equal to lim_(ΔN -> 0) (computeDeltaMargin / (ΔN))
+export function computeMidPrice(p: LiquidityPoolStorage, perpetualIndex: number, isAMMBuy: boolean): BigNumber {
+  let context = initAMMTradingContext(p, perpetualIndex)
+  let isClosing = false
+  let beta = context.openSlippageFactor
+  if ((context.position1.gt(_0) && !isAMMBuy) || (context.position1.lt(_0) && isAMMBuy)) {
+    isClosing = true
+    beta = context.closeSlippageFactor
+  }
+  let price = _0
+  if (!isAMMSafe(context, beta)) {
+    if (!isClosing) {
+      throw new InsufficientLiquidityError(`AMM can not open position anymore: unsafe before trade`)
+    }
+    // price = index
+    price = context.index
+  } else {
+    context = computeAMMPoolMargin(context, beta)
+
+    // P_i (1 - β / M * N1)
+    price = context.position1.div(context.poolMargin).times(beta)
+    price = _1.minus(price).times(context.index)
+  }
+
+  // spread
+  if (isAMMBuy) {
+    // AMM buys, trader sells
+    return price.times(_1.minus(context.halfSpread)).dp(DECIMALS)
+  } else {
+    // AMM sells, trader buys
+    return price.times(_1.plus(context.halfSpread)).dp(DECIMALS)
+  }
+}
+
 // the amount is the AMM's perspective
 export function computeAMMInternalClose(context: AMMTradingContext, amount: BigNumber): AMMTradingContext {
   const beta = context.closeSlippageFactor
