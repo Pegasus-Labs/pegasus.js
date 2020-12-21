@@ -3,7 +3,7 @@ import { getAddress } from "@ethersproject/address"
 import { BigNumber } from 'bignumber.js'
 import { normalizeBigNumberish } from './utils'
 import { _0, DECIMALS, CHAIN_ID_TO_READER_ADDRESS } from './constants'
-import { AccountStorage, LiquidityPoolStorage, PerpetualState, PerpetualID, BigNumberish } from './types'
+import { AccountStorage, LiquidityPoolStorage, PerpetualState, PerpetualID } from './types'
 import { InvalidArgumentError, BugError, SignerOrProvider } from './types'
 import { BrokerRelay } from './wrapper/BrokerRelay'
 import { BrokerRelayFactory } from './wrapper/BrokerRelayFactory'
@@ -13,7 +13,6 @@ import { PoolCreator } from './wrapper/PoolCreator'
 import { PoolCreatorFactory } from './wrapper/PoolCreatorFactory'
 import { Reader } from './wrapper/Reader'
 import { ReaderFactory } from './wrapper/ReaderFactory'
-import { PayableOverrides } from '@ethersproject/contracts'
 
 export function getLiquidityPoolContract(
   contractAddress: string,
