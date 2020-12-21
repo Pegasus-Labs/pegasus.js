@@ -25,6 +25,7 @@ interface BrokerRelayInterface extends ethers.utils.Interface {
   functions: {
     "balanceOf(address)": FunctionFragment;
     "batchTrade(tuple[],int256[],bytes[],uint256[])": FunctionFragment;
+    "cancelOrder(tuple)": FunctionFragment;
     "deposit()": FunctionFragment;
     "withdraw(uint256)": FunctionFragment;
   };
@@ -39,17 +40,42 @@ interface BrokerRelayInterface extends ethers.utils.Interface {
         relayer: string;
         referrer: string;
         liquidityPool: string;
-        perpetualIndex: BigNumberish;
-        amount: BigNumberish;
-        priceLimit: BigNumberish;
         minTradeAmount: BigNumberish;
-        tradeGasLimit: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
         chainID: BigNumberish;
-        data: BytesLike;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
       }[],
       BigNumberish[],
       BytesLike[],
       BigNumberish[]
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "cancelOrder",
+    values: [
+      {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      }
     ]
   ): string;
   encodeFunctionData(functionFragment: "deposit", values?: undefined): string;
@@ -60,18 +86,26 @@ interface BrokerRelayInterface extends ethers.utils.Interface {
 
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "batchTrade", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "cancelOrder",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {
+    "CancelOrder(bytes32)": EventFragment;
     "Deposit(address,uint256)": EventFragment;
+    "FillOrder(bytes32,int256)": EventFragment;
     "TradeFailed(bytes32,tuple,int256,string)": EventFragment;
     "TradeSuccess(bytes32,tuple,int256,uint256)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
     "Withdraw(address,uint256)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "CancelOrder"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "FillOrder"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TradeFailed"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TradeSuccess"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
@@ -113,13 +147,16 @@ export class BrokerRelay extends Contract {
         relayer: string;
         referrer: string;
         liquidityPool: string;
-        perpetualIndex: BigNumberish;
-        amount: BigNumberish;
-        priceLimit: BigNumberish;
         minTradeAmount: BigNumberish;
-        tradeGasLimit: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
         chainID: BigNumberish;
-        data: BytesLike;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
@@ -134,17 +171,62 @@ export class BrokerRelay extends Contract {
         relayer: string;
         referrer: string;
         liquidityPool: string;
-        perpetualIndex: BigNumberish;
-        amount: BigNumberish;
-        priceLimit: BigNumberish;
         minTradeAmount: BigNumberish;
-        tradeGasLimit: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
         chainID: BigNumberish;
-        data: BytesLike;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
       gasRewards: BigNumberish[],
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    cancelOrder(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "cancelOrder(tuple)"(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -177,13 +259,16 @@ export class BrokerRelay extends Contract {
       relayer: string;
       referrer: string;
       liquidityPool: string;
-      perpetualIndex: BigNumberish;
-      amount: BigNumberish;
-      priceLimit: BigNumberish;
       minTradeAmount: BigNumberish;
-      tradeGasLimit: BigNumberish;
+      amount: BigNumberish;
+      limitPrice: BigNumberish;
+      triggerPrice: BigNumberish;
       chainID: BigNumberish;
-      data: BytesLike;
+      expiredAt: BigNumberish;
+      perpetualIndex: BigNumberish;
+      brokerFeeLimit: BigNumberish;
+      flags: BigNumberish;
+      salt: BigNumberish;
     }[],
     amounts: BigNumberish[],
     signatures: BytesLike[],
@@ -198,17 +283,62 @@ export class BrokerRelay extends Contract {
       relayer: string;
       referrer: string;
       liquidityPool: string;
-      perpetualIndex: BigNumberish;
-      amount: BigNumberish;
-      priceLimit: BigNumberish;
       minTradeAmount: BigNumberish;
-      tradeGasLimit: BigNumberish;
+      amount: BigNumberish;
+      limitPrice: BigNumberish;
+      triggerPrice: BigNumberish;
       chainID: BigNumberish;
-      data: BytesLike;
+      expiredAt: BigNumberish;
+      perpetualIndex: BigNumberish;
+      brokerFeeLimit: BigNumberish;
+      flags: BigNumberish;
+      salt: BigNumberish;
     }[],
     amounts: BigNumberish[],
     signatures: BytesLike[],
     gasRewards: BigNumberish[],
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  cancelOrder(
+    order: {
+      trader: string;
+      broker: string;
+      relayer: string;
+      referrer: string;
+      liquidityPool: string;
+      minTradeAmount: BigNumberish;
+      amount: BigNumberish;
+      limitPrice: BigNumberish;
+      triggerPrice: BigNumberish;
+      chainID: BigNumberish;
+      expiredAt: BigNumberish;
+      perpetualIndex: BigNumberish;
+      brokerFeeLimit: BigNumberish;
+      flags: BigNumberish;
+      salt: BigNumberish;
+    },
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "cancelOrder(tuple)"(
+    order: {
+      trader: string;
+      broker: string;
+      relayer: string;
+      referrer: string;
+      liquidityPool: string;
+      minTradeAmount: BigNumberish;
+      amount: BigNumberish;
+      limitPrice: BigNumberish;
+      triggerPrice: BigNumberish;
+      chainID: BigNumberish;
+      expiredAt: BigNumberish;
+      perpetualIndex: BigNumberish;
+      brokerFeeLimit: BigNumberish;
+      flags: BigNumberish;
+      salt: BigNumberish;
+    },
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -241,13 +371,16 @@ export class BrokerRelay extends Contract {
         relayer: string;
         referrer: string;
         liquidityPool: string;
-        perpetualIndex: BigNumberish;
-        amount: BigNumberish;
-        priceLimit: BigNumberish;
         minTradeAmount: BigNumberish;
-        tradeGasLimit: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
         chainID: BigNumberish;
-        data: BytesLike;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
@@ -262,17 +395,62 @@ export class BrokerRelay extends Contract {
         relayer: string;
         referrer: string;
         liquidityPool: string;
-        perpetualIndex: BigNumberish;
-        amount: BigNumberish;
-        priceLimit: BigNumberish;
         minTradeAmount: BigNumberish;
-        tradeGasLimit: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
         chainID: BigNumberish;
-        data: BytesLike;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
       gasRewards: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    cancelOrder(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "cancelOrder(tuple)"(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -289,7 +467,11 @@ export class BrokerRelay extends Contract {
   };
 
   filters: {
+    CancelOrder(orderHash: null): EventFilter;
+
     Deposit(trader: null, amount: null): EventFilter;
+
+    FillOrder(orderHash: null, fillAmount: null): EventFilter;
 
     TradeFailed(
       orderHash: null,
@@ -325,13 +507,16 @@ export class BrokerRelay extends Contract {
         relayer: string;
         referrer: string;
         liquidityPool: string;
-        perpetualIndex: BigNumberish;
-        amount: BigNumberish;
-        priceLimit: BigNumberish;
         minTradeAmount: BigNumberish;
-        tradeGasLimit: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
         chainID: BigNumberish;
-        data: BytesLike;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
@@ -346,17 +531,62 @@ export class BrokerRelay extends Contract {
         relayer: string;
         referrer: string;
         liquidityPool: string;
-        perpetualIndex: BigNumberish;
-        amount: BigNumberish;
-        priceLimit: BigNumberish;
         minTradeAmount: BigNumberish;
-        tradeGasLimit: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
         chainID: BigNumberish;
-        data: BytesLike;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
       gasRewards: BigNumberish[],
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    cancelOrder(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "cancelOrder(tuple)"(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -390,13 +620,16 @@ export class BrokerRelay extends Contract {
         relayer: string;
         referrer: string;
         liquidityPool: string;
-        perpetualIndex: BigNumberish;
-        amount: BigNumberish;
-        priceLimit: BigNumberish;
         minTradeAmount: BigNumberish;
-        tradeGasLimit: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
         chainID: BigNumberish;
-        data: BytesLike;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
@@ -411,17 +644,62 @@ export class BrokerRelay extends Contract {
         relayer: string;
         referrer: string;
         liquidityPool: string;
-        perpetualIndex: BigNumberish;
-        amount: BigNumberish;
-        priceLimit: BigNumberish;
         minTradeAmount: BigNumberish;
-        tradeGasLimit: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
         chainID: BigNumberish;
-        data: BytesLike;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
       }[],
       amounts: BigNumberish[],
       signatures: BytesLike[],
       gasRewards: BigNumberish[],
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    cancelOrder(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "cancelOrder(tuple)"(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
