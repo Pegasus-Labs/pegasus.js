@@ -38,12 +38,11 @@ export async function perpetualDeposit(
   perpetualIndex: number,
   trader: string,
   collateralAmount: BigNumberish, // should be a decimal number (ie: 1.234)
-  collateralDecimals: number,
   overrides?: PayableOverrides,
 ): Promise<ethers.providers.TransactionResponse> {
   getAddress(trader)
   const largeAmount = normalizeBigNumberish(collateralAmount)
-    .shiftedBy(collateralDecimals)
+    .shiftedBy(DECIMALS)
     .dp(0, BigNumber.ROUND_DOWN)
   return await liquidityPool.deposit(perpetualIndex, trader, largeAmount.toFixed(), overrides)
 }
@@ -71,11 +70,10 @@ export async function perpetualWithdraw(
   perpetualIndex: number,
   trader: string,
   collateralAmount: BigNumberish, // should be a decimal number (ie: 1.234)
-  collateralDecimals: number,
   overrides?: Overrides,
 ): Promise<ethers.providers.TransactionResponse> {
   const largeAmount = normalizeBigNumberish(collateralAmount)
-    .shiftedBy(collateralDecimals)
+    .shiftedBy(DECIMALS)
     .dp(0, BigNumber.ROUND_DOWN)
   return await liquidityPool.withdraw(perpetualIndex, trader, largeAmount.toFixed(), overrides)
 }
@@ -104,4 +102,22 @@ export async function brokerRelayWithdraw(
     .shiftedBy(DECIMALS)
     .dp(0, BigNumber.ROUND_DOWN)
   return await brokerRelay.withdraw(largeAmount.toFixed(), overrides)
+}
+
+export async function perpetualClear(
+  liquidityPool: LiquidityPool,
+  perpetualIndex: number,
+  overrides?: PayableOverrides,
+): Promise<ethers.providers.TransactionResponse> {
+  return await liquidityPool.clear(perpetualIndex, overrides)
+}
+
+export async function perpetualSettleWithDraw(
+  liquidityPool: LiquidityPool,
+  perpetualIndex: number,
+  trader: string,
+  overrides?: PayableOverrides,
+): Promise<ethers.providers.TransactionResponse> {
+  getAddress(trader)
+  return await liquidityPool.settle(perpetualIndex, trader, overrides)
 }

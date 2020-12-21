@@ -3,7 +3,7 @@ import { getAddress } from "@ethersproject/address"
 import { BigNumber } from 'bignumber.js'
 import { normalizeBigNumberish } from './utils'
 import { _0, DECIMALS, CHAIN_ID_TO_READER_ADDRESS } from './constants'
-import { AccountStorage, LiquidityPoolStorage, PerpetualState, PerpetualID } from './types'
+import { AccountStorage, LiquidityPoolStorage, PerpetualState, PerpetualID, BigNumberish } from './types'
 import { InvalidArgumentError, BugError, SignerOrProvider } from './types'
 import { BrokerRelay } from './wrapper/BrokerRelay'
 import { BrokerRelayFactory } from './wrapper/BrokerRelayFactory'
@@ -13,6 +13,7 @@ import { PoolCreator } from './wrapper/PoolCreator'
 import { PoolCreatorFactory } from './wrapper/PoolCreatorFactory'
 import { Reader } from './wrapper/Reader'
 import { ReaderFactory } from './wrapper/ReaderFactory'
+import { PayableOverrides } from '@ethersproject/contracts'
 
 export function getLiquidityPoolContract(
   contractAddress: string,
@@ -59,7 +60,7 @@ export async function getReaderContract(
   }
   return ReaderFactory.connect(contractAddress, signerOrProvider)
 }
-  
+
 export async function getLiquidityPool(
   reader: Reader,
   liquidityPoolAddress: string
@@ -72,7 +73,7 @@ export async function getLiquidityPool(
     vault: pool.vault,
     governor: pool.governor,
     shareToken: pool.shareToken,
-    
+
     vaultFeeRate: normalizeBigNumberish(pool.vaultFeeRate).shiftedBy(-DECIMALS),
     insuranceFundCap: normalizeBigNumberish(pool.insuranceFundCap).shiftedBy(-DECIMALS),
     insuranceFund: normalizeBigNumberish(pool.insuranceFund).shiftedBy(-DECIMALS),
@@ -104,7 +105,7 @@ export async function getLiquidityPool(
       liquidationPenaltyRate: normalizeBigNumberish(m.liquidationPenaltyRate).shiftedBy(-DECIMALS),
       keeperGasReward: normalizeBigNumberish(m.keeperGasReward).shiftedBy(-DECIMALS),
       insuranceFundRate: normalizeBigNumberish(m.insuranceFundRate).shiftedBy(-DECIMALS),
-      
+
       halfSpread: normalizeBigNumberish(m.halfSpread).shiftedBy(-DECIMALS),
       openSlippageFactor: normalizeBigNumberish(m.openSlippageFactor).shiftedBy(-DECIMALS),
       closeSlippageFactor: normalizeBigNumberish(m.closeSlippageFactor).shiftedBy(-DECIMALS),
@@ -120,7 +121,7 @@ export async function getLiquidityPool(
 export async function getAccountStorage(
   reader: Reader,
   liquidityPoolAddress: string,
-  perpetualIndex: number,  
+  perpetualIndex: number,
   traderAddress: string
 ): Promise<AccountStorage> {
   getAddress(liquidityPoolAddress)
@@ -166,4 +167,36 @@ export async function listActivatePerpetuals(
     })
   }
   return ret
+}
+
+export async function getPerpetualSettledMarginBalance(
+  liquidityPool: LiquidityPool,
+  perpetualIndex: number,
+  traderAddress: string
+): Promise<BigNumber> {
+  getAddress(traderAddress)
+  const collateralAmount = await liquidityPool.callStatic.settleableMargin(perpetualIndex, traderAddress)
+  return normalizeBigNumberish(collateralAmount).shiftedBy(-DECIMALS)
+}
+
+export async function getPerpetualClearProgress(
+  liquidityPool: LiquidityPool,
+  perpetualIndex: number
+): Promise<{
+  left: BigNumber,
+  total: BigNumber
+}> {
+  const progressInfo = await liquidityPool.callStatic.clearProgress(perpetualIndex)
+  const left = normalizeBigNumberish(progressInfo.left).shiftedBy(-DECIMALS)
+  const total = normalizeBigNumberish(progressInfo.total).shiftedBy(-DECIMALS)
+  return { left, total }
+}
+
+export async function getPerpetualClearGasReward(
+  liquidityPool: LiquidityPool,
+  perpetualIndex: number
+): Promise<BigNumber> {
+  const perpetualInfo = await liquidityPool.callStatic.perpetualInfo(perpetualIndex)
+  const keeperGasReward = normalizeBigNumberish(perpetualInfo.nums[10]).shiftedBy(-DECIMALS)
+  return keeperGasReward
 }
