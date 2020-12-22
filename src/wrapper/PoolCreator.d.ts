@@ -41,9 +41,11 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "listActiveLiquidityPoolsOf(address,uint256,uint256)": FunctionFragment;
     "listLiquidityPoolOwnedBy(address,uint256,uint256)": FunctionFragment;
     "listLiquidityPools(uint256,uint256)": FunctionFragment;
+    "ownedLiquidityPoolsCountOf(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "revokePrivilege(address,uint256)": FunctionFragment;
+    "symbolService()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "updateLiquidityPoolOwnership(address,address)": FunctionFragment;
     "vault()": FunctionFragment;
@@ -124,6 +126,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     functionFragment: "listLiquidityPools",
     values: [BigNumberish, BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "ownedLiquidityPoolsCountOf",
+    values: [string]
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -132,6 +138,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "revokePrivilege",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "symbolService",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
@@ -215,6 +225,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     functionFragment: "listLiquidityPools",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "ownedLiquidityPoolsCountOf",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
@@ -222,6 +236,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "revokePrivilege",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "symbolService",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -580,6 +598,20 @@ export class PoolCreator extends Contract {
       0: string[];
     }>;
 
+    ownedLiquidityPoolsCountOf(
+      operator: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "ownedLiquidityPoolsCountOf(address)"(
+      operator: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
     owner(
       overrides?: CallOverrides
     ): Promise<{
@@ -607,6 +639,18 @@ export class PoolCreator extends Contract {
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    symbolService(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "symbolService()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
 
     transferOwnership(
       newOwner: string,
@@ -907,6 +951,16 @@ export class PoolCreator extends Contract {
     overrides?: CallOverrides
   ): Promise<string[]>;
 
+  ownedLiquidityPoolsCountOf(
+    operator: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "ownedLiquidityPoolsCountOf(address)"(
+    operator: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   owner(overrides?: CallOverrides): Promise<string>;
 
   "owner()"(overrides?: CallOverrides): Promise<string>;
@@ -926,6 +980,10 @@ export class PoolCreator extends Contract {
     privilege: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  symbolService(overrides?: CallOverrides): Promise<string>;
+
+  "symbolService()"(overrides?: CallOverrides): Promise<string>;
 
   transferOwnership(
     newOwner: string,
@@ -1202,6 +1260,16 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<string[]>;
 
+    ownedLiquidityPoolsCountOf(
+      operator: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "ownedLiquidityPoolsCountOf(address)"(
+      operator: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<string>;
 
     "owner()"(overrides?: CallOverrides): Promise<string>;
@@ -1221,6 +1289,10 @@ export class PoolCreator extends Contract {
       privilege: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    symbolService(overrides?: CallOverrides): Promise<string>;
+
+    "symbolService()"(overrides?: CallOverrides): Promise<string>;
 
     transferOwnership(
       newOwner: string,
@@ -1495,6 +1567,16 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    ownedLiquidityPoolsCountOf(
+      operator: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "ownedLiquidityPoolsCountOf(address)"(
+      operator: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1514,6 +1596,10 @@ export class PoolCreator extends Contract {
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    symbolService(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "symbolService()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: string,
@@ -1765,6 +1851,16 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    ownedLiquidityPoolsCountOf(
+      operator: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "ownedLiquidityPoolsCountOf(address)"(
+      operator: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "owner()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1784,6 +1880,10 @@ export class PoolCreator extends Contract {
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
+
+    symbolService(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "symbolService()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: string,

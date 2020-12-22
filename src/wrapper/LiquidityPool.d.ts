@@ -26,7 +26,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "addLiquidity(int256)": FunctionFragment;
     "adjustPerpetualRiskParameter(uint256,bytes32,int256)": FunctionFragment;
     "brokerTrade(tuple,int256,bytes)": FunctionFragment;
-    "claimFee(int256)": FunctionFragment;
+    "claimFee(address,int256)": FunctionFragment;
     "claimableFee(address)": FunctionFragment;
     "clear(uint256)": FunctionFragment;
     "clearProgress(uint256)": FunctionFragment;
@@ -84,7 +84,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "claimFee",
-    values: [BigNumberish]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "claimableFee",
@@ -391,11 +391,13 @@ export class LiquidityPool extends Contract {
     ): Promise<ContractTransaction>;
 
     claimFee(
+      claimer: string,
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "claimFee(int256)"(
+    "claimFee(address,int256)"(
+      claimer: string,
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -868,11 +870,13 @@ export class LiquidityPool extends Contract {
   ): Promise<ContractTransaction>;
 
   claimFee(
+    claimer: string,
     amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "claimFee(int256)"(
+  "claimFee(address,int256)"(
+    claimer: string,
     amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -1337,9 +1341,14 @@ export class LiquidityPool extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    claimFee(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    claimFee(
+      claimer: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    "claimFee(int256)"(
+    "claimFee(address,int256)"(
+      claimer: string,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1971,9 +1980,14 @@ export class LiquidityPool extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    claimFee(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
+    claimFee(
+      claimer: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
-    "claimFee(int256)"(
+    "claimFee(address,int256)"(
+      claimer: string,
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -2369,11 +2383,13 @@ export class LiquidityPool extends Contract {
     ): Promise<PopulatedTransaction>;
 
     claimFee(
+      claimer: string,
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "claimFee(int256)"(
+    "claimFee(address,int256)"(
+      claimer: string,
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

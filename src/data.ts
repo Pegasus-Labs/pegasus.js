@@ -144,7 +144,7 @@ export async function getBrokerRelayBalanceOf(
   return normalizeBigNumberish(balance).shiftedBy(-DECIMALS)
 }
 
-export async function listActivatePerpetuals(
+export async function listActivatePerpetualsOfTrader(
   poolCreator: PoolCreator,
   trader: string
 ): Promise<PerpetualID[]> {
@@ -158,12 +158,37 @@ export async function listActivatePerpetuals(
   for (let begin = 0; begin < count; begin = ret.length) {
     let end = Math.min(begin + step, count)
     const ids = await poolCreator.listActiveLiquidityPoolsOf(trader, begin, end)
+    if (ids.length === 0) {
+      break
+    }
     ids.forEach(j => {
       ret.push({
         liquidityPoolAddress: j.liquidityPool,
         perpetualIndex: j.perpetualIndex.toNumber(),
       })
     })
+  }
+  return ret
+}
+
+export async function listLiquidityPoolOfOperator(
+  poolCreator: PoolCreator,
+  operator: string
+): Promise<string[]> {
+  getAddress(operator)
+  const count = (await poolCreator.ownedLiquidityPoolsCountOf(operator)).toNumber()
+  if (count > 10000) {
+    throw new BugError(`activate pool count is too large: ${count}`)
+  }
+  let ret: string[] = []
+  const step = 100
+  for (let begin = 0; begin < count; begin = ret.length) {
+    let end = Math.min(begin + step, count)
+    const ids = await poolCreator.listLiquidityPoolOwnedBy(operator, begin, end)
+    if (ids.length === 0) {
+      break
+    }
+    ret = ret.concat(ids)
   }
   return ret
 }
