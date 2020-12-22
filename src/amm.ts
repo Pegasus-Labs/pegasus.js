@@ -111,6 +111,11 @@ export function computeAMMInternalTrade(p: LiquidityPoolStorage, perpetualIndex:
     context = computeAMMInternalOpen(context, open)
   }
 
+  // negative price
+  if (context.deltaPosition.lt(_0) && context.deltaMargin.lt(_0)) {
+    context.deltaMargin = _0
+  }
+
   // spread
   if (amount.lt(_0)) {
     // AMM sells, trader buys
