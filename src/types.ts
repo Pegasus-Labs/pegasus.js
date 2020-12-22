@@ -67,6 +67,7 @@ export interface LiquidityPoolStorage {
 }
 
 export interface PerpetualStorage {
+  symbol: number
   underlyingSymbol: string
   state: PerpetualState
   oracle: string
@@ -88,8 +89,9 @@ export interface PerpetualStorage {
   openSlippageFactor: BigNumber // β1
   closeSlippageFactor: BigNumber // β2
   fundingRateLimit: BigNumber // γ
-  maxLeverage: BigNumber  // λ
+  ammMaxLeverage: BigNumber  // λ
 
+  ammCashBalance: BigNumber
   ammPositionAmount: BigNumber
 }
 
@@ -141,7 +143,7 @@ export interface AMMTradingContext {
   openSlippageFactor: BigNumber // β1_m
   closeSlippageFactor: BigNumber // β2_m
   fundingRateLimit: BigNumber // γ_m
-  maxLeverage: BigNumber // λ_m
+  ammMaxLeverage: BigNumber // λ_m
 
   // other perpetuals
   otherIndex: BigNumber[] // P_i_j
@@ -150,7 +152,7 @@ export interface AMMTradingContext {
   otherOpenSlippageFactor: BigNumber[] // β1_j
   otherCloseSlippageFactor: BigNumber[] // β2_j
   otherFundingRateCoefficient: BigNumber[] // γ_j
-  otherMaxLeverage: BigNumber[] // λ_j
+  otherAMMMaxLeverage: BigNumber[] // λ_j
   
   // total
   cash: BigNumber // M_c

@@ -13,6 +13,8 @@ import { PoolCreator } from './wrapper/PoolCreator'
 import { PoolCreatorFactory } from './wrapper/PoolCreatorFactory'
 import { Reader } from './wrapper/Reader'
 import { ReaderFactory } from './wrapper/ReaderFactory'
+import { SymbolService } from './wrapper/SymbolService'
+import { SymbolServiceFactory } from './wrapper/SymbolServiceFactory'
 
 export function getLiquidityPoolContract(
   contractAddress: string,
@@ -36,6 +38,14 @@ export function getPoolCreatorContract(
 ): PoolCreator {
   getAddress(contractAddress)
   return PoolCreatorFactory.connect(contractAddress, signerOrProvider)
+}
+
+export function getSymbolServiceContract(
+  contractAddress: string,
+  signerOrProvider: SignerOrProvider
+): SymbolService {
+  getAddress(contractAddress)
+  return SymbolServiceFactory.connect(contractAddress, signerOrProvider)
 }
 
 export async function getReaderContract(
@@ -88,6 +98,7 @@ export async function getLiquidityPool(
       throw new Error(`unrecognized perpetual state: ${m.state}`)
     }
     ret.perpetuals.set(i, {
+      symbol: m.symbol.toNumber(),
       underlyingSymbol: m.underlyingAsset,
       state: m.state as PerpetualState,
       oracle: m.oracle,
@@ -109,8 +120,9 @@ export async function getLiquidityPool(
       openSlippageFactor: normalizeBigNumberish(m.openSlippageFactor).shiftedBy(-DECIMALS),
       closeSlippageFactor: normalizeBigNumberish(m.closeSlippageFactor).shiftedBy(-DECIMALS),
       fundingRateLimit: normalizeBigNumberish(m.fundingRateLimit).shiftedBy(-DECIMALS),
-      maxLeverage: normalizeBigNumberish(m.maxLeverage).shiftedBy(-DECIMALS),
+      ammMaxLeverage: normalizeBigNumberish(m.ammMaxLeverage).shiftedBy(-DECIMALS),
 
+      ammCashBalance: normalizeBigNumberish(m.ammCashBalance).shiftedBy(-DECIMALS),
       ammPositionAmount: normalizeBigNumberish(m.ammPositionAmount).shiftedBy(-DECIMALS),
     })
   })

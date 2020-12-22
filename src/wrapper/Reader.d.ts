@@ -188,6 +188,7 @@ export class Reader extends Contract {
       poolCashBalance: BigNumber;
       fundingTime: BigNumber;
       perpetualStorages: {
+        symbol: BigNumber;
         underlyingAsset: string;
         state: number;
         oracle: string;
@@ -206,12 +207,13 @@ export class Reader extends Contract {
         openSlippageFactor: BigNumber;
         closeSlippageFactor: BigNumber;
         fundingRateLimit: BigNumber;
-        maxLeverage: BigNumber;
+        ammMaxLeverage: BigNumber;
+        ammCashBalance: BigNumber;
         ammPositionAmount: BigNumber;
-        0: string;
-        1: number;
-        2: string;
-        3: BigNumber;
+        0: BigNumber;
+        1: string;
+        2: number;
+        3: string;
         4: BigNumber;
         5: BigNumber;
         6: BigNumber;
@@ -228,6 +230,8 @@ export class Reader extends Contract {
         17: BigNumber;
         18: BigNumber;
         19: BigNumber;
+        20: BigNumber;
+        21: BigNumber;
       }[];
       0: string;
       1: string;
@@ -242,6 +246,7 @@ export class Reader extends Contract {
       10: BigNumber;
       11: BigNumber;
       12: {
+        symbol: BigNumber;
         underlyingAsset: string;
         state: number;
         oracle: string;
@@ -260,12 +265,13 @@ export class Reader extends Contract {
         openSlippageFactor: BigNumber;
         closeSlippageFactor: BigNumber;
         fundingRateLimit: BigNumber;
-        maxLeverage: BigNumber;
+        ammMaxLeverage: BigNumber;
+        ammCashBalance: BigNumber;
         ammPositionAmount: BigNumber;
-        0: string;
-        1: number;
-        2: string;
-        3: BigNumber;
+        0: BigNumber;
+        1: string;
+        2: number;
+        3: string;
         4: BigNumber;
         5: BigNumber;
         6: BigNumber;
@@ -282,6 +288,8 @@ export class Reader extends Contract {
         17: BigNumber;
         18: BigNumber;
         19: BigNumber;
+        20: BigNumber;
+        21: BigNumber;
       }[];
     }>;
 
@@ -302,6 +310,7 @@ export class Reader extends Contract {
       poolCashBalance: BigNumber;
       fundingTime: BigNumber;
       perpetualStorages: {
+        symbol: BigNumber;
         underlyingAsset: string;
         state: number;
         oracle: string;
@@ -320,12 +329,13 @@ export class Reader extends Contract {
         openSlippageFactor: BigNumber;
         closeSlippageFactor: BigNumber;
         fundingRateLimit: BigNumber;
-        maxLeverage: BigNumber;
+        ammMaxLeverage: BigNumber;
+        ammCashBalance: BigNumber;
         ammPositionAmount: BigNumber;
-        0: string;
-        1: number;
-        2: string;
-        3: BigNumber;
+        0: BigNumber;
+        1: string;
+        2: number;
+        3: string;
         4: BigNumber;
         5: BigNumber;
         6: BigNumber;
@@ -342,6 +352,8 @@ export class Reader extends Contract {
         17: BigNumber;
         18: BigNumber;
         19: BigNumber;
+        20: BigNumber;
+        21: BigNumber;
       }[];
       0: string;
       1: string;
@@ -356,6 +368,7 @@ export class Reader extends Contract {
       10: BigNumber;
       11: BigNumber;
       12: {
+        symbol: BigNumber;
         underlyingAsset: string;
         state: number;
         oracle: string;
@@ -374,12 +387,13 @@ export class Reader extends Contract {
         openSlippageFactor: BigNumber;
         closeSlippageFactor: BigNumber;
         fundingRateLimit: BigNumber;
-        maxLeverage: BigNumber;
+        ammMaxLeverage: BigNumber;
+        ammCashBalance: BigNumber;
         ammPositionAmount: BigNumber;
-        0: string;
-        1: number;
-        2: string;
-        3: BigNumber;
+        0: BigNumber;
+        1: string;
+        2: number;
+        3: string;
         4: BigNumber;
         5: BigNumber;
         6: BigNumber;
@@ -396,6 +410,8 @@ export class Reader extends Contract {
         17: BigNumber;
         18: BigNumber;
         19: BigNumber;
+        20: BigNumber;
+        21: BigNumber;
       }[];
     }>;
   };
