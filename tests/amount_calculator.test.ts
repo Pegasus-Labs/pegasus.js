@@ -65,7 +65,7 @@ const perpetual1: PerpetualStorage = {
   openSlippageFactor: new BigNumber(100),
   closeSlippageFactor: new BigNumber(90),
   fundingRateLimit: new BigNumber(0.005),
-  maxLeverage: new BigNumber(5),
+  ammMaxLeverage: new BigNumber(5),
 
   ammPositionAmount: _0, // assign me later
 }

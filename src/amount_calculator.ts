@@ -47,7 +47,7 @@ export function computeMaxTradeAmountWithPrice(
   const normalizedMaxLeverage = normalizeBigNumberish(traderMaxLeverage)
   const normalizedFeeRate = normalizeBigNumberish(feeRate)
   if (normalizedPrice.lte(_0) || normalizedMaxLeverage.lte(_0)) {
-    throw Error(`bad price ${normalizedPrice.toFixed()} or maxLeverage ${normalizedMaxLeverage.toFixed()}`)
+    throw Error(`bad price ${normalizedPrice.toFixed()} or ammMaxLeverage ${normalizedMaxLeverage.toFixed()}`)
   }
 
   // close all

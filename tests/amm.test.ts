@@ -64,7 +64,7 @@ const perpetual1: PerpetualStorage = {
   openSlippageFactor: new BigNumber(100),
   closeSlippageFactor: new BigNumber(90),
   fundingRateLimit: new BigNumber(0.005),
-  maxLeverage: new BigNumber(3),
+  ammMaxLeverage: new BigNumber(3),
 
   ammPositionAmount: _0, // assign me later
 }
@@ -245,10 +245,10 @@ describe('isAMMSafe', function () {
       otherHalfSpread: [ _0 ],
       openSlippageFactor: new BigNumber('1000'),
       closeSlippageFactor: new BigNumber('1000'),
-      halfSpread: _0, fundingRateLimit: _0, maxLeverage: _0,
+      halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
       otherCloseSlippageFactor: [ new BigNumber('100') ],
-      otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
+      otherFundingRateCoefficient: [ _0 ], otherAMMMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
@@ -264,10 +264,10 @@ describe('isAMMSafe', function () {
       otherHalfSpread: [ _0 ],
       openSlippageFactor: new BigNumber('100'),
       closeSlippageFactor: new BigNumber('100'),
-      halfSpread: _0, fundingRateLimit: _0, maxLeverage: _0,
+      halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
       otherCloseSlippageFactor: [ new BigNumber('100') ],
-      otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
+      otherFundingRateCoefficient: [ _0 ], otherAMMMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
@@ -283,10 +283,10 @@ describe('isAMMSafe', function () {
       otherHalfSpread: [ _0 ],
       openSlippageFactor: new BigNumber('100'),
       closeSlippageFactor: new BigNumber('100'),
-      halfSpread: _0, fundingRateLimit: _0, maxLeverage: _0,
+      halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
       otherCloseSlippageFactor: [ new BigNumber('100') ],
-      otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
+      otherFundingRateCoefficient: [ _0 ], otherAMMMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
@@ -303,10 +303,10 @@ describe('isAMMSafe', function () {
       otherHalfSpread: [ _0 ],
       openSlippageFactor: new BigNumber('1000'),
       closeSlippageFactor: new BigNumber('1000'),
-      halfSpread: _0, fundingRateLimit: _0, maxLeverage: _0,
+      halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
       otherCloseSlippageFactor: [ new BigNumber('100') ],
-      otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
+      otherFundingRateCoefficient: [ _0 ], otherAMMMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
@@ -322,10 +322,10 @@ describe('isAMMSafe', function () {
       otherHalfSpread: [ _0 ],
       openSlippageFactor: new BigNumber('100'),
       closeSlippageFactor: new BigNumber('100'),
-      halfSpread: _0, fundingRateLimit: _0, maxLeverage: _0,
+      halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
       otherCloseSlippageFactor: [ new BigNumber('100') ],
-      otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
+      otherFundingRateCoefficient: [ _0 ], otherAMMMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
@@ -341,10 +341,10 @@ describe('isAMMSafe', function () {
       otherHalfSpread: [ _0 ],
       openSlippageFactor: new BigNumber('100'),
       closeSlippageFactor: new BigNumber('100'),
-      halfSpread: _0, fundingRateLimit: _0, maxLeverage: _0,
+      halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
       otherCloseSlippageFactor: [ new BigNumber('100') ],
-      otherFundingRateCoefficient: [ _0 ], otherMaxLeverage: [ _0 ],
+      otherFundingRateCoefficient: [ _0 ], otherAMMMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
@@ -403,7 +403,7 @@ describe('safePosition', function () {
       perpetuals: new Map([
         [TEST_MARKET_INDEX0, {
           ...poolStorage1.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage,
-          maxLeverage: new BigNumber('0.5'), }],
+          ammMaxLeverage: new BigNumber('0.5'), }],
         [TEST_MARKET_INDEX1, poolStorage1.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage],
       ])
     }, TEST_MARKET_INDEX0), beta)
@@ -419,7 +419,7 @@ describe('safePosition', function () {
       perpetuals: new Map([
         [TEST_MARKET_INDEX0, {
           ...poolStorage1.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage,
-          maxLeverage: new BigNumber('0.5'), indexPrice: new BigNumber(100),
+          ammMaxLeverage: new BigNumber('0.5'), indexPrice: new BigNumber(100),
           ammPositionAmount: new BigNumber('-10'), openSlippageFactor: beta }],
         [TEST_MARKET_INDEX1, {
           ...poolStorage1.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage,
@@ -451,7 +451,7 @@ describe('safePosition', function () {
       perpetuals: new Map([
         [TEST_MARKET_INDEX0, {
           ...poolStorage4.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage,
-          maxLeverage: new BigNumber('0.5'), }],
+          ammMaxLeverage: new BigNumber('0.5'), }],
         [TEST_MARKET_INDEX1, poolStorage4.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage],
       ])
     }, TEST_MARKET_INDEX0), beta)

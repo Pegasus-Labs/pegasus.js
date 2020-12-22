@@ -21,7 +21,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
   let openSlippageFactor = _0
   let closeSlippageFactor = _0
   let fundingRateLimit = _0
-  let maxLeverage = _0
+  let ammMaxLeverage = _0
  
   let otherIndex: BigNumber[] = []
   let otherPosition: BigNumber[] = []
@@ -29,7 +29,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
   let otherOpenSlippageFactor: BigNumber[] = []
   let otherCloseSlippageFactor: BigNumber[] = []
   let otherFundingRateCoefficient: BigNumber[] = []
-  let otherMaxLeverage: BigNumber[] = []
+  let otherAMMMaxLeverage: BigNumber[] = []
 
   // split perpetuals into current perpetual and other perpetuals
   // M_c = ammCash - Σ accumulatedFunding * N
@@ -43,7 +43,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
       openSlippageFactor = perpetual.openSlippageFactor
       closeSlippageFactor = perpetual.closeSlippageFactor
       fundingRateLimit = perpetual.fundingRateLimit
-      maxLeverage = perpetual.maxLeverage
+      ammMaxLeverage = perpetual.ammMaxLeverage
     } else {
       otherIndex.push(perpetual.indexPrice)
       otherPosition.push(perpetual.ammPositionAmount)
@@ -51,15 +51,15 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
       otherOpenSlippageFactor.push(perpetual.openSlippageFactor)
       otherCloseSlippageFactor.push(perpetual.closeSlippageFactor)
       otherFundingRateCoefficient.push(perpetual.fundingRateLimit)
-      otherMaxLeverage.push(perpetual.maxLeverage)
+      otherAMMMaxLeverage.push(perpetual.ammMaxLeverage)
     }
   })
    
   let ret = {
     index, position1, halfSpread, openSlippageFactor, closeSlippageFactor,
-    fundingRateLimit, maxLeverage,
+    fundingRateLimit, ammMaxLeverage,
     otherIndex, otherPosition, otherHalfSpread, otherOpenSlippageFactor, otherCloseSlippageFactor,
-    otherFundingRateCoefficient, otherMaxLeverage,
+    otherFundingRateCoefficient, otherAMMMaxLeverage,
     cash, poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
     valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
   }
@@ -83,7 +83,7 @@ export function initAMMTradingContextEagerEvaluation(context: AMMTradingContext)
     )
     // Σ_j (P_i_j * | N_j | / λ_j) where j ≠ id
     positionMarginWithoutCurrent = positionMarginWithoutCurrent.plus(
-      context.otherIndex[j].times(context.otherPosition[j].abs()).div(context.otherMaxLeverage[j])
+      context.otherIndex[j].times(context.otherPosition[j].abs()).div(context.otherAMMMaxLeverage[j])
     )
   }
    
@@ -298,14 +298,14 @@ export function computeAMMSafeCondition2(context: AMMTradingContext, beta: BigNu
   //  M - √(M(M - 2βλ^2/P_i x))
   // ---------------------------
   //             βλ
-  let beforeSquare = x.times(context.maxLeverage).times(context.maxLeverage).times(beta).times(_2).div(context.index)
+  let beforeSquare = x.times(context.ammMaxLeverage).times(context.ammMaxLeverage).times(beta).times(_2).div(context.index)
   beforeSquare = context.poolMargin.minus(beforeSquare).times(context.poolMargin)
   if (beforeSquare.lt(_0)) {
     // means the curve is always above the x-axis
     return true
   }
   let position2 = context.poolMargin.minus(sqrt(beforeSquare))
-  position2 = position2.div(beta).div(context.maxLeverage)
+  position2 = position2.div(beta).div(context.ammMaxLeverage)
   return position2.dp(DECIMALS)
 }
 
