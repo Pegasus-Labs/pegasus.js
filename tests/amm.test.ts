@@ -8,8 +8,9 @@ import {
   computeDeltaMargin,
   computeAMMSafeShortPositionAmount,
   computeAMMSafeLongPositionAmount,
+  computeSpreadPosition,
+  computeBestAskBidPrice,
   computeFundingRate,
-  computeMidPrice,
 } from '../src/amm'
 import { _0, _1 } from '../src/constants'
 import {
@@ -249,7 +250,7 @@ describe('isAMMSafe', function () {
       halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
       otherAMMMaxLeverage: [ _0 ],
-      poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
+      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
     expect(isAMMSafe(context, new BigNumber('1000') /* beta */)).toBeTruthy()
@@ -266,7 +267,7 @@ describe('isAMMSafe', function () {
       halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
       otherAMMMaxLeverage: [ _0 ],
-      poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
+      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
     expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeTruthy()
@@ -283,7 +284,7 @@ describe('isAMMSafe', function () {
       halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
       otherAMMMaxLeverage: [ _0 ],
-      poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
+      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
     expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeFalsy()
@@ -301,7 +302,7 @@ describe('isAMMSafe', function () {
       halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
       otherAMMMaxLeverage: [ _0 ],
-      poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
+      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
     expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeFalsy()
@@ -318,7 +319,7 @@ describe('isAMMSafe', function () {
       halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
       otherAMMMaxLeverage: [ _0 ],
-      poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
+      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
     expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeTruthy()
@@ -335,7 +336,7 @@ describe('isAMMSafe', function () {
       halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
       otherAMMMaxLeverage: [ _0 ],
-      poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
+      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
     expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeFalsy()
@@ -679,8 +680,103 @@ describe('computeMidPrice', function () {
 
   successCases.forEach(element => {
     it(element.name, function () {
-      const price = computeMidPrice(element.amm, TEST_MARKET_INDEX0, element.isAMMBuy)
+      const price = computeBestAskBidPrice(element.amm, TEST_MARKET_INDEX0, element.isAMMBuy)
       expect(price).toApproximate(normalizeBigNumberish(element.price))
+    })
+  })
+})
+
+describe('computeSpreadPosition', function () {
+  interface ComputeAccountCase {
+    name: string
+    amm: LiquidityPoolStorage
+    position2: BigNumber
+    price: BigNumber
+
+    // expected
+    spreadPosition: BigNumber
+  }
+
+  const successCases: Array<ComputeAccountCase> = [
+    {
+      name: '-20 <- 0[here]',
+      amm: poolStorage0,
+      position2: new BigNumber('-20'),
+      price: new BigNumber('100'),
+      spreadPosition: new BigNumber('0'),
+    },
+    {
+      name: '-20 <- [here] <- 0',
+      amm: poolStorage0,
+      position2: new BigNumber('-20'),
+      price: new BigNumber('105'),
+      spreadPosition: new BigNumber('-10'),
+    },
+    {
+      name: '-20 <- [here] <- -10',
+      amm: poolStorage1,
+      position2: new BigNumber('-20'),
+      price: new BigNumber('113'),
+      spreadPosition: new BigNumber('-16'),
+    },
+    {
+      name: '-20[here] <- 0',
+      amm: poolStorage0,
+      position2: new BigNumber('-20'),
+      price: new BigNumber('110'),
+      spreadPosition: new BigNumber('-20'),
+    },
+    {
+      name: '[here] <- -20 <- 0',
+      amm: poolStorage0,
+      position2: new BigNumber('-20'),
+      price: new BigNumber('120'),
+      spreadPosition: new BigNumber('-20'),
+    },
+    {
+      name: '0[here] -> 20',
+      amm: poolStorage0,
+      position2: new BigNumber('20'),
+      price: new BigNumber('100'),
+      spreadPosition: new BigNumber('0'),
+    },
+    {
+      name: '0 -> [here] -> 20',
+      amm: poolStorage0,
+      position2: new BigNumber('20'),
+      price: new BigNumber('95'),
+      spreadPosition: new BigNumber('10'),
+    },
+    {
+      name: '10 -> [here] -> 20',
+      amm: poolStorage4,
+      position2: new BigNumber('20'),
+      price: new BigNumber('87'),
+      spreadPosition: new BigNumber('16'),
+    },
+    {
+      name: '0 -> 20[here]',
+      amm: poolStorage0,
+      position2: new BigNumber('20'),
+      price: new BigNumber('90'),
+      spreadPosition: new BigNumber('20'),
+    },
+    {
+      name: '0 -> 20 -> [here]',
+      amm: poolStorage0,
+      position2: new BigNumber('20'),
+      price: new BigNumber('85'),
+      spreadPosition: new BigNumber('20'),
+    },
+  ]
+
+  successCases.forEach(element => {
+    const beta = new BigNumber('100')
+    it(element.name, function () {
+      const context = computeAMMPoolMargin(initAMMTradingContext(element.amm, TEST_MARKET_INDEX0), beta)
+      context.bestAskBidPrice = element.price
+      const spreadPosition = computeSpreadPosition(context, beta, element.position2)
+      expect(spreadPosition).toApproximate(normalizeBigNumberish(element.spreadPosition))
     })
   })
 })
