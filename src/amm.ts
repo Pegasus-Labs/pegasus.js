@@ -116,6 +116,9 @@ export function computeAMMInternalTrade(p: LiquidityPoolStorage, perpetualIndex:
 // get the price if ΔN -> 0. equal to lim_(ΔN -> 0) (computeDeltaMargin / (ΔN))
 // call computeAMMPoolMargin before this function. make sure isAMMSafe before this function
 function computeBestAskBidPriceIfSafe(context: AMMTradingContext, beta: BigNumber, isAMMBuy: boolean): BigNumber {
+  if (context.poolMargin.lte(_0)) {
+    throw new InsufficientLiquidityError(`AMM poolMargin <= 0`)
+  }
   // P_i (1 - β / M * N1)
   let price = context.position1.div(context.poolMargin).times(beta)
   price = _1.minus(price).times(context.index)
@@ -152,6 +155,8 @@ export function computeBestAskBidPrice(p: LiquidityPoolStorage, perpetualIndex: 
     }
     return computeBestAskBidPriceIfUnsafe(context, isAMMBuy)
   }
+  // safe
+  context = computeAMMPoolMargin(context, beta)
   return computeBestAskBidPriceIfSafe(context, beta, isAMMBuy)
 }
 
@@ -306,6 +311,9 @@ export function computeAMMSafeCondition1(context: AMMTradingContext, beta: BigNu
 
 // return true if always safe
 export function computeAMMSafeCondition2(context: AMMTradingContext, beta: BigNumber): BigNumber | true {
+  if (context.poolMargin.lte(_0)) {
+    throw new InsufficientLiquidityError(`AMM poolMargin <= 0`)
+  }
   // M - Σ(positionMargin_j - squareValue_j / 2 / M) where j ≠ id
   const x = context.poolMargin
     .minus(context.positionMarginWithoutCurrent)

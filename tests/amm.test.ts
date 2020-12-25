@@ -605,7 +605,7 @@ describe('trade - fail', function () {
   })
 })
 
-describe('computeMidPrice', function () {
+describe('computeBestAskBidPrice', function () {
   interface ComputeAccountCase {
     name: string
     amm: LiquidityPoolStorage
@@ -617,61 +617,49 @@ describe('computeMidPrice', function () {
 
   const successCases: Array<ComputeAccountCase> = [
     {
-      name: 'open 0 -> -141.421',
+      name: 'open 0 -> -x',
       amm: poolStorage0,
       isAMMBuy: false,
       price: new BigNumber('100.1') // trader buy, (1 + α)
     },
     {
-      name: 'open -10 -> -141.067',
+      name: 'open -10',
       amm: poolStorage1,
       isAMMBuy: false,
       price: new BigNumber('110.11') // trader buy, (1 + α)
     },
     {
-      name: 'open 0 -> 100',
+      name: 'open 0 -> +x',
       amm: poolStorage0,
       isAMMBuy: true,
       price: new BigNumber('99.9') // trader sell, (1 - α)
     },
     {
-      name: 'open 10 -> 100',
+      name: 'open 10',
       amm: poolStorage4,
       isAMMBuy: true,
       price: new BigNumber('89.91') // trader sell, (1 - α)
     },
     {
-      name: 'close -10 -> -9',
+      name: 'close -10',
       amm: poolStorage1,
       isAMMBuy: true,
       price: new BigNumber('108.88646369499801395463383186703') // trader sell, (1 - α)
     },
     {
-      name: 'close -10 -> 0',
-      amm: poolStorage1,
-      isAMMBuy: true,
-      price: new BigNumber('108.88646369499801395463383186703') // trader sell, (1 - α)
-    },
-    {
-      name: 'close 10 -> 9',
+      name: 'close 10',
       amm: poolStorage4,
       isAMMBuy: false,
       price: new BigNumber('91.09554538669368171312465896007') // trader buy, (1 + α)
     },
     {
-      name: 'close 10 -> 0',
-      amm: poolStorage4,
-      isAMMBuy: false,
-      price: new BigNumber('91.09554538669368171312465896007') // trader buy, (1 + α)
-    },
-    {
-      name: 'close unsafe -10 -> -9',
+      name: 'close unsafe -10',
       amm: poolStorage3,
       isAMMBuy: true,
       price: new BigNumber('99.9') // trader sell, 100 (1 - α)
     },
     {
-      name: 'close unsafe 10 -> 9',
+      name: 'close unsafe 10',
       amm: poolStorage6,
       isAMMBuy: false,
       price: new BigNumber('100.1') // trader buy, 100 (1 + α)
