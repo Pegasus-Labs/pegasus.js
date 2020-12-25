@@ -158,6 +158,7 @@ export interface AMMTradingContext {
   // trading result
   deltaMargin: BigNumber // cash2 - cash1
   deltaPosition: BigNumber // position2 - position1
+  bestAskBidPrice: BigNumber | null // best ask price or best bid price (also the price at spread)
 
   // eager evaluation
   valueWithoutCurrent: BigNumber // Σ_j (P_i_j * N_j) where j ≠ id

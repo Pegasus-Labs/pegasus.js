@@ -5,7 +5,7 @@
 import { BigNumber } from 'bignumber.js'
 import { DECIMALS, _0, _1, _2, _4 } from './constants'
 import { LiquidityPoolStorage, AMMTradingContext } from './types'
-import { sqrt, splitAmount } from './utils'
+import { sqrt, splitAmount, hasTheSameSign } from './utils'
 import { InsufficientLiquidityError, BugError, InvalidArgumentError } from './types'
 
 export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: number): AMMTradingContext {
@@ -50,17 +50,17 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
     }
   })
    
-  let ret = {
+  let ret: AMMTradingContext = {
     index, position1, halfSpread, openSlippageFactor, closeSlippageFactor,
     fundingRateLimit, ammMaxLeverage,
     otherIndex, otherPosition, otherOpenSlippageFactor, otherAMMMaxLeverage,
-    cash, poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
+    cash, poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: _0,
     valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
   }
   ret = initAMMTradingContextEagerEvaluation(ret)
   return ret
 }
-
+ 
 export function initAMMTradingContextEagerEvaluation(context: AMMTradingContext): AMMTradingContext {
   let valueWithoutCurrent = _0
   let squareValueWithoutCurrent = _0
@@ -110,66 +110,76 @@ export function computeAMMInternalTrade(p: LiquidityPoolStorage, perpetualIndex:
     context.deltaMargin = _0
   }
 
-  // spread
-  if (amount.lt(_0)) {
-    // AMM sells, trader buys
-    context.deltaMargin = context.deltaMargin.times(_1.plus(context.halfSpread)).dp(DECIMALS)
-  } else {
-    // AMM buys, trader sells
-    context.deltaMargin = context.deltaMargin.times(_1.minus(context.halfSpread)).dp(DECIMALS)
-  }
-
   return context
 }
 
 // get the price if ΔN -> 0. equal to lim_(ΔN -> 0) (computeDeltaMargin / (ΔN))
-export function computeMidPrice(p: LiquidityPoolStorage, perpetualIndex: number, isAMMBuy: boolean): BigNumber {
-  let context = initAMMTradingContext(p, perpetualIndex)
-  let isClosing = false
-  let beta = context.openSlippageFactor
-  if ((context.position1.gt(_0) && !isAMMBuy) || (context.position1.lt(_0) && isAMMBuy)) {
-    isClosing = true
-    beta = context.closeSlippageFactor
-  }
-  let price = _0
-  if (!isAMMSafe(context, beta)) {
-    if (!isClosing) {
-      throw new InsufficientLiquidityError(`AMM can not open position anymore: unsafe before trade`)
-    }
-    // price = index
-    price = context.index
-  } else {
-    context = computeAMMPoolMargin(context, beta)
+// call computeAMMPoolMargin before this function. make sure isAMMSafe before this function
+function computeBestAskBidPriceIfSafe(context: AMMTradingContext, beta: BigNumber, isAMMBuy: boolean): BigNumber {
+  // P_i (1 - β / M * N1)
+  let price = context.position1.div(context.poolMargin).times(beta)
+  price = _1.minus(price).times(context.index)
+  return appendSpread(context, price, isAMMBuy)
+}
 
-    // P_i (1 - β / M * N1)
-    price = context.position1.div(context.poolMargin).times(beta)
-    price = _1.minus(price).times(context.index)
-  }
+// get the price if ΔN -> 0. equal to lim_(ΔN -> 0) (computeDeltaMargin / (ΔN))
+function computeBestAskBidPriceIfUnsafe(context: AMMTradingContext, isAMMBuy: boolean): BigNumber {
+  return appendSpread(context, context.index, isAMMBuy)
+}
 
-  // spread
+function appendSpread(context: AMMTradingContext, midPrice: BigNumber, isAMMBuy: boolean): BigNumber {
   if (isAMMBuy) {
     // AMM buys, trader sells
-    return price.times(_1.minus(context.halfSpread)).dp(DECIMALS)
+    return midPrice.times(_1.minus(context.halfSpread)).dp(DECIMALS)
   } else {
     // AMM sells, trader buys
-    return price.times(_1.plus(context.halfSpread)).dp(DECIMALS)
+    return midPrice.times(_1.plus(context.halfSpread)).dp(DECIMALS)
   }
+}
+
+// get the price if ΔN -> 0. equal to lim_(ΔN -> 0) (computeDeltaMargin / (ΔN))
+export function computeBestAskBidPrice(p: LiquidityPoolStorage, perpetualIndex: number, isAMMBuy: boolean): BigNumber {
+  let context = initAMMTradingContext(p, perpetualIndex)
+  let isAMMClosing = false
+  let beta = context.openSlippageFactor
+  if ((context.position1.gt(_0) && !isAMMBuy) || (context.position1.lt(_0) && isAMMBuy)) {
+    isAMMClosing = true
+    beta = context.closeSlippageFactor
+  }
+  if (!isAMMSafe(context, beta)) {
+    if (!isAMMClosing) {
+      throw new InsufficientLiquidityError(`AMM can not open position anymore: unsafe before trade`)
+    }
+    return computeBestAskBidPriceIfUnsafe(context, isAMMBuy)
+  }
+  return computeBestAskBidPriceIfSafe(context, beta, isAMMBuy)
 }
 
 // the amount is the AMM's perspective
 export function computeAMMInternalClose(context: AMMTradingContext, amount: BigNumber): AMMTradingContext {
   const beta = context.closeSlippageFactor
   let ret: AMMTradingContext = { ...context }
-  const { index } = ret
   const position2 = ret.position1.plus(amount)
   let deltaMargin = _0
 
   // trade
   if (isAMMSafe(ret, beta)) {
     ret = computeAMMPoolMargin(ret, beta)
-    deltaMargin = computeDeltaMargin(ret, beta, position2)
+    ret.bestAskBidPrice = computeBestAskBidPriceIfSafe(ret, beta, amount.gt(_0))
+    const spreadPos = computeSpreadPosition(ret, beta, position2)
+    const deltaMargin1 = ret.bestAskBidPrice.times(ret.position1.minus(spreadPos))
+    ret.position1 = spreadPos
+    const deltaMargin2 = computeDeltaMargin(ret, beta, position2)
+    if (!hasTheSameSign(deltaMargin1, deltaMargin2)) {
+      throw new BugError(`close error. ΔM1 and ΔM2 has different sign unexpectedly: ${deltaMargin1.toFixed()} vs ${deltaMargin2.toFixed()}`)
+    }
+    deltaMargin = deltaMargin1.plus(deltaMargin2)
   } else {
-    deltaMargin = index.times(amount).negated()
+    ret.bestAskBidPrice = computeBestAskBidPriceIfUnsafe(ret, amount.gt(_0))
+    deltaMargin = ret.bestAskBidPrice.times(amount).negated()
+  }
+  if (hasTheSameSign(deltaMargin, amount)) {
+    throw new BugError(`close error. ΔM and amount has the same sign unexpectedly: ${deltaMargin.toFixed()} vs ${amount.toFixed()}`)
   }
 
   // commit
@@ -177,7 +187,6 @@ export function computeAMMInternalClose(context: AMMTradingContext, amount: BigN
   ret.deltaPosition = ret.deltaPosition.plus(amount)
   ret.cash = ret.cash.plus(deltaMargin)
   ret.position1 = position2
-
   return ret
 }
 
@@ -186,8 +195,7 @@ export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNu
   const beta = context.openSlippageFactor
   let ret: AMMTradingContext = { ...context }
   const position2 = ret.position1.plus(amount)
-  let deltaMargin = _0
-
+  
   // pre-check
   if (!isAMMSafe(ret, beta)) {
     throw new InsufficientLiquidityError(`AMM can not open position anymore: unsafe before trade`)
@@ -208,7 +216,20 @@ export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNu
   }
   
   // trade
-  deltaMargin = computeDeltaMargin(ret, beta, position2)
+  if (ret.bestAskBidPrice === null) {
+    ret.bestAskBidPrice = computeBestAskBidPriceIfSafe(ret, beta, amount.gt(_0))
+  }
+  const spreadPos = computeSpreadPosition(ret, beta, position2)
+  const deltaMargin1 = ret.bestAskBidPrice.times(ret.position1.minus(spreadPos))
+  ret.position1 = spreadPos
+  const deltaMargin2 = computeDeltaMargin(ret, beta, position2)
+  if (!hasTheSameSign(deltaMargin1, deltaMargin2)) {
+    throw new BugError(`open error. ΔM1 and ΔM2 has different sign unexpectedly: ${deltaMargin1.toFixed()} vs ${deltaMargin2.toFixed()}`)
+  }
+  const deltaMargin = deltaMargin1.plus(deltaMargin2)
+  if (hasTheSameSign(deltaMargin, amount)) {
+    throw new BugError(`open error. ΔM and amount has the same sign unexpectedly: ${deltaMargin.toFixed()} vs ${amount.toFixed()}`)
+  }
 
   // commit
   ret.deltaMargin = ret.deltaMargin.plus(deltaMargin)
@@ -318,6 +339,18 @@ export function computeAMMSafeCondition3(context: AMMTradingContext, beta: BigNu
   return position2.dp(DECIMALS)
 }
 
+// P_b
+export function computeBasePrice(context: AMMTradingContext, beta: BigNumber, position: BigNumber): BigNumber {
+  if (context.poolMargin.lte(_0)) {
+    throw new InsufficientLiquidityError(`AMM poolMargin <= 0`)
+  }
+  // P_i (1 - β / M * N)
+  let ret = position.div(context.poolMargin).times(beta)
+  ret = _1.minus(ret).times(context.index)
+  return ret.dp(DECIMALS)
+}
+
+// ∫ computeBasePrice(p) dp
 // cash2 - cash1
 export function computeDeltaMargin(context: AMMTradingContext, beta: BigNumber, position2: BigNumber): BigNumber {
   if (context.position1.gt(_0) && position2.lt(_0)
@@ -331,6 +364,28 @@ export function computeDeltaMargin(context: AMMTradingContext, beta: BigNumber, 
   let ret = position2.plus(context.position1).div(_2).div(context.poolMargin).times(beta)
   ret = _1.minus(ret)
   ret = context.position1.minus(position2).times(ret).times(context.index)
+  return ret.dp(DECIMALS)
+}
+
+// solve x where bestAskBidPrice == averagePrice(x)
+export function computeSpreadPosition(context: AMMTradingContext, beta: BigNumber, position2: BigNumber): BigNumber {
+  if (context.poolMargin.lte(_0)) {
+    throw new InsufficientLiquidityError(`AMM poolMargin <= 0`)
+  }
+  if (context.bestAskBidPrice === null) {
+    throw new Error('invalid bestAskBidPrice')
+  }
+  // ret = 2 M (P_i - P_best) / (β P_i) - N_1
+  let ret = context.index.minus(context.bestAskBidPrice).times(context.poolMargin).times(_2)
+  ret = ret.div(beta).div(context.index)
+  ret = ret.minus(context.position1)
+  if (position2.lt(context.position1)) {
+    ret = BigNumber.maximum(ret, position2)
+    ret = BigNumber.minimum(ret, context.position1)
+  } else {
+    ret = BigNumber.minimum(ret, position2)
+    ret = BigNumber.maximum(ret, context.position1)
+  }
   return ret.dp(DECIMALS)
 }
 

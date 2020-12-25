@@ -29,6 +29,9 @@ export function hasTheSameSign(x: BigNumber, y: BigNumber): boolean {
   if (x.s === null || y.s === null) {
     throw new InvalidArgumentError(`null x or y`)
   }
+  if (x.isZero() || y.isZero()) {
+    return true
+  }
   return (x.s ^ y.s) == 0
 }
 
