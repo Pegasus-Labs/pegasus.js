@@ -25,16 +25,14 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
  
   let otherIndex: BigNumber[] = []
   let otherPosition: BigNumber[] = []
-  let otherHalfSpread: BigNumber[] = []
   let otherOpenSlippageFactor: BigNumber[] = []
-  let otherCloseSlippageFactor: BigNumber[] = []
-  let otherFundingRateCoefficient: BigNumber[] = []
   let otherAMMMaxLeverage: BigNumber[] = []
 
   // split perpetuals into current perpetual and other perpetuals
   // M_c = ammCash - Σ accumulatedFunding * N
   let cash = p.poolCashBalance
   p.perpetuals.forEach((perpetual, id) => {
+    cash = cash.plus(perpetual.ammCashBalance)
     cash = cash.minus(perpetual.unitAccumulativeFunding.times(perpetual.ammPositionAmount))
     if (id === perpetualIndex) {
       index = perpetual.indexPrice
@@ -47,10 +45,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
     } else {
       otherIndex.push(perpetual.indexPrice)
       otherPosition.push(perpetual.ammPositionAmount)
-      otherHalfSpread.push(perpetual.halfSpread)
       otherOpenSlippageFactor.push(perpetual.openSlippageFactor)
-      otherCloseSlippageFactor.push(perpetual.closeSlippageFactor)
-      otherFundingRateCoefficient.push(perpetual.fundingRateLimit)
       otherAMMMaxLeverage.push(perpetual.ammMaxLeverage)
     }
   })
@@ -58,8 +53,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
   let ret = {
     index, position1, halfSpread, openSlippageFactor, closeSlippageFactor,
     fundingRateLimit, ammMaxLeverage,
-    otherIndex, otherPosition, otherHalfSpread, otherOpenSlippageFactor, otherCloseSlippageFactor,
-    otherFundingRateCoefficient, otherAMMMaxLeverage,
+    otherIndex, otherPosition, otherOpenSlippageFactor, otherAMMMaxLeverage,
     cash, poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
     valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
   }

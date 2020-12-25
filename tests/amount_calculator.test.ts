@@ -44,6 +44,7 @@ const defaultPool: LiquidityPoolStorage = {
 }
 
 const perpetual1: PerpetualStorage = {
+  symbol: 0,
   underlyingSymbol: 'T',
   state: PerpetualState.NORMAL,
   oracle: "0x0",
@@ -67,6 +68,7 @@ const perpetual1: PerpetualStorage = {
   fundingRateLimit: new BigNumber(0.005),
   ammMaxLeverage: new BigNumber(5),
 
+  ammCashBalance: _0, // assign me later
   ammPositionAmount: _0, // assign me later
 }
 

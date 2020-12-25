@@ -148,10 +148,7 @@ export interface AMMTradingContext {
   // other perpetuals
   otherIndex: BigNumber[] // P_i_j
   otherPosition: BigNumber[] // N_j
-  otherHalfSpread: BigNumber[] // α_j
   otherOpenSlippageFactor: BigNumber[] // β1_j
-  otherCloseSlippageFactor: BigNumber[] // β2_j
-  otherFundingRateCoefficient: BigNumber[] // γ_j
   otherAMMMaxLeverage: BigNumber[] // λ_j
   
   // total

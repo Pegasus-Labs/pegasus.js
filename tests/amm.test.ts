@@ -43,6 +43,7 @@ const defaultPool: LiquidityPoolStorage = {
 }
 
 const perpetual1: PerpetualStorage = {
+  symbol: 0,
   underlyingSymbol: 'T',
   state: PerpetualState.NORMAL,
   oracle: "0x0",
@@ -66,6 +67,7 @@ const perpetual1: PerpetualStorage = {
   fundingRateLimit: new BigNumber(0.005),
   ammMaxLeverage: new BigNumber(3),
 
+  ammCashBalance: _0, // assign me later
   ammPositionAmount: _0, // assign me later
 }
 
@@ -242,13 +244,11 @@ describe('isAMMSafe', function () {
       position1: new BigNumber('110'),
       otherIndex: [ new BigNumber('100') ],
       otherPosition: [ new BigNumber('1') ],
-      otherHalfSpread: [ _0 ],
       openSlippageFactor: new BigNumber('1000'),
       closeSlippageFactor: new BigNumber('1000'),
       halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
-      otherCloseSlippageFactor: [ new BigNumber('100') ],
-      otherFundingRateCoefficient: [ _0 ], otherAMMMaxLeverage: [ _0 ],
+      otherAMMMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
@@ -261,13 +261,11 @@ describe('isAMMSafe', function () {
       position1: new BigNumber('100'),
       otherIndex: [ new BigNumber('100') ],
       otherPosition: [ new BigNumber('1000') ],
-      otherHalfSpread: [ _0 ],
       openSlippageFactor: new BigNumber('100'),
       closeSlippageFactor: new BigNumber('100'),
       halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
-      otherCloseSlippageFactor: [ new BigNumber('100') ],
-      otherFundingRateCoefficient: [ _0 ], otherAMMMaxLeverage: [ _0 ],
+      otherAMMMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
@@ -280,13 +278,11 @@ describe('isAMMSafe', function () {
       position1: new BigNumber('100'),
       otherIndex: [ new BigNumber('100') ],
       otherPosition: [ new BigNumber('1000') ],
-      otherHalfSpread: [ _0 ],
       openSlippageFactor: new BigNumber('100'),
       closeSlippageFactor: new BigNumber('100'),
       halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
-      otherCloseSlippageFactor: [ new BigNumber('100') ],
-      otherFundingRateCoefficient: [ _0 ], otherAMMMaxLeverage: [ _0 ],
+      otherAMMMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
@@ -300,13 +296,11 @@ describe('isAMMSafe', function () {
       position1: new BigNumber('-110'),
       otherIndex: [ new BigNumber('100') ],
       otherPosition: [ new BigNumber('-1001') ],
-      otherHalfSpread: [ _0 ],
       openSlippageFactor: new BigNumber('1000'),
       closeSlippageFactor: new BigNumber('1000'),
       halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
-      otherCloseSlippageFactor: [ new BigNumber('100') ],
-      otherFundingRateCoefficient: [ _0 ], otherAMMMaxLeverage: [ _0 ],
+      otherAMMMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
@@ -319,13 +313,11 @@ describe('isAMMSafe', function () {
       position1: new BigNumber('-110'),
       otherIndex: [ new BigNumber('100') ],
       otherPosition: [ new BigNumber('-100') ],
-      otherHalfSpread: [ _0 ],
       openSlippageFactor: new BigNumber('100'),
       closeSlippageFactor: new BigNumber('100'),
       halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
-      otherCloseSlippageFactor: [ new BigNumber('100') ],
-      otherFundingRateCoefficient: [ _0 ], otherAMMMaxLeverage: [ _0 ],
+      otherAMMMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
@@ -338,13 +330,11 @@ describe('isAMMSafe', function () {
       position1: new BigNumber('-110'),
       otherIndex: [ new BigNumber('100') ],
       otherPosition: [ new BigNumber('-100') ],
-      otherHalfSpread: [ _0 ],
       openSlippageFactor: new BigNumber('100'),
       closeSlippageFactor: new BigNumber('100'),
       halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
-      otherCloseSlippageFactor: [ new BigNumber('100') ],
-      otherFundingRateCoefficient: [ _0 ], otherAMMMaxLeverage: [ _0 ],
+      otherAMMMaxLeverage: [ _0 ],
       poolMargin: _0, deltaMargin: _0, deltaPosition: _0,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
