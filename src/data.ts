@@ -223,8 +223,8 @@ export async function getPerpetualClearProgress(
   total: BigNumber
 }> {
   const progressInfo = await liquidityPool.callStatic.clearProgress(perpetualIndex)
-  const left = normalizeBigNumberish(progressInfo.left).shiftedBy(-DECIMALS)
-  const total = normalizeBigNumberish(progressInfo.total).shiftedBy(-DECIMALS)
+  const left = normalizeBigNumberish(progressInfo.left)
+  const total = normalizeBigNumberish(progressInfo.total)
   return { left, total }
 }
 
