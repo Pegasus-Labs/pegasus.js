@@ -54,7 +54,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
     index, position1, halfSpread, openSlippageFactor, closeSlippageFactor,
     fundingRateLimit, ammMaxLeverage,
     otherIndex, otherPosition, otherOpenSlippageFactor, otherAMMMaxLeverage,
-    cash, poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: _0,
+    cash, poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: null,
     valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
   }
   ret = initAMMTradingContextEagerEvaluation(ret)

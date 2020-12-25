@@ -250,7 +250,7 @@ describe('isAMMSafe', function () {
       halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
       otherAMMMaxLeverage: [ _0 ],
-      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: _0,
+      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: null,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
     expect(isAMMSafe(context, new BigNumber('1000') /* beta */)).toBeTruthy()
@@ -267,7 +267,7 @@ describe('isAMMSafe', function () {
       halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
       otherAMMMaxLeverage: [ _0 ],
-      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: _0,
+      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: null,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
     expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeTruthy()
@@ -284,7 +284,7 @@ describe('isAMMSafe', function () {
       halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
       otherAMMMaxLeverage: [ _0 ],
-      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: _0,
+      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: null,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
     expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeFalsy()
@@ -302,7 +302,7 @@ describe('isAMMSafe', function () {
       halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
       otherAMMMaxLeverage: [ _0 ],
-      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: _0,
+      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: null,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
     expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeFalsy()
@@ -319,7 +319,7 @@ describe('isAMMSafe', function () {
       halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
       otherAMMMaxLeverage: [ _0 ],
-      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: _0,
+      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: null,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
     expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeTruthy()
@@ -336,7 +336,7 @@ describe('isAMMSafe', function () {
       halfSpread: _0, fundingRateLimit: _0, ammMaxLeverage: _0,
       otherOpenSlippageFactor: [ new BigNumber('100') ],
       otherAMMMaxLeverage: [ _0 ],
-      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: _0,
+      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: null,
       valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
     })
     expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeFalsy()
@@ -490,61 +490,61 @@ describe('trade - success', function () {
       name: 'open 0 -> -141.421',
       amm: poolStorage0,
       amount: new BigNumber('-141.421'),
-      deltaMargin: new BigNumber('24166.1916701205') // trader buy, 24142.0496205 (1 + α)
+      deltaMargin: new BigNumber('24142.0496205')
     },
     {
       name: 'open -10 -> -141.067',
       amm: poolStorage1,
       amount: new BigNumber('-131.067'),
-      deltaMargin: new BigNumber('23029.6558937445') // trader buy, 23006.6492445 (1 + α)
+      deltaMargin: new BigNumber('23006.6492445')
     },
     {
       name: 'open 0 -> 100',
       amm: poolStorage0,
       amount: new BigNumber('100'),
-      deltaMargin: new BigNumber('-4995') // trader sell, -5000 (1 - α)
+      deltaMargin: new BigNumber('-5000')
     },
     {
       name: 'open 10 -> 100',
       amm: poolStorage4,
       amount: new BigNumber('90'),
-      deltaMargin: new BigNumber('-4045.95') // trader sell, -4050 (1 - α)
+      deltaMargin: new BigNumber('-4050')
     },
     {
       name: 'close -10 -> -9',
       amm: poolStorage1,
       amount: new BigNumber('1'),
-      deltaMargin: new BigNumber('-108.4371405102481132569021') // trader sell, -108.5456861964445578147169 (1 - α)
+      deltaMargin: new BigNumber('-108.54568619644455781471685713')
     },
     {
       name: 'close -10 -> 0',
       amm: poolStorage1,
       amount: new BigNumber('10'),
-      deltaMargin: new BigNumber('-1043.932318474990069773169') // trader sell, -1044.977295770760830603773 (1 - α)
+      deltaMargin: new BigNumber('-1044.97729577076083060377293227')
     },
     {
       name: 'close 10 -> 9',
       amm: poolStorage4,
       amount: new BigNumber('-1'),
-      deltaMargin: new BigNumber('91.5457681173589976274684') // trader buy, 91.4543138035554421852831 (1 + α)
+      deltaMargin: new BigNumber('91.45431380355544218528314287')
     },
     {
       name: 'close 10 -> 0',
       amm: poolStorage4,
       amount: new BigNumber('-10'),
-      deltaMargin: new BigNumber('955.977726933468408565623') // trader buy, 955.022704229239169396227 (1 + α)
+      deltaMargin: new BigNumber('955.02270422923916939622706773')
     },
     {
       name: 'close unsafe -10 -> -9',
       amm: poolStorage3,
       amount: new BigNumber('1'),
-      deltaMargin: new BigNumber('-99.9') // trader sell, 100 (1 - α)
+      deltaMargin: new BigNumber('-99.9')
     },
     {
       name: 'close unsafe 10 -> 9',
       amm: poolStorage6,
       amount: new BigNumber('-1'),
-      deltaMargin: new BigNumber('100.1') // trader buy, 100 (1 + α)
+      deltaMargin: new BigNumber('100.1')
     },
   ]
 
