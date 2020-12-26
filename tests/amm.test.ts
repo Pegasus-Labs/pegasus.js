@@ -379,7 +379,7 @@ describe('computeDeltaMargin', function () {
 })
 
 describe('safePosition', function () {
-  it('short: condition3 √, condition2 ×. condition 3 selected', function () {
+  it('short: condition3 √, condition2 ∞. condition 3 selected', function () {
     const beta = new BigNumber('100')
     const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage1, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
@@ -423,11 +423,11 @@ describe('safePosition', function () {
     expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('-69.2197544117782')))
   })
 
-  it('short: condition3 ×', function () {
+  it('short: condition3 ∞', function () {
     // TODO
   })
 
-  it('long: condition3 √, condition2 ×, condition 1 selected', function () {
+  it('long: condition3 √, condition2 ∞, condition 1 selected', function () {
     const beta = new BigNumber('100')
     const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage4, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
@@ -451,7 +451,7 @@ describe('safePosition', function () {
     expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('56.589168238006977708561982164')))
   })
 
-  it('long: condition3 √, condition2 ×, condition 3 selected', function () {
+  it('long: condition3 √, condition2 ∞, condition 3 selected', function () {
     const beta = new BigNumber('39.77')
     const context = computeAMMPoolMargin(initAMMTradingContext({
       ...poolStorage4,
@@ -470,7 +470,7 @@ describe('safePosition', function () {
     expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('176.61598769492977')))
   })
 
-  it('long: condition3 ×', function () {
+  it('long: condition3 ∞', function () {
     // TODO
   })
 })
@@ -487,46 +487,82 @@ describe('trade - success', function () {
 
   const successCases: Array<ComputeAccountCase> = [
     {
-      name: 'open 0 -> -141.421',
+      name: 'open 0 -> -141.421, near pos2 limit',
       amm: poolStorage0,
       amount: new BigNumber('-141.421'),
       deltaMargin: new BigNumber('24142.0496205')
     },
     {
-      name: 'open -10 -> -141.067',
+      name: 'open 0 -> -0.1, effected by spread',
+      amm: poolStorage0,
+      amount: new BigNumber('-0.1'),
+      deltaMargin: new BigNumber('10.01')
+    },
+    {
+      name: 'open -10 -> -141.067, near pos2 limit',
       amm: poolStorage1,
       amount: new BigNumber('-131.067'),
       deltaMargin: new BigNumber('23006.6492445')
     },
     {
-      name: 'open 0 -> 100',
+      name: 'open -10 -> -10.1, effected by spread',
+      amm: poolStorage1,
+      amount: new BigNumber('-0.1'),
+      deltaMargin: new BigNumber('11.011')
+    },
+    {
+      name: 'open 0 -> 100, near pos2 limit',
       amm: poolStorage0,
       amount: new BigNumber('100'),
       deltaMargin: new BigNumber('-5000')
     },
     {
-      name: 'open 10 -> 100',
+      name: 'open 0 -> 0.1, effected by spread',
+      amm: poolStorage0,
+      amount: new BigNumber('0.1'),
+      deltaMargin: new BigNumber('-9.99')
+    },
+    {
+      name: 'open 10 -> 100, near pos2 limit',
       amm: poolStorage4,
       amount: new BigNumber('90'),
       deltaMargin: new BigNumber('-4050')
     },
     {
-      name: 'close -10 -> -9',
+      name: 'open 10 -> 10.1, effected by spread',
+      amm: poolStorage4,
+      amount: new BigNumber('0.1'),
+      deltaMargin: new BigNumber('-8.991')
+    },
+    {
+      name: 'close -10 -> -9, normal',
       amm: poolStorage1,
       amount: new BigNumber('1'),
       deltaMargin: new BigNumber('-108.54568619644455781471685713')
     },
     {
-      name: 'close -10 -> 0',
+      name: 'close -10 -> -9.9, effected by spread',
+      amm: poolStorage1,
+      amount: new BigNumber('0.1'),
+      deltaMargin: new BigNumber('-10.88864636949980139546338319')
+    },
+    {
+      name: 'close -10 -> 0, to zero',
       amm: poolStorage1,
       amount: new BigNumber('10'),
       deltaMargin: new BigNumber('-1044.97729577076083060377293227')
     },
     {
-      name: 'close 10 -> 9',
+      name: 'close 10 -> 9, normal',
       amm: poolStorage4,
       amount: new BigNumber('-1'),
       deltaMargin: new BigNumber('91.45431380355544218528314287')
+    },
+    {
+      name: 'close 10 -> 9.9, effected by spread',
+      amm: poolStorage4,
+      amount: new BigNumber('-0.1'),
+      deltaMargin: new BigNumber('9.109554538669368171312465896')
     },
     {
       name: 'close 10 -> 0',
@@ -535,16 +571,28 @@ describe('trade - success', function () {
       deltaMargin: new BigNumber('955.02270422923916939622706773')
     },
     {
-      name: 'close unsafe -10 -> -9',
+      name: 'close unsafe -10 -> -9, normal',
       amm: poolStorage3,
       amount: new BigNumber('1'),
       deltaMargin: new BigNumber('-99.9')
     },
     {
-      name: 'close unsafe 10 -> 9',
+      name: 'close unsafe -10 -> -9.9, small',
+      amm: poolStorage3,
+      amount: new BigNumber('0.1'),
+      deltaMargin: new BigNumber('-9.99')
+    },
+    {
+      name: 'close unsafe 10 -> 9, normal',
       amm: poolStorage6,
       amount: new BigNumber('-1'),
       deltaMargin: new BigNumber('100.1')
+    },
+    {
+      name: 'close unsafe 10 -> 9, small',
+      amm: poolStorage6,
+      amount: new BigNumber('-0.1'),
+      deltaMargin: new BigNumber('10.01')
     },
   ]
 
