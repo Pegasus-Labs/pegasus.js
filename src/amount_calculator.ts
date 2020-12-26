@@ -24,6 +24,8 @@ import {
   computeAMMSafeLongPositionAmount,
   computeAMMInternalOpen,
   computeAMMInternalClose,
+  computeBestAskBidPriceIfSafe,
+  computeBestAskBidPriceIfUnsafe,
 } from './amm'
 import { BugError } from './types'
 import { DECIMALS, _0, _1, _2, _INF } from './constants'
@@ -256,14 +258,7 @@ export function computeAMMAmountWithPrice(
   if (!perpetual) {
     throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
   }
-  
-  // add spread
   let normalizedLimitPrice = normalizeBigNumberish(limitPrice)
-  if (isTraderBuy) {
-    normalizedLimitPrice = normalizedLimitPrice.div(_1.plus(perpetual.halfSpread))
-  } else {
-    normalizedLimitPrice = normalizedLimitPrice.div(_1.minus(perpetual.halfSpread))
-  }
   
   // get amount
   const isAMMBuy = !isTraderBuy
@@ -271,19 +266,19 @@ export function computeAMMAmountWithPrice(
   if (context.position1.lte(_0) && !isAMMBuy) {
     return computeAMMOpenAmountWithPrice(context, normalizedLimitPrice, isAMMBuy).negated()
   } else if (context.position1.lt(_0) && isAMMBuy) {
-    //                         ^^ 0 is another story
+    //                         ^^ == 0 is another story
     return computeAMMCloseAndOpenAmountWithPrice(context, normalizedLimitPrice, isAMMBuy).negated()
   } else if (context.position1.gte(_0) && isAMMBuy) {
     return computeAMMOpenAmountWithPrice(context, normalizedLimitPrice, isAMMBuy).negated()
   } else if (context.position1.gt(_0) && !isAMMBuy) {
-    //                          ^^ 0 is another story
+    //                         ^^ == 0 is another story
     return computeAMMCloseAndOpenAmountWithPrice(context, normalizedLimitPrice, isAMMBuy).negated()
   }
   throw new InvalidArgumentError('bug: unknown trading direction')
 }
 
-// // spread and fees are ignored. add them after calling this function
-// // the returned amount is the AMM's perspective
+// spread and fees are ignored. add them after calling this function
+// the returned amount is the AMM's perspective
 export function computeAMMOpenAmountWithPrice(
   context: AMMTradingContext,
   limitPrice: BigNumber,
@@ -302,7 +297,21 @@ export function computeAMMOpenAmountWithPrice(
   }
   context = computeAMMPoolMargin(context, context.openSlippageFactor)
 
-  // case 2: limit by safePos
+  // case 2: limit by spread
+  if (context.bestAskBidPrice === null) {
+    context.bestAskBidPrice = computeBestAskBidPriceIfSafe(context, context.openSlippageFactor, isAMMBuy)
+  }
+  if (isAMMBuy) {
+    if (limitPrice.gt(context.bestAskBidPrice)) {
+      return _0
+    }
+  } else {
+    if (limitPrice.lt(context.bestAskBidPrice)) {
+      return _0
+    }
+  }
+
+  // case 3: limit by safePos
   let safePos2: BigNumber
   if (isAMMBuy) {
     safePos2 = computeAMMSafeLongPositionAmount(context, context.openSlippageFactor)
@@ -354,8 +363,26 @@ export function computeAMMCloseAndOpenAmountWithPrice(
   if (context.position1.isZero()) {
     throw new InvalidArgumentError('close from 0 is not supported')
   }
+  
+  // case 1: limit by spread
+  const ammSafe = isAMMSafe(context, context.closeSlippageFactor)
+  if (ammSafe) {
+    context = computeAMMPoolMargin(context, context.closeSlippageFactor)
+    context.bestAskBidPrice = computeBestAskBidPriceIfSafe(context, context.closeSlippageFactor, isAMMBuy)
+  } else {
+    context.bestAskBidPrice = computeBestAskBidPriceIfUnsafe(context, isAMMBuy)
+  }
+  if (isAMMBuy) {
+    if (limitPrice.gt(context.bestAskBidPrice)) {
+      return _0
+    }
+  } else {
+    if (limitPrice.lt(context.bestAskBidPrice)) {
+      return _0
+    }
+  }
 
-  // case 1: limit by existing positions
+  // case 2: limit by existing positions
   const zeroContext = computeAMMInternalClose(context, context.position1.negated())
   if (zeroContext.deltaPosition.isZero()) {
     throw new BugError('close to zero failed')
@@ -367,12 +394,11 @@ export function computeAMMCloseAndOpenAmountWithPrice(
   ) {
     // close all
     context = zeroContext
-  } else if (!isAMMSafe(context, context.closeSlippageFactor)) {
-    // case 2: unsafe close, but price not matched
+  } else if (!ammSafe) {
+    // case 3: unsafe close, but price not matched
     return _0
   } else {
-    // case 3: close by price
-    context = computeAMMPoolMargin(context, context.closeSlippageFactor)
+    // case 4: close by price
     const amount = computeAMMInverseVWAP(context, limitPrice, context.closeSlippageFactor, isAMMBuy)
     if (
       (isAMMBuy && amount.gt(_0) /* short close success */)
@@ -384,7 +410,7 @@ export function computeAMMCloseAndOpenAmountWithPrice(
     }
   }
 
-  // case 4: open positions
+  // case 5: open positions
   if (
     (isAMMBuy && context.position1.gte(_0) /* cross 0 after short close */)
     || (!isAMMBuy && context.position1.lte(_0) /* cross 0 after long close */)
