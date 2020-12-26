@@ -604,7 +604,6 @@ describe('trade - success', function () {
 })
 
 describe('trade - cross 0', function () {
-
   interface ComputeAccountCase {
     name: string
     amm: LiquidityPoolStorage
@@ -616,46 +615,52 @@ describe('trade - cross 0', function () {
   }
 
   const successCases: Array<ComputeAccountCase> = [
-    // {
-    //   name: 'cross -10 -> 10, normal',
-    //   amm: poolStorage1,
-    //   amount: new BigNumber('20'),
-    //   halfSpread: new BigNumber('0.001'),
-    //   deltaMargin: new BigNumber('-1995.00252269213768548846967419')
-    // },
     {
-      name: '-10 -> 10, spread only effects closing', // m0 = 10014.6 after closing
+      name: '-10 -> 10, normal',
+      amm: poolStorage1,
+      amount: new BigNumber('20'),
+      halfSpread: new BigNumber('0.001'),
+      deltaMargin: new BigNumber('-1995.0025226921376854884718017300')
+    },
+    {
+      name: '-10 -> 10, spread effects closing and part of opening',
       amm: poolStorage1,
       amount: new BigNumber('20'),
       halfSpread: new BigNumber('0.05'),
-      deltaMargin: new BigNumber('-1985.52983586465501239241594197') // -1035.45686196444557814716857131 -950.072973900209434245247370659
+      deltaMargin: new BigNumber('-1995.0025226921376854884718017300')
     },
-    // {
-    //   name: '-10 -> 10, spread effects closing and part of opening', // m0 = 10014.6 after closing
-    //   amm: poolStorage1,
-    //   amount: new BigNumber('20'),
-    //   halfSpread: new BigNumber('0.05'),
-    //   deltaMargin: new BigNumber('-1985.52983586465501239241594197') // -1035.45686196444557814716857131 -950.072973900209434245247370659
-    // },
-    // {
-    //   name: '-10 -> 10, spread effects all',
-    //   amm: poolStorage4,
-    //   amount: new BigNumber('20'),
-    //   halfSpread: new BigNumber('0.002'),
-    //   deltaMargin: new BigNumber('2004.99747730786231451153032581')
-    // },
-    // {
-    //   name: 'cross 10 -> -10, normal',
-    //   amm: poolStorage4,
-    //   amount: new BigNumber('-20'),
-    //   halfSpread: new BigNumber('0.001'),
-    //   deltaMargin: new BigNumber('2004.99747730786231451153032581')
-    // },
+    {
+      name: '-10 -> 10, spread effects all',
+      amm: poolStorage1,
+      amount: new BigNumber('20'),
+      halfSpread: new BigNumber('0.10'),
+      deltaMargin: new BigNumber('-1961.918264774738990173582556163')
+    },
+    {
+      name: '10 -> -10, normal',
+      amm: poolStorage4,
+      amount: new BigNumber('-20'),
+      halfSpread: new BigNumber('0.001'),
+      deltaMargin: new BigNumber('2004.9974773078623145115281982700')
+    },
+    {
+      name: '10 -> -10, spread effects closing and part of opening',
+      amm: poolStorage4,
+      amount: new BigNumber('-20'),
+      halfSpread: new BigNumber('0.06'),
+      deltaMargin: new BigNumber('2004.9974773078623145115281982700')
+    },
+    {
+      name: '10 -> -10, spread effects all',
+      amm: poolStorage4,
+      amount: new BigNumber('-20'),
+      halfSpread: new BigNumber('0.15'),
+      deltaMargin: new BigNumber('2093.104439454500179222644511570')
+    },
   ]
 
   successCases.forEach(element => {
     it(element.name, function () {
-      console.log('>>>>>>>>>>>>>>>>>>>')
       const p1 = element.amm.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage
       const context = computeAMMInternalTrade({
         ...element.amm,
@@ -663,8 +668,7 @@ describe('trade - cross 0', function () {
           ...element.amm.perpetuals,
           [TEST_MARKET_INDEX0, { ...p1, halfSpread: element.halfSpread }],
         ]),
-      }, TEST_MARKET_INDEX0, new BigNumber(20))
-      console.log('>>>>>>>>>>>>>>>>>>>')
+      }, TEST_MARKET_INDEX0, element.amount)
       expect(context.deltaMargin).toApproximate(normalizeBigNumberish(element.deltaMargin))
     })
   })

@@ -700,16 +700,16 @@ describe('computeAMMPrice', function () {
     expect(tradingPrice).toApproximate(new BigNumber('6996.0111344722143116062591487')) // 16083.3368085704069965273648933 + 7003.49993518790023177329029757141254665377
   })
 
-  it(`amm holds short unsafe. trader sells cross 0. spread effects all`, function () {
-    const { tradingPrice } = computeAMMPrice(poolStorage3, TEST_MARKET_INDEX0, '-2.31')
-    // m0 = 18142.575 - 16083.9 when pos = 0
-    expect(tradingPrice).toApproximate(new BigNumber('6993')) // -16083.9 - 69.93
+  it(`amm holds short unsafe. trader sells cross 0. spread effects closing and part of opening`, function () {
+    const { tradingPrice } = computeAMMPrice(poolStorage3, TEST_MARKET_INDEX0, '-3.3')
+    // m0 = 18142.575 - 7000 * 2.3 when pos = 0
+    expect(tradingPrice).toApproximate(new BigNumber('6948.0750493565200491506747091'))
   })
 
-  it(`amm holds short unsafe. trader sells cross 0. spread effects closing and part of opening`, function () {
-    const { tradingPrice } = computeAMMPrice(poolStorage3, TEST_MARKET_INDEX0, '-2.4')
-    // m0 = 18142.575 - 16083.9 when pos = 0
-    expect(tradingPrice).toApproximate(new BigNumber('6992.58328222845600527847604')) // -16083.9
+  it(`amm holds short unsafe. trader sells cross 0. spread effects all`, function () {
+    const { tradingPrice } = computeAMMPrice(poolStorage3, TEST_MARKET_INDEX0, '-2.31')
+    // m0 = 18142.575 - 7000 * 2.3 when pos = 0
+    expect(tradingPrice).toApproximate(new BigNumber('6993'))
   })
 
   it(`buy too large`, function () {
