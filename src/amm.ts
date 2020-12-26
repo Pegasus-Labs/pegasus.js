@@ -110,6 +110,17 @@ export function computeAMMInternalTrade(p: LiquidityPoolStorage, perpetualIndex:
     context.deltaMargin = _0
   }
 
+  // spread. this is equivalent to:
+  // * if amount > 0, trader sell. use min(P_avg, P_bestBid)
+  // * if amount < 0, trader buy. use max(P_avg, P_bestAsk)
+  if (context.bestAskBidPrice === null) {
+    throw new BugError('bestAskBidPrice is null')
+  }
+  const valueAtBestAskBidPrice = context.bestAskBidPrice.times(amount).negated()
+  if (context.deltaMargin.lt(valueAtBestAskBidPrice)) {
+    context.deltaMargin = valueAtBestAskBidPrice
+  }
+
   return context
 }
 
@@ -171,17 +182,10 @@ export function computeAMMInternalClose(context: AMMTradingContext, amount: BigN
   if (isAMMSafe(ret, beta)) {
     ret = computeAMMPoolMargin(ret, beta)
     ret.bestAskBidPrice = computeBestAskBidPriceIfSafe(ret, beta, amount.gt(_0))
-    const spreadPos = computeSpreadPosition(ret, beta, position2)
-    const deltaMargin1 = ret.bestAskBidPrice.times(ret.position1.minus(spreadPos))
-    ret.position1 = spreadPos
-    const deltaMargin2 = computeDeltaMargin(ret, beta, position2)
-    if (!hasTheSameSign(deltaMargin1, deltaMargin2)) {
-      throw new BugError(`close error. ΔM1 and ΔM2 has different sign unexpectedly: ${deltaMargin1.toFixed()} vs ${deltaMargin2.toFixed()}`)
-    }
-    deltaMargin = deltaMargin1.plus(deltaMargin2)
+    deltaMargin = computeDeltaMargin(ret, beta, position2)
   } else {
     ret.bestAskBidPrice = computeBestAskBidPriceIfUnsafe(ret, amount.gt(_0))
-    deltaMargin = ret.bestAskBidPrice.times(amount).negated()
+    deltaMargin = ret.index.times(amount).negated()
   }
   if (hasTheSameSign(deltaMargin, amount)) {
     throw new BugError(`close error. ΔM and amount has the same sign unexpectedly: ${deltaMargin.toFixed()} vs ${amount.toFixed()}`)
@@ -224,14 +228,7 @@ export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNu
   if (ret.bestAskBidPrice === null) {
     ret.bestAskBidPrice = computeBestAskBidPriceIfSafe(ret, beta, amount.gt(_0))
   }
-  const spreadPos = computeSpreadPosition(ret, beta, position2)
-  const deltaMargin1 = ret.bestAskBidPrice.times(ret.position1.minus(spreadPos))
-  ret.position1 = spreadPos
-  const deltaMargin2 = computeDeltaMargin(ret, beta, position2)
-  if (!hasTheSameSign(deltaMargin1, deltaMargin2)) {
-    throw new BugError(`open error. ΔM1 and ΔM2 has different sign unexpectedly: ${deltaMargin1.toFixed()} vs ${deltaMargin2.toFixed()}`)
-  }
-  const deltaMargin = deltaMargin1.plus(deltaMargin2)
+  const deltaMargin = computeDeltaMargin(ret, beta, position2)
   if (hasTheSameSign(deltaMargin, amount)) {
     throw new BugError(`open error. ΔM and amount has the same sign unexpectedly: ${deltaMargin.toFixed()} vs ${amount.toFixed()}`)
   }
@@ -372,28 +369,6 @@ export function computeDeltaMargin(context: AMMTradingContext, beta: BigNumber, 
   let ret = position2.plus(context.position1).div(_2).div(context.poolMargin).times(beta)
   ret = _1.minus(ret)
   ret = context.position1.minus(position2).times(ret).times(context.index)
-  return ret.dp(DECIMALS)
-}
-
-// solve x where bestAskBidPrice == averagePrice(x)
-export function computeSpreadPosition(context: AMMTradingContext, beta: BigNumber, position2: BigNumber): BigNumber {
-  if (context.poolMargin.lte(_0)) {
-    throw new InsufficientLiquidityError(`AMM poolMargin <= 0`)
-  }
-  if (context.bestAskBidPrice === null) {
-    throw new Error('invalid bestAskBidPrice')
-  }
-  // ret = 2 M (P_i - P_best) / (β P_i) - N_1
-  let ret = context.index.minus(context.bestAskBidPrice).times(context.poolMargin).times(_2)
-  ret = ret.div(beta).div(context.index)
-  ret = ret.minus(context.position1)
-  if (position2.lt(context.position1)) {
-    ret = BigNumber.maximum(ret, position2)
-    ret = BigNumber.minimum(ret, context.position1)
-  } else {
-    ret = BigNumber.minimum(ret, position2)
-    ret = BigNumber.maximum(ret, context.position1)
-  }
   return ret.dp(DECIMALS)
 }
 

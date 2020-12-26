@@ -8,7 +8,6 @@ import {
   computeDeltaMargin,
   computeAMMSafeShortPositionAmount,
   computeAMMSafeLongPositionAmount,
-  computeSpreadPosition,
   computeBestAskBidPrice,
   computeFundingRate,
 } from '../src/amm'
@@ -604,6 +603,73 @@ describe('trade - success', function () {
   })
 })
 
+describe('trade - cross 0', function () {
+
+  interface ComputeAccountCase {
+    name: string
+    amm: LiquidityPoolStorage
+    amount: BigNumber
+    halfSpread: BigNumber
+
+    // expected
+    deltaMargin: BigNumber
+  }
+
+  const successCases: Array<ComputeAccountCase> = [
+    // {
+    //   name: 'cross -10 -> 10, normal',
+    //   amm: poolStorage1,
+    //   amount: new BigNumber('20'),
+    //   halfSpread: new BigNumber('0.001'),
+    //   deltaMargin: new BigNumber('-1995.00252269213768548846967419')
+    // },
+    {
+      name: '-10 -> 10, spread only effects closing', // m0 = 10014.6 after closing
+      amm: poolStorage1,
+      amount: new BigNumber('20'),
+      halfSpread: new BigNumber('0.05'),
+      deltaMargin: new BigNumber('-1985.52983586465501239241594197') // -1035.45686196444557814716857131 -950.072973900209434245247370659
+    },
+    // {
+    //   name: '-10 -> 10, spread effects closing and part of opening', // m0 = 10014.6 after closing
+    //   amm: poolStorage1,
+    //   amount: new BigNumber('20'),
+    //   halfSpread: new BigNumber('0.05'),
+    //   deltaMargin: new BigNumber('-1985.52983586465501239241594197') // -1035.45686196444557814716857131 -950.072973900209434245247370659
+    // },
+    // {
+    //   name: '-10 -> 10, spread effects all',
+    //   amm: poolStorage4,
+    //   amount: new BigNumber('20'),
+    //   halfSpread: new BigNumber('0.002'),
+    //   deltaMargin: new BigNumber('2004.99747730786231451153032581')
+    // },
+    // {
+    //   name: 'cross 10 -> -10, normal',
+    //   amm: poolStorage4,
+    //   amount: new BigNumber('-20'),
+    //   halfSpread: new BigNumber('0.001'),
+    //   deltaMargin: new BigNumber('2004.99747730786231451153032581')
+    // },
+  ]
+
+  successCases.forEach(element => {
+    it(element.name, function () {
+      console.log('>>>>>>>>>>>>>>>>>>>')
+      const p1 = element.amm.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage
+      const context = computeAMMInternalTrade({
+        ...element.amm,
+        perpetuals: new Map([
+          ...element.amm.perpetuals,
+          [TEST_MARKET_INDEX0, { ...p1, halfSpread: element.halfSpread }],
+        ]),
+      }, TEST_MARKET_INDEX0, new BigNumber(20))
+      console.log('>>>>>>>>>>>>>>>>>>>')
+      expect(context.deltaMargin).toApproximate(normalizeBigNumberish(element.deltaMargin))
+    })
+  })
+})
+
 describe('trade - fail', function () {
   interface ComputeAccountCase {
     name: string
@@ -718,101 +784,6 @@ describe('computeBestAskBidPrice', function () {
     it(element.name, function () {
       const price = computeBestAskBidPrice(element.amm, TEST_MARKET_INDEX0, element.isAMMBuy)
       expect(price).toApproximate(normalizeBigNumberish(element.price))
-    })
-  })
-})
-
-describe('computeSpreadPosition', function () {
-  interface ComputeAccountCase {
-    name: string
-    amm: LiquidityPoolStorage
-    position2: BigNumber
-    price: BigNumber
-
-    // expected
-    spreadPosition: BigNumber
-  }
-
-  const successCases: Array<ComputeAccountCase> = [
-    {
-      name: '-20 <- 0[here]',
-      amm: poolStorage0,
-      position2: new BigNumber('-20'),
-      price: new BigNumber('100'),
-      spreadPosition: new BigNumber('0'),
-    },
-    {
-      name: '-20 <- [here] <- 0',
-      amm: poolStorage0,
-      position2: new BigNumber('-20'),
-      price: new BigNumber('105'),
-      spreadPosition: new BigNumber('-10'),
-    },
-    {
-      name: '-20 <- [here] <- -10',
-      amm: poolStorage1,
-      position2: new BigNumber('-20'),
-      price: new BigNumber('113'),
-      spreadPosition: new BigNumber('-16'),
-    },
-    {
-      name: '-20[here] <- 0',
-      amm: poolStorage0,
-      position2: new BigNumber('-20'),
-      price: new BigNumber('110'),
-      spreadPosition: new BigNumber('-20'),
-    },
-    {
-      name: '[here] <- -20 <- 0',
-      amm: poolStorage0,
-      position2: new BigNumber('-20'),
-      price: new BigNumber('120'),
-      spreadPosition: new BigNumber('-20'),
-    },
-    {
-      name: '0[here] -> 20',
-      amm: poolStorage0,
-      position2: new BigNumber('20'),
-      price: new BigNumber('100'),
-      spreadPosition: new BigNumber('0'),
-    },
-    {
-      name: '0 -> [here] -> 20',
-      amm: poolStorage0,
-      position2: new BigNumber('20'),
-      price: new BigNumber('95'),
-      spreadPosition: new BigNumber('10'),
-    },
-    {
-      name: '10 -> [here] -> 20',
-      amm: poolStorage4,
-      position2: new BigNumber('20'),
-      price: new BigNumber('87'),
-      spreadPosition: new BigNumber('16'),
-    },
-    {
-      name: '0 -> 20[here]',
-      amm: poolStorage0,
-      position2: new BigNumber('20'),
-      price: new BigNumber('90'),
-      spreadPosition: new BigNumber('20'),
-    },
-    {
-      name: '0 -> 20 -> [here]',
-      amm: poolStorage0,
-      position2: new BigNumber('20'),
-      price: new BigNumber('85'),
-      spreadPosition: new BigNumber('20'),
-    },
-  ]
-
-  successCases.forEach(element => {
-    const beta = new BigNumber('100')
-    it(element.name, function () {
-      const context = computeAMMPoolMargin(initAMMTradingContext(element.amm, TEST_MARKET_INDEX0), beta)
-      context.bestAskBidPrice = element.price
-      const spreadPosition = computeSpreadPosition(context, beta, element.position2)
-      expect(spreadPosition).toApproximate(normalizeBigNumberish(element.spreadPosition))
     })
   })
 })
