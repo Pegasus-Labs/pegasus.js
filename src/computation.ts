@@ -190,7 +190,7 @@ export function computeTradeWithPrice(
   if (normalizedPrice.lte(_0) || normalizedAmount.isZero()) {
     throw new InvalidArgumentError(`bad price ${normalizedPrice.toFixed()} or amount ${normalizedAmount.toFixed()}`)
   }
-  let newAccount: AccountStorage = a
+  let newAccount: AccountStorage = { ...a }
   let { close, open } = splitAmount(newAccount.positionAmount, normalizedAmount)
   if (!close.isZero()) {
     newAccount = computeDecreasePosition(p, perpetualIndex, newAccount, normalizedPrice, close)

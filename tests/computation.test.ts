@@ -685,24 +685,31 @@ describe('computeTradeWithPrice', function () {
 })
 
 describe('computeAMMPrice', function () {
-  it(`holds long, sell`, function () {
+  it(`amm holds long. trader sells`, function () {
     const { tradingPrice } = computeAMMPrice(poolStorage1, TEST_MARKET_INDEX0, '-0.5')
-    expect(tradingPrice).toApproximate(new BigNumber('6975.16785')) // 6982.15 * (1 - α)
+    expect(tradingPrice).toApproximate(new BigNumber('6976.9161'))
   })
 
-  it(`holds long, buy without cross 0`, function () {
+  it(`amm holds long. trader buys without cross 0`, function () {
     const { tradingPrice } = computeAMMPrice(poolStorage1, TEST_MARKET_INDEX0, '0.5')
-    expect(tradingPrice).toApproximate(new BigNumber('6994.0723243958047929013153136')) // 6987.0852391566481447565587548 * (1 + α)
+    expect(tradingPrice).toApproximate(new BigNumber('6992.4957785904151334990367462'))
   })
 
-  it(`holds long, buy cross 0`, function () {
+  it(`amm holds long. trader buys cross 0. spread only effects closing`, function () {
     const { tradingPrice } = computeAMMPrice(poolStorage1, TEST_MARKET_INDEX0, '3.3')
-    expect(tradingPrice).toApproximate(new BigNumber('7003.0071456066865259178653894')) // 6996.0111344722143116062591303 * (1 + α)
+    expect(tradingPrice).toApproximate(new BigNumber('6996.0111344722143116062591487')) // 16083.3368085704069965273648933 + 7003.49993518790023177329029757141254665377
   })
 
-  it(`unsafe holds short, sell cross 0`, function () {
+  it(`amm holds short unsafe. trader sells cross 0. spread effects all`, function () {
+    const { tradingPrice } = computeAMMPrice(poolStorage3, TEST_MARKET_INDEX0, '-2.31')
+    // m0 = 18142.575 - 16083.9 when pos = 0
+    expect(tradingPrice).toApproximate(new BigNumber('6993')) // -16083.9 - 69.93
+  })
+
+  it(`amm holds short unsafe. trader sells cross 0. spread effects closing and part of opening`, function () {
     const { tradingPrice } = computeAMMPrice(poolStorage3, TEST_MARKET_INDEX0, '-2.4')
-    expect(tradingPrice).toApproximate(new BigNumber('6992.2867458967234985251459555')) // 6999.2860319286521506758217773 * (1 - α)
+    // m0 = 18142.575 - 16083.9 when pos = 0
+    expect(tradingPrice).toApproximate(new BigNumber('6992.58328222845600527847604')) // -16083.9
   })
 
   it(`buy too large`, function () {
@@ -721,61 +728,61 @@ describe('computeAMMPrice', function () {
 describe('computeAMMTrade', function () {
   it(`sell`, function () {
     const res = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '-0.5')
-    expect(res.tradingPrice).toApproximate(new BigNumber('6975.16785'))
-    expect(res.lpFee).toApproximate(new BigNumber('2.4413087475'))
-    expect(res.vaultFee).toApproximate(new BigNumber('0.697516785'))
-    expect(res.operatorFee).toApproximate(new BigNumber('0.3487583925'))
+    expect(res.tradingPrice).toApproximate(new BigNumber('6976.9161')) // see computeAMMPrice's test case
+    expect(res.lpFee).toApproximate(new BigNumber('2.441920635'))
+    expect(res.vaultFee).toApproximate(new BigNumber('0.697691610'))
+    expect(res.operatorFee).toApproximate(new BigNumber('0.348845805'))
 
-    // 7698.86 - 6975.16785 * (-0.5) + 9.9059375 * (-0.5) - 6975.16785 * 0.5 * 0.001
-    expect(res.trader.cashBalance).toApproximate(new BigNumber('11178.003372325'))
-    // 83941.29865625 - 6975.16785 * 0.5 + 9.9059375 * (0.5) + 2.4413087475
-    expect(res.newPool.poolCashBalance).toApproximate(new BigNumber('80461.1090087475'))
+    // 7698.86 - 6976.9161 * (-0.5) + 9.9059375 * (-0.5) - 6976.9161 * 0.5 * 0.001
+    expect(res.trader.cashBalance).toApproximate(new BigNumber('11178.8766232'))
+    // 83941.29865625 - 6976.9161 * 0.5 + 9.9059375 * (0.5) + 2.441920635
+    expect(res.newPool.poolCashBalance).toApproximate(new BigNumber('80460.235495635'))
     expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('2.8'))
   })
 
   it(`buy without cross 0`, function () {
     const res = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '0.5')
-    expect(res.tradingPrice).toApproximate(new BigNumber('6994.0723243958047929013153136')) // see computeAMMPrice's test case
-    expect(res.lpFee).toApproximate(new BigNumber('2.44792531353853167751546035976'))
-    expect(res.vaultFee).toApproximate(new BigNumber('0.69940723243958047929013153136'))
-    expect(res.operatorFee).toApproximate(new BigNumber('0.34970361621979023964506576568'))
+    expect(res.tradingPrice).toApproximate(new BigNumber('6992.4957785904151334990367462')) // see computeAMMPrice's test case
+    expect(res.lpFee).toApproximate(new BigNumber('2.44737352250664529672466286117'))
+    expect(res.vaultFee).toApproximate(new BigNumber('0.69924957785904151334990367462'))
+    expect(res.operatorFee).toApproximate(new BigNumber('0.34962478892952075667495183731'))
 
-    // 7698.86 - 6994.0723243958047929013153136 * (0.5) + 9.9059375 * (-0.5) - 6994.0723243958047929013153136 * 0.5 * 0.001
-    expect(res.trader.cashBalance).toApproximate(new BigNumber('4203.2797703898997011528916855'))
-    // 83941.29865625 - 6994.0723243958047929013153136 * (-0.5) + 9.9059375 * (-0.5) + 2.44792531353853167751546035976
-    expect(res.newPool.poolCashBalance).toApproximate(new BigNumber('87435.8297750114409281281731172'))
+    // 7698.86 - 6992.4957785904151334990367462 * (0.5) + 9.9059375 * (0.5) - 6992.4957785904151334990367462 * 0.5 * 0.001
+    expect(res.trader.cashBalance).toApproximate(new BigNumber('4204.0688315654972256837321085'))
+    // 83941.29865625 - 6992.4957785904151334990367462 * (-0.5) + 9.9059375 * (-0.5) + 2.44737352250664529672466286117
+    expect(res.newPool.poolCashBalance).toApproximate(new BigNumber('87435.0409503177142120462430360'))
     expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('1.8'))
   })
 
   it(`buy cross 0`, function () {
     const res = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '3.3')
-    expect(res.tradingPrice).toApproximate(new BigNumber('7003.0071456066865259178653894')) // see computeAMMPrice's test case
-    expect(res.lpFee).toApproximate(new BigNumber('16.1769465063514458748702690495'))
-    expect(res.vaultFee).toApproximate(new BigNumber('4.6219847161004131071057911570'))
-    expect(res.operatorFee).toApproximate(new BigNumber('2.31099235805020655355289557850'))
+    expect(res.tradingPrice).toApproximate(new BigNumber('6996.0111344722143116062591487')) // see computeAMMPrice's test case
+    expect(res.lpFee).toApproximate(new BigNumber('16.1607857206308150598104586335'))
+    expect(res.vaultFee).toApproximate(new BigNumber('4.6173673487516614456601310381'))
+    expect(res.operatorFee).toApproximate(new BigNumber('2.30868367437583072283006551907'))
 
-    // 7698.86 - 7003.0071456066865259178653894 * (3.3) + 9.9059375 * (3.3) - 7003.0071456066865259178653894 * 3.3 * 0.001
-    expect(res.trader.cashBalance).toApproximate(new BigNumber('-15401.4839103325676010644847408'))
-    // 83941.29865625 - 7003.0071456066865259178653894 * (-3.3) + 9.9059375 * (-3.3) + 16.1769465063514458748702690495
-    expect(res.newPool.poolCashBalance).toApproximate(new BigNumber('107034.709589508416981403826054'))
+    // 7698.86 - 6996.0111344722143116062591487 * (3.3) + 9.9059375 * (3.3) - 6996.0111344722143116062591487 * 3.3 * 0.001
+    expect(res.trader.cashBalance).toApproximate(new BigNumber('-15378.3739867520655355289558459'))
+    // 83941.29865625 - 6996.0111344722143116062591487 * (-3.3) + 9.9059375 * (-3.3) + 16.1607857206308150598104586335
+    expect(res.newPool.poolCashBalance).toApproximate(new BigNumber('107011.606591978938043360465649'))
     expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('-1'))
   })
 
   it(`(saw) buy+sell`, function () {
     const res1 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '0.5')
-    expect(res1.tradingPrice).toApproximate(new BigNumber('6994.072324395804792901315313'))
-    expect(res1.newPool.poolCashBalance).toApproximate(new BigNumber('87435.8297750114409281281731172')) // see the above case
+    expect(res1.tradingPrice).toApproximate(new BigNumber('6992.4957785904151334990367462'))
+    expect(res1.newPool.poolCashBalance).toApproximate(new BigNumber('87435.0409503177142120462430360')) // see the above case
     expect(res1.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('1.8'))
 
-    // availableCash = 87435.8297750114409281281731172 - 9.9059375 * (1.8) = 87417.9990875114409281281731172
-    // m0 = 100006.659842687308144102615419, price = 6985.6509556237825881158066171 * (1 - α)
+    // availableCash = 87435.0409503177142120462430360 - 9.9059375 * (1.8) = 87417.2102628177142120462430360
+    // m0 = 100005.870928541926673731114517
     const res2 = computeAMMTrade(res1.newPool, TEST_MARKET_INDEX0, res1.trader, '-0.5')
-    expect(res2.tradingPrice).toApproximate(new BigNumber('6978.6653046681588055276908105'))
+    expect(res2.tradingPrice).toApproximate(new BigNumber('6980.4133389538758324702073441'))
 
-    // 4203.2797703898997011528916855 - 6978.6653046681588055276908105 * (-0.5) + 9.9059375 * (-0.5) - 6978.6653046681588055276908105 * 0.5 * 0.001
-    expect(res2.trader.cashBalance).toApproximate(new BigNumber('7684.1701213216450245139732453'))
-    // 87435.8297750114409281281731172 - 6978.6653046681588055276908105 * (0.5) + 9.9059375 * (0.5) + 6978.6653046681588055276908105 * 0.5 * 0.0007
-    expect(res2.newPool.poolCashBalance).toApproximate(new BigNumber('83953.8926242839953809462624037'))
+    // 4204.0688315654972256837321085 - 6980.4133389538758324702073441 * (-0.5) + 9.9059375 * (-0.5) - 6980.4133389538758324702073441 * 0.5 * 0.001
+    expect(res2.trader.cashBalance).toApproximate(new BigNumber('7685.8323256229582040026006769'))
+    // 87435.0409503177142120462430360 - 6980.4133389538758324702073441 * (0.5) + 9.9059375 * (0.5) + 6980.4133389538758324702073441 * 0.5 * 0.0007
+    expect(res2.newPool.poolCashBalance).toApproximate(new BigNumber('83952.2303942594101523525039365'))
     expect(res2.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('2.3'))
   })
 })
