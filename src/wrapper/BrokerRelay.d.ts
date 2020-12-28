@@ -24,7 +24,7 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface BrokerRelayInterface extends ethers.utils.Interface {
   functions: {
     "balanceOf(address)": FunctionFragment;
-    "batchTrade(tuple[],int256[],bytes[],uint256[])": FunctionFragment;
+    "batchTrade(bytes[],int256[],uint256[])": FunctionFragment;
     "cancelOrder(tuple)": FunctionFragment;
     "deposit()": FunctionFragment;
     "withdraw(uint256)": FunctionFragment;
@@ -33,28 +33,7 @@ interface BrokerRelayInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(
     functionFragment: "batchTrade",
-    values: [
-      {
-        trader: string;
-        broker: string;
-        relayer: string;
-        referrer: string;
-        liquidityPool: string;
-        minTradeAmount: BigNumberish;
-        amount: BigNumberish;
-        limitPrice: BigNumberish;
-        triggerPrice: BigNumberish;
-        chainID: BigNumberish;
-        expiredAt: BigNumberish;
-        perpetualIndex: BigNumberish;
-        brokerFeeLimit: BigNumberish;
-        flags: BigNumberish;
-        salt: BigNumberish;
-      }[],
-      BigNumberish[],
-      BytesLike[],
-      BigNumberish[]
-    ]
+    values: [BytesLike[], BigNumberish[], BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "cancelOrder",
@@ -141,49 +120,15 @@ export class BrokerRelay extends Contract {
     }>;
 
     batchTrade(
-      orders: {
-        trader: string;
-        broker: string;
-        relayer: string;
-        referrer: string;
-        liquidityPool: string;
-        minTradeAmount: BigNumberish;
-        amount: BigNumberish;
-        limitPrice: BigNumberish;
-        triggerPrice: BigNumberish;
-        chainID: BigNumberish;
-        expiredAt: BigNumberish;
-        perpetualIndex: BigNumberish;
-        brokerFeeLimit: BigNumberish;
-        flags: BigNumberish;
-        salt: BigNumberish;
-      }[],
+      compressedOrders: BytesLike[],
       amounts: BigNumberish[],
-      signatures: BytesLike[],
       gasRewards: BigNumberish[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "batchTrade(tuple[],int256[],bytes[],uint256[])"(
-      orders: {
-        trader: string;
-        broker: string;
-        relayer: string;
-        referrer: string;
-        liquidityPool: string;
-        minTradeAmount: BigNumberish;
-        amount: BigNumberish;
-        limitPrice: BigNumberish;
-        triggerPrice: BigNumberish;
-        chainID: BigNumberish;
-        expiredAt: BigNumberish;
-        perpetualIndex: BigNumberish;
-        brokerFeeLimit: BigNumberish;
-        flags: BigNumberish;
-        salt: BigNumberish;
-      }[],
+    "batchTrade(bytes[],int256[],uint256[])"(
+      compressedOrders: BytesLike[],
       amounts: BigNumberish[],
-      signatures: BytesLike[],
       gasRewards: BigNumberish[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -253,49 +198,15 @@ export class BrokerRelay extends Contract {
   ): Promise<BigNumber>;
 
   batchTrade(
-    orders: {
-      trader: string;
-      broker: string;
-      relayer: string;
-      referrer: string;
-      liquidityPool: string;
-      minTradeAmount: BigNumberish;
-      amount: BigNumberish;
-      limitPrice: BigNumberish;
-      triggerPrice: BigNumberish;
-      chainID: BigNumberish;
-      expiredAt: BigNumberish;
-      perpetualIndex: BigNumberish;
-      brokerFeeLimit: BigNumberish;
-      flags: BigNumberish;
-      salt: BigNumberish;
-    }[],
+    compressedOrders: BytesLike[],
     amounts: BigNumberish[],
-    signatures: BytesLike[],
     gasRewards: BigNumberish[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "batchTrade(tuple[],int256[],bytes[],uint256[])"(
-    orders: {
-      trader: string;
-      broker: string;
-      relayer: string;
-      referrer: string;
-      liquidityPool: string;
-      minTradeAmount: BigNumberish;
-      amount: BigNumberish;
-      limitPrice: BigNumberish;
-      triggerPrice: BigNumberish;
-      chainID: BigNumberish;
-      expiredAt: BigNumberish;
-      perpetualIndex: BigNumberish;
-      brokerFeeLimit: BigNumberish;
-      flags: BigNumberish;
-      salt: BigNumberish;
-    }[],
+  "batchTrade(bytes[],int256[],uint256[])"(
+    compressedOrders: BytesLike[],
     amounts: BigNumberish[],
-    signatures: BytesLike[],
     gasRewards: BigNumberish[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -365,49 +276,15 @@ export class BrokerRelay extends Contract {
     ): Promise<BigNumber>;
 
     batchTrade(
-      orders: {
-        trader: string;
-        broker: string;
-        relayer: string;
-        referrer: string;
-        liquidityPool: string;
-        minTradeAmount: BigNumberish;
-        amount: BigNumberish;
-        limitPrice: BigNumberish;
-        triggerPrice: BigNumberish;
-        chainID: BigNumberish;
-        expiredAt: BigNumberish;
-        perpetualIndex: BigNumberish;
-        brokerFeeLimit: BigNumberish;
-        flags: BigNumberish;
-        salt: BigNumberish;
-      }[],
+      compressedOrders: BytesLike[],
       amounts: BigNumberish[],
-      signatures: BytesLike[],
       gasRewards: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "batchTrade(tuple[],int256[],bytes[],uint256[])"(
-      orders: {
-        trader: string;
-        broker: string;
-        relayer: string;
-        referrer: string;
-        liquidityPool: string;
-        minTradeAmount: BigNumberish;
-        amount: BigNumberish;
-        limitPrice: BigNumberish;
-        triggerPrice: BigNumberish;
-        chainID: BigNumberish;
-        expiredAt: BigNumberish;
-        perpetualIndex: BigNumberish;
-        brokerFeeLimit: BigNumberish;
-        flags: BigNumberish;
-        salt: BigNumberish;
-      }[],
+    "batchTrade(bytes[],int256[],uint256[])"(
+      compressedOrders: BytesLike[],
       amounts: BigNumberish[],
-      signatures: BytesLike[],
       gasRewards: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<void>;
@@ -501,49 +378,15 @@ export class BrokerRelay extends Contract {
     ): Promise<BigNumber>;
 
     batchTrade(
-      orders: {
-        trader: string;
-        broker: string;
-        relayer: string;
-        referrer: string;
-        liquidityPool: string;
-        minTradeAmount: BigNumberish;
-        amount: BigNumberish;
-        limitPrice: BigNumberish;
-        triggerPrice: BigNumberish;
-        chainID: BigNumberish;
-        expiredAt: BigNumberish;
-        perpetualIndex: BigNumberish;
-        brokerFeeLimit: BigNumberish;
-        flags: BigNumberish;
-        salt: BigNumberish;
-      }[],
+      compressedOrders: BytesLike[],
       amounts: BigNumberish[],
-      signatures: BytesLike[],
       gasRewards: BigNumberish[],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "batchTrade(tuple[],int256[],bytes[],uint256[])"(
-      orders: {
-        trader: string;
-        broker: string;
-        relayer: string;
-        referrer: string;
-        liquidityPool: string;
-        minTradeAmount: BigNumberish;
-        amount: BigNumberish;
-        limitPrice: BigNumberish;
-        triggerPrice: BigNumberish;
-        chainID: BigNumberish;
-        expiredAt: BigNumberish;
-        perpetualIndex: BigNumberish;
-        brokerFeeLimit: BigNumberish;
-        flags: BigNumberish;
-        salt: BigNumberish;
-      }[],
+    "batchTrade(bytes[],int256[],uint256[])"(
+      compressedOrders: BytesLike[],
       amounts: BigNumberish[],
-      signatures: BytesLike[],
       gasRewards: BigNumberish[],
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -614,49 +457,15 @@ export class BrokerRelay extends Contract {
     ): Promise<PopulatedTransaction>;
 
     batchTrade(
-      orders: {
-        trader: string;
-        broker: string;
-        relayer: string;
-        referrer: string;
-        liquidityPool: string;
-        minTradeAmount: BigNumberish;
-        amount: BigNumberish;
-        limitPrice: BigNumberish;
-        triggerPrice: BigNumberish;
-        chainID: BigNumberish;
-        expiredAt: BigNumberish;
-        perpetualIndex: BigNumberish;
-        brokerFeeLimit: BigNumberish;
-        flags: BigNumberish;
-        salt: BigNumberish;
-      }[],
+      compressedOrders: BytesLike[],
       amounts: BigNumberish[],
-      signatures: BytesLike[],
       gasRewards: BigNumberish[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "batchTrade(tuple[],int256[],bytes[],uint256[])"(
-      orders: {
-        trader: string;
-        broker: string;
-        relayer: string;
-        referrer: string;
-        liquidityPool: string;
-        minTradeAmount: BigNumberish;
-        amount: BigNumberish;
-        limitPrice: BigNumberish;
-        triggerPrice: BigNumberish;
-        chainID: BigNumberish;
-        expiredAt: BigNumberish;
-        perpetualIndex: BigNumberish;
-        brokerFeeLimit: BigNumberish;
-        flags: BigNumberish;
-        salt: BigNumberish;
-      }[],
+    "batchTrade(bytes[],int256[],uint256[])"(
+      compressedOrders: BytesLike[],
       amounts: BigNumberish[],
-      signatures: BytesLike[],
       gasRewards: BigNumberish[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

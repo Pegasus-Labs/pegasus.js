@@ -23,6 +23,7 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface SymbolServiceInterface extends ethers.utils.Interface {
   functions: {
     "addWhitelistedFactory(address)": FunctionFragment;
+    "allocateSymbol(address,uint256)": FunctionFragment;
     "assignReservedSymbol(address,uint256,uint256)": FunctionFragment;
     "getPerpetualUID(uint256)": FunctionFragment;
     "getSymbols(address,uint256)": FunctionFragment;
@@ -30,13 +31,16 @@ interface SymbolServiceInterface extends ethers.utils.Interface {
     "owner()": FunctionFragment;
     "removeWhitelistedFactory(address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "requestSymbol(address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "addWhitelistedFactory",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "allocateSymbol",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "assignReservedSymbol",
@@ -64,16 +68,16 @@ interface SymbolServiceInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "requestSymbol",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
 
   decodeFunctionResult(
     functionFragment: "addWhitelistedFactory",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "allocateSymbol",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -99,23 +103,19 @@ interface SymbolServiceInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "requestSymbol",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
 
   events: {
     "AddWhitelistedFactory(address)": EventFragment;
-    "AssignSymbol(address,uint256,uint256)": EventFragment;
+    "AllocateSymbol(address,uint256,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "RemoveWhitelistedFactory(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "AddWhitelistedFactory"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "AssignSymbol"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "AllocateSymbol"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveWhitelistedFactory"): EventFragment;
 }
@@ -141,6 +141,18 @@ export class SymbolService extends Contract {
 
     "addWhitelistedFactory(address)"(
       factory: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    allocateSymbol(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "allocateSymbol(address,uint256)"(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -236,18 +248,6 @@ export class SymbolService extends Contract {
 
     "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-    requestSymbol(
-      liquidityPool: string,
-      perpetualIndex: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "requestSymbol(address,uint256)"(
-      liquidityPool: string,
-      perpetualIndex: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     transferOwnership(
       newOwner: string,
       overrides?: Overrides
@@ -266,6 +266,18 @@ export class SymbolService extends Contract {
 
   "addWhitelistedFactory(address)"(
     factory: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  allocateSymbol(
+    liquidityPool: string,
+    perpetualIndex: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "allocateSymbol(address,uint256)"(
+    liquidityPool: string,
+    perpetualIndex: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -343,18 +355,6 @@ export class SymbolService extends Contract {
 
   "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-  requestSymbol(
-    liquidityPool: string,
-    perpetualIndex: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "requestSymbol(address,uint256)"(
-    liquidityPool: string,
-    perpetualIndex: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   transferOwnership(
     newOwner: string,
     overrides?: Overrides
@@ -375,6 +375,18 @@ export class SymbolService extends Contract {
       factory: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    allocateSymbol(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "allocateSymbol(address,uint256)"(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     assignReservedSymbol(
       liquidityPool: string,
@@ -450,18 +462,6 @@ export class SymbolService extends Contract {
 
     "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
 
-    requestSymbol(
-      liquidityPool: string,
-      perpetualIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "requestSymbol(address,uint256)"(
-      liquidityPool: string,
-      perpetualIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     transferOwnership(
       newOwner: string,
       overrides?: CallOverrides
@@ -476,7 +476,7 @@ export class SymbolService extends Contract {
   filters: {
     AddWhitelistedFactory(factory: null): EventFilter;
 
-    AssignSymbol(
+    AllocateSymbol(
       liquidityPool: null,
       perpetualIndex: null,
       symbol: null
@@ -498,6 +498,18 @@ export class SymbolService extends Contract {
 
     "addWhitelistedFactory(address)"(
       factory: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    allocateSymbol(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "allocateSymbol(address,uint256)"(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -565,18 +577,6 @@ export class SymbolService extends Contract {
 
     "renounceOwnership()"(overrides?: Overrides): Promise<BigNumber>;
 
-    requestSymbol(
-      liquidityPool: string,
-      perpetualIndex: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "requestSymbol(address,uint256)"(
-      liquidityPool: string,
-      perpetualIndex: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     transferOwnership(
       newOwner: string,
       overrides?: Overrides
@@ -596,6 +596,18 @@ export class SymbolService extends Contract {
 
     "addWhitelistedFactory(address)"(
       factory: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    allocateSymbol(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "allocateSymbol(address,uint256)"(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -662,18 +674,6 @@ export class SymbolService extends Contract {
     renounceOwnership(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "renounceOwnership()"(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    requestSymbol(
-      liquidityPool: string,
-      perpetualIndex: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "requestSymbol(address,uint256)"(
-      liquidityPool: string,
-      perpetualIndex: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: string,

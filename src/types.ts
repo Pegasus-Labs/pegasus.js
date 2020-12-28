@@ -56,10 +56,6 @@ export interface LiquidityPoolStorage {
   shareToken: string
 
   vaultFeeRate: BigNumber
-  insuranceFundCap: BigNumber
-  insuranceFund: BigNumber
-  donatedInsuranceFund: BigNumber
-  totalClaimableFee: BigNumber
   poolCashBalance: BigNumber
   fundingTime: number
   
@@ -84,6 +80,9 @@ export interface PerpetualStorage {
   liquidationPenaltyRate: BigNumber
   keeperGasReward: BigNumber
   insuranceFundRate: BigNumber
+  insuranceFundCap: BigNumber
+  insuranceFund: BigNumber
+  donatedInsuranceFund: BigNumber
   
   halfSpread: BigNumber // α
   openSlippageFactor: BigNumber // β1

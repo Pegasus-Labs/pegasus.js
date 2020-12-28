@@ -23,6 +23,7 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface IOracleInterface extends ethers.utils.Interface {
   functions: {
     "collateral()": FunctionFragment;
+    "isMarketClosed()": FunctionFragment;
     "priceTWAPLong()": FunctionFragment;
     "priceTWAPShort()": FunctionFragment;
     "underlyingAsset()": FunctionFragment;
@@ -30,6 +31,10 @@ interface IOracleInterface extends ethers.utils.Interface {
 
   encodeFunctionData(
     functionFragment: "collateral",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isMarketClosed",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -46,6 +51,10 @@ interface IOracleInterface extends ethers.utils.Interface {
   ): string;
 
   decodeFunctionResult(functionFragment: "collateral", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "isMarketClosed",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "priceTWAPLong",
     data: BytesLike
@@ -88,6 +97,10 @@ export class IOracle extends Contract {
       0: string;
     }>;
 
+    isMarketClosed(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "isMarketClosed()"(overrides?: Overrides): Promise<ContractTransaction>;
+
     priceTWAPLong(overrides?: Overrides): Promise<ContractTransaction>;
 
     "priceTWAPLong()"(overrides?: Overrides): Promise<ContractTransaction>;
@@ -113,6 +126,10 @@ export class IOracle extends Contract {
 
   "collateral()"(overrides?: CallOverrides): Promise<string>;
 
+  isMarketClosed(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "isMarketClosed()"(overrides?: Overrides): Promise<ContractTransaction>;
+
   priceTWAPLong(overrides?: Overrides): Promise<ContractTransaction>;
 
   "priceTWAPLong()"(overrides?: Overrides): Promise<ContractTransaction>;
@@ -129,6 +146,10 @@ export class IOracle extends Contract {
     collateral(overrides?: CallOverrides): Promise<string>;
 
     "collateral()"(overrides?: CallOverrides): Promise<string>;
+
+    isMarketClosed(overrides?: CallOverrides): Promise<boolean>;
+
+    "isMarketClosed()"(overrides?: CallOverrides): Promise<boolean>;
 
     priceTWAPLong(
       overrides?: CallOverrides
@@ -178,6 +199,10 @@ export class IOracle extends Contract {
 
     "collateral()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    isMarketClosed(overrides?: Overrides): Promise<BigNumber>;
+
+    "isMarketClosed()"(overrides?: Overrides): Promise<BigNumber>;
+
     priceTWAPLong(overrides?: Overrides): Promise<BigNumber>;
 
     "priceTWAPLong()"(overrides?: Overrides): Promise<BigNumber>;
@@ -195,6 +220,10 @@ export class IOracle extends Contract {
     collateral(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "collateral()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    isMarketClosed(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "isMarketClosed()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     priceTWAPLong(overrides?: Overrides): Promise<PopulatedTransaction>;
 

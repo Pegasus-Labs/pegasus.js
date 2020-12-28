@@ -68,17 +68,12 @@ export class Reader extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       marginAccount: {
-        cashBalance: BigNumber;
-        positionAmount: BigNumber;
+        cash: BigNumber;
+        position: BigNumber;
         0: BigNumber;
         1: BigNumber;
       };
-      0: {
-        cashBalance: BigNumber;
-        positionAmount: BigNumber;
-        0: BigNumber;
-        1: BigNumber;
-      };
+      0: { cash: BigNumber; position: BigNumber; 0: BigNumber; 1: BigNumber };
     }>;
 
     "getAccountStorage(address,uint256,address)"(
@@ -88,17 +83,12 @@ export class Reader extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       marginAccount: {
-        cashBalance: BigNumber;
-        positionAmount: BigNumber;
+        cash: BigNumber;
+        position: BigNumber;
         0: BigNumber;
         1: BigNumber;
       };
-      0: {
-        cashBalance: BigNumber;
-        positionAmount: BigNumber;
-        0: BigNumber;
-        1: BigNumber;
-      };
+      0: { cash: BigNumber; position: BigNumber; 0: BigNumber; 1: BigNumber };
     }>;
 
     getLiquidityPoolStorage(
@@ -118,8 +108,8 @@ export class Reader extends Contract {
     account: string,
     overrides?: CallOverrides
   ): Promise<{
-    cashBalance: BigNumber;
-    positionAmount: BigNumber;
+    cash: BigNumber;
+    position: BigNumber;
     0: BigNumber;
     1: BigNumber;
   }>;
@@ -130,8 +120,8 @@ export class Reader extends Contract {
     account: string,
     overrides?: CallOverrides
   ): Promise<{
-    cashBalance: BigNumber;
-    positionAmount: BigNumber;
+    cash: BigNumber;
+    position: BigNumber;
     0: BigNumber;
     1: BigNumber;
   }>;
@@ -153,8 +143,8 @@ export class Reader extends Contract {
       account: string,
       overrides?: CallOverrides
     ): Promise<{
-      cashBalance: BigNumber;
-      positionAmount: BigNumber;
+      cash: BigNumber;
+      position: BigNumber;
       0: BigNumber;
       1: BigNumber;
     }>;
@@ -165,8 +155,8 @@ export class Reader extends Contract {
       account: string,
       overrides?: CallOverrides
     ): Promise<{
-      cashBalance: BigNumber;
-      positionAmount: BigNumber;
+      cash: BigNumber;
+      position: BigNumber;
       0: BigNumber;
       1: BigNumber;
     }>;
@@ -176,16 +166,12 @@ export class Reader extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       operator: string;
-      collateral: string;
+      collateralToken: string;
       vault: string;
       governor: string;
       shareToken: string;
       vaultFeeRate: BigNumber;
-      insuranceFundCap: BigNumber;
-      insuranceFund: BigNumber;
-      donatedInsuranceFund: BigNumber;
-      totalClaimableFee: BigNumber;
-      poolCashBalance: BigNumber;
+      poolCash: BigNumber;
       fundingTime: BigNumber;
       perpetualStorages: {
         symbol: BigNumber;
@@ -203,6 +189,9 @@ export class Reader extends Contract {
         liquidationPenaltyRate: BigNumber;
         keeperGasReward: BigNumber;
         insuranceFundRate: BigNumber;
+        insuranceFundCap: BigNumber;
+        insuranceFund: BigNumber;
+        donatedInsuranceFund: BigNumber;
         halfSpread: BigNumber;
         openSlippageFactor: BigNumber;
         closeSlippageFactor: BigNumber;
@@ -232,6 +221,9 @@ export class Reader extends Contract {
         19: BigNumber;
         20: BigNumber;
         21: BigNumber;
+        22: BigNumber;
+        23: BigNumber;
+        24: BigNumber;
       }[];
       0: string;
       1: string;
@@ -241,11 +233,7 @@ export class Reader extends Contract {
       5: BigNumber;
       6: BigNumber;
       7: BigNumber;
-      8: BigNumber;
-      9: BigNumber;
-      10: BigNumber;
-      11: BigNumber;
-      12: {
+      8: {
         symbol: BigNumber;
         underlyingAsset: string;
         state: number;
@@ -261,6 +249,9 @@ export class Reader extends Contract {
         liquidationPenaltyRate: BigNumber;
         keeperGasReward: BigNumber;
         insuranceFundRate: BigNumber;
+        insuranceFundCap: BigNumber;
+        insuranceFund: BigNumber;
+        donatedInsuranceFund: BigNumber;
         halfSpread: BigNumber;
         openSlippageFactor: BigNumber;
         closeSlippageFactor: BigNumber;
@@ -290,6 +281,9 @@ export class Reader extends Contract {
         19: BigNumber;
         20: BigNumber;
         21: BigNumber;
+        22: BigNumber;
+        23: BigNumber;
+        24: BigNumber;
       }[];
     }>;
 
@@ -298,16 +292,12 @@ export class Reader extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       operator: string;
-      collateral: string;
+      collateralToken: string;
       vault: string;
       governor: string;
       shareToken: string;
       vaultFeeRate: BigNumber;
-      insuranceFundCap: BigNumber;
-      insuranceFund: BigNumber;
-      donatedInsuranceFund: BigNumber;
-      totalClaimableFee: BigNumber;
-      poolCashBalance: BigNumber;
+      poolCash: BigNumber;
       fundingTime: BigNumber;
       perpetualStorages: {
         symbol: BigNumber;
@@ -325,6 +315,9 @@ export class Reader extends Contract {
         liquidationPenaltyRate: BigNumber;
         keeperGasReward: BigNumber;
         insuranceFundRate: BigNumber;
+        insuranceFundCap: BigNumber;
+        insuranceFund: BigNumber;
+        donatedInsuranceFund: BigNumber;
         halfSpread: BigNumber;
         openSlippageFactor: BigNumber;
         closeSlippageFactor: BigNumber;
@@ -354,6 +347,9 @@ export class Reader extends Contract {
         19: BigNumber;
         20: BigNumber;
         21: BigNumber;
+        22: BigNumber;
+        23: BigNumber;
+        24: BigNumber;
       }[];
       0: string;
       1: string;
@@ -363,11 +359,7 @@ export class Reader extends Contract {
       5: BigNumber;
       6: BigNumber;
       7: BigNumber;
-      8: BigNumber;
-      9: BigNumber;
-      10: BigNumber;
-      11: BigNumber;
-      12: {
+      8: {
         symbol: BigNumber;
         underlyingAsset: string;
         state: number;
@@ -383,6 +375,9 @@ export class Reader extends Contract {
         liquidationPenaltyRate: BigNumber;
         keeperGasReward: BigNumber;
         insuranceFundRate: BigNumber;
+        insuranceFundCap: BigNumber;
+        insuranceFund: BigNumber;
+        donatedInsuranceFund: BigNumber;
         halfSpread: BigNumber;
         openSlippageFactor: BigNumber;
         closeSlippageFactor: BigNumber;
@@ -412,6 +407,9 @@ export class Reader extends Contract {
         19: BigNumber;
         20: BigNumber;
         21: BigNumber;
+        22: BigNumber;
+        23: BigNumber;
+        24: BigNumber;
       }[];
     }>;
   };

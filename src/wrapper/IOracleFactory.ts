@@ -32,6 +32,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "isMarketClosed",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "priceTWAPLong",
     outputs: [
       {

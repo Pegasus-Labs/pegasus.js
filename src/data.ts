@@ -78,17 +78,13 @@ export async function getLiquidityPool(
   const pool = await reader.callStatic.getLiquidityPoolStorage(liquidityPoolAddress)
   const ret: LiquidityPoolStorage = {
     operator: pool.operator,
-    collateral: pool.collateral,
+    collateral: pool.collateralToken,
     vault: pool.vault,
     governor: pool.governor,
     shareToken: pool.shareToken,
 
     vaultFeeRate: normalizeBigNumberish(pool.vaultFeeRate).shiftedBy(-DECIMALS),
-    insuranceFundCap: normalizeBigNumberish(pool.insuranceFundCap).shiftedBy(-DECIMALS),
-    insuranceFund: normalizeBigNumberish(pool.insuranceFund).shiftedBy(-DECIMALS),
-    donatedInsuranceFund: normalizeBigNumberish(pool.donatedInsuranceFund).shiftedBy(-DECIMALS),
-    totalClaimableFee: normalizeBigNumberish(pool.totalClaimableFee).shiftedBy(-DECIMALS),
-    poolCashBalance: normalizeBigNumberish(pool.poolCashBalance).shiftedBy(-DECIMALS),
+    poolCashBalance: normalizeBigNumberish(pool.poolCash).shiftedBy(-DECIMALS),
     fundingTime: pool.fundingTime.toNumber(),
 
     perpetuals: new Map(),
@@ -115,6 +111,9 @@ export async function getLiquidityPool(
       liquidationPenaltyRate: normalizeBigNumberish(m.liquidationPenaltyRate).shiftedBy(-DECIMALS),
       keeperGasReward: normalizeBigNumberish(m.keeperGasReward).shiftedBy(-DECIMALS),
       insuranceFundRate: normalizeBigNumberish(m.insuranceFundRate).shiftedBy(-DECIMALS),
+      insuranceFundCap: normalizeBigNumberish(m.insuranceFundCap).shiftedBy(-DECIMALS),
+      insuranceFund: normalizeBigNumberish(m.insuranceFund).shiftedBy(-DECIMALS),
+      donatedInsuranceFund: normalizeBigNumberish(m.donatedInsuranceFund).shiftedBy(-DECIMALS),
 
       halfSpread: normalizeBigNumberish(m.halfSpread).shiftedBy(-DECIMALS),
       openSlippageFactor: normalizeBigNumberish(m.openSlippageFactor).shiftedBy(-DECIMALS),
@@ -140,8 +139,8 @@ export async function getAccountStorage(
   const marginAccount = await reader.getAccountStorage(
     liquidityPoolAddress, perpetualIndex, traderAddress)
   return {
-    cashBalance: normalizeBigNumberish(marginAccount.cashBalance).shiftedBy(-DECIMALS),
-    positionAmount: normalizeBigNumberish(marginAccount.positionAmount).shiftedBy(-DECIMALS),
+    cashBalance: normalizeBigNumberish(marginAccount.cash).shiftedBy(-DECIMALS),
+    positionAmount: normalizeBigNumberish(marginAccount.position).shiftedBy(-DECIMALS),
     entryValue: null,
     entryFunding: null,
   }
