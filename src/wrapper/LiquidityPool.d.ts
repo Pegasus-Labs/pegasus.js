@@ -31,7 +31,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "createPerpetual(address,int256[9],int256[5],int256[5],int256[5])": FunctionFragment;
     "deposit(uint256,address,int256)": FunctionFragment;
     "donateInsuranceFund(uint256,int256)": FunctionFragment;
-    "forceToEnterEmergencyState(uint256)": FunctionFragment;
+    "forceToSetEmergencyState(uint256)": FunctionFragment;
     "getClaimableFee(address)": FunctionFragment;
     "getClearProgress(uint256)": FunctionFragment;
     "getLiquidityPoolInfo()": FunctionFragment;
@@ -122,7 +122,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "forceToEnterEmergencyState",
+    functionFragment: "forceToSetEmergencyState",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -242,7 +242,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "forceToEnterEmergencyState",
+    functionFragment: "forceToSetEmergencyState",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -573,12 +573,12 @@ export class LiquidityPool extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    forceToEnterEmergencyState(
+    forceToSetEmergencyState(
       perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "forceToEnterEmergencyState(uint256)"(
+    "forceToSetEmergencyState(uint256)"(
       perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -1076,12 +1076,12 @@ export class LiquidityPool extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  forceToEnterEmergencyState(
+  forceToSetEmergencyState(
     perpetualIndex: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "forceToEnterEmergencyState(uint256)"(
+  "forceToSetEmergencyState(uint256)"(
     perpetualIndex: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -1567,12 +1567,12 @@ export class LiquidityPool extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    forceToEnterEmergencyState(
+    forceToSetEmergencyState(
       perpetualIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "forceToEnterEmergencyState(uint256)"(
+    "forceToSetEmergencyState(uint256)"(
       perpetualIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -2257,12 +2257,12 @@ export class LiquidityPool extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    forceToEnterEmergencyState(
+    forceToSetEmergencyState(
       perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "forceToEnterEmergencyState(uint256)"(
+    "forceToSetEmergencyState(uint256)"(
       perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -2709,12 +2709,12 @@ export class LiquidityPool extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    forceToEnterEmergencyState(
+    forceToSetEmergencyState(
       perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "forceToEnterEmergencyState(uint256)"(
+    "forceToSetEmergencyState(uint256)"(
       perpetualIndex: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

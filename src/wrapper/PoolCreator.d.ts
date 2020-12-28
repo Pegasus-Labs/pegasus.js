@@ -32,6 +32,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "getDescription(address)": FunctionFragment;
     "getLatestVersion()": FunctionFragment;
     "getLiquidityPoolCount()": FunctionFragment;
+    "getOwnedLiquidityPoolsCountOf(address)": FunctionFragment;
     "grantPrivilege(address,uint256)": FunctionFragment;
     "isActiveLiquidityPoolOf(address,address,uint256)": FunctionFragment;
     "isGranted(address,address,uint256)": FunctionFragment;
@@ -41,7 +42,6 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "listActiveLiquidityPoolsOf(address,uint256,uint256)": FunctionFragment;
     "listLiquidityPoolOwnedBy(address,uint256,uint256)": FunctionFragment;
     "listLiquidityPools(uint256,uint256)": FunctionFragment;
-    "ownedLiquidityPoolsCountOf(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "revokePrivilege(address,uint256)": FunctionFragment;
@@ -94,6 +94,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "getOwnedLiquidityPoolsCountOf",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "grantPrivilege",
     values: [string, BigNumberish]
   ): string;
@@ -128,10 +132,6 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "listLiquidityPools",
     values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "ownedLiquidityPoolsCountOf",
-    values: [string]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -199,6 +199,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getOwnedLiquidityPoolsCountOf",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "grantPrivilege",
     data: BytesLike
   ): Result;
@@ -229,10 +233,6 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "listLiquidityPools",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "ownedLiquidityPoolsCountOf",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -438,6 +438,20 @@ export class PoolCreator extends Contract {
       0: BigNumber;
     }>;
 
+    getOwnedLiquidityPoolsCountOf(
+      operator: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "getOwnedLiquidityPoolsCountOf(address)"(
+      operator: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
     grantPrivilege(
       grantor: string,
       privilege: BigNumberish,
@@ -606,20 +620,6 @@ export class PoolCreator extends Contract {
     ): Promise<{
       result: string[];
       0: string[];
-    }>;
-
-    ownedLiquidityPoolsCountOf(
-      operator: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "ownedLiquidityPoolsCountOf(address)"(
-      operator: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
     }>;
 
     owner(
@@ -839,6 +839,16 @@ export class PoolCreator extends Contract {
 
   "getLiquidityPoolCount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+  getOwnedLiquidityPoolsCountOf(
+    operator: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "getOwnedLiquidityPoolsCountOf(address)"(
+    operator: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   grantPrivilege(
     grantor: string,
     privilege: BigNumberish,
@@ -964,16 +974,6 @@ export class PoolCreator extends Contract {
     end: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string[]>;
-
-  ownedLiquidityPoolsCountOf(
-    operator: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "ownedLiquidityPoolsCountOf(address)"(
-    operator: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -1152,6 +1152,16 @@ export class PoolCreator extends Contract {
 
     "getLiquidityPoolCount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getOwnedLiquidityPoolsCountOf(
+      operator: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getOwnedLiquidityPoolsCountOf(address)"(
+      operator: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     grantPrivilege(
       grantor: string,
       privilege: BigNumberish,
@@ -1277,16 +1287,6 @@ export class PoolCreator extends Contract {
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string[]>;
-
-    ownedLiquidityPoolsCountOf(
-      operator: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "ownedLiquidityPoolsCountOf(address)"(
-      operator: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -1478,6 +1478,16 @@ export class PoolCreator extends Contract {
 
     "getLiquidityPoolCount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getOwnedLiquidityPoolsCountOf(
+      operator: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getOwnedLiquidityPoolsCountOf(address)"(
+      operator: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     grantPrivilege(
       grantor: string,
       privilege: BigNumberish,
@@ -1587,16 +1597,6 @@ export class PoolCreator extends Contract {
     "listLiquidityPools(uint256,uint256)"(
       begin: BigNumberish,
       end: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    ownedLiquidityPoolsCountOf(
-      operator: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "ownedLiquidityPoolsCountOf(address)"(
-      operator: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1768,6 +1768,16 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getOwnedLiquidityPoolsCountOf(
+      operator: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getOwnedLiquidityPoolsCountOf(address)"(
+      operator: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     grantPrivilege(
       grantor: string,
       privilege: BigNumberish,
@@ -1877,16 +1887,6 @@ export class PoolCreator extends Contract {
     "listLiquidityPools(uint256,uint256)"(
       begin: BigNumberish,
       end: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    ownedLiquidityPoolsCountOf(
-      operator: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "ownedLiquidityPoolsCountOf(address)"(
-      operator: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

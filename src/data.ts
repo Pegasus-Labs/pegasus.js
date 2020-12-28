@@ -160,7 +160,7 @@ export async function listActivatePerpetualsOfTrader(
   trader: string
 ): Promise<PerpetualID[]> {
   getAddress(trader)
-  const count = (await poolCreator.activeLiquidityPoolCountOf(trader)).toNumber()
+  const count = (await poolCreator.getActiveLiquidityPoolCountOf(trader)).toNumber()
   if (count > 10000) {
     throw new BugError(`activate pool count is too large: ${count}`)
   }
@@ -187,7 +187,7 @@ export async function listLiquidityPoolOfOperator(
   operator: string
 ): Promise<string[]> {
   getAddress(operator)
-  const count = (await poolCreator.ownedLiquidityPoolsCountOf(operator)).toNumber()
+  const count = (await poolCreator.getOwnedLiquidityPoolsCountOf(operator)).toNumber()
   if (count > 10000) {
     throw new BugError(`activate pool count is too large: ${count}`)
   }
