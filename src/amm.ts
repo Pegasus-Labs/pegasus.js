@@ -4,7 +4,7 @@
 
 import { BigNumber } from 'bignumber.js'
 import { DECIMALS, _0, _1, _2, _4 } from './constants'
-import { LiquidityPoolStorage, AMMTradingContext } from './types'
+import { LiquidityPoolStorage, AMMTradingContext, PerpetualState } from './types'
 import { sqrt, splitAmount, hasTheSameSign } from './utils'
 import { InsufficientLiquidityError, BugError, InvalidArgumentError } from './types'
 
@@ -32,6 +32,9 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
   // M_c = ammCash - Σ accumulatedFunding * N
   let cash = p.poolCashBalance
   p.perpetuals.forEach((perpetual, id) => {
+    if (perpetual.state !== PerpetualState.NORMAL) {
+      return
+    }
     cash = cash.plus(perpetual.ammCashBalance)
     cash = cash.minus(perpetual.unitAccumulativeFunding.times(perpetual.ammPositionAmount))
     if (id === perpetualIndex) {
