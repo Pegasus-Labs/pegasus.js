@@ -186,9 +186,6 @@ export function computeAMMInternalClose(context: AMMTradingContext, amount: BigN
     ret.bestAskBidPrice = computeBestAskBidPriceIfUnsafe(ret, amount.gt(_0))
     deltaMargin = ret.index.times(amount).negated()
   }
-  if (hasTheSameSign(deltaMargin, amount)) {
-    throw new BugError(`close error. ΔM and amount has the same sign unexpectedly: ${deltaMargin.toFixed()} vs ${amount.toFixed()}`)
-  }
 
   // commit
   ret.deltaMargin = ret.deltaMargin.plus(deltaMargin)
