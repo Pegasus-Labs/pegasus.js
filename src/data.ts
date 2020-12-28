@@ -210,7 +210,7 @@ export async function getPerpetualSettledMarginBalance(
   traderAddress: string
 ): Promise<BigNumber> {
   getAddress(traderAddress)
-  const collateralAmount = await liquidityPool.callStatic.settleableMargin(perpetualIndex, traderAddress)
+  const collateralAmount = await liquidityPool.callStatic.getSettleableMargin(perpetualIndex, traderAddress)
   return normalizeBigNumberish(collateralAmount).shiftedBy(-DECIMALS)
 }
 
@@ -221,7 +221,7 @@ export async function getPerpetualClearProgress(
   left: BigNumber,
   total: BigNumber
 }> {
-  const progressInfo = await liquidityPool.callStatic.clearProgress(perpetualIndex)
+  const progressInfo = await liquidityPool.callStatic.getClearProgress(perpetualIndex)
   const left = normalizeBigNumberish(progressInfo.left)
   const total = normalizeBigNumberish(progressInfo.total)
   return { left, total }
@@ -231,7 +231,7 @@ export async function getPerpetualClearGasReward(
   liquidityPool: LiquidityPool,
   perpetualIndex: number
 ): Promise<BigNumber> {
-  const perpetualInfo = await liquidityPool.callStatic.perpetualInfo(perpetualIndex)
+  const perpetualInfo = await liquidityPool.callStatic.getPerpetualInfo(perpetualIndex)
   const keeperGasReward = normalizeBigNumberish(perpetualInfo.nums[10]).shiftedBy(-DECIMALS)
   return keeperGasReward
 }
