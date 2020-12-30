@@ -121,3 +121,25 @@ export async function perpetualSettleWithDraw(
   getAddress(trader)
   return await liquidityPool.settle(perpetualIndex, trader, overrides)
 }
+
+export async function addLiquidity(
+  liquidityPool: LiquidityPool,
+  collateralAmount: BigNumberish, // should be a decimal number (ie: 1.234)
+  overrides?: PayableOverrides,
+): Promise<ethers.providers.TransactionResponse> {
+  const largeAmount = normalizeBigNumberish(collateralAmount)
+    .shiftedBy(DECIMALS)
+    .dp(0, BigNumber.ROUND_DOWN)
+  return await liquidityPool.addLiquidity(largeAmount.toFixed(), overrides)
+}
+
+export async function removeLiquidity(
+  liquidityPool: LiquidityPool,
+  collateralAmount: BigNumberish, // should be a decimal number (ie: 1.234)
+  overrides?: PayableOverrides,
+): Promise<ethers.providers.TransactionResponse> {
+  const largeAmount = normalizeBigNumberish(collateralAmount)
+    .shiftedBy(DECIMALS)
+    .dp(0, BigNumber.ROUND_DOWN)
+  return await liquidityPool.removeLiquidity(largeAmount.toFixed(), overrides)
+}
