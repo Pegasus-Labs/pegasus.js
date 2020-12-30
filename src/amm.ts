@@ -261,7 +261,7 @@ export function isAMMSafe(context: AMMTradingContext, beta: BigNumber): boolean 
     .plus(context.index.times(context.position1))
   const squareValueWithCurrent = context.squareValueWithoutCurrent
     .plus(beta.times(context.index).times(context.position1).times(context.position1))
-  // √(2 Σ(β_j P_i_j N_j)) - Σ(P_i_j N_j). always positive
+  // √(2 Σ(β_j P_i_j N_j^2)) - Σ(P_i_j N_j). always positive
   const beforeSqrt = _2.times(squareValueWithCurrent)
   const safeCash = sqrt(beforeSqrt).minus(valueWithCurrent)
   return context.cash.gte(safeCash)
@@ -317,13 +317,13 @@ export function computeAMMSafeCondition2(context: AMMTradingContext, beta: BigNu
   //  M - √(M(M - 2βλ^2/P_i x))
   // ---------------------------
   //             βλ
-  let beforeSquare = x.times(context.ammMaxLeverage).times(context.ammMaxLeverage).times(beta).times(_2).div(context.index)
-  beforeSquare = context.poolMargin.minus(beforeSquare).times(context.poolMargin)
-  if (beforeSquare.lt(_0)) {
+  let beforeSqrt = x.times(context.ammMaxLeverage).times(context.ammMaxLeverage).times(beta).times(_2).div(context.index)
+  beforeSqrt = context.poolMargin.minus(beforeSqrt).times(context.poolMargin)
+  if (beforeSqrt.lt(_0)) {
     // means the curve is always above the x-axis
     return true
   }
-  let position2 = context.poolMargin.minus(sqrt(beforeSquare))
+  let position2 = context.poolMargin.minus(sqrt(beforeSqrt))
   position2 = position2.div(beta).div(context.ammMaxLeverage)
   return position2.dp(DECIMALS)
 }
