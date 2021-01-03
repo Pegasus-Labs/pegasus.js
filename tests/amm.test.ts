@@ -32,10 +32,6 @@ const defaultPool: LiquidityPoolStorage = {
   shareToken: '0x0',
 
   vaultFeeRate: new BigNumber(0.0001),
-  insuranceFundCap: new BigNumber(10000),
-  insuranceFund: _0,
-  donatedInsuranceFund: _0,
-  totalClaimableFee: _0,
   poolCashBalance: _0, // set me later
   fundingTime: 1579601290,
   
@@ -60,6 +56,9 @@ const perpetual1: PerpetualStorage = {
   liquidationPenaltyRate: new BigNumber(0.005),
   keeperGasReward: new BigNumber(2),
   insuranceFundRate: new BigNumber(0.0001),
+  insuranceFundCap: new BigNumber(10000),
+  insuranceFund: _0,
+  donatedInsuranceFund: _0,
 
   halfSpread: new BigNumber(0.001),
   openSlippageFactor: new BigNumber(100),
