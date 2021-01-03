@@ -216,12 +216,12 @@ export function computeAMMInverseVWAP(
   const previousAmount = context.deltaPosition
 
   /*
-  A = P_i β;
+  A = P_i^2 β;
   B = -2 P_i M + 2 A N1 + 2 M price;
   C = -2 M (previousMa1MinusMa2 - previousAmount price);
   sols = (-B ± sqrt(B^2 - 4 A C)) / (2 A);
   */
-  const a = context.index.times(beta)
+  const a = context.index.times(context.index).times(beta)
   let denominator = a.times(_2)
   if (denominator.isZero()) {
     throw Error(`bad perpetual parameter beta ${beta.toFixed()} or index ${context.index}.`)
@@ -370,7 +370,7 @@ export function computeAMMCloseAndOpenAmountWithPrice(
     context = computeAMMPoolMargin(context, context.closeSlippageFactor)
     context.bestAskBidPrice = computeBestAskBidPriceIfSafe(context, context.closeSlippageFactor, isAMMBuy)
   } else {
-    context.bestAskBidPrice = computeBestAskBidPriceIfUnsafe(context, isAMMBuy)
+    context.bestAskBidPrice = computeBestAskBidPriceIfUnsafe(context)
   }
   if (isAMMBuy) {
     if (limitPrice.gt(context.bestAskBidPrice)) {

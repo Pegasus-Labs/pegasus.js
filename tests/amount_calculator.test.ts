@@ -351,15 +351,15 @@ describe('computeAMMAmountWithPrice - amm holds short, trader buys', function ()
 
 describe('computeAMMAmountWithPrice - amm holds short, trader sells', function () {
   it(`amm unsafe - higher than spread`, function () {
-    const limitPrice = new BigNumber('6993.001') // spread = 6993
+    const limitPrice = new BigNumber('7000.001') // best ask/bid = 6993
     const amount = computeAMMAmountWithPrice(poolStorage3, TEST_MARKET_INDEX0, false, limitPrice)
     expect(amount.isZero()).toBeTruthy()
   })
 
   it(`amm unsafe - exactly the best ask/bid price - close + open`, function () {
-    const limitPrice = new BigNumber('6993')
+    const limitPrice = new BigNumber('7000')
     const amount = computeAMMAmountWithPrice(poolStorage3, TEST_MARKET_INDEX0, false, limitPrice)
-    expect(amount).toApproximate(normalizeBigNumberish('-2.52693371063539536994239123215'))
+    expect(amount).toApproximate(normalizeBigNumberish('-2.3'))
     const trade = computeAMMTrade(poolStorage3, TEST_MARKET_INDEX0, accountStorage1, amount)
     expect(trade.tradingPrice.lte(limitPrice)).toBeTruthy()
   })
@@ -413,15 +413,15 @@ describe('computeAMMAmountWithPrice - amm holds short, trader sells', function (
 
 describe('computeAMMAmountWithPrice - amm holds long, trader buys', function () {
   it(`amm unsafe - lower than spread`, function () {
-    const limitPrice = new BigNumber('7006.999') // spread = 7007
+    const limitPrice = new BigNumber('6999.999') // best ask/bid = 7000
     const amount = computeAMMAmountWithPrice(poolStorage6, TEST_MARKET_INDEX0, true, limitPrice)
     expect(amount.isZero()).toBeTruthy()
   })
 
   it(`amm unsafe - exactly the best ask/bid price - close + open`, function () {
-    const limitPrice = new BigNumber('7007')
+    const limitPrice = new BigNumber('7000')
     const amount = computeAMMAmountWithPrice(poolStorage6, TEST_MARKET_INDEX0, true, limitPrice)
-    expect(amount).toApproximate(normalizeBigNumberish('2.65713060501851222135483063416'))
+    expect(amount).toApproximate(normalizeBigNumberish('2.3'))
     const trade = computeAMMTrade(poolStorage6, TEST_MARKET_INDEX0, accountStorage1, amount)
     expect(trade.tradingPrice.lte(limitPrice)).toBeTruthy()
   })
