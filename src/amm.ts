@@ -142,8 +142,12 @@ export function computeBestAskBidPriceIfSafe(context: AMMTradingContext, beta: B
   return appendSpread(context, price, isAMMBuy)
 }
 
-export function computeBestAskBidPriceIfUnsafe(context: AMMTradingContext, isAMMBuy: boolean): BigNumber {
-  return appendSpread(context, context.index, isAMMBuy)
+export function computeBestAskBidPriceIfUnsafe(context: AMMTradingContext): BigNumber {
+  if (context.position1.gt(_0) && context.closeSlippageFactor.gt('0.5')) {
+    // special case: long position, β2 > 0.5     
+    return _1.minus(context.maxClosePriceDiscount).times(context.index)
+  }
+  return context.index
 }
 
 function appendSpread(context: AMMTradingContext, midPrice: BigNumber, isAMMBuy: boolean): BigNumber {
@@ -169,7 +173,7 @@ export function computeBestAskBidPrice(p: LiquidityPoolStorage, perpetualIndex: 
     if (!isAMMClosing) {
       throw new InsufficientLiquidityError(`AMM can not open position anymore: unsafe before trade`)
     }
-    return computeBestAskBidPriceIfUnsafe(context, isAMMBuy)
+    return computeBestAskBidPriceIfUnsafe(context)
   }
   // safe
   context = computeAMMPoolMargin(context, beta)
@@ -189,9 +193,17 @@ export function computeAMMInternalClose(context: AMMTradingContext, amount: BigN
     ret.bestAskBidPrice = computeBestAskBidPriceIfSafe(ret, beta, amount.gt(_0))
     deltaMargin = computeDeltaMargin(ret, beta, position2)
   } else {
-    ret.bestAskBidPrice = computeBestAskBidPriceIfUnsafe(ret, amount.gt(_0))
+    ret.bestAskBidPrice = computeBestAskBidPriceIfUnsafe(ret)
     deltaMargin = ret.index.times(amount).negated()
   }
+
+  // max close price discount = -P_i * ΔN * (1 ± discount)
+  let discount = context.maxClosePriceDiscount
+  if (amount.lt(_0)) {
+    discount = discount.negated()
+  }
+  const limitValue = _1.plus(discount).times(context.index).times(amount).negated()
+  deltaMargin = BigNumber.maximum(deltaMargin, limitValue)
 
   // commit
   ret.deltaMargin = ret.deltaMargin.plus(deltaMargin)
