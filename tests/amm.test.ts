@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import {
   initAMMTradingContext,
-  initAMMTradingContextEagerEvaluation,
   computeAMMInternalTrade,
   computeAMMPoolMargin,
   isAMMSafe,
@@ -16,7 +15,6 @@ import {
   PerpetualState,
   PerpetualStorage,
   LiquidityPoolStorage,
-  AMMTradingContext,
   InsufficientLiquidityError,
 } from '../src/types'
 import { normalizeBigNumberish } from '../src/utils'
@@ -64,7 +62,7 @@ const perpetual1: PerpetualStorage = {
   openSlippageFactor: new BigNumber(1),
   closeSlippageFactor: new BigNumber(0.9),
   fundingRateLimit: new BigNumber(0.005),
-  maxClosePriceDiscount: new BigNumber(0.05),
+  maxClosePriceDiscount: new BigNumber(0.2),
   ammMaxLeverage: new BigNumber(3),
 
   ammCashBalance: _0, // assign me later
@@ -165,7 +163,7 @@ const poolStorage6: LiquidityPoolStorage = {
 }
 
 describe('computeM0', function () {
-  const openSlippageFactor = new BigNumber('100')
+  const beta = new BigNumber('1')
 
   interface ComputeAccountCase {
     amm: LiquidityPoolStorage
@@ -224,126 +222,19 @@ describe('computeM0', function () {
       const context1 = initAMMTradingContext(element.amm, TEST_MARKET_INDEX0)
       expect(context1.cash).toApproximate(normalizeBigNumberish(element.availableCash))
 
-      const safe = isAMMSafe(context1, openSlippageFactor)
+      const safe = isAMMSafe(context1, beta)
       expect(safe).toEqual(element.isAMMSafe)
 
       if (element.isAMMSafe) {
-        const context2 = computeAMMPoolMargin(context1, openSlippageFactor)
+        const context2 = computeAMMPoolMargin(context1, beta)
         expect(context2.poolMargin).toApproximate(normalizeBigNumberish(element.poolMargin))
       }
     })
   })
 })
 
-describe('isAMMSafe', function () {
-  // long: larger index is safer
-  it(`long - always safe (sqrt < 0)`, function () {
-    const context: AMMTradingContext = initAMMTradingContextEagerEvaluation({
-      cash: new BigNumber('100000'),
-      index: new BigNumber('1'),
-      position1: new BigNumber('110'),
-      otherIndex: [ new BigNumber('100') ],
-      otherPosition: [ new BigNumber('1') ],
-      openSlippageFactor: new BigNumber('1000'),
-      closeSlippageFactor: new BigNumber('1000'),
-      halfSpread: _0, fundingRateLimit: _0, maxClosePriceDiscount: _0, ammMaxLeverage: _0,
-      otherOpenSlippageFactor: [ new BigNumber('100') ],
-      otherAMMMaxLeverage: [ _0 ],
-      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: null,
-      valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
-    })
-    expect(isAMMSafe(context, new BigNumber('1000') /* beta */)).toBeTruthy()
-  })
-  it(`long - ok`, function () {
-    const context: AMMTradingContext = initAMMTradingContextEagerEvaluation({
-      cash: new BigNumber('10000'),
-      index: new BigNumber('337.9088160260'),
-      position1: new BigNumber('100'),
-      otherIndex: [ new BigNumber('100') ],
-      otherPosition: [ new BigNumber('1000') ],
-      openSlippageFactor: new BigNumber('100'),
-      closeSlippageFactor: new BigNumber('100'),
-      halfSpread: _0, fundingRateLimit: _0, maxClosePriceDiscount: _0, ammMaxLeverage: _0,
-      otherOpenSlippageFactor: [ new BigNumber('100') ],
-      otherAMMMaxLeverage: [ _0 ],
-      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: null,
-      valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
-    })
-    expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeTruthy()
-  })
-  it(`long - fail`, function () {
-    const context: AMMTradingContext = initAMMTradingContextEagerEvaluation({
-      cash: new BigNumber('10000'),
-      index: new BigNumber('337.9088160259'),
-      position1: new BigNumber('100'),
-      otherIndex: [ new BigNumber('100') ],
-      otherPosition: [ new BigNumber('1000') ],
-      openSlippageFactor: new BigNumber('100'),
-      closeSlippageFactor: new BigNumber('100'),
-      halfSpread: _0, fundingRateLimit: _0, maxClosePriceDiscount: _0, ammMaxLeverage: _0,
-      otherOpenSlippageFactor: [ new BigNumber('100') ],
-      otherAMMMaxLeverage: [ _0 ],
-      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: null,
-      valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
-    })
-    expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeFalsy()
-  })
-  // short: lower index is safer
-  it(`short - unsafe (margin balance < 0)`, function () {
-    const context: AMMTradingContext = initAMMTradingContextEagerEvaluation({
-      cash: new BigNumber('100000'),
-      index: new BigNumber('1'),
-      position1: new BigNumber('-110'),
-      otherIndex: [ new BigNumber('100') ],
-      otherPosition: [ new BigNumber('-1001') ],
-      openSlippageFactor: new BigNumber('1000'),
-      closeSlippageFactor: new BigNumber('1000'),
-      halfSpread: _0, fundingRateLimit: _0, maxClosePriceDiscount: _0, ammMaxLeverage: _0,
-      otherOpenSlippageFactor: [ new BigNumber('100') ],
-      otherAMMMaxLeverage: [ _0 ],
-      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: null,
-      valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
-    })
-    expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeFalsy()
-  })
-  it(`short - ok`, function () {
-    const context: AMMTradingContext = initAMMTradingContextEagerEvaluation({
-      cash: new BigNumber('100000'),
-      index: new BigNumber('482.1023652650379499133'),
-      position1: new BigNumber('-110'),
-      otherIndex: [ new BigNumber('100') ],
-      otherPosition: [ new BigNumber('-100') ],
-      openSlippageFactor: new BigNumber('100'),
-      closeSlippageFactor: new BigNumber('100'),
-      halfSpread: _0, fundingRateLimit: _0, maxClosePriceDiscount: _0, ammMaxLeverage: _0,
-      otherOpenSlippageFactor: [ new BigNumber('100') ],
-      otherAMMMaxLeverage: [ _0 ],
-      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: null,
-      valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
-    })
-    expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeTruthy()
-  })
-  it(`short - fail`, function () {
-    const context: AMMTradingContext = initAMMTradingContextEagerEvaluation({
-      cash: new BigNumber('100000'),
-      index: new BigNumber('482.1023652650379499134'),
-      position1: new BigNumber('-110'),
-      otherIndex: [ new BigNumber('100') ],
-      otherPosition: [ new BigNumber('-100') ],
-      openSlippageFactor: new BigNumber('100'),
-      closeSlippageFactor: new BigNumber('100'),
-      halfSpread: _0, fundingRateLimit: _0, maxClosePriceDiscount: _0, ammMaxLeverage: _0,
-      otherOpenSlippageFactor: [ new BigNumber('100') ],
-      otherAMMMaxLeverage: [ _0 ],
-      poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: null,
-      valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
-    })
-    expect(isAMMSafe(context, new BigNumber('100') /* beta */)).toBeFalsy()
-  })
-})
-
 describe('computeDeltaMargin', function () {
-  const openSlippageFactor = new BigNumber('100')
+  const beta = new BigNumber('1')
   interface ComputeAccountCase {
     name: string
     amm: LiquidityPoolStorage
@@ -370,8 +261,8 @@ describe('computeDeltaMargin', function () {
 
   successCases.forEach(element => {
     it(element.name, function () {
-      const context = computeAMMPoolMargin(initAMMTradingContext(element.amm, TEST_MARKET_INDEX0), openSlippageFactor)
-      const deltaMargin = computeDeltaMargin(context, openSlippageFactor, element.pos2)
+      const context = computeAMMPoolMargin(initAMMTradingContext(element.amm, TEST_MARKET_INDEX0), beta)
+      const deltaMargin = computeDeltaMargin(context, beta, element.pos2)
       expect(deltaMargin).toApproximate(normalizeBigNumberish(element.deltaMargin))
     })
   })
@@ -379,7 +270,7 @@ describe('computeDeltaMargin', function () {
 
 describe('safePosition', function () {
   it('short: condition3 √, condition2 ∞. condition 3 selected', function () {
-    const beta = new BigNumber('100')
+    const beta = new BigNumber('1')
     const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage1, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
     const pos2 = computeAMMSafeShortPositionAmount(context, beta)
@@ -387,7 +278,7 @@ describe('safePosition', function () {
   })
 
   it('short: condition3 √, condition2 √. condition 2 selected', function () {
-    const beta = new BigNumber('100')
+    const beta = new BigNumber('1')
     const context = computeAMMPoolMargin(initAMMTradingContext({
       ...poolStorage1,
       perpetuals: new Map([
@@ -403,7 +294,7 @@ describe('safePosition', function () {
   })
 
   it('short: condition3 √, condition2 √. condition 3 selected', function () {
-    const beta = new BigNumber('142.6933822319389')
+    const beta = new BigNumber('1.426933822319389')
     const context = computeAMMPoolMargin(initAMMTradingContext({
       ...poolStorage1,
       perpetuals: new Map([
@@ -414,7 +305,7 @@ describe('safePosition', function () {
         [TEST_MARKET_INDEX1, {
           ...poolStorage1.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage,
           indexPrice: new BigNumber('90'),
-          ammPositionAmount: new BigNumber('85.5148648938521'), openSlippageFactor: new BigNumber('200'), }],
+          ammPositionAmount: new BigNumber('85.5148648938521'), openSlippageFactor: new BigNumber('2.222222222222222222'), }],
         ])
     }, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
@@ -427,7 +318,7 @@ describe('safePosition', function () {
   })
 
   it('long: condition3 √, condition2 ∞, condition 1 selected', function () {
-    const beta = new BigNumber('100')
+    const beta = new BigNumber('1')
     const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage4, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
     const pos2 = computeAMMSafeLongPositionAmount(context, beta)
@@ -435,7 +326,7 @@ describe('safePosition', function () {
   })
 
   it('long: condition3 √, condition2 √, condition 2 selected', function () {
-    const beta = new BigNumber('100')
+    const beta = new BigNumber('1')
     const context = computeAMMPoolMargin(initAMMTradingContext({
       ...poolStorage4,
       perpetuals: new Map([
@@ -451,7 +342,7 @@ describe('safePosition', function () {
   })
 
   it('long: condition3 √, condition2 ∞, condition 3 selected', function () {
-    const beta = new BigNumber('39.77')
+    const beta = new BigNumber('0.3977')
     const context = computeAMMPoolMargin(initAMMTradingContext({
       ...poolStorage4,
       perpetuals: new Map([
@@ -461,7 +352,7 @@ describe('safePosition', function () {
         [TEST_MARKET_INDEX1, {
           ...poolStorage4.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage,
           indexPrice: new BigNumber('10'),
-          ammPositionAmount: new BigNumber('-109'), openSlippageFactor: new BigNumber('30'), }],
+          ammPositionAmount: new BigNumber('-109'), openSlippageFactor: new BigNumber('3'), }],
         ])
     }, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
@@ -573,30 +464,30 @@ describe('trade - success', function () {
       name: 'close unsafe -10 -> -9, normal',
       amm: poolStorage3,
       amount: new BigNumber('1'),
-      deltaMargin: new BigNumber('-99.9')
+      deltaMargin: new BigNumber('-100')
     },
     {
       name: 'close unsafe -10 -> -9.9, small',
       amm: poolStorage3,
       amount: new BigNumber('0.1'),
-      deltaMargin: new BigNumber('-9.99')
+      deltaMargin: new BigNumber('-10')
     },
     {
       name: 'close unsafe 10 -> 9, normal',
       amm: poolStorage6,
       amount: new BigNumber('-1'),
-      deltaMargin: new BigNumber('100.1')
+      deltaMargin: new BigNumber('80')
     },
     {
       name: 'close unsafe 10 -> 9, small',
       amm: poolStorage6,
       amount: new BigNumber('-0.1'),
-      deltaMargin: new BigNumber('10.01')
+      deltaMargin: new BigNumber('8')
     },
   ]
 
   successCases.forEach(element => {
-    it(element.name, function () {
+  it(element.name, function () {
       const context = computeAMMInternalTrade(element.amm, TEST_MARKET_INDEX0, element.amount)
       expect(context.deltaMargin).toApproximate(normalizeBigNumberish(element.deltaMargin))
     })
@@ -774,13 +665,13 @@ describe('computeBestAskBidPrice', function () {
       name: 'close unsafe -10',
       amm: poolStorage3,
       isAMMBuy: true,
-      price: new BigNumber('99.9') // trader sell, 100 (1 - α)
+      price: new BigNumber('100')
     },
     {
       name: 'close unsafe 10',
       amm: poolStorage6,
       isAMMBuy: false,
-      price: new BigNumber('100.1') // trader buy, 100 (1 + α)
+      price: new BigNumber('80')
     },
   ]
 

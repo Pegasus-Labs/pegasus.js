@@ -194,7 +194,7 @@ export function computeAMMInternalClose(context: AMMTradingContext, amount: BigN
     deltaMargin = computeDeltaMargin(ret, beta, position2)
   } else {
     ret.bestAskBidPrice = computeBestAskBidPriceIfUnsafe(ret)
-    deltaMargin = ret.index.times(amount).negated()
+    deltaMargin = ret.bestAskBidPrice.times(amount).negated()
   }
 
   // max close price discount = -P_i * ΔN * (1 ± discount)

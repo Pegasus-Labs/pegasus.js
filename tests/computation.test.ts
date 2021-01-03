@@ -60,8 +60,8 @@ const perpetual1: PerpetualStorage = {
   donatedInsuranceFund: _0,
 
   halfSpread: new BigNumber(0.001),
-  openSlippageFactor: new BigNumber(0.1),
-  closeSlippageFactor: new BigNumber(0.09),
+  openSlippageFactor: new BigNumber('0.0142857142857142857142857142857'),
+  closeSlippageFactor: new BigNumber('0.0128571428571428571428571428571'),
   fundingRateLimit: new BigNumber(0.005),
   maxClosePriceDiscount: new BigNumber(0.05),
   ammMaxLeverage: new BigNumber(5),
@@ -709,7 +709,7 @@ describe('computeAMMPrice', function () {
   it(`amm holds short unsafe. trader sells cross 0. spread effects all`, function () {
     const { tradingPrice } = computeAMMPrice(poolStorage3, TEST_MARKET_INDEX0, '-2.31')
     // m0 = 18142.575 - 7000 * 2.3 when pos = 0
-    expect(tradingPrice).toApproximate(new BigNumber('6993'))
+    expect(tradingPrice).toApproximate(new BigNumber('6999.9925821499080742927358107'))
   })
 
   it(`buy too large`, function () {
