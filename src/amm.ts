@@ -21,6 +21,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
   let openSlippageFactor = _0
   let closeSlippageFactor = _0
   let fundingRateLimit = _0
+  let maxClosePriceDiscount = _0
   let ammMaxLeverage = _0
  
   let otherIndex: BigNumber[] = []
@@ -44,6 +45,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
       openSlippageFactor = perpetual.openSlippageFactor
       closeSlippageFactor = perpetual.closeSlippageFactor
       fundingRateLimit = perpetual.fundingRateLimit
+      maxClosePriceDiscount = perpetual.maxClosePriceDiscount
       ammMaxLeverage = perpetual.ammMaxLeverage
     } else {
       otherIndex.push(perpetual.indexPrice)
@@ -55,7 +57,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
    
   let ret: AMMTradingContext = {
     index, position1, halfSpread, openSlippageFactor, closeSlippageFactor,
-    fundingRateLimit, ammMaxLeverage,
+    fundingRateLimit, maxClosePriceDiscount, ammMaxLeverage,
     otherIndex, otherPosition, otherOpenSlippageFactor, otherAMMMaxLeverage,
     cash, poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: null,
     valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
@@ -74,9 +76,10 @@ export function initAMMTradingContextEagerEvaluation(context: AMMTradingContext)
     valueWithoutCurrent = valueWithoutCurrent.plus(
       context.otherIndex[j].times(context.otherPosition[j])
     )
-    // Σ_j (β P_i N^2) where j ≠ id
+    // Σ_j (β P_i^2 N^2) where j ≠ id
     squareValueWithoutCurrent = squareValueWithoutCurrent.plus(
-      context.otherOpenSlippageFactor[j].times(context.otherIndex[j]).times(context.otherPosition[j]).times(context.otherPosition[j])
+      context.otherOpenSlippageFactor[j].times(context.otherIndex[j]).times(context.otherIndex[j])
+      .times(context.otherPosition[j]).times(context.otherPosition[j])
     )
     // Σ_j (P_i_j * | N_j | / λ_j) where j ≠ id
     positionMarginWithoutCurrent = positionMarginWithoutCurrent.plus(
@@ -133,8 +136,8 @@ export function computeBestAskBidPriceIfSafe(context: AMMTradingContext, beta: B
   if (context.poolMargin.lte(_0)) {
     throw new InsufficientLiquidityError(`AMM poolMargin <= 0`)
   }
-  // P_i (1 - β / M * N1)
-  let price = context.position1.div(context.poolMargin).times(beta)
+  // P_i (1 - β / M * P_i * N1)
+  let price = context.position1.times(context.index).div(context.poolMargin).times(beta)
   price = _1.minus(price).times(context.index)
   return appendSpread(context, price, isAMMBuy)
 }
@@ -247,7 +250,8 @@ export function computeAMMPoolMargin(context: AMMTradingContext, beta: BigNumber
     .plus(context.valueWithoutCurrent)
     .plus(context.index.times(context.position1))
   const squareValueWithCurrent = context.squareValueWithoutCurrent
-    .plus(beta.times(context.index).times(context.position1).times(context.position1))
+    .plus(beta.times(context.index).times(context.index).times(context.position1).times(context.position1))
+  // 1/2 (M_b + √(M_b^2 - 2(Σ β P_i_j^2 N_j^2)))
   const beforeSqrt = marginBalanceWithCurrent.times(marginBalanceWithCurrent).minus(_2.times(squareValueWithCurrent))
   if (beforeSqrt.lt(_0)) {
     throw new BugError('AMM available margin sqrt < 0')
@@ -260,8 +264,8 @@ export function isAMMSafe(context: AMMTradingContext, beta: BigNumber): boolean 
   const valueWithCurrent = context.valueWithoutCurrent
     .plus(context.index.times(context.position1))
   const squareValueWithCurrent = context.squareValueWithoutCurrent
-    .plus(beta.times(context.index).times(context.position1).times(context.position1))
-  // √(2 Σ(β_j P_i_j N_j^2)) - Σ(P_i_j N_j). always positive
+    .plus(beta.times(context.index).times(context.index).times(context.position1).times(context.position1))
+  // √(2 Σ(β_j P_i_j^2 N_j^2)) - Σ(P_i_j N_j). always positive
   const beforeSqrt = _2.times(squareValueWithCurrent)
   const safeCash = sqrt(beforeSqrt).minus(valueWithCurrent)
   return context.cash.gte(safeCash)
@@ -300,8 +304,8 @@ export function computeAMMSafeLongPositionAmount(context: AMMTradingContext, bet
 }
 
 export function computeAMMSafeCondition1(context: AMMTradingContext, beta: BigNumber): BigNumber {
-  // M / β
-  const position2 = context.poolMargin.div(beta)
+  // M / i / β
+  const position2 = context.poolMargin.div(context.index).div(beta)
   return position2.dp(DECIMALS)
 }
 
@@ -314,32 +318,31 @@ export function computeAMMSafeCondition2(context: AMMTradingContext, beta: BigNu
   const x = context.poolMargin
     .minus(context.positionMarginWithoutCurrent)
     .plus(context.squareValueWithoutCurrent.div(context.poolMargin).div(_2))
-  //  M - √(M(M - 2βλ^2/P_i x))
+  //  M - √(M(M - 2βλ^2 x))
   // ---------------------------
-  //             βλ
-  let beforeSqrt = x.times(context.ammMaxLeverage).times(context.ammMaxLeverage).times(beta).times(_2).div(context.index)
+  //          β λ P_i
+  let beforeSqrt = x.times(context.ammMaxLeverage).times(context.ammMaxLeverage).times(beta).times(_2)
   beforeSqrt = context.poolMargin.minus(beforeSqrt).times(context.poolMargin)
   if (beforeSqrt.lt(_0)) {
     // means the curve is always above the x-axis
     return true
   }
   let position2 = context.poolMargin.minus(sqrt(beforeSqrt))
-  position2 = position2.div(beta).div(context.ammMaxLeverage)
+  position2 = position2.div(beta).div(context.ammMaxLeverage).div(context.index)
   return position2.dp(DECIMALS)
 }
 
 // return false if always unsafe
 export function computeAMMSafeCondition3(context: AMMTradingContext, beta: BigNumber): BigNumber | false {
-  //    2M^2 - squareValueWithoutCurrent
-  // √(----------------------------------)
-  //                P_i β
+  //   1      2M^2 - squareValueWithoutCurrent
+  // ----- √(----------------------------------)
+  //  P_i                   β
   const beforeSqrt = _2.times(context.poolMargin).times(context.poolMargin)
-    .minus(context.squareValueWithoutCurrent)
-    .div(context.index).div(beta)
+    .minus(context.squareValueWithoutCurrent).div(beta)
   if (beforeSqrt.lt(_0)) {
     return false
   }
-  const position2 = sqrt(beforeSqrt)
+  const position2 = sqrt(beforeSqrt).div(context.index)
   return position2.dp(DECIMALS)
 }
 
@@ -348,8 +351,8 @@ export function computeBasePrice(context: AMMTradingContext, beta: BigNumber, po
   if (context.poolMargin.lte(_0)) {
     throw new InsufficientLiquidityError(`AMM poolMargin <= 0`)
   }
-  // P_i (1 - β / M * N)
-  let ret = position.div(context.poolMargin).times(beta)
+  // P_i (1 - β / M * P_i * N)
+  let ret = context.index.times(position).div(context.poolMargin).times(beta)
   ret = _1.minus(ret).times(context.index)
   return ret.dp(DECIMALS)
 }
@@ -364,8 +367,8 @@ export function computeDeltaMargin(context: AMMTradingContext, beta: BigNumber, 
   if (context.poolMargin.lte(_0)) {
     throw new InsufficientLiquidityError(`AMM poolMargin <= 0`)
   }
-  // P_i (N1 - N2) (1 - β / M * (N2 + N1) / 2)
-  let ret = position2.plus(context.position1).div(_2).div(context.poolMargin).times(beta)
+  // P_i (N1 - N2) (1 - β / M * P_i * (N2 + N1) / 2)
+  let ret = position2.plus(context.position1).div(_2).times(context.index).div(context.poolMargin).times(beta)
   ret = _1.minus(ret)
   ret = context.position1.minus(position2).times(ret).times(context.index)
   return ret.dp(DECIMALS)

@@ -62,9 +62,10 @@ const perpetual1: PerpetualStorage = {
   donatedInsuranceFund: _0,
 
   halfSpread: new BigNumber(0.001),
-  openSlippageFactor: new BigNumber(100),
-  closeSlippageFactor: new BigNumber(90),
+  openSlippageFactor: new BigNumber(0.1),
+  closeSlippageFactor: new BigNumber(0.09),
   fundingRateLimit: new BigNumber(0.005),
+  maxClosePriceDiscount: new BigNumber(0.05),
   ammMaxLeverage: new BigNumber(5),
 
   ammCashBalance: _0, // assign me later

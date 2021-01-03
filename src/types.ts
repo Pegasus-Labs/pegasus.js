@@ -88,7 +88,8 @@ export interface PerpetualStorage {
   openSlippageFactor: BigNumber // β1
   closeSlippageFactor: BigNumber // β2
   fundingRateLimit: BigNumber // γ
-  ammMaxLeverage: BigNumber  // λ
+  maxClosePriceDiscount: BigNumber // δ
+  ammMaxLeverage: BigNumber // λ
 
   ammCashBalance: BigNumber
   ammPositionAmount: BigNumber
@@ -142,6 +143,7 @@ export interface AMMTradingContext {
   openSlippageFactor: BigNumber // β1_m
   closeSlippageFactor: BigNumber // β2_m
   fundingRateLimit: BigNumber // γ_m
+  maxClosePriceDiscount: BigNumber // δ_m
   ammMaxLeverage: BigNumber // λ_m
 
   // other perpetuals
@@ -161,7 +163,7 @@ export interface AMMTradingContext {
 
   // eager evaluation
   valueWithoutCurrent: BigNumber // Σ_j (P_i_j * N_j) where j ≠ id
-  squareValueWithoutCurrent: BigNumber // Σ_j (β1_j * P_i_j * N_j ^ 2) where j ≠ id
+  squareValueWithoutCurrent: BigNumber // Σ_j (β1_j * P_i_j^2 * N_j^2) where j ≠ id
   positionMarginWithoutCurrent: BigNumber // Σ_j (P_i_j * | N_j | / λ_j) where j ≠ id
 }
 
