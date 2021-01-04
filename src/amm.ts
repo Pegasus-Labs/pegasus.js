@@ -111,11 +111,6 @@ export function computeAMMInternalTrade(p: LiquidityPoolStorage, perpetualIndex:
     context = computeAMMInternalOpen(context, open)
   }
 
-  // negative price
-  if (context.deltaPosition.lt(_0) && context.deltaMargin.lt(_0)) {
-    context.deltaMargin = _0
-  }
-
   // spread. this is equivalent to:
   // * if amount > 0, trader sell. use min(P_avg, P_bestBid)
   // * if amount < 0, trader buy. use max(P_avg, P_bestAsk)
@@ -204,6 +199,10 @@ export function computeAMMInternalClose(context: AMMTradingContext, amount: BigN
   }
   const limitValue = _1.plus(discount).times(context.index).times(amount).negated()
   deltaMargin = BigNumber.maximum(deltaMargin, limitValue)
+
+  if (hasTheSameSign(deltaMargin, amount)) {
+    throw new BugError(`close error. ΔM and amount has the same sign unexpectedly: ${deltaMargin.toFixed()} vs ${amount.toFixed()}`)
+  }
 
   // commit
   ret.deltaMargin = ret.deltaMargin.plus(deltaMargin)
