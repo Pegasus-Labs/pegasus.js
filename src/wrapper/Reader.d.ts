@@ -65,31 +65,15 @@ export class Reader extends Contract {
       liquidityPool: string,
       perpetualIndex: BigNumberish,
       account: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      marginAccount: {
-        cash: BigNumber;
-        position: BigNumber;
-        0: BigNumber;
-        1: BigNumber;
-      };
-      0: { cash: BigNumber; position: BigNumber; 0: BigNumber; 1: BigNumber };
-    }>;
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     "getAccountStorage(address,uint256,address)"(
       liquidityPool: string,
       perpetualIndex: BigNumberish,
       account: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      marginAccount: {
-        cash: BigNumber;
-        position: BigNumber;
-        0: BigNumber;
-        1: BigNumber;
-      };
-      0: { cash: BigNumber; position: BigNumber; 0: BigNumber; 1: BigNumber };
-    }>;
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     getLiquidityPoolStorage(
       liquidityPool: string,
@@ -106,25 +90,15 @@ export class Reader extends Contract {
     liquidityPool: string,
     perpetualIndex: BigNumberish,
     account: string,
-    overrides?: CallOverrides
-  ): Promise<{
-    cash: BigNumber;
-    position: BigNumber;
-    0: BigNumber;
-    1: BigNumber;
-  }>;
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   "getAccountStorage(address,uint256,address)"(
     liquidityPool: string,
     perpetualIndex: BigNumberish,
     account: string,
-    overrides?: CallOverrides
-  ): Promise<{
-    cash: BigNumber;
-    position: BigNumber;
-    0: BigNumber;
-    1: BigNumber;
-  }>;
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   getLiquidityPoolStorage(
     liquidityPool: string,
@@ -165,125 +139,193 @@ export class Reader extends Contract {
       liquidityPool: string,
       overrides?: CallOverrides
     ): Promise<{
-      operator: string;
-      collateralToken: string;
-      vault: string;
-      governor: string;
-      shareToken: string;
+      isRunning: boolean;
+      isFastCreationEnabled: boolean;
+      addresses: [string, string, string, string, string, string, string];
       vaultFeeRate: BigNumber;
       poolCash: BigNumber;
+      collateralDecimals: BigNumber;
+      perpetualCount: BigNumber;
       fundingTime: BigNumber;
-      perpetualStorages: {
-        symbol: BigNumber;
-        underlyingAsset: string;
+      perpetuals: {
         state: number;
         oracle: string;
-        markPrice: BigNumber;
-        indexPrice: BigNumber;
-        unitAccumulativeFunding: BigNumber;
-        initialMarginRate: BigNumber;
-        maintenanceMarginRate: BigNumber;
-        operatorFeeRate: BigNumber;
-        lpFeeRate: BigNumber;
-        referrerRebateRate: BigNumber;
-        liquidationPenaltyRate: BigNumber;
-        keeperGasReward: BigNumber;
-        insuranceFundRate: BigNumber;
-        insuranceFundCap: BigNumber;
-        insuranceFund: BigNumber;
-        donatedInsuranceFund: BigNumber;
-        halfSpread: BigNumber;
-        openSlippageFactor: BigNumber;
-        closeSlippageFactor: BigNumber;
-        fundingRateLimit: BigNumber;
-        ammMaxLeverage: BigNumber;
+        nums: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber
+        ];
+        symbol: BigNumber;
+        underlyingAsset: string;
         ammCashBalance: BigNumber;
         ammPositionAmount: BigNumber;
-        0: BigNumber;
+        0: number;
         1: string;
-        2: number;
-        3: string;
-        4: BigNumber;
+        2: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber
+        ];
+        3: BigNumber;
+        4: string;
         5: BigNumber;
         6: BigNumber;
-        7: BigNumber;
-        8: BigNumber;
-        9: BigNumber;
-        10: BigNumber;
-        11: BigNumber;
-        12: BigNumber;
-        13: BigNumber;
-        14: BigNumber;
-        15: BigNumber;
-        16: BigNumber;
-        17: BigNumber;
-        18: BigNumber;
-        19: BigNumber;
-        20: BigNumber;
-        21: BigNumber;
-        22: BigNumber;
-        23: BigNumber;
-        24: BigNumber;
       }[];
-      0: string;
-      1: string;
-      2: string;
-      3: string;
-      4: string;
+      0: boolean;
+      1: boolean;
+      2: [string, string, string, string, string, string, string];
+      3: BigNumber;
+      4: BigNumber;
       5: BigNumber;
       6: BigNumber;
       7: BigNumber;
       8: {
-        symbol: BigNumber;
-        underlyingAsset: string;
         state: number;
         oracle: string;
-        markPrice: BigNumber;
-        indexPrice: BigNumber;
-        unitAccumulativeFunding: BigNumber;
-        initialMarginRate: BigNumber;
-        maintenanceMarginRate: BigNumber;
-        operatorFeeRate: BigNumber;
-        lpFeeRate: BigNumber;
-        referrerRebateRate: BigNumber;
-        liquidationPenaltyRate: BigNumber;
-        keeperGasReward: BigNumber;
-        insuranceFundRate: BigNumber;
-        insuranceFundCap: BigNumber;
-        insuranceFund: BigNumber;
-        donatedInsuranceFund: BigNumber;
-        halfSpread: BigNumber;
-        openSlippageFactor: BigNumber;
-        closeSlippageFactor: BigNumber;
-        fundingRateLimit: BigNumber;
-        ammMaxLeverage: BigNumber;
+        nums: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber
+        ];
+        symbol: BigNumber;
+        underlyingAsset: string;
         ammCashBalance: BigNumber;
         ammPositionAmount: BigNumber;
-        0: BigNumber;
+        0: number;
         1: string;
-        2: number;
-        3: string;
-        4: BigNumber;
+        2: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber
+        ];
+        3: BigNumber;
+        4: string;
         5: BigNumber;
         6: BigNumber;
-        7: BigNumber;
-        8: BigNumber;
-        9: BigNumber;
-        10: BigNumber;
-        11: BigNumber;
-        12: BigNumber;
-        13: BigNumber;
-        14: BigNumber;
-        15: BigNumber;
-        16: BigNumber;
-        17: BigNumber;
-        18: BigNumber;
-        19: BigNumber;
-        20: BigNumber;
-        21: BigNumber;
-        22: BigNumber;
-        23: BigNumber;
-        24: BigNumber;
       }[];
     }>;
 
@@ -291,125 +333,193 @@ export class Reader extends Contract {
       liquidityPool: string,
       overrides?: CallOverrides
     ): Promise<{
-      operator: string;
-      collateralToken: string;
-      vault: string;
-      governor: string;
-      shareToken: string;
+      isRunning: boolean;
+      isFastCreationEnabled: boolean;
+      addresses: [string, string, string, string, string, string, string];
       vaultFeeRate: BigNumber;
       poolCash: BigNumber;
+      collateralDecimals: BigNumber;
+      perpetualCount: BigNumber;
       fundingTime: BigNumber;
-      perpetualStorages: {
-        symbol: BigNumber;
-        underlyingAsset: string;
+      perpetuals: {
         state: number;
         oracle: string;
-        markPrice: BigNumber;
-        indexPrice: BigNumber;
-        unitAccumulativeFunding: BigNumber;
-        initialMarginRate: BigNumber;
-        maintenanceMarginRate: BigNumber;
-        operatorFeeRate: BigNumber;
-        lpFeeRate: BigNumber;
-        referrerRebateRate: BigNumber;
-        liquidationPenaltyRate: BigNumber;
-        keeperGasReward: BigNumber;
-        insuranceFundRate: BigNumber;
-        insuranceFundCap: BigNumber;
-        insuranceFund: BigNumber;
-        donatedInsuranceFund: BigNumber;
-        halfSpread: BigNumber;
-        openSlippageFactor: BigNumber;
-        closeSlippageFactor: BigNumber;
-        fundingRateLimit: BigNumber;
-        ammMaxLeverage: BigNumber;
+        nums: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber
+        ];
+        symbol: BigNumber;
+        underlyingAsset: string;
         ammCashBalance: BigNumber;
         ammPositionAmount: BigNumber;
-        0: BigNumber;
+        0: number;
         1: string;
-        2: number;
-        3: string;
-        4: BigNumber;
+        2: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber
+        ];
+        3: BigNumber;
+        4: string;
         5: BigNumber;
         6: BigNumber;
-        7: BigNumber;
-        8: BigNumber;
-        9: BigNumber;
-        10: BigNumber;
-        11: BigNumber;
-        12: BigNumber;
-        13: BigNumber;
-        14: BigNumber;
-        15: BigNumber;
-        16: BigNumber;
-        17: BigNumber;
-        18: BigNumber;
-        19: BigNumber;
-        20: BigNumber;
-        21: BigNumber;
-        22: BigNumber;
-        23: BigNumber;
-        24: BigNumber;
       }[];
-      0: string;
-      1: string;
-      2: string;
-      3: string;
-      4: string;
+      0: boolean;
+      1: boolean;
+      2: [string, string, string, string, string, string, string];
+      3: BigNumber;
+      4: BigNumber;
       5: BigNumber;
       6: BigNumber;
       7: BigNumber;
       8: {
-        symbol: BigNumber;
-        underlyingAsset: string;
         state: number;
         oracle: string;
-        markPrice: BigNumber;
-        indexPrice: BigNumber;
-        unitAccumulativeFunding: BigNumber;
-        initialMarginRate: BigNumber;
-        maintenanceMarginRate: BigNumber;
-        operatorFeeRate: BigNumber;
-        lpFeeRate: BigNumber;
-        referrerRebateRate: BigNumber;
-        liquidationPenaltyRate: BigNumber;
-        keeperGasReward: BigNumber;
-        insuranceFundRate: BigNumber;
-        insuranceFundCap: BigNumber;
-        insuranceFund: BigNumber;
-        donatedInsuranceFund: BigNumber;
-        halfSpread: BigNumber;
-        openSlippageFactor: BigNumber;
-        closeSlippageFactor: BigNumber;
-        fundingRateLimit: BigNumber;
-        ammMaxLeverage: BigNumber;
+        nums: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber
+        ];
+        symbol: BigNumber;
+        underlyingAsset: string;
         ammCashBalance: BigNumber;
         ammPositionAmount: BigNumber;
-        0: BigNumber;
+        0: number;
         1: string;
-        2: number;
-        3: string;
-        4: BigNumber;
+        2: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber
+        ];
+        3: BigNumber;
+        4: string;
         5: BigNumber;
         6: BigNumber;
-        7: BigNumber;
-        8: BigNumber;
-        9: BigNumber;
-        10: BigNumber;
-        11: BigNumber;
-        12: BigNumber;
-        13: BigNumber;
-        14: BigNumber;
-        15: BigNumber;
-        16: BigNumber;
-        17: BigNumber;
-        18: BigNumber;
-        19: BigNumber;
-        20: BigNumber;
-        21: BigNumber;
-        22: BigNumber;
-        23: BigNumber;
-        24: BigNumber;
       }[];
     }>;
   };
@@ -421,14 +531,14 @@ export class Reader extends Contract {
       liquidityPool: string,
       perpetualIndex: BigNumberish,
       account: string,
-      overrides?: CallOverrides
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     "getAccountStorage(address,uint256,address)"(
       liquidityPool: string,
       perpetualIndex: BigNumberish,
       account: string,
-      overrides?: CallOverrides
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     getLiquidityPoolStorage(
@@ -447,14 +557,14 @@ export class Reader extends Contract {
       liquidityPool: string,
       perpetualIndex: BigNumberish,
       account: string,
-      overrides?: CallOverrides
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "getAccountStorage(address,uint256,address)"(
       liquidityPool: string,
       perpetualIndex: BigNumberish,
       account: string,
-      overrides?: CallOverrides
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     getLiquidityPoolStorage(

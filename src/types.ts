@@ -48,27 +48,38 @@ export interface PerpetualID {
   perpetualIndex: number
 }
 
+export interface Option {
+  value: BigNumber
+  minValue: BigNumber
+  maxValue: BigNumber
+}
+
 export interface LiquidityPoolStorage {
+  isRunning: boolean,
+  isFastCreationEnabled: boolean,
+
+  creator: string
   operator: string
-  collateral: string
-  vault: string
+  transferringOperator: string
   governor: string
   shareToken: string
+  collateral: string
+  vault: string
 
   vaultFeeRate: BigNumber
   poolCashBalance: BigNumber
+  collateralDecimals: number
   fundingTime: number
   
   perpetuals: Map<number, PerpetualStorage>
 }
 
 export interface PerpetualStorage {
-  symbol: number
-  underlyingSymbol: string
   state: PerpetualState
   oracle: string
 
-  markPrice: BigNumber
+  totalCollateral: BigNumber
+  markPrice: BigNumber // markPrice = settlementPrice if it is in EMERGENCY state
   indexPrice: BigNumber
   unitAccumulativeFunding: BigNumber
 
@@ -84,13 +95,15 @@ export interface PerpetualStorage {
   insuranceFund: BigNumber
   donatedInsuranceFund: BigNumber
   
-  halfSpread: BigNumber // α
-  openSlippageFactor: BigNumber // β1
-  closeSlippageFactor: BigNumber // β2
-  fundingRateLimit: BigNumber // γ
-  maxClosePriceDiscount: BigNumber // δ
-  ammMaxLeverage: BigNumber // λ
+  halfSpread: Option // α
+  openSlippageFactor: Option // β1
+  closeSlippageFactor: Option // β2
+  fundingRateLimit: Option // γ
+  ammMaxLeverage: Option // λ
+  maxClosePriceDiscount: Option // δ
 
+  symbol: number
+  underlyingSymbol: string  
   ammCashBalance: BigNumber
   ammPositionAmount: BigNumber
 }

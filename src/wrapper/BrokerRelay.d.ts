@@ -27,6 +27,7 @@ interface BrokerRelayInterface extends ethers.utils.Interface {
     "batchTrade(bytes[],int256[],uint256[])": FunctionFragment;
     "cancelOrder(tuple)": FunctionFragment;
     "deposit()": FunctionFragment;
+    "execute(address,bytes,uint256)": FunctionFragment;
     "withdraw(uint256)": FunctionFragment;
   };
 
@@ -59,6 +60,10 @@ interface BrokerRelayInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "deposit", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "execute",
+    values: [string, BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "withdraw",
     values: [BigNumberish]
   ): string;
@@ -70,6 +75,7 @@ interface BrokerRelayInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "execute", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {
@@ -179,6 +185,20 @@ export class BrokerRelay extends Contract {
 
     "deposit()"(overrides?: PayableOverrides): Promise<ContractTransaction>;
 
+    execute(
+      liqidityPool: string,
+      callData: BytesLike,
+      gasReward: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "execute(address,bytes,uint256)"(
+      liqidityPool: string,
+      callData: BytesLike,
+      gasReward: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     withdraw(
       amount: BigNumberish,
       overrides?: Overrides
@@ -257,6 +277,20 @@ export class BrokerRelay extends Contract {
 
   "deposit()"(overrides?: PayableOverrides): Promise<ContractTransaction>;
 
+  execute(
+    liqidityPool: string,
+    callData: BytesLike,
+    gasReward: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "execute(address,bytes,uint256)"(
+    liqidityPool: string,
+    callData: BytesLike,
+    gasReward: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   withdraw(
     amount: BigNumberish,
     overrides?: Overrides
@@ -334,6 +368,20 @@ export class BrokerRelay extends Contract {
     deposit(overrides?: CallOverrides): Promise<void>;
 
     "deposit()"(overrides?: CallOverrides): Promise<void>;
+
+    execute(
+      liqidityPool: string,
+      callData: BytesLike,
+      gasReward: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "execute(address,bytes,uint256)"(
+      liqidityPool: string,
+      callData: BytesLike,
+      gasReward: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     withdraw(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
@@ -437,6 +485,20 @@ export class BrokerRelay extends Contract {
 
     "deposit()"(overrides?: PayableOverrides): Promise<BigNumber>;
 
+    execute(
+      liqidityPool: string,
+      callData: BytesLike,
+      gasReward: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "execute(address,bytes,uint256)"(
+      liqidityPool: string,
+      callData: BytesLike,
+      gasReward: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     withdraw(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
 
     "withdraw(uint256)"(
@@ -515,6 +577,20 @@ export class BrokerRelay extends Contract {
     deposit(overrides?: PayableOverrides): Promise<PopulatedTransaction>;
 
     "deposit()"(overrides?: PayableOverrides): Promise<PopulatedTransaction>;
+
+    execute(
+      liqidityPool: string,
+      callData: BytesLike,
+      gasReward: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "execute(address,bytes,uint256)"(
+      liqidityPool: string,
+      callData: BytesLike,
+      gasReward: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
     withdraw(
       amount: BigNumberish,

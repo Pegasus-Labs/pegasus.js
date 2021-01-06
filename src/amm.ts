@@ -41,17 +41,17 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
     if (id === perpetualIndex) {
       index = perpetual.indexPrice
       position1 = perpetual.ammPositionAmount
-      halfSpread = perpetual.halfSpread
-      openSlippageFactor = perpetual.openSlippageFactor
-      closeSlippageFactor = perpetual.closeSlippageFactor
-      fundingRateLimit = perpetual.fundingRateLimit
-      maxClosePriceDiscount = perpetual.maxClosePriceDiscount
-      ammMaxLeverage = perpetual.ammMaxLeverage
+      halfSpread = perpetual.halfSpread.value
+      openSlippageFactor = perpetual.openSlippageFactor.value
+      closeSlippageFactor = perpetual.closeSlippageFactor.value
+      fundingRateLimit = perpetual.fundingRateLimit.value
+      maxClosePriceDiscount = perpetual.maxClosePriceDiscount.value
+      ammMaxLeverage = perpetual.ammMaxLeverage.value
     } else {
       otherIndex.push(perpetual.indexPrice)
       otherPosition.push(perpetual.ammPositionAmount)
-      otherOpenSlippageFactor.push(perpetual.openSlippageFactor)
-      otherAMMMaxLeverage.push(perpetual.ammMaxLeverage)
+      otherOpenSlippageFactor.push(perpetual.openSlippageFactor.value)
+      otherAMMMaxLeverage.push(perpetual.ammMaxLeverage.value)
     }
   })
    

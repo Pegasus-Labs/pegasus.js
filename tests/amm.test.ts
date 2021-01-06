@@ -23,6 +23,11 @@ import { extendExpect } from './helper'
 extendExpect()
 
 const defaultPool: LiquidityPoolStorage = {
+  isRunning: true,
+  isFastCreationEnabled: false,
+  collateralDecimals: 18,
+  creator: '0x0',
+  transferringOperator: '0x0',
   operator: '0x0',
   collateral: '0x0',
   vault: '0x0',
@@ -41,6 +46,7 @@ const perpetual1: PerpetualStorage = {
   underlyingSymbol: 'T',
   state: PerpetualState.NORMAL,
   oracle: "0x0",
+  totalCollateral: _0,
 
   markPrice: new BigNumber(95),
   indexPrice: new BigNumber(100),
@@ -58,12 +64,12 @@ const perpetual1: PerpetualStorage = {
   insuranceFund: _0,
   donatedInsuranceFund: _0,
 
-  halfSpread: new BigNumber(0.001),
-  openSlippageFactor: new BigNumber(1),
-  closeSlippageFactor: new BigNumber(0.9),
-  fundingRateLimit: new BigNumber(0.005),
-  maxClosePriceDiscount: new BigNumber(0.2),
-  ammMaxLeverage: new BigNumber(3),
+  halfSpread: { value: new BigNumber(0.001), minValue: _0, maxValue: _0, },
+  openSlippageFactor: { value: new BigNumber(1), minValue: _0, maxValue: _0, },
+  closeSlippageFactor: { value: new BigNumber(0.9), minValue: _0, maxValue: _0, },
+  fundingRateLimit: { value: new BigNumber(0.005), minValue: _0, maxValue: _0, },
+  ammMaxLeverage: { value: new BigNumber(3), minValue: _0, maxValue: _0, },
+  maxClosePriceDiscount: { value: new BigNumber(0.2), minValue: _0, maxValue: _0, },
 
   ammCashBalance: _0, // assign me later
   ammPositionAmount: _0, // assign me later
@@ -284,7 +290,7 @@ describe('safePosition', function () {
       perpetuals: new Map([
         [TEST_MARKET_INDEX0, {
           ...poolStorage1.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage,
-          ammMaxLeverage: new BigNumber('0.5'), }],
+          ammMaxLeverage: { value: new BigNumber('0.5'), minValue: _0, maxValue: _0 }}],
         [TEST_MARKET_INDEX1, poolStorage1.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage],
       ])
     }, TEST_MARKET_INDEX0), beta)
@@ -300,12 +306,13 @@ describe('safePosition', function () {
       perpetuals: new Map([
         [TEST_MARKET_INDEX0, {
           ...poolStorage1.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage,
-          ammMaxLeverage: new BigNumber('0.5'), indexPrice: new BigNumber(100),
-          ammPositionAmount: new BigNumber('-10'), openSlippageFactor: beta }],
+          indexPrice: new BigNumber(100), ammPositionAmount: new BigNumber('-10'),
+          ammMaxLeverage: { value: new BigNumber('0.5'), minValue: _0, maxValue: _0 },
+          openSlippageFactor: { value: beta, minValue: _0, maxValue: _0 }}],
         [TEST_MARKET_INDEX1, {
           ...poolStorage1.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage,
-          indexPrice: new BigNumber('90'),
-          ammPositionAmount: new BigNumber('85.5148648938521'), openSlippageFactor: new BigNumber('2.222222222222222222'), }],
+          indexPrice: new BigNumber('90'), ammPositionAmount: new BigNumber('85.5148648938521'),
+          openSlippageFactor: { value: new BigNumber('2.222222222222222222'), minValue: _0, maxValue: _0 }}],
         ])
     }, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
@@ -332,7 +339,7 @@ describe('safePosition', function () {
       perpetuals: new Map([
         [TEST_MARKET_INDEX0, {
           ...poolStorage4.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage,
-          ammMaxLeverage: new BigNumber('0.5'), }],
+          ammMaxLeverage: { value: new BigNumber('0.5'), minValue: _0, maxValue: _0 }}],
         [TEST_MARKET_INDEX1, poolStorage4.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage],
       ])
     }, TEST_MARKET_INDEX0), beta)
@@ -348,11 +355,11 @@ describe('safePosition', function () {
       perpetuals: new Map([
         [TEST_MARKET_INDEX0, {
           ...poolStorage4.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage,
-          openSlippageFactor: beta }],
+          openSlippageFactor: { value: beta, minValue: _0, maxValue: _0 }}],
         [TEST_MARKET_INDEX1, {
           ...poolStorage4.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage,
-          indexPrice: new BigNumber('10'),
-          ammPositionAmount: new BigNumber('-109'), openSlippageFactor: new BigNumber('3'), }],
+          indexPrice: new BigNumber('10'), ammPositionAmount: new BigNumber('-109'),
+          openSlippageFactor: { value: new BigNumber('3'), minValue: _0, maxValue: _0 }}],
         ])
     }, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
@@ -557,7 +564,7 @@ describe('trade - cross 0', function () {
         ...element.amm,
         perpetuals: new Map([
           ...element.amm.perpetuals,
-          [TEST_MARKET_INDEX0, { ...p1, halfSpread: element.halfSpread }],
+          [TEST_MARKET_INDEX0, { ...p1, halfSpread: { value: element.halfSpread, minValue: _0, maxValue: _0 }}],
         ]),
       }, TEST_MARKET_INDEX0, element.amount)
       expect(context.deltaMargin).toApproximate(normalizeBigNumberish(element.deltaMargin))

@@ -25,8 +25,8 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "accessController()": FunctionFragment;
     "activateLiquidityPoolFor(address,uint256)": FunctionFragment;
     "addVersion(address,uint256,string)": FunctionFragment;
-    "createLiquidityPool(address,bool,int256)": FunctionFragment;
-    "createLiquidityPoolWith(address,address,bool,int256)": FunctionFragment;
+    "createLiquidityPool(address,uint256,bool,int256)": FunctionFragment;
+    "createLiquidityPoolWith(address,address,uint256,bool,int256)": FunctionFragment;
     "deactivateLiquidityPoolFor(address,uint256)": FunctionFragment;
     "getActiveLiquidityPoolCountOf(address)": FunctionFragment;
     "getDescription(address)": FunctionFragment;
@@ -67,11 +67,11 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "createLiquidityPool",
-    values: [string, boolean, BigNumberish]
+    values: [string, BigNumberish, boolean, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "createLiquidityPoolWith",
-    values: [string, string, boolean, BigNumberish]
+    values: [string, string, BigNumberish, boolean, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "deactivateLiquidityPoolFor",
@@ -265,7 +265,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
 
   events: {
     "AddVersion(address)": EventFragment;
-    "CreateLiquidityPool(address,address,address,address,address,bool)": EventFragment;
+    "CreateLiquidityPool(address,address,address,address,address,uint256,bool)": EventFragment;
     "GrantPrivilege(address,address,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "RevokePrivilege(address,address,uint256)": EventFragment;
@@ -332,13 +332,15 @@ export class PoolCreator extends Contract {
 
     createLiquidityPool(
       collateral: string,
+      collateralDecimals: BigNumberish,
       isFastCreationEnabled: boolean,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "createLiquidityPool(address,bool,int256)"(
+    "createLiquidityPool(address,uint256,bool,int256)"(
       collateral: string,
+      collateralDecimals: BigNumberish,
       isFastCreationEnabled: boolean,
       nonce: BigNumberish,
       overrides?: Overrides
@@ -347,14 +349,16 @@ export class PoolCreator extends Contract {
     createLiquidityPoolWith(
       implementation: string,
       collateral: string,
+      collateralDecimals: BigNumberish,
       isFastCreationEnabled: boolean,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "createLiquidityPoolWith(address,address,bool,int256)"(
+    "createLiquidityPoolWith(address,address,uint256,bool,int256)"(
       implementation: string,
       collateral: string,
+      collateralDecimals: BigNumberish,
       isFastCreationEnabled: boolean,
       nonce: BigNumberish,
       overrides?: Overrides
@@ -753,13 +757,15 @@ export class PoolCreator extends Contract {
 
   createLiquidityPool(
     collateral: string,
+    collateralDecimals: BigNumberish,
     isFastCreationEnabled: boolean,
     nonce: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "createLiquidityPool(address,bool,int256)"(
+  "createLiquidityPool(address,uint256,bool,int256)"(
     collateral: string,
+    collateralDecimals: BigNumberish,
     isFastCreationEnabled: boolean,
     nonce: BigNumberish,
     overrides?: Overrides
@@ -768,14 +774,16 @@ export class PoolCreator extends Contract {
   createLiquidityPoolWith(
     implementation: string,
     collateral: string,
+    collateralDecimals: BigNumberish,
     isFastCreationEnabled: boolean,
     nonce: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "createLiquidityPoolWith(address,address,bool,int256)"(
+  "createLiquidityPoolWith(address,address,uint256,bool,int256)"(
     implementation: string,
     collateral: string,
+    collateralDecimals: BigNumberish,
     isFastCreationEnabled: boolean,
     nonce: BigNumberish,
     overrides?: Overrides
@@ -1066,13 +1074,15 @@ export class PoolCreator extends Contract {
 
     createLiquidityPool(
       collateral: string,
+      collateralDecimals: BigNumberish,
       isFastCreationEnabled: boolean,
       nonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    "createLiquidityPool(address,bool,int256)"(
+    "createLiquidityPool(address,uint256,bool,int256)"(
       collateral: string,
+      collateralDecimals: BigNumberish,
       isFastCreationEnabled: boolean,
       nonce: BigNumberish,
       overrides?: CallOverrides
@@ -1081,14 +1091,16 @@ export class PoolCreator extends Contract {
     createLiquidityPoolWith(
       implementation: string,
       collateral: string,
+      collateralDecimals: BigNumberish,
       isFastCreationEnabled: boolean,
       nonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    "createLiquidityPoolWith(address,address,bool,int256)"(
+    "createLiquidityPoolWith(address,address,uint256,bool,int256)"(
       implementation: string,
       collateral: string,
+      collateralDecimals: BigNumberish,
       isFastCreationEnabled: boolean,
       nonce: BigNumberish,
       overrides?: CallOverrides
@@ -1356,6 +1368,7 @@ export class PoolCreator extends Contract {
       shareToken: null,
       operator: null,
       collateral: null,
+      collateralDecimals: null,
       isFastCreationEnabled: null
     ): EventFilter;
 
@@ -1410,13 +1423,15 @@ export class PoolCreator extends Contract {
 
     createLiquidityPool(
       collateral: string,
+      collateralDecimals: BigNumberish,
       isFastCreationEnabled: boolean,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "createLiquidityPool(address,bool,int256)"(
+    "createLiquidityPool(address,uint256,bool,int256)"(
       collateral: string,
+      collateralDecimals: BigNumberish,
       isFastCreationEnabled: boolean,
       nonce: BigNumberish,
       overrides?: Overrides
@@ -1425,14 +1440,16 @@ export class PoolCreator extends Contract {
     createLiquidityPoolWith(
       implementation: string,
       collateral: string,
+      collateralDecimals: BigNumberish,
       isFastCreationEnabled: boolean,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "createLiquidityPoolWith(address,address,bool,int256)"(
+    "createLiquidityPoolWith(address,address,uint256,bool,int256)"(
       implementation: string,
       collateral: string,
+      collateralDecimals: BigNumberish,
       isFastCreationEnabled: boolean,
       nonce: BigNumberish,
       overrides?: Overrides
@@ -1694,13 +1711,15 @@ export class PoolCreator extends Contract {
 
     createLiquidityPool(
       collateral: string,
+      collateralDecimals: BigNumberish,
       isFastCreationEnabled: boolean,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "createLiquidityPool(address,bool,int256)"(
+    "createLiquidityPool(address,uint256,bool,int256)"(
       collateral: string,
+      collateralDecimals: BigNumberish,
       isFastCreationEnabled: boolean,
       nonce: BigNumberish,
       overrides?: Overrides
@@ -1709,14 +1728,16 @@ export class PoolCreator extends Contract {
     createLiquidityPoolWith(
       implementation: string,
       collateral: string,
+      collateralDecimals: BigNumberish,
       isFastCreationEnabled: boolean,
       nonce: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "createLiquidityPoolWith(address,address,bool,int256)"(
+    "createLiquidityPoolWith(address,address,uint256,bool,int256)"(
       implementation: string,
       collateral: string,
+      collateralDecimals: BigNumberish,
       isFastCreationEnabled: boolean,
       nonce: BigNumberish,
       overrides?: Overrides

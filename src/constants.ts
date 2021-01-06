@@ -18,5 +18,5 @@ export const _MAX_UINT256: BigNumber = new BigNumber(
 )
 
 export const CHAIN_ID_TO_READER_ADDRESS: { [chainID: number]: string } = {
-  1337: '0x5328089734A6DC5398cA84fD2976e4aE8F1cEeDf',
+  1337: '0xEc6bb83253f4FD9d3DC71AC4155A61EbAC979532',
 }

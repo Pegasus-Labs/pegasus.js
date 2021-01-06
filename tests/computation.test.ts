@@ -24,6 +24,11 @@ import { extendExpect } from './helper'
 extendExpect()
 
 const defaultPool: LiquidityPoolStorage = {
+  isRunning: true,
+  isFastCreationEnabled: false,
+  collateralDecimals: 18,
+  transferringOperator: '0x0',
+  creator: '0x0',
   operator: '0x0',
   collateral: '0x0',
   vault: '0x0',
@@ -42,6 +47,7 @@ const perpetual1: PerpetualStorage = {
   underlyingSymbol: 'T',
   state: PerpetualState.NORMAL,
   oracle: "0x0",
+  totalCollateral: _0,
 
   markPrice: new BigNumber(6965),
   indexPrice: new BigNumber(7000),
@@ -59,12 +65,12 @@ const perpetual1: PerpetualStorage = {
   insuranceFund: _0,
   donatedInsuranceFund: _0,
 
-  halfSpread: new BigNumber(0.001),
-  openSlippageFactor: new BigNumber('0.0142857142857142857142857142857'),
-  closeSlippageFactor: new BigNumber('0.0128571428571428571428571428571'),
-  fundingRateLimit: new BigNumber(0.005),
-  maxClosePriceDiscount: new BigNumber(0.05),
-  ammMaxLeverage: new BigNumber(5),
+  halfSpread: { value: new BigNumber(0.001), minValue: _0, maxValue: _0, },
+  openSlippageFactor: { value: new BigNumber('0.0142857142857142857142857142857'), minValue: _0, maxValue: _0, },
+  closeSlippageFactor: { value: new BigNumber('0.0128571428571428571428571428571'), minValue: _0, maxValue: _0, },
+  fundingRateLimit: { value: new BigNumber(0.005), minValue: _0, maxValue: _0, },
+  ammMaxLeverage: { value: new BigNumber(5), minValue: _0, maxValue: _0, },
+  maxClosePriceDiscount: { value: new BigNumber(0.05), minValue: _0, maxValue: _0, },
 
   ammCashBalance: _0, // assign me later
   ammPositionAmount: _0, // assign me later

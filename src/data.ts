@@ -77,50 +77,82 @@ export async function getLiquidityPool(
   getAddress(liquidityPoolAddress)
   const pool = await reader.callStatic.getLiquidityPoolStorage(liquidityPoolAddress)
   const ret: LiquidityPoolStorage = {
-    operator: pool.operator,
-    collateral: pool.collateralToken,
-    vault: pool.vault,
-    governor: pool.governor,
-    shareToken: pool.shareToken,
-
+    isRunning: pool.isRunning,
+    isFastCreationEnabled: pool.isFastCreationEnabled,
+    creator: pool.addresses[0],
+    operator: pool.addresses[1],
+    transferringOperator: pool.addresses[2],
+    governor: pool.addresses[3],
+    shareToken: pool.addresses[4],
+    collateral: pool.addresses[5],
+    vault:pool.addresses[6],
     vaultFeeRate: normalizeBigNumberish(pool.vaultFeeRate).shiftedBy(-DECIMALS),
     poolCashBalance: normalizeBigNumberish(pool.poolCash).shiftedBy(-DECIMALS),
+    collateralDecimals: pool.collateralDecimals.toNumber(),
     fundingTime: pool.fundingTime.toNumber(),
-
     perpetuals: new Map(),
   }
-  pool.perpetualStorages.forEach((m, i) => {
+  pool.perpetuals.forEach((m, i) => {
     if (m.state < PerpetualState.INVALID || m.state > PerpetualState.CLEARED) {
       throw new Error(`unrecognized perpetual state: ${m.state}`)
     }
+    const parsePerpNums = (index: number) => {
+      return normalizeBigNumberish(m.nums[index]).shiftedBy(-DECIMALS)
+    }
     ret.perpetuals.set(i, {
-      symbol: m.symbol.toNumber(),
-      underlyingSymbol: m.underlyingAsset,
       state: m.state as PerpetualState,
       oracle: m.oracle,
+      
+      totalCollateral: parsePerpNums(0),
+      markPrice: parsePerpNums(1),
+      indexPrice: parsePerpNums(2),
+      unitAccumulativeFunding: parsePerpNums(4),
 
-      markPrice: normalizeBigNumberish(m.markPrice).shiftedBy(-DECIMALS),
-      indexPrice: normalizeBigNumberish(m.indexPrice).shiftedBy(-DECIMALS),
-      unitAccumulativeFunding: normalizeBigNumberish(m.unitAccumulativeFunding).shiftedBy(-DECIMALS),
+      initialMarginRate: parsePerpNums(5),
+      maintenanceMarginRate: parsePerpNums(6),
+      operatorFeeRate: parsePerpNums(7),
+      lpFeeRate: parsePerpNums(8),
+      referrerRebateRate: parsePerpNums(9),
+      liquidationPenaltyRate: parsePerpNums(10),
+      keeperGasReward: parsePerpNums(11),
+      insuranceFundRate: parsePerpNums(12),
+      insuranceFundCap: parsePerpNums(13),
+      insuranceFund: parsePerpNums(14),
+      donatedInsuranceFund: parsePerpNums(15),
 
-      initialMarginRate: normalizeBigNumberish(m.initialMarginRate).shiftedBy(-DECIMALS),
-      maintenanceMarginRate: normalizeBigNumberish(m.maintenanceMarginRate).shiftedBy(-DECIMALS),
-      operatorFeeRate: normalizeBigNumberish(m.operatorFeeRate).shiftedBy(-DECIMALS),
-      lpFeeRate: normalizeBigNumberish(m.lpFeeRate).shiftedBy(-DECIMALS),
-      referrerRebateRate: normalizeBigNumberish(m.referrerRebateRate).shiftedBy(-DECIMALS),
-      liquidationPenaltyRate: normalizeBigNumberish(m.liquidationPenaltyRate).shiftedBy(-DECIMALS),
-      keeperGasReward: normalizeBigNumberish(m.keeperGasReward).shiftedBy(-DECIMALS),
-      insuranceFundRate: normalizeBigNumberish(m.insuranceFundRate).shiftedBy(-DECIMALS),
-      insuranceFundCap: normalizeBigNumberish(m.insuranceFundCap).shiftedBy(-DECIMALS),
-      insuranceFund: normalizeBigNumberish(m.insuranceFund).shiftedBy(-DECIMALS),
-      donatedInsuranceFund: normalizeBigNumberish(m.donatedInsuranceFund).shiftedBy(-DECIMALS),
+      halfSpread: {
+        value: parsePerpNums(16),
+        minValue: parsePerpNums(17),
+        maxValue: parsePerpNums(18),
+      },
+      openSlippageFactor: {
+        value: parsePerpNums(19),
+        minValue: parsePerpNums(20),
+        maxValue: parsePerpNums(21),
+      },
+      closeSlippageFactor: {
+        value: parsePerpNums(22),
+        minValue: parsePerpNums(23),
+        maxValue: parsePerpNums(24),
+      },
+      fundingRateLimit: {
+        value: parsePerpNums(25),
+        minValue: parsePerpNums(26),
+        maxValue: parsePerpNums(27),
+      },
+      ammMaxLeverage: {
+        value: parsePerpNums(28),
+        minValue: parsePerpNums(29),
+        maxValue: parsePerpNums(30),
+      },
+      maxClosePriceDiscount: {
+        value: parsePerpNums(31),
+        minValue: parsePerpNums(32),
+        maxValue: parsePerpNums(33),
+      },
 
-      halfSpread: normalizeBigNumberish(m.halfSpread).shiftedBy(-DECIMALS),
-      openSlippageFactor: normalizeBigNumberish(m.openSlippageFactor).shiftedBy(-DECIMALS),
-      closeSlippageFactor: normalizeBigNumberish(m.closeSlippageFactor).shiftedBy(-DECIMALS),
-      fundingRateLimit: normalizeBigNumberish(m.fundingRateLimit).shiftedBy(-DECIMALS),
-      ammMaxLeverage: normalizeBigNumberish(m.ammMaxLeverage).shiftedBy(-DECIMALS),
-
+      symbol: m.symbol.toNumber(),
+      underlyingSymbol: m.underlyingAsset,
       ammCashBalance: normalizeBigNumberish(m.ammCashBalance).shiftedBy(-DECIMALS),
       ammPositionAmount: normalizeBigNumberish(m.ammPositionAmount).shiftedBy(-DECIMALS),
     })
@@ -136,7 +168,7 @@ export async function getAccountStorage(
 ): Promise<AccountStorage> {
   getAddress(liquidityPoolAddress)
   getAddress(traderAddress)
-  const marginAccount = await reader.getAccountStorage(
+  const marginAccount = await reader.callStatic.getAccountStorage(
     liquidityPoolAddress, perpetualIndex, traderAddress)
   return {
     cashBalance: normalizeBigNumberish(marginAccount.cash).shiftedBy(-DECIMALS),
@@ -210,7 +242,7 @@ export async function getPerpetualSettledMarginBalance(
   traderAddress: string
 ): Promise<BigNumber> {
   getAddress(traderAddress)
-  const collateralAmount = await liquidityPool.callStatic.getSettleableMargin(perpetualIndex, traderAddress)
+  const collateralAmount = await liquidityPool.getSettleableMargin(perpetualIndex, traderAddress)
   return normalizeBigNumberish(collateralAmount).shiftedBy(-DECIMALS)
 }
 

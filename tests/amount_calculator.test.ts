@@ -26,6 +26,11 @@ import { extendExpect } from './helper'
 extendExpect()
 
 const defaultPool: LiquidityPoolStorage = {
+  isRunning: true,
+  isFastCreationEnabled: false,
+  collateralDecimals: 18,
+  transferringOperator: '0x0',
+  creator: '0x0',
   operator: '0x0',
   collateral: '0x0',
   vault: '0x0',
@@ -44,6 +49,7 @@ const perpetual1: PerpetualStorage = {
   underlyingSymbol: 'T',
   state: PerpetualState.NORMAL,
   oracle: "0x0",
+  totalCollateral: _0,
 
   markPrice: new BigNumber(6965),
   indexPrice: new BigNumber(7000),
@@ -61,12 +67,12 @@ const perpetual1: PerpetualStorage = {
   insuranceFund: _0,
   donatedInsuranceFund: _0,
 
-  halfSpread: new BigNumber(0.001),
-  openSlippageFactor: new BigNumber('0.0142857142857142857142857142857'),
-  closeSlippageFactor: new BigNumber('0.0128571428571428571428571428571'),
-  fundingRateLimit: new BigNumber(0.005),
-  maxClosePriceDiscount: new BigNumber(0.05),
-  ammMaxLeverage: new BigNumber(5),
+  halfSpread: { value: new BigNumber(0.001), minValue: _0, maxValue: _0, },
+  openSlippageFactor: { value: new BigNumber('0.0142857142857142857142857142857'), minValue: _0, maxValue: _0, },
+  closeSlippageFactor: { value: new BigNumber('0.0128571428571428571428571428571'), minValue: _0, maxValue: _0, },
+  fundingRateLimit: { value: new BigNumber(0.005), minValue: _0, maxValue: _0, },
+  ammMaxLeverage: { value: new BigNumber(5), minValue: _0, maxValue: _0, },
+  maxClosePriceDiscount: { value: new BigNumber(0.05), minValue: _0, maxValue: _0, },
 
   ammCashBalance: _0, // assign me later
   ammPositionAmount: _0, // assign me later
@@ -245,15 +251,15 @@ describe('computeAMMInverseVWAP', function () {
   const getZeroAlphaPool = (pool: LiquidityPoolStorage): LiquidityPoolStorage => {
     const p = pool.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage
     const newPool = { ...pool, perpetuals: new Map(pool.perpetuals) }
-    newPool.perpetuals.set(TEST_MARKET_INDEX0, { ...p, halfSpread: _0 })
+    newPool.perpetuals.set(TEST_MARKET_INDEX0, { ...p, halfSpread: { value: _0, minValue: _0, maxValue: _0 }})
     return newPool
   }
 
   it(`short: open without vwap`, function () {
     const price = new BigNumber('7050')
     const pool = getZeroAlphaPool(poolStorage1)
-    const context = computeAMMPoolMargin(initAMMTradingContext(pool, TEST_MARKET_INDEX0), perpetual1.openSlippageFactor)
-    const amount = computeAMMInverseVWAP(context, price, perpetual1.openSlippageFactor, false)
+    const context = computeAMMPoolMargin(initAMMTradingContext(pool, TEST_MARKET_INDEX0), perpetual1.openSlippageFactor.value)
+    const amount = computeAMMInverseVWAP(context, price, perpetual1.openSlippageFactor.value, false)
     expect(amount).toApproximate(normalizeBigNumberish('-9.68571428571428571428571429'))
     const trade = computeAMMTrade(pool, TEST_MARKET_INDEX0, accountStorage1, amount.negated())
     expect(trade.tradingPrice).toApproximate(price)
@@ -262,18 +268,18 @@ describe('computeAMMInverseVWAP', function () {
   it(`short: open with vwap`, function () {
     const price = new BigNumber('7050')
     const pool = getZeroAlphaPool(poolStorage0)
-    const context = computeAMMPoolMargin(initAMMTradingContext(pool, TEST_MARKET_INDEX0), perpetual1.openSlippageFactor)
+    const context = computeAMMPoolMargin(initAMMTradingContext(pool, TEST_MARKET_INDEX0), perpetual1.openSlippageFactor.value)
     context.deltaMargin = new BigNumber('6950')
     context.deltaPosition = new BigNumber('-1')
-    const amount = computeAMMInverseVWAP(context, price, perpetual1.openSlippageFactor, false)
+    const amount = computeAMMInverseVWAP(context, price, perpetual1.openSlippageFactor.value, false)
     expect(amount).toApproximate(normalizeBigNumberish('-16.06428285485485457978127589'))
   })
 
   it(`short: close`, function () {
     const price = new BigNumber('7010')
     const pool = getZeroAlphaPool(poolStorage1)
-    const context = computeAMMPoolMargin(initAMMTradingContext(pool, TEST_MARKET_INDEX0), perpetual1.closeSlippageFactor)
-    const amount = computeAMMInverseVWAP(context, price, perpetual1.closeSlippageFactor, true)
+    const context = computeAMMPoolMargin(initAMMTradingContext(pool, TEST_MARKET_INDEX0), perpetual1.closeSlippageFactor.value)
+    const amount = computeAMMInverseVWAP(context, price, perpetual1.closeSlippageFactor.value, true)
     expect(amount).toApproximate(normalizeBigNumberish('1.42533803782316168264992492'))
     const trade = computeAMMTrade(pool, TEST_MARKET_INDEX0, accountStorage1, amount.negated())
     expect(trade.tradingPrice).toApproximate(price)
@@ -282,8 +288,8 @@ describe('computeAMMInverseVWAP', function () {
   it(`long: open without vwap`, function () {
     const price = new BigNumber('6950')
     const pool = getZeroAlphaPool(poolStorage4)
-    const context = computeAMMPoolMargin(initAMMTradingContext(pool, TEST_MARKET_INDEX0), perpetual1.openSlippageFactor)
-    const amount = computeAMMInverseVWAP(context, price, perpetual1.openSlippageFactor, true)
+    const context = computeAMMPoolMargin(initAMMTradingContext(pool, TEST_MARKET_INDEX0), perpetual1.openSlippageFactor.value)
+    const amount = computeAMMInverseVWAP(context, price, perpetual1.openSlippageFactor.value, true)
     expect(amount).toApproximate(normalizeBigNumberish('9.68571428571428571428571429'))
     const trade = computeAMMTrade(pool, TEST_MARKET_INDEX0, accountStorage1, amount.negated())
     expect(trade.tradingPrice).toApproximate(price)
@@ -292,18 +298,18 @@ describe('computeAMMInverseVWAP', function () {
   it(`long: open with vwap`, function () {
     const price = new BigNumber('6950')
     const pool = getZeroAlphaPool(poolStorage0)
-    const context = computeAMMPoolMargin(initAMMTradingContext(pool, TEST_MARKET_INDEX0), perpetual1.openSlippageFactor)
+    const context = computeAMMPoolMargin(initAMMTradingContext(pool, TEST_MARKET_INDEX0), perpetual1.openSlippageFactor.value)
     context.deltaMargin = new BigNumber('-7050')
     context.deltaPosition = new BigNumber('1')
-    const amount = computeAMMInverseVWAP(context, price, perpetual1.openSlippageFactor, true)
+    const amount = computeAMMInverseVWAP(context, price, perpetual1.openSlippageFactor.value, true)
     expect(amount).toApproximate(normalizeBigNumberish('16.06428285485485457978127589'))
   })
 
   it(`long: close`, function () {
     const price = new BigNumber('6990')
     const pool = getZeroAlphaPool(poolStorage4)
-    const context = computeAMMPoolMargin(initAMMTradingContext(pool, TEST_MARKET_INDEX0), perpetual1.closeSlippageFactor)
-    const amount = computeAMMInverseVWAP(context, price, perpetual1.closeSlippageFactor, false)
+    const context = computeAMMPoolMargin(initAMMTradingContext(pool, TEST_MARKET_INDEX0), perpetual1.closeSlippageFactor.value)
+    const amount = computeAMMInverseVWAP(context, price, perpetual1.closeSlippageFactor.value, false)
     expect(amount).toApproximate(normalizeBigNumberish('-1.42533803782316168264992492'))
     const trade = computeAMMTrade(pool, TEST_MARKET_INDEX0, accountStorage1, amount.negated())
     expect(trade.tradingPrice).toApproximate(price)
