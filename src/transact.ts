@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { DECIMALS } from './constants'
-import { BigNumberish } from './types'
+import { BigNumberish, TradeFlag } from './types'
 import { normalizeBigNumberish } from './utils'
 import BigNumber from 'bignumber.js'
 import type { LiquidityPool } from './wrapper/LiquidityPool'
@@ -16,7 +16,7 @@ export async function perpetualTrade(
   limitPrice: BigNumberish,
   deadline: number,
   referrer: string,
-  isCloseOnly: boolean,
+  flag: TradeFlag,
   overrides?: Overrides,
 ): Promise<ethers.providers.TransactionResponse> {
   getAddress(trader)
@@ -29,7 +29,7 @@ export async function perpetualTrade(
     .dp(0, BigNumber.ROUND_DOWN)
   return await liquidityPool.trade(
     perpetualIndex, trader, largeAmount.toFixed(), largeLimitPrice.toFixed(),
-    deadline, referrer, isCloseOnly,
+    deadline, referrer, flag,
     overrides)
 }
 

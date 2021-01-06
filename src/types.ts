@@ -43,6 +43,13 @@ export enum PerpetualState {
   INVALID, INITIALIZING, NORMAL, EMERGENCY, CLEARED
 }
 
+export enum TradeFlag {
+  MASK_CLOSE_ONLY = 0x80000000,
+  MASK_MARKET_ORDER = 0x40000000,
+  MASK_STOP_LOSS_ORDER = 0x20000000,
+  MASK_TAKE_PROFIT_ORDER = 0x10000000
+}
+
 export interface PerpetualID {
   liquidityPoolAddress: string
   perpetualIndex: number
