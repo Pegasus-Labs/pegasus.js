@@ -45,6 +45,7 @@ const defaultPool: LiquidityPoolStorage = {
 const perpetual1: PerpetualStorage = {
   symbol: 0,
   underlyingSymbol: 'T',
+  isMarketClosed: false,
   state: PerpetualState.NORMAL,
   oracle: "0x0",
   totalCollateral: _0,

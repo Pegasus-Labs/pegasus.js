@@ -111,6 +111,7 @@ export interface PerpetualStorage {
 
   symbol: number
   underlyingSymbol: string  
+  isMarketClosed: boolean
   ammCashBalance: BigNumber
   ammPositionAmount: BigNumber
 }

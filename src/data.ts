@@ -153,6 +153,7 @@ export async function getLiquidityPool(
 
       symbol: m.symbol.toNumber(),
       underlyingSymbol: m.underlyingAsset,
+      isMarketClosed: m.isMarketClosed,
       ammCashBalance: normalizeBigNumberish(m.ammCashBalance).shiftedBy(-DECIMALS),
       ammPositionAmount: normalizeBigNumberish(m.ammPositionAmount).shiftedBy(-DECIMALS),
     })

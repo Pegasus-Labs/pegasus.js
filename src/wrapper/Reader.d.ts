@@ -188,6 +188,7 @@ export class Reader extends Contract {
         ];
         symbol: BigNumber;
         underlyingAsset: string;
+        isMarketClosed: boolean;
         ammCashBalance: BigNumber;
         ammPositionAmount: BigNumber;
         0: number;
@@ -230,8 +231,9 @@ export class Reader extends Contract {
         ];
         3: BigNumber;
         4: string;
-        5: BigNumber;
+        5: boolean;
         6: BigNumber;
+        7: BigNumber;
       }[];
       0: boolean;
       1: boolean;
@@ -282,6 +284,7 @@ export class Reader extends Contract {
         ];
         symbol: BigNumber;
         underlyingAsset: string;
+        isMarketClosed: boolean;
         ammCashBalance: BigNumber;
         ammPositionAmount: BigNumber;
         0: number;
@@ -324,8 +327,9 @@ export class Reader extends Contract {
         ];
         3: BigNumber;
         4: string;
-        5: BigNumber;
+        5: boolean;
         6: BigNumber;
+        7: BigNumber;
       }[];
     }>;
 
@@ -382,6 +386,7 @@ export class Reader extends Contract {
         ];
         symbol: BigNumber;
         underlyingAsset: string;
+        isMarketClosed: boolean;
         ammCashBalance: BigNumber;
         ammPositionAmount: BigNumber;
         0: number;
@@ -424,8 +429,9 @@ export class Reader extends Contract {
         ];
         3: BigNumber;
         4: string;
-        5: BigNumber;
+        5: boolean;
         6: BigNumber;
+        7: BigNumber;
       }[];
       0: boolean;
       1: boolean;
@@ -476,6 +482,7 @@ export class Reader extends Contract {
         ];
         symbol: BigNumber;
         underlyingAsset: string;
+        isMarketClosed: boolean;
         ammCashBalance: BigNumber;
         ammPositionAmount: BigNumber;
         0: number;
@@ -518,8 +525,9 @@ export class Reader extends Contract {
         ];
         3: BigNumber;
         4: string;
-        5: BigNumber;
+        5: boolean;
         6: BigNumber;
+        7: BigNumber;
       }[];
     }>;
   };

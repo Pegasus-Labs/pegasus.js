@@ -34,7 +34,7 @@ interface GovernorInterface extends ethers.utils.Interface {
     "delegate(address)": FunctionFragment;
     "delegateBySig(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
     "delegates(address)": FunctionFragment;
-    "deposit(uint256)": FunctionFragment;
+    "domainSeparator()": FunctionFragment;
     "execute(uint256)": FunctionFragment;
     "executingDelay()": FunctionFragment;
     "executingTimeout()": FunctionFragment;
@@ -51,18 +51,17 @@ interface GovernorInterface extends ethers.utils.Interface {
     "proposalMaxOperations()": FunctionFragment;
     "proposalRateThreshold()": FunctionFragment;
     "proposals(uint256)": FunctionFragment;
-    "proposeCoreParameterUpdate(bytes32[],int256[])": FunctionFragment;
-    "proposeLiquidityPoolUpgrade(address)": FunctionFragment;
-    "proposeRiskParameterUpdate(bytes32[],int256[],int256[],int256[])": FunctionFragment;
     "quorumVoteRate()": FunctionFragment;
-    "redeem(uint256)": FunctionFragment;
     "redemptionLocks(address)": FunctionFragment;
-    "shareToken()": FunctionFragment;
+    "stake(uint256)": FunctionFragment;
     "state(uint256)": FunctionFragment;
     "target()": FunctionFragment;
+    "token()": FunctionFragment;
     "totalSupply()": FunctionFragment;
+    "voteUnlockDelay()": FunctionFragment;
     "votingDelay()": FunctionFragment;
     "votingPeriod()": FunctionFragment;
+    "withdraw(uint256)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -108,8 +107,8 @@ interface GovernorInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "delegates", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "deposit",
-    values: [BigNumberish]
+    functionFragment: "domainSeparator",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "execute",
@@ -170,37 +169,23 @@ interface GovernorInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "proposeCoreParameterUpdate",
-    values: [BytesLike[], BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "proposeLiquidityPoolUpgrade",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "proposeRiskParameterUpdate",
-    values: [BytesLike[], BigNumberish[], BigNumberish[], BigNumberish[]]
-  ): string;
-  encodeFunctionData(
     functionFragment: "quorumVoteRate",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "redeem",
-    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "redemptionLocks",
     values: [string]
   ): string;
-  encodeFunctionData(
-    functionFragment: "shareToken",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "stake", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "state", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "target", values?: undefined): string;
+  encodeFunctionData(functionFragment: "token", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "voteUnlockDelay",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -210,6 +195,10 @@ interface GovernorInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "votingPeriod",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdraw",
+    values: [BigNumberish]
   ): string;
 
   decodeFunctionResult(
@@ -244,7 +233,10 @@ interface GovernorInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "delegates", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "domainSeparator",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "execute", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "executingDelay",
@@ -289,31 +281,23 @@ interface GovernorInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "proposals", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "proposeCoreParameterUpdate",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "proposeLiquidityPoolUpgrade",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "proposeRiskParameterUpdate",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "quorumVoteRate",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "redeem", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "redemptionLocks",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "shareToken", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "stake", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "state", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "target", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "token", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "voteUnlockDelay",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -324,26 +308,27 @@ interface GovernorInterface extends ethers.utils.Interface {
     functionFragment: "votingPeriod",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {
-    "Approval(address,address,uint256)": EventFragment;
     "DelegateChanged(address,address,address)": EventFragment;
     "DelegateVotesChanged(address,uint256,uint256)": EventFragment;
     "ExecuteTransaction(bytes32,address,string,bytes,uint256)": EventFragment;
     "ProposalCreated(uint256,address,address,string,bytes[],uint256,uint256,string)": EventFragment;
     "ProposalExecuted(uint256)": EventFragment;
-    "Transfer(address,address,uint256)": EventFragment;
+    "Stake(address,uint256)": EventFragment;
     "VoteCast(address,uint256,bool,uint256)": EventFragment;
+    "Withdraw(address,uint256)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "DelegateChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "DelegateVotesChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ExecuteTransaction"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalCreated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalExecuted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Stake"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "VoteCast"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Withdraw"): EventFragment;
 }
 
 export class Governor extends Contract {
@@ -520,15 +505,17 @@ export class Governor extends Contract {
       0: string;
     }>;
 
-    deposit(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
+    domainSeparator(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
 
-    "deposit(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
+    "domainSeparator()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
 
     execute(
       proposalId: BigNumberish,
@@ -651,7 +638,7 @@ export class Governor extends Contract {
     ): Promise<ContractTransaction>;
 
     "initialize(address)"(
-      _shareToken: string,
+      tokenAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -789,44 +776,6 @@ export class Governor extends Contract {
       7: boolean;
     }>;
 
-    proposeCoreParameterUpdate(
-      keys: BytesLike[],
-      values: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "proposeCoreParameterUpdate(bytes32[],int256[])"(
-      keys: BytesLike[],
-      values: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    proposeLiquidityPoolUpgrade(
-      targetImplementation: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "proposeLiquidityPoolUpgrade(address)"(
-      targetImplementation: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    proposeRiskParameterUpdate(
-      keys: BytesLike[],
-      values: BigNumberish[],
-      minValues: BigNumberish[],
-      maxValues: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "proposeRiskParameterUpdate(bytes32[],int256[],int256[],int256[])"(
-      keys: BytesLike[],
-      values: BigNumberish[],
-      minValues: BigNumberish[],
-      maxValues: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     quorumVoteRate(
       overrides?: CallOverrides
     ): Promise<{
@@ -838,16 +787,6 @@ export class Governor extends Contract {
     ): Promise<{
       0: BigNumber;
     }>;
-
-    redeem(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "redeem(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
 
     redemptionLocks(
       arg0: string,
@@ -863,17 +802,15 @@ export class Governor extends Contract {
       0: BigNumber;
     }>;
 
-    shareToken(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
+    stake(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
-    "shareToken()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
+    "stake(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     state(
       proposalId: BigNumberish,
@@ -901,6 +838,18 @@ export class Governor extends Contract {
       0: string;
     }>;
 
+    token(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "token()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
     totalSupply(
       overrides?: CallOverrides
     ): Promise<{
@@ -908,6 +857,18 @@ export class Governor extends Contract {
     }>;
 
     "totalSupply()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    voteUnlockDelay(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "voteUnlockDelay()"(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
@@ -936,6 +897,16 @@ export class Governor extends Contract {
     ): Promise<{
       0: BigNumber;
     }>;
+
+    withdraw(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "withdraw(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
   };
 
   BALLOT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
@@ -1060,15 +1031,9 @@ export class Governor extends Contract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  deposit(
-    amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+  domainSeparator(overrides?: CallOverrides): Promise<string>;
 
-  "deposit(uint256)"(
-    amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+  "domainSeparator()"(overrides?: CallOverrides): Promise<string>;
 
   execute(
     proposalId: BigNumberish,
@@ -1163,7 +1128,7 @@ export class Governor extends Contract {
   ): Promise<ContractTransaction>;
 
   "initialize(address)"(
-    _shareToken: string,
+    tokenAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1251,57 +1216,9 @@ export class Governor extends Contract {
     7: boolean;
   }>;
 
-  proposeCoreParameterUpdate(
-    keys: BytesLike[],
-    values: BigNumberish[],
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "proposeCoreParameterUpdate(bytes32[],int256[])"(
-    keys: BytesLike[],
-    values: BigNumberish[],
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  proposeLiquidityPoolUpgrade(
-    targetImplementation: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "proposeLiquidityPoolUpgrade(address)"(
-    targetImplementation: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  proposeRiskParameterUpdate(
-    keys: BytesLike[],
-    values: BigNumberish[],
-    minValues: BigNumberish[],
-    maxValues: BigNumberish[],
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "proposeRiskParameterUpdate(bytes32[],int256[],int256[],int256[])"(
-    keys: BytesLike[],
-    values: BigNumberish[],
-    minValues: BigNumberish[],
-    maxValues: BigNumberish[],
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   quorumVoteRate(overrides?: CallOverrides): Promise<BigNumber>;
 
   "quorumVoteRate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  redeem(
-    amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "redeem(uint256)"(
-    amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
 
   redemptionLocks(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1310,9 +1227,15 @@ export class Governor extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  shareToken(overrides?: CallOverrides): Promise<string>;
+  stake(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  "shareToken()"(overrides?: CallOverrides): Promise<string>;
+  "stake(uint256)"(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   state(proposalId: BigNumberish, overrides?: CallOverrides): Promise<number>;
 
@@ -1325,9 +1248,17 @@ export class Governor extends Contract {
 
   "target()"(overrides?: CallOverrides): Promise<string>;
 
+  token(overrides?: CallOverrides): Promise<string>;
+
+  "token()"(overrides?: CallOverrides): Promise<string>;
+
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
   "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  voteUnlockDelay(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "voteUnlockDelay()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   votingDelay(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1336,6 +1267,16 @@ export class Governor extends Contract {
   votingPeriod(overrides?: CallOverrides): Promise<BigNumber>;
 
   "votingPeriod()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  withdraw(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "withdraw(uint256)"(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   callStatic: {
     BALLOT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
@@ -1457,12 +1398,9 @@ export class Governor extends Contract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    deposit(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    domainSeparator(overrides?: CallOverrides): Promise<string>;
 
-    "deposit(uint256)"(
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    "domainSeparator()"(overrides?: CallOverrides): Promise<string>;
 
     execute(proposalId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
@@ -1554,7 +1492,7 @@ export class Governor extends Contract {
     ): Promise<void>;
 
     "initialize(address)"(
-      _shareToken: string,
+      tokenAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1642,54 +1580,9 @@ export class Governor extends Contract {
       7: boolean;
     }>;
 
-    proposeCoreParameterUpdate(
-      keys: BytesLike[],
-      values: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "proposeCoreParameterUpdate(bytes32[],int256[])"(
-      keys: BytesLike[],
-      values: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    proposeLiquidityPoolUpgrade(
-      targetImplementation: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "proposeLiquidityPoolUpgrade(address)"(
-      targetImplementation: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    proposeRiskParameterUpdate(
-      keys: BytesLike[],
-      values: BigNumberish[],
-      minValues: BigNumberish[],
-      maxValues: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "proposeRiskParameterUpdate(bytes32[],int256[],int256[],int256[])"(
-      keys: BytesLike[],
-      values: BigNumberish[],
-      minValues: BigNumberish[],
-      maxValues: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     quorumVoteRate(overrides?: CallOverrides): Promise<BigNumber>;
 
     "quorumVoteRate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    redeem(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
-    "redeem(uint256)"(
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     redemptionLocks(
       arg0: string,
@@ -1701,9 +1594,12 @@ export class Governor extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    shareToken(overrides?: CallOverrides): Promise<string>;
+    stake(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    "shareToken()"(overrides?: CallOverrides): Promise<string>;
+    "stake(uint256)"(
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     state(proposalId: BigNumberish, overrides?: CallOverrides): Promise<number>;
 
@@ -1716,9 +1612,17 @@ export class Governor extends Contract {
 
     "target()"(overrides?: CallOverrides): Promise<string>;
 
+    token(overrides?: CallOverrides): Promise<string>;
+
+    "token()"(overrides?: CallOverrides): Promise<string>;
+
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    voteUnlockDelay(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "voteUnlockDelay()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     votingDelay(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1727,15 +1631,16 @@ export class Governor extends Contract {
     votingPeriod(overrides?: CallOverrides): Promise<BigNumber>;
 
     "votingPeriod()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    withdraw(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    "withdraw(uint256)"(
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
-    Approval(
-      owner: string | null,
-      spender: string | null,
-      amount: null
-    ): EventFilter;
-
     DelegateChanged(
       delegator: string | null,
       fromDelegate: string | null,
@@ -1769,7 +1674,7 @@ export class Governor extends Contract {
 
     ProposalExecuted(id: null): EventFilter;
 
-    Transfer(from: string | null, to: string | null, amount: null): EventFilter;
+    Stake(account: string | null, amount: null): EventFilter;
 
     VoteCast(
       voter: null,
@@ -1777,6 +1682,8 @@ export class Governor extends Contract {
       support: null,
       votes: null
     ): EventFilter;
+
+    Withdraw(account: string | null, amount: null): EventFilter;
   };
 
   estimateGas: {
@@ -1889,12 +1796,9 @@ export class Governor extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    deposit(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
+    domainSeparator(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "deposit(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
+    "domainSeparator()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     execute(
       proposalId: BigNumberish,
@@ -1965,7 +1869,7 @@ export class Governor extends Contract {
     ): Promise<BigNumber>;
 
     "initialize(address)"(
-      _shareToken: string,
+      tokenAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -2019,54 +1923,9 @@ export class Governor extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    proposeCoreParameterUpdate(
-      keys: BytesLike[],
-      values: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "proposeCoreParameterUpdate(bytes32[],int256[])"(
-      keys: BytesLike[],
-      values: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    proposeLiquidityPoolUpgrade(
-      targetImplementation: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "proposeLiquidityPoolUpgrade(address)"(
-      targetImplementation: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    proposeRiskParameterUpdate(
-      keys: BytesLike[],
-      values: BigNumberish[],
-      minValues: BigNumberish[],
-      maxValues: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "proposeRiskParameterUpdate(bytes32[],int256[],int256[],int256[])"(
-      keys: BytesLike[],
-      values: BigNumberish[],
-      minValues: BigNumberish[],
-      maxValues: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     quorumVoteRate(overrides?: CallOverrides): Promise<BigNumber>;
 
     "quorumVoteRate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    redeem(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
-
-    "redeem(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
 
     redemptionLocks(
       arg0: string,
@@ -2078,9 +1937,12 @@ export class Governor extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    shareToken(overrides?: CallOverrides): Promise<BigNumber>;
+    stake(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
 
-    "shareToken()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "stake(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
     state(
       proposalId: BigNumberish,
@@ -2096,9 +1958,17 @@ export class Governor extends Contract {
 
     "target()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    token(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "token()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    voteUnlockDelay(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "voteUnlockDelay()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     votingDelay(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2107,6 +1977,13 @@ export class Governor extends Contract {
     votingPeriod(overrides?: CallOverrides): Promise<BigNumber>;
 
     "votingPeriod()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    withdraw(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
+
+    "withdraw(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -2236,14 +2113,10 @@ export class Governor extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    deposit(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
+    domainSeparator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "deposit(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
+    "domainSeparator()"(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     execute(
@@ -2319,7 +2192,7 @@ export class Governor extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "initialize(address)"(
-      _shareToken: string,
+      tokenAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -2387,58 +2260,10 @@ export class Governor extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    proposeCoreParameterUpdate(
-      keys: BytesLike[],
-      values: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "proposeCoreParameterUpdate(bytes32[],int256[])"(
-      keys: BytesLike[],
-      values: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    proposeLiquidityPoolUpgrade(
-      targetImplementation: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "proposeLiquidityPoolUpgrade(address)"(
-      targetImplementation: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    proposeRiskParameterUpdate(
-      keys: BytesLike[],
-      values: BigNumberish[],
-      minValues: BigNumberish[],
-      maxValues: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "proposeRiskParameterUpdate(bytes32[],int256[],int256[],int256[])"(
-      keys: BytesLike[],
-      values: BigNumberish[],
-      minValues: BigNumberish[],
-      maxValues: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
     quorumVoteRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "quorumVoteRate()"(
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    redeem(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "redeem(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     redemptionLocks(
@@ -2451,9 +2276,15 @@ export class Governor extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    shareToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    stake(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
-    "shareToken()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "stake(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
     state(
       proposalId: BigNumberish,
@@ -2469,9 +2300,19 @@ export class Governor extends Contract {
 
     "target()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    token(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "token()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "totalSupply()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    voteUnlockDelay(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "voteUnlockDelay()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     votingDelay(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -2480,5 +2321,15 @@ export class Governor extends Contract {
     votingPeriod(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "votingPeriod()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    withdraw(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "withdraw(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
   };
 }
