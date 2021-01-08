@@ -457,13 +457,13 @@ export class PoolCreator extends Contract {
     }>;
 
     grantPrivilege(
-      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "grantPrivilege(address,uint256)"(
-      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -487,8 +487,8 @@ export class PoolCreator extends Contract {
     }>;
 
     isGranted(
-      account: string,
-      trader: string,
+      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
@@ -496,8 +496,8 @@ export class PoolCreator extends Contract {
     }>;
 
     "isGranted(address,address,uint256)"(
-      account: string,
-      trader: string,
+      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
@@ -643,13 +643,13 @@ export class PoolCreator extends Contract {
     "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
 
     revokePrivilege(
-      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "revokePrivilege(address,uint256)"(
-      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -858,13 +858,13 @@ export class PoolCreator extends Contract {
   ): Promise<BigNumber>;
 
   grantPrivilege(
-    grantor: string,
+    grantee: string,
     privilege: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "grantPrivilege(address,uint256)"(
-    grantor: string,
+    grantee: string,
     privilege: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -884,15 +884,15 @@ export class PoolCreator extends Contract {
   ): Promise<boolean>;
 
   isGranted(
-    account: string,
-    trader: string,
+    grantor: string,
+    grantee: string,
     privilege: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   "isGranted(address,address,uint256)"(
-    account: string,
-    trader: string,
+    grantor: string,
+    grantee: string,
     privilege: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
@@ -992,13 +992,13 @@ export class PoolCreator extends Contract {
   "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   revokePrivilege(
-    grantor: string,
+    grantee: string,
     privilege: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "revokePrivilege(address,uint256)"(
-    grantor: string,
+    grantee: string,
     privilege: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -1175,13 +1175,13 @@ export class PoolCreator extends Contract {
     ): Promise<BigNumber>;
 
     grantPrivilege(
-      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     "grantPrivilege(address,uint256)"(
-      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1201,15 +1201,15 @@ export class PoolCreator extends Contract {
     ): Promise<boolean>;
 
     isGranted(
-      account: string,
-      trader: string,
+      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     "isGranted(address,address,uint256)"(
-      account: string,
-      trader: string,
+      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -1309,13 +1309,13 @@ export class PoolCreator extends Contract {
     "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
 
     revokePrivilege(
-      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     "revokePrivilege(address,uint256)"(
-      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1373,8 +1373,8 @@ export class PoolCreator extends Contract {
     ): EventFilter;
 
     GrantPrivilege(
-      account: string | null,
       grantor: string | null,
+      grantee: string | null,
       privilege: null
     ): EventFilter;
 
@@ -1384,8 +1384,8 @@ export class PoolCreator extends Contract {
     ): EventFilter;
 
     RevokePrivilege(
-      account: string | null,
       grantor: string | null,
+      grantee: string | null,
       privilege: null
     ): EventFilter;
   };
@@ -1506,13 +1506,13 @@ export class PoolCreator extends Contract {
     ): Promise<BigNumber>;
 
     grantPrivilege(
-      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "grantPrivilege(address,uint256)"(
-      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -1532,15 +1532,15 @@ export class PoolCreator extends Contract {
     ): Promise<BigNumber>;
 
     isGranted(
-      account: string,
-      trader: string,
+      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     "isGranted(address,address,uint256)"(
-      account: string,
-      trader: string,
+      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1626,13 +1626,13 @@ export class PoolCreator extends Contract {
     "renounceOwnership()"(overrides?: Overrides): Promise<BigNumber>;
 
     revokePrivilege(
-      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "revokePrivilege(address,uint256)"(
-      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -1800,13 +1800,13 @@ export class PoolCreator extends Contract {
     ): Promise<PopulatedTransaction>;
 
     grantPrivilege(
-      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "grantPrivilege(address,uint256)"(
-      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
@@ -1826,15 +1826,15 @@ export class PoolCreator extends Contract {
     ): Promise<PopulatedTransaction>;
 
     isGranted(
-      account: string,
-      trader: string,
+      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     "isGranted(address,address,uint256)"(
-      account: string,
-      trader: string,
+      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1920,13 +1920,13 @@ export class PoolCreator extends Contract {
     "renounceOwnership()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     revokePrivilege(
-      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "revokePrivilege(address,uint256)"(
-      grantor: string,
+      grantee: string,
       privilege: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

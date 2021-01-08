@@ -186,14 +186,14 @@ export class BrokerRelay extends Contract {
     "deposit()"(overrides?: PayableOverrides): Promise<ContractTransaction>;
 
     execute(
-      liqidityPool: string,
+      liquidityPool: string,
       callData: BytesLike,
       gasReward: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "execute(address,bytes,uint256)"(
-      liqidityPool: string,
+      liquidityPool: string,
       callData: BytesLike,
       gasReward: BigNumberish,
       overrides?: Overrides
@@ -278,14 +278,14 @@ export class BrokerRelay extends Contract {
   "deposit()"(overrides?: PayableOverrides): Promise<ContractTransaction>;
 
   execute(
-    liqidityPool: string,
+    liquidityPool: string,
     callData: BytesLike,
     gasReward: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "execute(address,bytes,uint256)"(
-    liqidityPool: string,
+    liquidityPool: string,
     callData: BytesLike,
     gasReward: BigNumberish,
     overrides?: Overrides
@@ -370,14 +370,14 @@ export class BrokerRelay extends Contract {
     "deposit()"(overrides?: CallOverrides): Promise<void>;
 
     execute(
-      liqidityPool: string,
+      liquidityPool: string,
       callData: BytesLike,
       gasReward: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     "execute(address,bytes,uint256)"(
-      liqidityPool: string,
+      liquidityPool: string,
       callData: BytesLike,
       gasReward: BigNumberish,
       overrides?: CallOverrides
@@ -486,14 +486,14 @@ export class BrokerRelay extends Contract {
     "deposit()"(overrides?: PayableOverrides): Promise<BigNumber>;
 
     execute(
-      liqidityPool: string,
+      liquidityPool: string,
       callData: BytesLike,
       gasReward: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "execute(address,bytes,uint256)"(
-      liqidityPool: string,
+      liquidityPool: string,
       callData: BytesLike,
       gasReward: BigNumberish,
       overrides?: Overrides
@@ -579,14 +579,14 @@ export class BrokerRelay extends Contract {
     "deposit()"(overrides?: PayableOverrides): Promise<PopulatedTransaction>;
 
     execute(
-      liqidityPool: string,
+      liquidityPool: string,
       callData: BytesLike,
       gasReward: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "execute(address,bytes,uint256)"(
-      liqidityPool: string,
+      liquidityPool: string,
       callData: BytesLike,
       gasReward: BigNumberish,
       overrides?: Overrides
