@@ -5,8 +5,8 @@ import { normalizeBigNumberish } from './utils'
 import BigNumber from 'bignumber.js'
 import type { LiquidityPool } from './wrapper/LiquidityPool'
 import type { BrokerRelay } from './wrapper/BrokerRelay'
-import { Overrides, PayableOverrides } from "@ethersproject/contracts"
-import { getAddress } from "@ethersproject/address"
+import { Overrides, PayableOverrides } from '@ethersproject/contracts'
+import { getAddress } from '@ethersproject/address'
 
 export async function perpetualTrade(
   liquidityPool: LiquidityPool,
@@ -142,4 +142,16 @@ export async function removeLiquidity(
     .shiftedBy(DECIMALS)
     .dp(0, BigNumber.ROUND_DOWN)
   return await liquidityPool.removeLiquidity(largeAmount.toFixed(), overrides)
+}
+
+export async function donateInsuranceFund(
+  liquidityPool: LiquidityPool,
+  perpetualIndex: number,
+  collateralAmount: BigNumberish, // should be a decimal number (ie: 1.234)
+  overrides?: PayableOverrides,
+): Promise<ethers.providers.TransactionResponse> {
+  const largeAmount = normalizeBigNumberish(collateralAmount)
+    .shiftedBy(DECIMALS)
+    .dp(0, BigNumber.ROUND_DOWN)
+  return await liquidityPool.donateInsuranceFund(perpetualIndex, largeAmount.toFixed(), overrides)
 }
