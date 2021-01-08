@@ -180,7 +180,7 @@ describe('computeAccount', function () {
     pnl1: new BigNumber('13719.27'),
     pnl2: new BigNumber('13695.57634375'),
     roe: new BigNumber('13.69557634375'),
-    liquidationPrice: new BigNumber('606.37238272311212814645'),
+    liquidationPrice: new BigNumber('607.01134203051266779676547395'),
   }
 
   const expectOutput3: AccountComputed = {
@@ -199,7 +199,7 @@ describe('computeAccount', function () {
     pnl1: new BigNumber('-13719.27'),
     pnl2: new BigNumber('-13695.57634375'),
     roe: new BigNumber('-0.978255453125'),
-    liquidationPrice: new BigNumber('6758.97459886128364389234')
+    liquidationPrice: new BigNumber('6752.5436049518057336697968808')
   }
 
   const expectOutput4: AccountComputed = {

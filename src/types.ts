@@ -142,6 +142,10 @@ export interface AccountComputed {
   pnl1: BigNumber | null // pos * (exitPrice - entryPrice) if entry != null
   pnl2: BigNumber | null // pnl1 + funding if entry != null
   roe: BigNumber | null
+
+  // the estimated liquidation price helps traders to know when to close their positions.
+  // it has already considered the close position trading fee. this value is different
+  // from the keeper's liquidation price who does not pay the trading fee.
   liquidationPrice: BigNumber
 }
 

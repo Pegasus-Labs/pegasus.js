@@ -63,9 +63,14 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
     roe = (entryCash.isZero() ? _0 : pnl2.div(entryCash))
   }
 
+  // the estimated liquidation price helps traders to know when to close their positions.
+  // it has already considered the close position trading fee. this value is different
+  // from the keeper's liquidation price who does not pay the trading fee.
   let liquidationPrice = _0
   if (!s.positionAmount.isZero()) {
-    const t = s.positionAmount.abs().times(perpetual.maintenanceMarginRate).minus(s.positionAmount)
+    let tradingFeeRate = p.vaultFeeRate.plus(perpetual.operatorFeeRate).plus(perpetual.lpFeeRate)
+    const t = perpetual.maintenanceMarginRate.plus(tradingFeeRate)
+      .times(s.positionAmount.abs()).minus(s.positionAmount)
     liquidationPrice = availableCashBalance.minus(reservedCash).div(t)
     if (liquidationPrice.isNegative()) {
       liquidationPrice = _0
