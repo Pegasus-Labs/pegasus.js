@@ -155,3 +155,26 @@ export async function donateInsuranceFund(
     .dp(0, BigNumber.ROUND_DOWN)
   return await liquidityPool.donateInsuranceFund(perpetualIndex, largeAmount.toFixed(), overrides)
 }
+
+export async function takerOverOperator(
+  liquidityPool: LiquidityPool,
+  overrides?: PayableOverrides,
+): Promise<ethers.providers.TransactionResponse> {
+  return await liquidityPool.claimOperator(overrides)
+}
+
+export async function claimOperatorFee(
+  liquidityPool: LiquidityPool,
+  overrides?: PayableOverrides,
+): Promise<ethers.providers.TransactionResponse> {
+  return await liquidityPool.claimOperatorFee(overrides)
+}
+
+export async function transferOperator(
+  liquidityPool: LiquidityPool,
+  targetAddress: string,
+  overrides?: PayableOverrides,
+): Promise<ethers.providers.TransactionResponse> {
+  getAddress(targetAddress)
+  return await liquidityPool.transferOperator(targetAddress, overrides)
+}

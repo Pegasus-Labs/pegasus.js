@@ -268,3 +268,10 @@ export async function getPerpetualClearGasReward(
   const keeperGasReward = normalizeBigNumberish(perpetualInfo.nums[10]).shiftedBy(-DECIMALS)
   return keeperGasReward
 }
+
+export async function getClaimableOperatorFee(
+  liquidityPool: LiquidityPool
+):Promise<BigNumber> {
+  const operatorFee = await liquidityPool.getClaimableOperatorFee()
+  return normalizeBigNumberish(operatorFee).shiftedBy(-DECIMALS)
+}
