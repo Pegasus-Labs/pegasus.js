@@ -155,6 +155,7 @@ describe('computeAccount', function () {
     availableMargin: new BigNumber('22092.62634375'),
     withdrawableBalance: new BigNumber('22092.62634375'),
     isSafe: true,
+    isIMSafe: true,
     leverage: new BigNumber('0.67605445706853804198'),
     entryPrice: new BigNumber('1000.1'),
     fundingPNL: new BigNumber('-23.69365625'), // 9.9059375 * 2.3 -(-0.91)
@@ -174,6 +175,7 @@ describe('computeAccount', function () {
     availableMargin: new BigNumber('13092.62634375'),
     withdrawableBalance: new BigNumber('13092.62634375'),
     isSafe: true,
+    isIMSafe: true,
     leverage: new BigNumber('1.0900899444350858789365744572076'),
     entryPrice: new BigNumber('1000.1'),
     fundingPNL: new BigNumber('-23.69365625'), // 9.9059375 * 2.3 -(-0.91)
@@ -193,6 +195,7 @@ describe('computeAccount', function () {
     availableMargin: _0,
     withdrawableBalance: _0,
     isSafe: false,
+    isIMSafe: false,
     leverage: new BigNumber('52.622388802939575523397504968355'),
     entryPrice: new BigNumber('1000.1'),
     fundingPNL: new BigNumber('23.69365625'), // 9.9059375 * (-2.3) -(-0.91)
@@ -212,6 +215,7 @@ describe('computeAccount', function () {
     maxWithdrawable: new BigNumber('10000'),
     withdrawableBalance: new BigNumber('10000'),
     isSafe: true,
+    isIMSafe: true,
     leverage: _0,
     entryPrice: _0,
     fundingPNL: _0,
@@ -259,6 +263,7 @@ describe('computeAccount', function () {
       expect(computed.availableMargin).toBeBigNumber(expectedOutput.availableMargin)
       expect(computed.withdrawableBalance).toBeBigNumber(expectedOutput.withdrawableBalance)
       expect(computed.isSafe).toEqual(expectedOutput.isSafe)
+      expect(computed.isIMSafe).toEqual(expectedOutput.isIMSafe)
       expect(computed.leverage).toApproximate(expectedOutput.leverage)
       expect(computed.entryPrice).not.toBeNull()
       if (computed.entryPrice && expectedOutput.entryPrice) {
@@ -663,7 +668,7 @@ describe('computeTradeWithPrice', function () {
     const expectedOutput = element.expectedOutput
 
     it(name, function () {
-      const newAccount = computeTradeWithPrice(
+      const { afterTrade } = computeTradeWithPrice(
         poolStorage1,
         TEST_MARKET_INDEX0,
         input.accountDetails.accountStorage,
@@ -671,20 +676,19 @@ describe('computeTradeWithPrice', function () {
         input.amount,
         input.feeRate,
       )
-      expect(newAccount.cashBalance).toApproximate(
+      expect(afterTrade.accountStorage.cashBalance).toApproximate(
         normalizeBigNumberish(expectedOutput.account.cashBalance)
       )
-      expect(newAccount.positionAmount).toBeBigNumber(
+      expect(afterTrade.accountStorage.positionAmount).toBeBigNumber(
         normalizeBigNumberish(expectedOutput.account.positionAmount)
       )
-      expect(newAccount.entryValue).toBeBigNumber(
+      expect(afterTrade.accountStorage.entryValue).toBeBigNumber(
         normalizeBigNumberish(expectedOutput.account.entryValue)
       )
-      expect(newAccount.entryFunding).toApproximate(
+      expect(afterTrade.accountStorage.entryFunding).toApproximate(
         normalizeBigNumberish(expectedOutput.account.entryFunding)
       )
-      const details = computeAccount(poolStorage1, TEST_MARKET_INDEX0, newAccount)
-      expect(details.accountComputed.marginBalance).toApproximate(
+      expect(afterTrade.accountComputed.marginBalance).toApproximate(
         normalizeBigNumberish(expectedOutput.account.marginBalance)
       )
     })
@@ -741,7 +745,7 @@ describe('computeAMMTrade', function () {
     expect(res.operatorFee).toApproximate(new BigNumber('0.348845805'))
 
     // 7698.86 - 6976.9161 * (-0.5) + 9.9059375 * (-0.5) - 6976.9161 * 0.5 * 0.001
-    expect(res.trader.cashBalance).toApproximate(new BigNumber('11178.8766232'))
+    expect(res.trader.accountStorage.cashBalance).toApproximate(new BigNumber('11178.8766232'))
     // 83941.29865625 - 6976.9161 * 0.5 + 9.9059375 * (0.5) + 2.441920635
     expect(res.newPool.poolCashBalance).toApproximate(new BigNumber('80460.235495635'))
     expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('2.8'))
@@ -755,7 +759,7 @@ describe('computeAMMTrade', function () {
     expect(res.operatorFee).toApproximate(new BigNumber('0.34962478892952075667495183731'))
 
     // 7698.86 - 6992.4957785904151334990367462 * (0.5) + 9.9059375 * (0.5) - 6992.4957785904151334990367462 * 0.5 * 0.001
-    expect(res.trader.cashBalance).toApproximate(new BigNumber('4204.0688315654972256837321085'))
+    expect(res.trader.accountStorage.cashBalance).toApproximate(new BigNumber('4204.0688315654972256837321085'))
     // 83941.29865625 - 6992.4957785904151334990367462 * (-0.5) + 9.9059375 * (-0.5) + 2.44737352250664529672466286117
     expect(res.newPool.poolCashBalance).toApproximate(new BigNumber('87435.0409503177142120462430360'))
     expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('1.8'))
@@ -769,7 +773,7 @@ describe('computeAMMTrade', function () {
     expect(res.operatorFee).toApproximate(new BigNumber('2.30868367437583072283006551907'))
 
     // 7698.86 - 6996.0111344722143116062591487 * (3.3) + 9.9059375 * (3.3) - 6996.0111344722143116062591487 * 3.3 * 0.001
-    expect(res.trader.cashBalance).toApproximate(new BigNumber('-15378.3739867520655355289558459'))
+    expect(res.trader.accountStorage.cashBalance).toApproximate(new BigNumber('-15378.3739867520655355289558459'))
     // 83941.29865625 - 6996.0111344722143116062591487 * (-3.3) + 9.9059375 * (-3.3) + 16.1607857206308150598104586335
     expect(res.newPool.poolCashBalance).toApproximate(new BigNumber('107011.606591978938043360465649'))
     expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('-1'))
@@ -783,13 +787,22 @@ describe('computeAMMTrade', function () {
 
     // availableCash = 87435.0409503177142120462430360 - 9.9059375 * (1.8) = 87417.2102628177142120462430360
     // m0 = 100005.870928541926673731114517
-    const res2 = computeAMMTrade(res1.newPool, TEST_MARKET_INDEX0, res1.trader, '-0.5')
+    const res2 = computeAMMTrade(res1.newPool, TEST_MARKET_INDEX0, res1.trader.accountStorage, '-0.5')
     expect(res2.tradingPrice).toApproximate(new BigNumber('6980.4133389538758324702073441'))
 
     // 4204.0688315654972256837321085 - 6980.4133389538758324702073441 * (-0.5) + 9.9059375 * (-0.5) - 6980.4133389538758324702073441 * 0.5 * 0.001
-    expect(res2.trader.cashBalance).toApproximate(new BigNumber('7685.8323256229582040026006769'))
+    expect(res2.trader.accountStorage.cashBalance).toApproximate(new BigNumber('7685.8323256229582040026006769'))
     // 87435.0409503177142120462430360 - 6980.4133389538758324702073441 * (0.5) + 9.9059375 * (0.5) + 6980.4133389538758324702073441 * 0.5 * 0.0007
     expect(res2.newPool.poolCashBalance).toApproximate(new BigNumber('83952.2303942594101523525039365'))
     expect(res2.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('2.3'))
+  })
+
+  it(`lower than keeperGasReward`, function () {
+    const trader: AccountStorage = {
+      ...accountStorage4,
+      cashBalance: new BigNumber('1'),
+    }
+    const res1 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, trader, '0.0001')
+    expect(res1.tradeIsSafe).toBeFalsy()
   })
 })

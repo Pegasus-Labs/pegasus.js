@@ -53,12 +53,12 @@ export function computeMaxTradeAmountWithPrice(
   }
 
   // close all
-  let newAccount = s
-  let closeAmount = newAccount.positionAmount.negated()
+  let newDetails = computeAccount(p, perpetualIndex, s)
+  let closeAmount = s.positionAmount.negated()
   if (!closeAmount.isZero()) {
-    newAccount = computeTradeWithPrice(p, perpetualIndex, s, normalizedPrice, closeAmount, normalizedFeeRate)
+    const closeResult = computeTradeWithPrice(p, perpetualIndex, s, normalizedPrice, closeAmount, normalizedFeeRate)
+    newDetails = closeResult.afterTrade
   }
-  const newDetails = computeAccount(p, perpetualIndex, newAccount)
 
   // open again
   //                        price | x |
@@ -121,9 +121,8 @@ export function computeAMMMaxTradeAmount(
     }
     try {
       const context = computeAMMTrade(p, perpetualIndex, trader, new BigNumber(a))
-      const newTraderDetails = computeAccount(p, perpetualIndex, context.trader)
-      if (!newTraderDetails.accountComputed.isSafe
-        || newTraderDetails.accountComputed.leverage.gt(normalizeMaxLeverage)) {
+      if (!context.tradeIsSafe
+        || context.trader.accountComputed.leverage.gt(normalizeMaxLeverage)) {
         return Math.abs(a)
       }
       return -Math.abs(a) // return a negative value

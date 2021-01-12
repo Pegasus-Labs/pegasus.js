@@ -37,7 +37,8 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
   const maxWithdrawable = BigNumber.max(_0, marginBalance.minus(positionMargin).minus(reservedCash))
   const availableMargin = BigNumber.max(_0, maxWithdrawable)
   const withdrawableBalance = maxWithdrawable
-  const isSafe = maintenanceMargin.lte(marginBalance)
+  const isSafe = marginBalance.gte(BigNumber.maximum(reservedCash, maintenanceMargin))
+  const isIMSafe = marginBalance.gte(BigNumber.maximum(reservedCash, positionMargin))
   const leverage = marginBalance.gt(0) ? positionValue.div(marginBalance) : _0
   
   let fundingPNL: BigNumber | null = null
@@ -87,6 +88,7 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
     availableMargin,
     withdrawableBalance,
     isSafe,
+    isIMSafe,
     leverage,
 
     entryPrice,
@@ -188,7 +190,7 @@ export function computeTradeWithPrice(
   price: BigNumberish,
   amount: BigNumberish,
   feeRate: BigNumberish,
-): AccountStorage {
+): { afterTrade: AccountDetails, tradeIsSafe: boolean } {
   const normalizedPrice = normalizeBigNumberish(price)
   const normalizedAmount = normalizeBigNumberish(amount)
   const normalizedFeeRate = normalizeBigNumberish(feeRate)
@@ -205,7 +207,15 @@ export function computeTradeWithPrice(
   }
   const fee = computeFee(normalizedPrice, normalizedAmount, normalizedFeeRate)
   newAccount.cashBalance = newAccount.cashBalance.minus(fee)
-  return newAccount
+  const afterTrade = computeAccount(p, perpetualIndex, newAccount)
+  let tradeIsSafe = afterTrade.accountComputed.isSafe
+  if (!open.isZero()) {
+    tradeIsSafe = afterTrade.accountComputed.isIMSafe
+  }
+  return {
+    afterTrade,
+    tradeIsSafe,
+  }
 }
 
 export function computeAMMTrade(
@@ -235,7 +245,7 @@ export function computeAMMTrade(
   const operatorFee = computeFee(tradingPrice, deltaAMMAmount, perpetual.operatorFeeRate)
 
   // trader
-  trader = computeTradeWithPrice(
+  const traderResult = computeTradeWithPrice(
     p, perpetualIndex, trader, tradingPrice, deltaAMMAmount.negated(),
     perpetual.lpFeeRate.plus(p.vaultFeeRate).plus(perpetual.operatorFeeRate))
 
@@ -245,8 +255,9 @@ export function computeAMMTrade(
     positionAmount: perpetual.ammPositionAmount,
     entryValue: null, entryFunding: null,
   }
-  fakeAMMAccount = computeTradeWithPrice(p, perpetualIndex, fakeAMMAccount,
+  const fakeAMMResult = computeTradeWithPrice(p, perpetualIndex, fakeAMMAccount,
     tradingPrice, deltaAMMAmount, _0)
+  fakeAMMAccount = fakeAMMResult.afterTrade.accountStorage
   fakeAMMAccount.cashBalance = fakeAMMAccount.cashBalance.plus(lpFee)
   const newPool: LiquidityPoolStorage = {
     // clone the old pool to keep the return value immutable
@@ -257,7 +268,8 @@ export function computeAMMTrade(
   newPool.perpetuals.set(perpetualIndex, { ...perpetual, ammPositionAmount: fakeAMMAccount.positionAmount })
 
   return {
-    trader,
+    tradeIsSafe: traderResult.tradeIsSafe,
+    trader: traderResult.afterTrade,
     newPool,
     lpFee,
     vaultFee,

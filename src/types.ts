@@ -134,7 +134,8 @@ export interface AccountComputed {
   availableMargin: BigNumber
   maxWithdrawable: BigNumber
   withdrawableBalance: BigNumber
-  isSafe: boolean
+  isSafe: boolean // use this if close positions
+  isIMSafe: boolean // use this if open positions
   leverage: BigNumber
   
   entryPrice: BigNumber | null
@@ -193,7 +194,8 @@ export interface AMMTradingContext {
 }
 
 export interface AMMTradingResult {
-  trader: AccountStorage
+  tradeIsSafe: boolean
+  trader: AccountDetails
   newPool: LiquidityPoolStorage
   lpFee: BigNumber
   vaultFee: BigNumber

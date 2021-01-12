@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
-import {
-  computeAccount,
+import {  
   computeTradeWithPrice,
   computeAMMTrade,
   computeAMMPrice,
@@ -153,27 +152,27 @@ describe('computeMaxTradeAmountWithPrice', function () {
     const amount = computeMaxTradeAmountWithPrice(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, price, lev, fee, true)
     expect(amount.gt(_0)).toBeTruthy()
     const res = computeTradeWithPrice(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, price, amount, fee)
-    const details = computeAccount(poolStorage1, TEST_MARKET_INDEX0, res)
-    expect(details.accountComputed.leverage.gt('4.9')).toBeTruthy()
-    expect(details.accountComputed.leverage.lte('5')).toBeTruthy()
+    expect(res.tradeIsSafe).toBeTruthy()
+    expect(res.afterTrade.accountComputed.leverage.gt('4.9')).toBeTruthy()
+    expect(res.afterTrade.accountComputed.leverage.lte('5')).toBeTruthy()
   })
 
   it('safe account sell', function () {
     const amount = computeMaxTradeAmountWithPrice(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, price, lev, fee, false)
     expect(amount.lt(_0)).toBeTruthy()
     const res = computeTradeWithPrice(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, price, amount, fee)
-    const details = computeAccount(poolStorage1, TEST_MARKET_INDEX0, res)
-    expect(details.accountComputed.leverage.gt('4.9')).toBeTruthy()
-    expect(details.accountComputed.leverage.lte('5.1')).toBeTruthy()
+    expect(res.tradeIsSafe).toBeTruthy()
+    expect(res.afterTrade.accountComputed.leverage.gt('4.9')).toBeTruthy()
+    expect(res.afterTrade.accountComputed.leverage.lte('5.1')).toBeTruthy()
   })
 
   it('unsafe account buy', function () {
     const amount = computeMaxTradeAmountWithPrice(poolStorage1, TEST_MARKET_INDEX0, accountStorage3, price, lev, fee, true)
     expect(amount.gt(_0)).toBeTruthy()
     const res = computeTradeWithPrice(poolStorage1, TEST_MARKET_INDEX0, accountStorage3, price, amount, fee)
-    const details = computeAccount(poolStorage1, TEST_MARKET_INDEX0, res)
-    expect(details.accountComputed.leverage.gt('4.9')).toBeTruthy()
-    expect(details.accountComputed.leverage.lte('5.1')).toBeTruthy()
+    expect(res.tradeIsSafe).toBeTruthy()
+    expect(res.afterTrade.accountComputed.leverage.gt('4.9')).toBeTruthy()
+    expect(res.afterTrade.accountComputed.leverage.lte('5.1')).toBeTruthy()
   })
 
   it('unsafe account sell', function () {
@@ -187,22 +186,22 @@ describe('computeAMMMaxTradeAmount', function () {
 
   it(`safe trader + safe amm, trader buy`, function () {
     const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, targetLeverage, true) // 1.1
-    const context = computeAMMTrade(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, amount)
-    const newTrader = computeAccount(poolStorage4, TEST_MARKET_INDEX0, context.trader)
+    const res = computeAMMTrade(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, amount)
+    expect(res.tradeIsSafe).toBeTruthy()
     expect(amount.gt('1.0')).toBeTruthy()
     expect(amount.lt('1.2')).toBeTruthy()
-    expect(newTrader.accountComputed.leverage.gt('0.99')).toBeTruthy()
-    expect(newTrader.accountComputed.leverage.lte('1.01')).toBeTruthy()
+    expect(res.trader.accountComputed.leverage.gt('0.99')).toBeTruthy()
+    expect(res.trader.accountComputed.leverage.lte('1.01')).toBeTruthy()
   })
 
   it(`safe trader + safe amm, trader sell`, function () {
     const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, targetLeverage, false) // -5.6
-    const context = computeAMMTrade(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, amount)
-    const newTrader = computeAccount(poolStorage4, TEST_MARKET_INDEX0, context.trader)
+    const res = computeAMMTrade(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, amount)
+    expect(res.tradeIsSafe).toBeTruthy()
     expect(amount.lt('-5')).toBeTruthy()
     expect(amount.gt('-6')).toBeTruthy()
-    expect(newTrader.accountComputed.leverage.gt('0.99')).toBeTruthy()
-    expect(newTrader.accountComputed.leverage.lte('1.01')).toBeTruthy()
+    expect(res.trader.accountComputed.leverage.gt('0.99')).toBeTruthy()
+    expect(res.trader.accountComputed.leverage.lte('1.01')).toBeTruthy()
   })
 
   it(`safe trader + unsafe amm(holds short), trader buy`, function () {
