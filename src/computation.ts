@@ -37,8 +37,9 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
   const maxWithdrawable = BigNumber.max(_0, marginBalance.minus(positionMargin).minus(reservedCash))
   const availableMargin = BigNumber.max(_0, maxWithdrawable)
   const withdrawableBalance = maxWithdrawable
-  const isSafe = marginBalance.gte(BigNumber.maximum(reservedCash, maintenanceMargin))
+  const isMMSafe = marginBalance.gte(BigNumber.maximum(reservedCash, maintenanceMargin))
   const isIMSafe = marginBalance.gte(BigNumber.maximum(reservedCash, positionMargin))
+  const isMarginSafe = marginBalance.gte(reservedCash)
   const leverage = marginBalance.gt(0) ? positionValue.div(marginBalance) : _0
   
   let fundingPNL: BigNumber | null = null
@@ -87,8 +88,9 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
     maxWithdrawable,
     availableMargin,
     withdrawableBalance,
-    isSafe,
+    isMMSafe,
     isIMSafe,
+    isMarginSafe,
     leverage,
 
     entryPrice,
@@ -208,7 +210,7 @@ export function computeTradeWithPrice(
   const fee = computeFee(normalizedPrice, normalizedAmount, normalizedFeeRate)
   newAccount.cashBalance = newAccount.cashBalance.minus(fee)
   const afterTrade = computeAccount(p, perpetualIndex, newAccount)
-  let tradeIsSafe = afterTrade.accountComputed.isSafe
+  let tradeIsSafe = afterTrade.accountComputed.isMarginSafe
   if (!open.isZero()) {
     tradeIsSafe = afterTrade.accountComputed.isIMSafe
   }

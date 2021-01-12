@@ -134,8 +134,9 @@ export interface AccountComputed {
   availableMargin: BigNumber
   maxWithdrawable: BigNumber
   withdrawableBalance: BigNumber
-  isSafe: boolean // use this if close positions
+  isMMSafe: boolean // use this if check liquidation
   isIMSafe: boolean // use this if open positions
+  isMarginSafe: boolean // use this if close positions. also known as bankrupt
   leverage: BigNumber
   
   entryPrice: BigNumber | null

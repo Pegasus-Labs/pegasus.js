@@ -154,8 +154,9 @@ describe('computeAccount', function () {
     maxWithdrawable: new BigNumber('22092.62634375'),
     availableMargin: new BigNumber('22092.62634375'),
     withdrawableBalance: new BigNumber('22092.62634375'),
-    isSafe: true,
+    isMMSafe: true,
     isIMSafe: true,
+    isMarginSafe: true,
     leverage: new BigNumber('0.67605445706853804198'),
     entryPrice: new BigNumber('1000.1'),
     fundingPNL: new BigNumber('-23.69365625'), // 9.9059375 * 2.3 -(-0.91)
@@ -174,8 +175,9 @@ describe('computeAccount', function () {
     maxWithdrawable: new BigNumber('13092.62634375'),
     availableMargin: new BigNumber('13092.62634375'),
     withdrawableBalance: new BigNumber('13092.62634375'),
-    isSafe: true,
+    isMMSafe: true,
     isIMSafe: true,
+    isMarginSafe: true,
     leverage: new BigNumber('1.0900899444350858789365744572076'),
     entryPrice: new BigNumber('1000.1'),
     fundingPNL: new BigNumber('-23.69365625'), // 9.9059375 * 2.3 -(-0.91)
@@ -194,8 +196,9 @@ describe('computeAccount', function () {
     maxWithdrawable: _0,
     availableMargin: _0,
     withdrawableBalance: _0,
-    isSafe: false,
+    isMMSafe: false,
     isIMSafe: false,
+    isMarginSafe: true,
     leverage: new BigNumber('52.622388802939575523397504968355'),
     entryPrice: new BigNumber('1000.1'),
     fundingPNL: new BigNumber('23.69365625'), // 9.9059375 * (-2.3) -(-0.91)
@@ -214,8 +217,9 @@ describe('computeAccount', function () {
     availableMargin: new BigNumber('10000'),
     maxWithdrawable: new BigNumber('10000'),
     withdrawableBalance: new BigNumber('10000'),
-    isSafe: true,
+    isMMSafe: true,
     isIMSafe: true,
+    isMarginSafe: true,
     leverage: _0,
     entryPrice: _0,
     fundingPNL: _0,
@@ -262,8 +266,9 @@ describe('computeAccount', function () {
       expect(computed.maxWithdrawable).toBeBigNumber(expectedOutput.maxWithdrawable)
       expect(computed.availableMargin).toBeBigNumber(expectedOutput.availableMargin)
       expect(computed.withdrawableBalance).toBeBigNumber(expectedOutput.withdrawableBalance)
-      expect(computed.isSafe).toEqual(expectedOutput.isSafe)
+      expect(computed.isMMSafe).toEqual(expectedOutput.isMMSafe)
       expect(computed.isIMSafe).toEqual(expectedOutput.isIMSafe)
+      expect(computed.isMarginSafe).toEqual(expectedOutput.isMarginSafe)
       expect(computed.leverage).toApproximate(expectedOutput.leverage)
       expect(computed.entryPrice).not.toBeNull()
       if (computed.entryPrice && expectedOutput.entryPrice) {
