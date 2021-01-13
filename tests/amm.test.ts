@@ -974,7 +974,7 @@ describe('computeMaxRemovableShare', function() {
     ammMaxLeverage: BigNumber
 
     // expected
-    shareToRemove: BigNumber
+    shareToRemove?: BigNumber
   }
 
   const successCases: Array<ComputeAccountCase> = [
@@ -1000,7 +1000,15 @@ describe('computeMaxRemovableShare', function() {
       totalShare: new BigNumber('100'),
       isEmergency: false,
       ammMaxLeverage: new BigNumber('3'),
-      shareToRemove: new BigNumber('90'),
+      shareToRemove: undefined // relaxed
+    },
+    {
+      name: 'short, limited by lev',
+      amm: poolStorage1,
+      totalShare: new BigNumber('100'),
+      isEmergency: false,
+      ammMaxLeverage: new BigNumber('0.5'),
+      shareToRemove: undefined // relaxed
     },
     {
       name: 'long',
@@ -1008,7 +1016,7 @@ describe('computeMaxRemovableShare', function() {
       totalShare: new BigNumber('100'),
       isEmergency: false,
       ammMaxLeverage: new BigNumber('3'),
-      shareToRemove: new BigNumber('88.967143367988529727'),
+      shareToRemove: undefined // relaxed
     },
     {
       name: 'state != NORMAL',
@@ -1016,7 +1024,7 @@ describe('computeMaxRemovableShare', function() {
       totalShare: new BigNumber('100'),
       isEmergency: true,
       ammMaxLeverage: new BigNumber('3'),
-      shareToRemove: new BigNumber('88.967143367988529727'),
+      shareToRemove: undefined // relaxed
     },
     {
       name: 'short, before unsafe',
@@ -1078,14 +1086,16 @@ describe('computeMaxRemovableShare', function() {
         }
       })
       const ret = computeMaxRemovableShare(pool, element.totalShare)
-      expect(ret).toApproximate(normalizeBigNumberish(element.shareToRemove))
+      if (element.shareToRemove) {
+        expect(ret).toApproximate(normalizeBigNumberish(element.shareToRemove))
+      }
       if (!ret.isZero()) {
         computeAMMCashToReturn(pool, element.totalShare, ret)
-      }
-      if (ret.lt(element.totalShare)) {
-        expect((): void => {
-          computeAMMCashToReturn(pool, element.totalShare, ret.plus('0.0001'))
-        }).toThrow(InsufficientLiquidityError)
+        if (ret.times('1.015').lte(element.totalShare)) {
+          expect((): void => {
+            computeAMMCashToReturn(pool, element.totalShare, ret.times('1.015'))
+          }).toThrow(InsufficientLiquidityError)
+        }
       }
     })
   })

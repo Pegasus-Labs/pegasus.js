@@ -3,7 +3,7 @@
 */
 
 import { BigNumber } from 'bignumber.js'
-import { DECIMALS, _0, _1, _2, _4 } from './constants'
+import { DECIMALS, REMOVE_LIQUIDITY_MAX_SHARE_RELAX, _0, _1, _2, _4 } from './constants'
 import { LiquidityPoolStorage, AMMTradingContext, PerpetualState, BigNumberish} from './types'
 import { sqrt, splitAmount, hasTheSameSign, normalizeBigNumberish } from './utils'
 import { InsufficientLiquidityError, BugError, InvalidArgumentError } from './types'
@@ -522,27 +522,40 @@ export function computeMaxRemovableShare(p: LiquidityPoolStorage, totalShare: Bi
   }
   context = computeAMMPoolMargin(context, _0 /* useless */)
   const poolMargin = context.poolMargin
-  if (poolMargin.isZero()) {
+  if (poolMargin.lte(_0)) {
     return _0
   }
+
+  // if zero position
+  if (context.positionMarginWithoutCurrent.isZero()) {
+    return normalizedTotalShare
+  }
+
+  // prevent amm unsafe
   let minPoolMargin = sqrt(context.squareValueWithoutCurrent.div(_2))
   
   // prevent amm offering negative price
   for (let j = 0; j < context.otherIndex.length; j++) {
     // M >= β P_i N
-    minPoolMargin = BigNumber.maximum(minPoolMargin,
+    minPoolMargin = BigNumber.maximum(
+      minPoolMargin,
       context.otherOpenSlippageFactor[j].times(context.otherIndex[j]).times(context.otherPosition[j])
     )
   }
   
   // prevent amm exceeding max leverage
-  minPoolMargin = BigNumber.maximum(minPoolMargin,
-    context.positionMarginWithoutCurrent
-  )
+  // newCash + Σ P_i N >= Σ P_i | N | / λ
+  const minNewCash = context.positionMarginWithoutCurrent.minus(context.valueWithoutCurrent)
+  const contextForLev = computeAMMPoolMargin({
+    ...context,
+    cash: minNewCash
+  }, _0 /* useless */, true /* allowUnsafe */)
+  minPoolMargin = BigNumber.maximum(minPoolMargin, contextForLev.poolMargin)
   
+  // share
   if (minPoolMargin.gte(poolMargin)) {
     return _0
   }
   const shareToRemove = _1.minus(minPoolMargin.div(poolMargin)).times(normalizedTotalShare)
-  return shareToRemove
+  return shareToRemove.times(REMOVE_LIQUIDITY_MAX_SHARE_RELAX).dp(DECIMALS, BigNumber.ROUND_DOWN)
 }
