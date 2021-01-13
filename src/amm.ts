@@ -419,6 +419,7 @@ export function computeFundingRate(p: LiquidityPoolStorage, perpetualIndex: numb
   return fr
 }
 
+// add liquidity helper
 export function computeAMMShareToMint(
   p: LiquidityPoolStorage,
   totalShare: BigNumberish,
@@ -451,6 +452,7 @@ export function computeAMMShareToMint(
   }
 }
 
+// remove liquidity helper
 export function computeAMMCashToReturn(
   p: LiquidityPoolStorage,
   totalShare: BigNumberish,
@@ -510,4 +512,37 @@ export function computeAMMCashToReturn(
     poolMargin,
     newPoolMargin,
   }
+}
+
+export function computeMaxRemovableShare(p: LiquidityPoolStorage, totalShare: BigNumberish): BigNumber {
+  const normalizedTotalShare = normalizeBigNumberish(totalShare)
+  let context = initAMMTradingContext(p)
+  if (!isAMMSafe(context, _0 /* useless */)) {
+    return _0
+  }
+  context = computeAMMPoolMargin(context, _0 /* useless */)
+  const poolMargin = context.poolMargin
+  if (poolMargin.isZero()) {
+    return _0
+  }
+  let minPoolMargin = sqrt(context.squareValueWithoutCurrent.div(_2))
+  
+  // prevent amm offering negative price
+  for (let j = 0; j < context.otherIndex.length; j++) {
+    // M >= β P_i N
+    minPoolMargin = BigNumber.maximum(minPoolMargin,
+      context.otherOpenSlippageFactor[j].times(context.otherIndex[j]).times(context.otherPosition[j])
+    )
+  }
+  
+  // prevent amm exceeding max leverage
+  minPoolMargin = BigNumber.maximum(minPoolMargin,
+    context.positionMarginWithoutCurrent
+  )
+  
+  if (minPoolMargin.gte(poolMargin)) {
+    return _0
+  }
+  const shareToRemove = _1.minus(minPoolMargin.div(poolMargin)).times(normalizedTotalShare)
+  return shareToRemove
 }

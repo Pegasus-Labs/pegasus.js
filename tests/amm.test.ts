@@ -10,7 +10,8 @@ import {
   computeBestAskBidPrice,
   computeFundingRate,
   computeAMMShareToMint,
-  computeAMMCashToReturn
+  computeAMMCashToReturn,
+  computeMaxRemovableShare
 } from '../src/amm'
 import { _0, _1 } from '../src/constants'
 import {
@@ -959,6 +960,133 @@ describe('computeAMMCashToReturn', function() {
         })
         computeAMMCashToReturn(pool, element.totalShare, element.shareToRemove)
       }).toThrow(InsufficientLiquidityError)
+    })
+  })
+})
+
+
+describe('computeMaxRemovableShare', function() {
+  interface ComputeAccountCase {
+    name: string
+    amm: LiquidityPoolStorage
+    totalShare: BigNumber
+    isEmergency: boolean
+    ammMaxLeverage: BigNumber
+
+    // expected
+    shareToRemove: BigNumber
+  }
+
+  const successCases: Array<ComputeAccountCase> = [
+    {
+      name: 'poolMargin = 0',
+      amm: poolInit,
+      totalShare: new BigNumber('0'),
+      isEmergency: false,
+      ammMaxLeverage: new BigNumber('3'),
+      shareToRemove: new BigNumber('0'),
+    },
+    {
+      name: 'no position',
+      amm: poolStorage0,
+      totalShare: new BigNumber('100'),
+      isEmergency: false,
+      ammMaxLeverage: new BigNumber('3'),
+      shareToRemove: new BigNumber('100'),
+    },
+    {
+      name: 'short',
+      amm: poolStorage1,
+      totalShare: new BigNumber('100'),
+      isEmergency: false,
+      ammMaxLeverage: new BigNumber('3'),
+      shareToRemove: new BigNumber('90'),
+    },
+    {
+      name: 'long',
+      amm: poolStorage4,
+      totalShare: new BigNumber('100'),
+      isEmergency: false,
+      ammMaxLeverage: new BigNumber('3'),
+      shareToRemove: new BigNumber('88.967143367988529727'),
+    },
+    {
+      name: 'state != NORMAL',
+      amm: poolStorage4,
+      totalShare: new BigNumber('100'),
+      isEmergency: true,
+      ammMaxLeverage: new BigNumber('3'),
+      shareToRemove: new BigNumber('88.967143367988529727'),
+    },
+    {
+      name: 'short, before unsafe',
+      amm: poolStorage3,
+      totalShare: new BigNumber('100'),
+      isEmergency: false,
+      ammMaxLeverage: new BigNumber('3'),
+      shareToRemove: new BigNumber('0')
+    },
+    {
+      name: 'long, before unsafe',
+      amm: poolStorage6,
+      totalShare: new BigNumber('100'),
+      isEmergency: false,
+      ammMaxLeverage: new BigNumber('3'),
+      shareToRemove: new BigNumber('0')
+    },
+    {
+      name: 'long, after negative price',
+      amm: poolStorage5,
+      totalShare: new BigNumber('100'),
+      isEmergency: false,
+      ammMaxLeverage: new BigNumber('3'),
+      shareToRemove: new BigNumber('0'),
+    },
+    {
+      name: 'long, after exceed leverage',
+      amm: poolStorage4,
+      totalShare: new BigNumber('100'),
+      isEmergency: false,
+      ammMaxLeverage: new BigNumber('0.1'),
+      shareToRemove: new BigNumber('0'),
+    }
+  ]
+
+  successCases.forEach(element => {
+    it(element.name, async () => {
+      let pool = element.amm
+      if (element.isEmergency) {
+        pool.perpetuals.set(TEST_MARKET_INDEX1, {
+          ...pool.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage,
+          state: PerpetualState.EMERGENCY,
+        })
+      }
+      pool.perpetuals.set(TEST_MARKET_INDEX0, {
+        ...pool.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage,
+        ammMaxLeverage: {
+          value: element.ammMaxLeverage,
+          minValue: _0,
+          maxValue: element.ammMaxLeverage
+        }
+      })
+      pool.perpetuals.set(TEST_MARKET_INDEX1, {
+        ...pool.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage,
+        ammMaxLeverage: {
+          value: element.ammMaxLeverage,
+          minValue: _0,
+          maxValue: element.ammMaxLeverage
+        }
+      })
+      const ret = computeMaxRemovableShare(pool, element.totalShare)
+      expect(ret).toApproximate(normalizeBigNumberish(element.shareToRemove))
+      if (!ret.isZero()) {
+        computeAMMCashToReturn(pool, element.totalShare, ret)
+      }
+      if (ret.lt(element.totalShare)) {
+        expect((): void => {
+          computeAMMCashToReturn(pool, element.totalShare, ret.plus('0.0001'))
+        }).toThrow(InsufficientLiquidityError)
+      }
     })
   })
 })
