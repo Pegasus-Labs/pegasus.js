@@ -10,7 +10,7 @@ import {
   computeBestAskBidPrice,
   computeFundingRate,
   computeAMMShareToMint,
-  computeAMMCashToReturn,
+  computeAMMCashToReturn
 } from '../src/amm'
 import { _0, _1 } from '../src/constants'
 import {
@@ -130,11 +130,11 @@ const poolStorage2: LiquidityPoolStorage = {
 }
 
 // [3] short 3: unsafe
-// available cash = 16753.12619691409782671538929731 - 1.9 * (-80) - 1.9 * (10) = 16886.12619691409782671538929731
+// available cash = 17692 - 1.9 * (-80) - 1.9 * (10) = 17825
 // available margin = unsafe / unsafe
 const poolStorage3: LiquidityPoolStorage = {
   ...defaultPool,
-  poolCashBalance: new BigNumber('16753.12619691409782671538929731'),
+  poolCashBalance: new BigNumber('17692'),
   perpetuals: new Map([
     [TEST_MARKET_INDEX0, { ...perpetual1, ammPositionAmount: new BigNumber('-80') }],
     [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: new BigNumber('10') }],
@@ -169,11 +169,11 @@ const poolStorage5: LiquidityPoolStorage = {
 
 // [6]
 // long 3: unsafe
-// available cash = 1925 - 1.9 * (80) - 1.9 * (10) = 1754
+// available cash = 1996 - 1.9 * (80) - 1.9 * (10) = 1825
 // available margin = unsafe / unsafe
 const poolStorage6: LiquidityPoolStorage = {
   ...defaultPool,
-  poolCashBalance: new BigNumber('1925'),
+  poolCashBalance: new BigNumber('1996'),
   perpetuals: new Map([
     [TEST_MARKET_INDEX0, { ...perpetual1, ammPositionAmount: new BigNumber('80') }],
     [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: new BigNumber('10') }],
@@ -217,7 +217,7 @@ describe('computeM0', function () {
     },
     {
       amm: poolStorage3,
-      availableCash: new BigNumber('16886.12619691409782671538929731'),
+      availableCash: new BigNumber('17825'),
       isAMMSafe: false,
       poolMargin: _0
     },
@@ -235,7 +235,7 @@ describe('computeM0', function () {
     },
     {
       amm: poolStorage6,
-      availableCash: new BigNumber('1754'),
+      availableCash: new BigNumber('1825'),
       isAMMSafe: false,
       poolMargin: _0,
     },
@@ -741,7 +741,7 @@ describe('computeFundingRate', function () {
   })
 })
 
-describe('computeAMMShareToMint', async () => {
+describe('computeAMMShareToMint', function() {
   interface ComputeAccountCase {
     name: string
     amm: LiquidityPoolStorage
@@ -820,7 +820,7 @@ describe('computeAMMCashToReturn', function() {
   const successCases: Array<ComputeAccountCase> = [
     {
       name: 'poolMargin = 0',
-      amm: poolStorage0,
+      amm: poolInit,
       totalShare: new BigNumber('100'),
       shareToRemove: new BigNumber('10'),
       isEmergency: false,
@@ -941,6 +941,14 @@ describe('computeAMMCashToReturn', function() {
     it(element.name, async () => {
       expect((): void => {
         let pool = element.amm
+        pool.perpetuals.set(TEST_MARKET_INDEX0, {
+          ...pool.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage,
+          ammMaxLeverage: {
+            value: element.ammMaxLeverage,
+            minValue: _0,
+            maxValue: element.ammMaxLeverage
+          }
+        })
         pool.perpetuals.set(TEST_MARKET_INDEX1, {
           ...pool.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage,
           ammMaxLeverage: {

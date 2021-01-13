@@ -458,15 +458,18 @@ export function computeAMMCashToReturn(
 ): { cashToReturn: BigNumber, poolMargin: BigNumber, newPoolMargin: BigNumber } {
   const normalizedShareToRemove = normalizeBigNumberish(shareToRemove)
   const normalizedTotalShare = normalizeBigNumberish(totalShare)
-  if (normalizedTotalShare.lte(_0) || normalizedShareToRemove.gte(normalizedTotalShare)) {
+  if (normalizedTotalShare.lte(_0) || normalizedShareToRemove.gt(normalizedTotalShare)) {
     throw new InvalidArgumentError(`remove liquidity error. totalShare: ${normalizedTotalShare.toFixed()} shareToRemove: ${normalizedShareToRemove.toFixed()}`)
   }
   let context = initAMMTradingContext(p)
-  if (!isAMMSafe) {
+  if (!isAMMSafe(context, _0 /* useless */)) {
     throw new InsufficientLiquidityError(`AMM can not remove liquidity: unsafe before removing liquidity`)
   }
   context = computeAMMPoolMargin(context, _0 /* useless */)
   const poolMargin = context.poolMargin
+  if (poolMargin.isZero()) {
+    return { cashToReturn: _0, poolMargin: _0, newPoolMargin: _0 }
+  }
   const newPoolMargin = normalizedTotalShare.minus(normalizedShareToRemove).times(poolMargin).div(normalizedTotalShare)
   const minPoolMargin = sqrt(context.squareValueWithoutCurrent.div(_2))
   if (newPoolMargin.lt(minPoolMargin)) {
@@ -482,6 +485,7 @@ export function computeAMMCashToReturn(
     // M - Σ P_i N + Σ (β P_i^2 N^2) / 2 / M
     cashToReturn = context.squareValueWithoutCurrent.div(newPoolMargin).div(_2)
       .plus(newPoolMargin).minus(context.valueWithoutCurrent)
+    cashToReturn = context.cash.minus(cashToReturn)
   }
   if (cashToReturn.lt(_0)) {
     throw new InsufficientLiquidityError(`AMM can not remove liquidity: received margin is negative`)
