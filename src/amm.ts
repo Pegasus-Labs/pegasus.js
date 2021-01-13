@@ -223,6 +223,9 @@ export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNu
     throw new InsufficientLiquidityError(`AMM can not open position anymore: unsafe before trade`)
   }
   ret = computeAMMPoolMargin(ret, beta)
+  if (ret.poolMargin.lte(_0)) {
+    throw new InsufficientLiquidityError(`AMM can not open position anymore: pool margin must be positive`)
+  }
   if (amount.gt(_0)) {
     // 0.....position2.....safePosition2
     const safePosition2 = computeAMMSafeLongPositionAmount(ret, beta)
@@ -288,6 +291,9 @@ export function isAMMSafe(context: AMMTradingContext, beta: BigNumber): boolean 
 
 // call computeAMMPoolMargin before this function. make sure isAMMSafe before this function
 export function computeAMMSafeShortPositionAmount(context: AMMTradingContext, beta: BigNumber): BigNumber {
+  if (context.poolMargin.lte(_0)) {
+    return _0
+  }
   let condition3 = computeAMMSafeCondition3(context, beta)
   if (condition3 === false) {
     return _0
@@ -304,6 +310,9 @@ export function computeAMMSafeShortPositionAmount(context: AMMTradingContext, be
 
 // call computeAMMPoolMargin before this function. make sure isAMMSafe before this function
 export function computeAMMSafeLongPositionAmount(context: AMMTradingContext, beta: BigNumber): BigNumber {
+  if (context.poolMargin.lte(_0)) {
+    return _0
+  }
   let condition3 = computeAMMSafeCondition3(context, beta)
   if (condition3 === false) {
     return _0

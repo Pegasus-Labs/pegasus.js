@@ -81,6 +81,15 @@ const perpetual1: PerpetualStorage = {
 const TEST_MARKET_INDEX0 = 0
 const TEST_MARKET_INDEX1 = 1
 
+const poolInit: LiquidityPoolStorage = {
+  ...defaultPool,
+  poolCashBalance: _0,
+  perpetuals: new Map([
+    [TEST_MARKET_INDEX0, { ...perpetual1, ammPositionAmount: _0 }],
+    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: _0 }],
+  ]),
+}
+
 // [0] zero
 // available cash = 10000
 // available margin = 10000, 10000
@@ -183,6 +192,12 @@ describe('computeM0', function () {
 
   const successCases: Array<ComputeAccountCase> = [
     {
+      amm: poolInit,
+      availableCash: new BigNumber('0'),
+      isAMMSafe: true,
+      poolMargin: new BigNumber('0'),
+    },
+    {
       amm: poolStorage0,
       availableCash: new BigNumber('10000'),
       isAMMSafe: true,
@@ -278,6 +293,14 @@ describe('computeDeltaMargin', function () {
 })
 
 describe('safePosition', function () {
+  it('short: init', function () {
+    const beta = new BigNumber('1')
+    const context = computeAMMPoolMargin(initAMMTradingContext(poolInit, TEST_MARKET_INDEX0), beta)
+    expect(isAMMSafe(context, beta)).toBeTruthy()
+    const pos2 = computeAMMSafeShortPositionAmount(context, beta)
+    expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('0')))
+  })
+
   it('short: condition3 √, condition2 ∞. condition 3 selected', function () {
     const beta = new BigNumber('1')
     const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage1, TEST_MARKET_INDEX0), beta)
@@ -325,6 +348,14 @@ describe('safePosition', function () {
 
   it('short: condition3 ∞', function () {
     // TODO
+  })
+
+  it('long: init', function () {
+    const beta = new BigNumber('1')
+    const context = computeAMMPoolMargin(initAMMTradingContext(poolInit, TEST_MARKET_INDEX0), beta)
+    expect(isAMMSafe(context, beta)).toBeTruthy()
+    const pos2 = computeAMMSafeLongPositionAmount(context, beta)
+    expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('0')))
   })
 
   it('long: condition3 √, condition2 ∞, condition 1 selected', function () {
@@ -584,6 +615,11 @@ describe('trade - fail', function () {
 
   const failCases: Array<ComputeAccountCase> = [
     {
+      name: 'poolMargin = 0',
+      amm: poolInit,
+      amount: new BigNumber('1'),
+    },
+    {
       name: 'open 0 -> -141.422, pos2 too large',
       amm: poolStorage0,
       amount: new BigNumber('-141.422'),
@@ -719,7 +755,7 @@ describe('computeAMMShareToMint', async () => {
   const successCases: Array<ComputeAccountCase> = [
     {
       name: 'init',
-      amm: poolStorage0,
+      amm: poolInit,
       totalShare: _0,
       cashToAdd: new BigNumber(1000),
       share: new BigNumber(1000)

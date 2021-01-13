@@ -63,13 +63,12 @@ export function sqrt(y: BigNumber): BigNumber {
   if (y.lt(_0)) {
     throw new InvalidArgumentError('negative sqrt')
   }
-
+  
   // we use 10**36 before sqrt
   y = y.shiftedBy(DECIMALS * 2).dp(0, BigNumber.ROUND_DOWN)
-
   if (y.lt(_3)) {
     const z = y.plus(_1).div(_2)
-    return z.shiftedBy(-DECIMALS)
+    return z.shiftedBy(-DECIMALS).dp(DECIMALS, BigNumber.ROUND_DOWN)
   }
 
   // binary estimate
@@ -87,6 +86,5 @@ export function sqrt(y: BigNumber): BigNumber {
     next = y.div(next).plus(next).div(_2)
     next = next.dp(0, BigNumber.ROUND_DOWN)
   }
-
-  return z.shiftedBy(-DECIMALS)
+  return z.shiftedBy(-DECIMALS).dp(DECIMALS, BigNumber.ROUND_DOWN)
 }
