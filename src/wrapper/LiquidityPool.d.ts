@@ -33,6 +33,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "deposit(uint256,address,int256)": FunctionFragment;
     "donateInsuranceFund(uint256,int256)": FunctionFragment;
     "forceToSetEmergencyState(uint256)": FunctionFragment;
+    "getActiveAccountCount(uint256)": FunctionFragment;
     "getClaimableFee(address)": FunctionFragment;
     "getClaimableOperatorFee()": FunctionFragment;
     "getClearProgress(uint256)": FunctionFragment;
@@ -40,10 +41,11 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "getMarginAccount(uint256,address)": FunctionFragment;
     "getPerpetualInfo(uint256)": FunctionFragment;
     "getPoolMargin()": FunctionFragment;
-    "getTradePrice(uint256,int256)": FunctionFragment;
     "initialize(address,address,uint256,address,address,bool)": FunctionFragment;
-    "liquidateByAMM(uint256,address,uint256)": FunctionFragment;
+    "liquidateByAMM(uint256,address)": FunctionFragment;
     "liquidateByTrader(uint256,address,int256,int256,uint256)": FunctionFragment;
+    "listActiveAccounts(uint256,uint256,uint256)": FunctionFragment;
+    "queryTradeWithAMM(uint256,int256)": FunctionFragment;
     "removeLiquidity(int256)": FunctionFragment;
     "revokeOperator()": FunctionFragment;
     "runLiquidityPool()": FunctionFragment;
@@ -133,6 +135,10 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getActiveAccountCount",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getClaimableFee",
     values: [string]
   ): string;
@@ -161,20 +167,24 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getTradePrice",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "initialize",
     values: [string, string, BigNumberish, string, string, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "liquidateByAMM",
-    values: [BigNumberish, string, BigNumberish]
+    values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "liquidateByTrader",
     values: [BigNumberish, string, BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "listActiveAccounts",
+    values: [BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "queryTradeWithAMM",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "removeLiquidity",
@@ -265,6 +275,10 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getActiveAccountCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getClaimableFee",
     data: BytesLike
   ): Result;
@@ -292,10 +306,6 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     functionFragment: "getPoolMargin",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "getTradePrice",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "liquidateByAMM",
@@ -303,6 +313,14 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "liquidateByTrader",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "listActiveAccounts",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "queryTradeWithAMM",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -354,7 +372,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "Deposit(uint256,address,int256)": EventFragment;
     "DonateInsuranceFund(uint256,int256)": EventFragment;
     "IncreaseFee(address,int256)": EventFragment;
-    "Liquidate(uint256,address,address,int256,int256)": EventFragment;
+    "Liquidate(uint256,address,address,int256,int256,int256)": EventFragment;
     "RemoveLiquidity(address,int256,int256)": EventFragment;
     "RevokeOperator()": EventFragment;
     "RunLiquidityPool()": EventFragment;
@@ -586,6 +604,22 @@ export class LiquidityPool extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    getActiveAccountCount(
+      perpetualIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      activeAccountCount: BigNumber;
+      0: BigNumber;
+    }>;
+
+    "getActiveAccountCount(uint256)"(
+      perpetualIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      activeAccountCount: BigNumber;
+      0: BigNumber;
+    }>;
+
     getClaimableFee(
       claimer: string,
       overrides?: CallOverrides
@@ -710,28 +744,6 @@ export class LiquidityPool extends Contract {
       0: BigNumber;
     }>;
 
-    getTradePrice(
-      perpetualIndex: BigNumberish,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      deltaCash: BigNumber;
-      deltaPosition: BigNumber;
-      0: BigNumber;
-      1: BigNumber;
-    }>;
-
-    "getTradePrice(uint256,int256)"(
-      perpetualIndex: BigNumberish,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      deltaCash: BigNumber;
-      deltaPosition: BigNumber;
-      0: BigNumber;
-      1: BigNumber;
-    }>;
-
     initialize(
       operator: string,
       collateral: string,
@@ -755,14 +767,12 @@ export class LiquidityPool extends Contract {
     liquidateByAMM(
       perpetualIndex: BigNumberish,
       trader: string,
-      deadline: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "liquidateByAMM(uint256,address,uint256)"(
+    "liquidateByAMM(uint256,address)"(
       perpetualIndex: BigNumberish,
       trader: string,
-      deadline: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -783,6 +793,48 @@ export class LiquidityPool extends Contract {
       deadline: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    listActiveAccounts(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      result: string[];
+      0: string[];
+    }>;
+
+    "listActiveAccounts(uint256,uint256,uint256)"(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      result: string[];
+      0: string[];
+    }>;
+
+    queryTradeWithAMM(
+      perpetualIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      deltaCash: BigNumber;
+      deltaPosition: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    }>;
+
+    "queryTradeWithAMM(uint256,int256)"(
+      perpetualIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      deltaCash: BigNumber;
+      deltaPosition: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    }>;
 
     removeLiquidity(
       shareToRemove: BigNumberish,
@@ -1097,6 +1149,16 @@ export class LiquidityPool extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  getActiveAccountCount(
+    perpetualIndex: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "getActiveAccountCount(uint256)"(
+    perpetualIndex: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   getClaimableFee(
     claimer: string,
     overrides?: CallOverrides
@@ -1199,28 +1261,6 @@ export class LiquidityPool extends Contract {
 
   "getPoolMargin()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-  getTradePrice(
-    perpetualIndex: BigNumberish,
-    amount: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<{
-    deltaCash: BigNumber;
-    deltaPosition: BigNumber;
-    0: BigNumber;
-    1: BigNumber;
-  }>;
-
-  "getTradePrice(uint256,int256)"(
-    perpetualIndex: BigNumberish,
-    amount: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<{
-    deltaCash: BigNumber;
-    deltaPosition: BigNumber;
-    0: BigNumber;
-    1: BigNumber;
-  }>;
-
   initialize(
     operator: string,
     collateral: string,
@@ -1244,14 +1284,12 @@ export class LiquidityPool extends Contract {
   liquidateByAMM(
     perpetualIndex: BigNumberish,
     trader: string,
-    deadline: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "liquidateByAMM(uint256,address,uint256)"(
+  "liquidateByAMM(uint256,address)"(
     perpetualIndex: BigNumberish,
     trader: string,
-    deadline: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1272,6 +1310,42 @@ export class LiquidityPool extends Contract {
     deadline: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  listActiveAccounts(
+    perpetualIndex: BigNumberish,
+    begin: BigNumberish,
+    end: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
+  "listActiveAccounts(uint256,uint256,uint256)"(
+    perpetualIndex: BigNumberish,
+    begin: BigNumberish,
+    end: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
+  queryTradeWithAMM(
+    perpetualIndex: BigNumberish,
+    amount: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<{
+    deltaCash: BigNumber;
+    deltaPosition: BigNumber;
+    0: BigNumber;
+    1: BigNumber;
+  }>;
+
+  "queryTradeWithAMM(uint256,int256)"(
+    perpetualIndex: BigNumberish,
+    amount: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<{
+    deltaCash: BigNumber;
+    deltaPosition: BigNumber;
+    0: BigNumber;
+    1: BigNumber;
+  }>;
 
   removeLiquidity(
     shareToRemove: BigNumberish,
@@ -1586,6 +1660,16 @@ export class LiquidityPool extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    getActiveAccountCount(
+      perpetualIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getActiveAccountCount(uint256)"(
+      perpetualIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getClaimableFee(
       claimer: string,
       overrides?: CallOverrides
@@ -1674,7 +1758,7 @@ export class LiquidityPool extends Contract {
       settleableMargin: BigNumber;
       isInitialMarginSafe: boolean;
       isMaintenanceMarginSafe: boolean;
-      isBankrupt: boolean;
+      isMarginSafe: boolean;
       0: BigNumber;
       1: BigNumber;
       2: BigNumber;
@@ -1697,7 +1781,7 @@ export class LiquidityPool extends Contract {
       settleableMargin: BigNumber;
       isInitialMarginSafe: boolean;
       isMaintenanceMarginSafe: boolean;
-      isBankrupt: boolean;
+      isMarginSafe: boolean;
       0: BigNumber;
       1: BigNumber;
       2: BigNumber;
@@ -1876,28 +1960,6 @@ export class LiquidityPool extends Contract {
 
     "getPoolMargin()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getTradePrice(
-      perpetualIndex: BigNumberish,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      deltaCash: BigNumber;
-      deltaPosition: BigNumber;
-      0: BigNumber;
-      1: BigNumber;
-    }>;
-
-    "getTradePrice(uint256,int256)"(
-      perpetualIndex: BigNumberish,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      deltaCash: BigNumber;
-      deltaPosition: BigNumber;
-      0: BigNumber;
-      1: BigNumber;
-    }>;
-
     initialize(
       operator: string,
       collateral: string,
@@ -1921,14 +1983,12 @@ export class LiquidityPool extends Contract {
     liquidateByAMM(
       perpetualIndex: BigNumberish,
       trader: string,
-      deadline: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "liquidateByAMM(uint256,address,uint256)"(
+    "liquidateByAMM(uint256,address)"(
       perpetualIndex: BigNumberish,
       trader: string,
-      deadline: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1949,6 +2009,42 @@ export class LiquidityPool extends Contract {
       deadline: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    listActiveAccounts(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
+    "listActiveAccounts(uint256,uint256,uint256)"(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
+    queryTradeWithAMM(
+      perpetualIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      deltaCash: BigNumber;
+      deltaPosition: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    }>;
+
+    "queryTradeWithAMM(uint256,int256)"(
+      perpetualIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      deltaCash: BigNumber;
+      deltaPosition: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    }>;
 
     removeLiquidity(
       shareToRemove: BigNumberish,
@@ -2096,13 +2192,17 @@ export class LiquidityPool extends Contract {
   };
 
   filters: {
-    AddLiquidity(trader: null, addedCash: null, mintedShare: null): EventFilter;
+    AddLiquidity(
+      trader: string | null,
+      addedCash: null,
+      mintedShare: null
+    ): EventFilter;
 
-    ClaimFee(claimer: null, amount: null): EventFilter;
+    ClaimFee(claimer: string | null, amount: null): EventFilter;
 
-    ClaimOperatorTo(newOperator: null): EventFilter;
+    ClaimOperatorTo(newOperator: string | null): EventFilter;
 
-    Clear(perpetualIndex: null, trader: null): EventFilter;
+    Clear(perpetualIndex: null, trader: string | null): EventFilter;
 
     CreatePerpetual(
       perpetualIndex: null,
@@ -2115,22 +2215,27 @@ export class LiquidityPool extends Contract {
       riskParams: null
     ): EventFilter;
 
-    Deposit(perpetualIndex: null, trader: null, amount: null): EventFilter;
+    Deposit(
+      perpetualIndex: null,
+      trader: string | null,
+      amount: null
+    ): EventFilter;
 
     DonateInsuranceFund(perpetualIndex: null, amount: null): EventFilter;
 
-    IncreaseFee(recipient: null, amount: null): EventFilter;
+    IncreaseFee(recipient: string | null, amount: null): EventFilter;
 
     Liquidate(
       perpetualIndex: null,
       liquidator: string | null,
       trader: string | null,
       amount: null,
-      price: null
+      price: null,
+      penalty: null
     ): EventFilter;
 
     RemoveLiquidity(
-      trader: null,
+      trader: string | null,
       returnedCash: null,
       burnedShare: null
     ): EventFilter;
@@ -2165,7 +2270,11 @@ export class LiquidityPool extends Contract {
       maxValue: null
     ): EventFilter;
 
-    Settle(perpetualIndex: null, trader: null, amount: null): EventFilter;
+    Settle(
+      perpetualIndex: null,
+      trader: string | null,
+      amount: null
+    ): EventFilter;
 
     Trade(
       perpetualIndex: null,
@@ -2175,7 +2284,7 @@ export class LiquidityPool extends Contract {
       fee: null
     ): EventFilter;
 
-    TransferOperatorTo(newOperator: null): EventFilter;
+    TransferOperatorTo(newOperator: string | null): EventFilter;
 
     UpdatePerpetualRiskParameter(
       perpetualIndex: null,
@@ -2190,7 +2299,11 @@ export class LiquidityPool extends Contract {
       unitAccumulativeFunding: null
     ): EventFilter;
 
-    Withdraw(perpetualIndex: null, trader: null, amount: null): EventFilter;
+    Withdraw(
+      perpetualIndex: null,
+      trader: string | null,
+      amount: null
+    ): EventFilter;
   };
 
   estimateGas: {
@@ -2362,6 +2475,16 @@ export class LiquidityPool extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    getActiveAccountCount(
+      perpetualIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getActiveAccountCount(uint256)"(
+      perpetualIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getClaimableFee(
       claimer: string,
       overrides?: CallOverrides
@@ -2416,18 +2539,6 @@ export class LiquidityPool extends Contract {
 
     "getPoolMargin()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getTradePrice(
-      perpetualIndex: BigNumberish,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getTradePrice(uint256,int256)"(
-      perpetualIndex: BigNumberish,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     initialize(
       operator: string,
       collateral: string,
@@ -2451,14 +2562,12 @@ export class LiquidityPool extends Contract {
     liquidateByAMM(
       perpetualIndex: BigNumberish,
       trader: string,
-      deadline: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "liquidateByAMM(uint256,address,uint256)"(
+    "liquidateByAMM(uint256,address)"(
       perpetualIndex: BigNumberish,
       trader: string,
-      deadline: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -2478,6 +2587,32 @@ export class LiquidityPool extends Contract {
       limitPrice: BigNumberish,
       deadline: BigNumberish,
       overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    listActiveAccounts(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "listActiveAccounts(uint256,uint256,uint256)"(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    queryTradeWithAMM(
+      perpetualIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "queryTradeWithAMM(uint256,int256)"(
+      perpetualIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     removeLiquidity(
@@ -2794,6 +2929,16 @@ export class LiquidityPool extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    getActiveAccountCount(
+      perpetualIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getActiveAccountCount(uint256)"(
+      perpetualIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getClaimableFee(
       claimer: string,
       overrides?: CallOverrides
@@ -2856,18 +3001,6 @@ export class LiquidityPool extends Contract {
 
     "getPoolMargin()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getTradePrice(
-      perpetualIndex: BigNumberish,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getTradePrice(uint256,int256)"(
-      perpetualIndex: BigNumberish,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     initialize(
       operator: string,
       collateral: string,
@@ -2891,14 +3024,12 @@ export class LiquidityPool extends Contract {
     liquidateByAMM(
       perpetualIndex: BigNumberish,
       trader: string,
-      deadline: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "liquidateByAMM(uint256,address,uint256)"(
+    "liquidateByAMM(uint256,address)"(
       perpetualIndex: BigNumberish,
       trader: string,
-      deadline: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -2918,6 +3049,32 @@ export class LiquidityPool extends Contract {
       limitPrice: BigNumberish,
       deadline: BigNumberish,
       overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    listActiveAccounts(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "listActiveAccounts(uint256,uint256,uint256)"(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    queryTradeWithAMM(
+      perpetualIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "queryTradeWithAMM(uint256,int256)"(
+      perpetualIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     removeLiquidity(

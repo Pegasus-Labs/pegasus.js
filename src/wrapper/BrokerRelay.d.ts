@@ -394,7 +394,7 @@ export class BrokerRelay extends Contract {
   filters: {
     CancelOrder(orderHash: null): EventFilter;
 
-    Deposit(trader: null, amount: null): EventFilter;
+    Deposit(trader: string | null, amount: null): EventFilter;
 
     FillOrder(orderHash: null, fillAmount: null): EventFilter;
 
@@ -412,9 +412,13 @@ export class BrokerRelay extends Contract {
       gasReward: null
     ): EventFilter;
 
-    Transfer(sender: null, recipient: null, amount: null): EventFilter;
+    Transfer(
+      sender: string | null,
+      recipient: string | null,
+      amount: null
+    ): EventFilter;
 
-    Withdraw(trader: null, amount: null): EventFilter;
+    Withdraw(trader: string | null, amount: null): EventFilter;
   };
 
   estimateGas: {
