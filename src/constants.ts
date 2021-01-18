@@ -19,7 +19,12 @@ export const _MAX_UINT256: BigNumber = new BigNumber(
 
 export const CHAIN_ID_TO_READER_ADDRESS: { [chainID: number]: string } = {
   42: '0x034f78c7Ef34CBad13C1039e3e6457F20469Cb6C',
-  1337: '0x2Fe77342fab6F5f44C3E1C705Bf4E61b1631080a'
+  1337: '0x7d2D6d715540caC7A72E1bf3712fcDBb00967F60'
+}
+
+export const CHAIN_ID_TO_POOL_CREATOR_ADDRESS: { [chainID: number]: string } = {
+  42: '0xfa81036567A378C44C5bC13323416aECfeD29D09',
+  1337: '0xef46f6112568ab1211Dc7e57c4F1f3957A115caF'
 }
 
 // leave 1% when calculating withdrawal penalty if position != 0
