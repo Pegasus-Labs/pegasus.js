@@ -151,7 +151,6 @@ describe('computeAccount', function () {
     maintenanceMargin: new BigNumber('800.975'),
     availableCashBalance: new BigNumber('7676.07634375'),
     marginBalance: new BigNumber('23695.57634375'), // 10000 + (6965 - 2300.23/2.3) * 2.3 - 23.69365625
-    maxWithdrawable: new BigNumber('22092.62634375'),
     availableMargin: new BigNumber('22092.62634375'),
     withdrawableBalance: new BigNumber('22092.62634375'),
     isMMSafe: true,
@@ -172,7 +171,6 @@ describe('computeAccount', function () {
     maintenanceMargin: new BigNumber('800.975'),
     availableCashBalance: new BigNumber('-1323.92365625'),
     marginBalance: new BigNumber('14695.57634375'), // 1000 + (6965 - 2300.23/2.3) * 2.3 - 23.69365625
-    maxWithdrawable: new BigNumber('13092.62634375'),
     availableMargin: new BigNumber('13092.62634375'),
     withdrawableBalance: new BigNumber('13092.62634375'),
     isMMSafe: true,
@@ -193,7 +191,6 @@ describe('computeAccount', function () {
     maintenanceMargin: new BigNumber('800.975'),
     availableCashBalance: new BigNumber('16323.92365625'),
     marginBalance: new BigNumber('304.42365625'), // 14000 + (2300.23/2.3 - 6965) * 2.3 - (-23.69365625)
-    maxWithdrawable: _0,
     availableMargin: _0,
     withdrawableBalance: _0,
     isMMSafe: false,
@@ -215,7 +212,6 @@ describe('computeAccount', function () {
     availableCashBalance: new BigNumber('10000'),
     marginBalance: new BigNumber('10000'),
     availableMargin: new BigNumber('10000'),
-    maxWithdrawable: new BigNumber('10000'),
     withdrawableBalance: new BigNumber('10000'),
     isMMSafe: true,
     isIMSafe: true,
@@ -263,7 +259,6 @@ describe('computeAccount', function () {
       expect(computed.maintenanceMargin).toBeBigNumber(expectedOutput.maintenanceMargin)
       expect(computed.availableCashBalance).toBeBigNumber(expectedOutput.availableCashBalance)
       expect(computed.marginBalance).toBeBigNumber(expectedOutput.marginBalance)
-      expect(computed.maxWithdrawable).toBeBigNumber(expectedOutput.maxWithdrawable)
       expect(computed.availableMargin).toBeBigNumber(expectedOutput.availableMargin)
       expect(computed.withdrawableBalance).toBeBigNumber(expectedOutput.withdrawableBalance)
       expect(computed.isMMSafe).toEqual(expectedOutput.isMMSafe)

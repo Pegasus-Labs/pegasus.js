@@ -132,7 +132,6 @@ export interface AccountComputed {
   availableCashBalance: BigNumber // cash - accumulatedFunding * pos
   marginBalance: BigNumber // cash + i pos - accumulatedFunding * pos
   availableMargin: BigNumber
-  maxWithdrawable: BigNumber
   withdrawableBalance: BigNumber
   isMMSafe: boolean // use this if check liquidation
   isIMSafe: boolean // use this if open positions

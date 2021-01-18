@@ -34,9 +34,8 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
   }
   const availableCashBalance = s.cashBalance.minus(s.positionAmount.times(perpetual.unitAccumulativeFunding))
   const marginBalance = availableCashBalance.plus(perpetual.markPrice.times(s.positionAmount))
-  const maxWithdrawable = BigNumber.max(_0, marginBalance.minus(positionMargin).minus(reservedCash))
-  const availableMargin = BigNumber.max(_0, maxWithdrawable)
-  const withdrawableBalance = maxWithdrawable
+  const availableMargin = BigNumber.max(_0, marginBalance.minus(BigNumber.maximum(reservedCash, positionMargin)))
+  const withdrawableBalance = availableMargin
   const isMMSafe = marginBalance.gte(BigNumber.maximum(reservedCash, maintenanceMargin))
   const isIMSafe = marginBalance.gte(BigNumber.maximum(reservedCash, positionMargin))
   const isMarginSafe = marginBalance.gte(reservedCash)
