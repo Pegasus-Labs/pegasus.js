@@ -157,8 +157,8 @@ describe('computeAccount', function() {
     maintenanceMargin: new BigNumber('800.975'),
     availableCashBalance: new BigNumber('7676.07634375'),
     marginBalance: new BigNumber('23695.57634375'), // 10000 + (6965 - 2300.23/2.3) * 2.3 - 23.69365625
-    availableMargin: new BigNumber('22092.62634375'),
-    withdrawableBalance: new BigNumber('22092.62634375'),
+    availableMargin: new BigNumber('22093.62634375'),
+    withdrawableBalance: new BigNumber('22093.62634375'),
     isMMSafe: true,
     isIMSafe: true,
     isMarginSafe: true,
@@ -177,8 +177,8 @@ describe('computeAccount', function() {
     maintenanceMargin: new BigNumber('800.975'),
     availableCashBalance: new BigNumber('-1323.92365625'),
     marginBalance: new BigNumber('14695.57634375'), // 1000 + (6965 - 2300.23/2.3) * 2.3 - 23.69365625
-    availableMargin: new BigNumber('13092.62634375'),
-    withdrawableBalance: new BigNumber('13092.62634375'),
+    availableMargin: new BigNumber('13093.62634375'),
+    withdrawableBalance: new BigNumber('13093.62634375'),
     isMMSafe: true,
     isIMSafe: true,
     isMarginSafe: true,
@@ -812,6 +812,7 @@ describe('computeAMMTrade', function() {
       cashBalance: new BigNumber('1')
     }
     const res1 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, trader, '0.0001')
+    expect(res1.trader.accountComputed.availableMargin).toBeBigNumber(new BigNumber('0'))
     expect(res1.tradeIsSafe).toBeFalsy()
   })
 })
