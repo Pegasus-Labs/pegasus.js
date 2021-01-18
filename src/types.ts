@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { ethers } from 'ethers'
-import { Provider } from "@ethersproject/providers"
+import { Provider } from '@ethersproject/providers'
 
 export type BigNumberish = BigNumber | ethers.BigNumber | string | number
 
@@ -40,7 +40,11 @@ export class InvalidArgumentError extends Error {
 }
 
 export enum PerpetualState {
-  INVALID, INITIALIZING, NORMAL, EMERGENCY, CLEARED
+  INVALID,
+  INITIALIZING,
+  NORMAL,
+  EMERGENCY,
+  CLEARED
 }
 
 export enum TradeFlag {
@@ -62,8 +66,8 @@ export interface Option {
 }
 
 export interface LiquidityPoolStorage {
-  isRunning: boolean,
-  isFastCreationEnabled: boolean,
+  isRunning: boolean
+  isFastCreationEnabled: boolean
 
   creator: string
   operator: string
@@ -77,7 +81,7 @@ export interface LiquidityPoolStorage {
   poolCashBalance: BigNumber
   collateralDecimals: number
   fundingTime: number
-  
+
   perpetuals: Map<number, PerpetualStorage>
 }
 
@@ -101,7 +105,7 @@ export interface PerpetualStorage {
   insuranceFundCap: BigNumber
   insuranceFund: BigNumber
   donatedInsuranceFund: BigNumber
-  
+
   halfSpread: Option // α
   openSlippageFactor: Option // β1
   closeSlippageFactor: Option // β2
@@ -110,7 +114,7 @@ export interface PerpetualStorage {
   maxClosePriceDiscount: Option // δ
 
   symbol: number
-  underlyingSymbol: string  
+  underlyingSymbol: string
   isMarketClosed: boolean
   ammCashBalance: BigNumber
   ammPositionAmount: BigNumber
@@ -119,7 +123,7 @@ export interface PerpetualStorage {
 export interface AccountStorage {
   cashBalance: BigNumber
   positionAmount: BigNumber
-  
+
   // read from the graph
   entryValue: BigNumber | null
   entryFunding: BigNumber | null
@@ -137,7 +141,7 @@ export interface AccountComputed {
   isIMSafe: boolean // use this if open positions
   isMarginSafe: boolean // use this if close positions. also known as bankrupt
   leverage: BigNumber
-  
+
   entryPrice: BigNumber | null
   fundingPNL: BigNumber | null // entryFunding - pos * accumulatedFunding
   pnl1: BigNumber | null // pos * (exitPrice - entryPrice) if entry != null
@@ -177,7 +181,7 @@ export interface AMMTradingContext {
   otherPosition: BigNumber[] // N_j
   otherOpenSlippageFactor: BigNumber[] // β1_j
   otherAMMMaxLeverage: BigNumber[] // λ_j
-  
+
   // total
   cash: BigNumber // M_c
   poolMargin: BigNumber // M

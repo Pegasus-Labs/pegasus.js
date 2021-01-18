@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { getAddress } from "@ethersproject/address"
+import { getAddress } from '@ethersproject/address'
 import { BigNumber } from 'bignumber.js'
 import { normalizeBigNumberish } from './utils'
 import { _0, DECIMALS, CHAIN_ID_TO_READER_ADDRESS } from './constants'
@@ -16,42 +16,27 @@ import { ReaderFactory } from './wrapper/ReaderFactory'
 import { SymbolService } from './wrapper/SymbolService'
 import { SymbolServiceFactory } from './wrapper/SymbolServiceFactory'
 
-export function getLiquidityPoolContract(
-  contractAddress: string,
-  signerOrProvider: SignerOrProvider
-): LiquidityPool {
+export function getLiquidityPoolContract(contractAddress: string, signerOrProvider: SignerOrProvider): LiquidityPool {
   getAddress(contractAddress)
   return LiquidityPoolFactory.connect(contractAddress, signerOrProvider)
 }
 
-export function getBrokerRelayContract(
-  contractAddress: string,
-  signerOrProvider: SignerOrProvider
-): BrokerRelay {
+export function getBrokerRelayContract(contractAddress: string, signerOrProvider: SignerOrProvider): BrokerRelay {
   getAddress(contractAddress)
   return BrokerRelayFactory.connect(contractAddress, signerOrProvider)
 }
 
-export function getPoolCreatorContract(
-  contractAddress: string,
-  signerOrProvider: SignerOrProvider
-): PoolCreator {
+export function getPoolCreatorContract(contractAddress: string, signerOrProvider: SignerOrProvider): PoolCreator {
   getAddress(contractAddress)
   return PoolCreatorFactory.connect(contractAddress, signerOrProvider)
 }
 
-export function getSymbolServiceContract(
-  contractAddress: string,
-  signerOrProvider: SignerOrProvider
-): SymbolService {
+export function getSymbolServiceContract(contractAddress: string, signerOrProvider: SignerOrProvider): SymbolService {
   getAddress(contractAddress)
   return SymbolServiceFactory.connect(contractAddress, signerOrProvider)
 }
 
-export async function getReaderContract(
-  signerOrProvider: SignerOrProvider,
-  contractAddress?: string
-): Promise<Reader> {
+export async function getReaderContract(signerOrProvider: SignerOrProvider, contractAddress?: string): Promise<Reader> {
   if (!contractAddress) {
     let chainId = 0
     if (signerOrProvider instanceof ethers.Signer) {
@@ -70,10 +55,7 @@ export async function getReaderContract(
   return ReaderFactory.connect(contractAddress, signerOrProvider)
 }
 
-export async function getLiquidityPool(
-  reader: Reader,
-  liquidityPoolAddress: string
-): Promise<LiquidityPoolStorage> {
+export async function getLiquidityPool(reader: Reader, liquidityPoolAddress: string): Promise<LiquidityPoolStorage> {
   getAddress(liquidityPoolAddress)
   const pool = await reader.callStatic.getLiquidityPoolStorage(liquidityPoolAddress)
   const ret: LiquidityPoolStorage = {
@@ -85,12 +67,12 @@ export async function getLiquidityPool(
     governor: pool.addresses[3],
     shareToken: pool.addresses[4],
     collateral: pool.addresses[5],
-    vault:pool.addresses[6],
+    vault: pool.addresses[6],
     vaultFeeRate: normalizeBigNumberish(pool.vaultFeeRate).shiftedBy(-DECIMALS),
     poolCashBalance: normalizeBigNumberish(pool.poolCash).shiftedBy(-DECIMALS),
     collateralDecimals: pool.collateralDecimals.toNumber(),
     fundingTime: pool.fundingTime.toNumber(),
-    perpetuals: new Map(),
+    perpetuals: new Map()
   }
   pool.perpetuals.forEach((m, i) => {
     if (m.state < PerpetualState.INVALID || m.state > PerpetualState.CLEARED) {
@@ -102,7 +84,7 @@ export async function getLiquidityPool(
     ret.perpetuals.set(i, {
       state: m.state as PerpetualState,
       oracle: m.oracle,
-      
+
       totalCollateral: parsePerpNums(0),
       markPrice: parsePerpNums(1),
       indexPrice: parsePerpNums(2),
@@ -123,39 +105,39 @@ export async function getLiquidityPool(
       halfSpread: {
         value: parsePerpNums(16),
         minValue: parsePerpNums(17),
-        maxValue: parsePerpNums(18),
+        maxValue: parsePerpNums(18)
       },
       openSlippageFactor: {
         value: parsePerpNums(19),
         minValue: parsePerpNums(20),
-        maxValue: parsePerpNums(21),
+        maxValue: parsePerpNums(21)
       },
       closeSlippageFactor: {
         value: parsePerpNums(22),
         minValue: parsePerpNums(23),
-        maxValue: parsePerpNums(24),
+        maxValue: parsePerpNums(24)
       },
       fundingRateLimit: {
         value: parsePerpNums(25),
         minValue: parsePerpNums(26),
-        maxValue: parsePerpNums(27),
+        maxValue: parsePerpNums(27)
       },
       ammMaxLeverage: {
         value: parsePerpNums(28),
         minValue: parsePerpNums(29),
-        maxValue: parsePerpNums(30),
+        maxValue: parsePerpNums(30)
       },
       maxClosePriceDiscount: {
         value: parsePerpNums(31),
         minValue: parsePerpNums(32),
-        maxValue: parsePerpNums(33),
+        maxValue: parsePerpNums(33)
       },
 
       symbol: m.symbol.toNumber(),
       underlyingSymbol: m.underlyingAsset,
       isMarketClosed: m.isMarketClosed,
       ammCashBalance: normalizeBigNumberish(m.ammCashBalance).shiftedBy(-DECIMALS),
-      ammPositionAmount: normalizeBigNumberish(m.ammPositionAmount).shiftedBy(-DECIMALS),
+      ammPositionAmount: normalizeBigNumberish(m.ammPositionAmount).shiftedBy(-DECIMALS)
     })
   })
   return ret
@@ -169,29 +151,22 @@ export async function getAccountStorage(
 ): Promise<AccountStorage> {
   getAddress(liquidityPoolAddress)
   getAddress(traderAddress)
-  const marginAccount = await reader.callStatic.getAccountStorage(
-    liquidityPoolAddress, perpetualIndex, traderAddress)
+  const marginAccount = await reader.callStatic.getAccountStorage(liquidityPoolAddress, perpetualIndex, traderAddress)
   return {
     cashBalance: normalizeBigNumberish(marginAccount.cash).shiftedBy(-DECIMALS),
     positionAmount: normalizeBigNumberish(marginAccount.position).shiftedBy(-DECIMALS),
     entryValue: null,
-    entryFunding: null,
+    entryFunding: null
   }
 }
 
-export async function getBrokerRelayBalanceOf(
-  brokerRelay: BrokerRelay,
-  trader: string,
-): Promise<BigNumber> {
+export async function getBrokerRelayBalanceOf(brokerRelay: BrokerRelay, trader: string): Promise<BigNumber> {
   getAddress(trader)
   const balance = await brokerRelay.balanceOf(trader)
   return normalizeBigNumberish(balance).shiftedBy(-DECIMALS)
 }
 
-export async function listActivatePerpetualsOfTrader(
-  poolCreator: PoolCreator,
-  trader: string
-): Promise<PerpetualID[]> {
+export async function listActivatePerpetualsOfTrader(poolCreator: PoolCreator, trader: string): Promise<PerpetualID[]> {
   getAddress(trader)
   const count = (await poolCreator.getActiveLiquidityPoolCountOf(trader)).toNumber()
   if (count > 10000) {
@@ -208,17 +183,14 @@ export async function listActivatePerpetualsOfTrader(
     ids.forEach(j => {
       ret.push({
         liquidityPoolAddress: j.liquidityPool,
-        perpetualIndex: j.perpetualIndex.toNumber(),
+        perpetualIndex: j.perpetualIndex.toNumber()
       })
     })
   }
   return ret
 }
 
-export async function listLiquidityPoolOfOperator(
-  poolCreator: PoolCreator,
-  operator: string
-): Promise<string[]> {
+export async function listLiquidityPoolOfOperator(poolCreator: PoolCreator, operator: string): Promise<string[]> {
   getAddress(operator)
   const count = (await poolCreator.getOwnedLiquidityPoolsCountOf(operator)).toNumber()
   if (count > 10000) {
@@ -251,7 +223,7 @@ export async function getPerpetualClearProgress(
   liquidityPool: LiquidityPool,
   perpetualIndex: number
 ): Promise<{
-  left: BigNumber,
+  left: BigNumber
   total: BigNumber
 }> {
   const progressInfo = await liquidityPool.callStatic.getClearProgress(perpetualIndex)
@@ -269,9 +241,7 @@ export async function getPerpetualClearGasReward(
   return keeperGasReward
 }
 
-export async function getClaimableOperatorFee(
-  liquidityPool: LiquidityPool
-):Promise<BigNumber> {
+export async function getClaimableOperatorFee(liquidityPool: LiquidityPool): Promise<BigNumber> {
   const operatorFee = await liquidityPool.getClaimableOperatorFee()
   return normalizeBigNumberish(operatorFee).shiftedBy(-DECIMALS)
 }

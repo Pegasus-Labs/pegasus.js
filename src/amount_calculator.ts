@@ -3,19 +3,8 @@
 
   If you don't need these tools, you can remove this file to reduce the package size.
 */
-import {
-  computeAccount,
-  computeTradeWithPrice,
-  computeAMMTrade,
-  computeAMMPrice,
-} from './computation'
-import {
-  BigNumberish,
-  InvalidArgumentError,
-  AccountStorage,
-  LiquidityPoolStorage,
-  AMMTradingContext,
-} from './types'
+import { computeAccount, computeTradeWithPrice, computeAMMTrade, computeAMMPrice } from './computation'
+import { BigNumberish, InvalidArgumentError, AccountStorage, LiquidityPoolStorage, AMMTradingContext } from './types'
 import {
   initAMMTradingContext,
   isAMMSafe,
@@ -25,7 +14,7 @@ import {
   computeAMMInternalOpen,
   computeAMMInternalClose,
   computeBestAskBidPriceIfSafe,
-  computeBestAskBidPriceIfUnsafe,
+  computeBestAskBidPriceIfUnsafe
 } from './amm'
 import { BugError } from './types'
 import { DECIMALS, _0, _1, _2, _INF } from './constants'
@@ -43,7 +32,7 @@ export function computeMaxTradeAmountWithPrice(
   price: BigNumberish,
   traderMaxLeverage: BigNumberish,
   feeRate: BigNumberish,
-  isTraderBuy: boolean,
+  isTraderBuy: boolean
 ) {
   const normalizedPrice = normalizeBigNumberish(price)
   const normalizedMaxLeverage = normalizeBigNumberish(traderMaxLeverage)
@@ -64,11 +53,14 @@ export function computeMaxTradeAmountWithPrice(
   //                        price | x |
   // lev = ----------------------------------------------
   //        (cash - price x - price | x | fee) + price x
-  //                 cash lev 
+  //                 cash lev
   // => x = ± ---------------------
   //           (1 + lev fee) price
   const cash = newDetails.accountComputed.availableCashBalance
-  let denominator = normalizedMaxLeverage.times(normalizedFeeRate).plus(_1).times(normalizedPrice)
+  let denominator = normalizedMaxLeverage
+    .times(normalizedFeeRate)
+    .plus(_1)
+    .times(normalizedPrice)
   if (denominator.isZero()) {
     // no solution
     return _0
@@ -95,7 +87,7 @@ export function computeAMMMaxTradeAmount(
   perpetualIndex: number,
   trader: AccountStorage,
   traderMaxLeverage: BigNumberish,
-  isTraderBuy: boolean,
+  isTraderBuy: boolean
 ): BigNumber {
   const normalizeMaxLeverage = normalizeBigNumberish(traderMaxLeverage)
 
@@ -121,8 +113,7 @@ export function computeAMMMaxTradeAmount(
     }
     try {
       const context = computeAMMTrade(p, perpetualIndex, trader, new BigNumber(a))
-      if (!context.tradeIsSafe
-        || context.trader.accountComputed.leverage.gt(normalizeMaxLeverage)) {
+      if (!context.tradeIsSafe || context.trader.accountComputed.leverage.gt(normalizeMaxLeverage)) {
         return Math.abs(a)
       }
       return -Math.abs(a) // return a negative value
@@ -150,7 +141,7 @@ export function computeAMMMaxTradeAmount(
 export function computeAMMTradeAmountByMargin(
   p: LiquidityPoolStorage,
   perpetualIndex: number,
-  deltaMargin: BigNumberish,  // trader's margin change. < 0 if buy, > 0 if sell
+  deltaMargin: BigNumberish // trader's margin change. < 0 if buy, > 0 if sell
 ): BigNumber {
   const normalizeDeltaMargin = normalizeBigNumberish(deltaMargin)
 
@@ -209,7 +200,7 @@ export function computeAMMInverseVWAP(
   context: AMMTradingContext,
   price: BigNumber,
   beta: BigNumber,
-  isAMMBuy: boolean,
+  isAMMBuy: boolean
 ): BigNumber {
   const previousMa1MinusMa2 = context.deltaMargin.negated()
   const previousAmount = context.deltaPosition
@@ -229,13 +220,23 @@ export function computeAMMInverseVWAP(
   b = b.plus(a.times(context.position1))
   b = b.plus(context.poolMargin.times(price))
   b = b.times(_2)
-  const c = previousMa1MinusMa2.minus(previousAmount.times(price)).times(context.poolMargin).times(_2).negated()
-  const beforeSqrt = a.times(c).times(4).negated().plus(b.times(b))
+  const c = previousMa1MinusMa2
+    .minus(previousAmount.times(price))
+    .times(context.poolMargin)
+    .times(_2)
+    .negated()
+  const beforeSqrt = a
+    .times(c)
+    .times(4)
+    .negated()
+    .plus(b.times(b))
   if (beforeSqrt.lt(_0)) {
-    throw new InvalidArgumentError(`computeAMMInverseVWAP: impossible price. `
-      + `index = ${context.index.toFixed()}, price = ${price.toFixed()}, `
-      + `M = ${context.poolMargin.toFixed()}, position1 = ${context.position1.toFixed()}, `
-      + `previousMa1MinusMa2 = ${previousMa1MinusMa2.toFixed()}, previousAmount = ${previousAmount.toFixed()}`)
+    throw new InvalidArgumentError(
+      `computeAMMInverseVWAP: impossible price. ` +
+        `index = ${context.index.toFixed()}, price = ${price.toFixed()}, ` +
+        `M = ${context.poolMargin.toFixed()}, position1 = ${context.position1.toFixed()}, ` +
+        `previousMa1MinusMa2 = ${previousMa1MinusMa2.toFixed()}, previousAmount = ${previousAmount.toFixed()}`
+    )
   }
   let numerator = sqrt(beforeSqrt)
   if (!isAMMBuy) {
@@ -251,14 +252,14 @@ export function computeAMMAmountWithPrice(
   p: LiquidityPoolStorage,
   perpetualIndex: number,
   isTraderBuy: boolean,
-  limitPrice: BigNumberish,
+  limitPrice: BigNumberish
 ): BigNumber {
   const perpetual = p.perpetuals.get(perpetualIndex)
   if (!perpetual) {
     throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
   }
   let normalizedLimitPrice = normalizeBigNumberish(limitPrice)
-  
+
   // get amount
   const isAMMBuy = !isTraderBuy
   let context = initAMMTradingContext(p, perpetualIndex)
@@ -281,11 +282,11 @@ export function computeAMMAmountWithPrice(
 export function computeAMMOpenAmountWithPrice(
   context: AMMTradingContext,
   limitPrice: BigNumber,
-  isAMMBuy: boolean,
+  isAMMBuy: boolean
 ): BigNumber {
   if (
-    (isAMMBuy && context.position1.lt(_0) /* short buy */)
-    || (!isAMMBuy && context.position1.gt(_0) /* long sell */)
+    (isAMMBuy && context.position1.lt(_0)) /* short buy */ ||
+    (!isAMMBuy && context.position1.gt(_0)) /* long sell */
   ) {
     throw new InvalidArgumentError(`this is not opening. pos1: ${context.position1} isBuy: ${isAMMBuy}`)
   }
@@ -330,21 +331,18 @@ export function computeAMMOpenAmountWithPrice(
   }
   const safePos2Price = safePos2Context.deltaMargin.div(safePos2Context.deltaPosition).abs()
   if (
-    (isAMMBuy && safePos2Price.gte(limitPrice) /* long open. trader sell */)
-    || (!isAMMBuy && safePos2Price.lte(limitPrice) /* short open. trader buy */ )
+    (isAMMBuy && safePos2Price.gte(limitPrice)) /* long open. trader sell */ ||
+    (!isAMMBuy && safePos2Price.lte(limitPrice)) /* short open. trader buy */
   ) {
     return maxAmount
   }
 
   // case 3: inverse function of price function
   const amount = computeAMMInverseVWAP(context, limitPrice, context.openSlippageFactor, isAMMBuy)
-  if (
-    (isAMMBuy && amount.gt(_0) /* long open success */)
-    || (!isAMMBuy && amount.lt(_0) /* short open success */)
-  ) {
+  if ((isAMMBuy && amount.gt(_0)) /* long open success */ || (!isAMMBuy && amount.lt(_0)) /* short open success */) {
     return amount
   }
-  
+
   // invalid open. only close is possible
   return _0
 }
@@ -354,7 +352,7 @@ export function computeAMMOpenAmountWithPrice(
 export function computeAMMCloseAndOpenAmountWithPrice(
   context: AMMTradingContext,
   limitPrice: BigNumber,
-  isAMMBuy: boolean,
+  isAMMBuy: boolean
 ): BigNumber {
   if (!context.deltaMargin.isZero() || !context.deltaPosition.isZero()) {
     throw new InvalidArgumentError('partial close is not supported')
@@ -362,7 +360,7 @@ export function computeAMMCloseAndOpenAmountWithPrice(
   if (context.position1.isZero()) {
     throw new InvalidArgumentError('close from 0 is not supported')
   }
-  
+
   // case 1: limit by spread
   const ammSafe = isAMMSafe(context, context.closeSlippageFactor)
   if (ammSafe) {
@@ -388,8 +386,8 @@ export function computeAMMCloseAndOpenAmountWithPrice(
   }
   const zeroPrice = zeroContext.deltaMargin.div(zeroContext.deltaPosition).abs()
   if (
-    (isAMMBuy && zeroPrice.gte(limitPrice) /* short close */)
-    || (!isAMMBuy && zeroPrice.lte(limitPrice) /* long close */)
+    (isAMMBuy && zeroPrice.gte(limitPrice)) /* short close */ ||
+    (!isAMMBuy && zeroPrice.lte(limitPrice)) /* long close */
   ) {
     // close all
     context = zeroContext
@@ -400,8 +398,8 @@ export function computeAMMCloseAndOpenAmountWithPrice(
     // case 4: close by price
     const amount = computeAMMInverseVWAP(context, limitPrice, context.closeSlippageFactor, isAMMBuy)
     if (
-      (isAMMBuy && amount.gt(_0) /* short close success */)
-      || (!isAMMBuy && amount.lt(_0) /* long close success */)
+      (isAMMBuy && amount.gt(_0)) /* short close success */ ||
+      (!isAMMBuy && amount.lt(_0)) /* long close success */
     ) {
       context = computeAMMInternalClose(context, amount)
     } else {
@@ -411,8 +409,8 @@ export function computeAMMCloseAndOpenAmountWithPrice(
 
   // case 5: open positions
   if (
-    (isAMMBuy && context.position1.gte(_0) /* cross 0 after short close */)
-    || (!isAMMBuy && context.position1.lte(_0) /* cross 0 after long close */)
+    (isAMMBuy && context.position1.gte(_0)) /* cross 0 after short close */ ||
+    (!isAMMBuy && context.position1.lte(_0)) /* cross 0 after long close */
   ) {
     const openAmount = computeAMMOpenAmountWithPrice(context, limitPrice, isAMMBuy)
     return context.deltaPosition.plus(openAmount)

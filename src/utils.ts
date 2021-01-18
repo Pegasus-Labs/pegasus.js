@@ -12,11 +12,11 @@ export async function getContract(
 }
 
 export function normalizeBigNumberish(bigNumberish: BigNumberish): BigNumber {
-  const bigNumber: BigNumber = bigNumberish instanceof BigNumber
-    ? bigNumberish
-    : new BigNumber(bigNumberish.toString())
+  const bigNumber: BigNumber = bigNumberish instanceof BigNumber ? bigNumberish : new BigNumber(bigNumberish.toString())
   if (bigNumber.isNaN()) {
-    throw new InvalidArgumentError(`Passed bigNumberish '${bigNumberish}' of type '${typeof bigNumberish}' is not valid.`)
+    throw new InvalidArgumentError(
+      `Passed bigNumberish '${bigNumberish}' of type '${typeof bigNumberish}' is not valid.`
+    )
   }
   return bigNumber
 }
@@ -35,7 +35,7 @@ export function hasTheSameSign(x: BigNumber, y: BigNumber): boolean {
   return (x.s ^ y.s) == 0
 }
 
-export function splitAmount(positionAmount: BigNumber, amount: BigNumber): { close: BigNumber, open: BigNumber } {
+export function splitAmount(positionAmount: BigNumber, amount: BigNumber): { close: BigNumber; open: BigNumber } {
   if (hasTheSameSign(positionAmount, amount)) {
     return { close: _0, open: amount }
   } else if (positionAmount.abs().gte(amount.abs())) {
@@ -48,14 +48,38 @@ export function splitAmount(positionAmount: BigNumber, amount: BigNumber): { clo
 export function mostSignificantBit(x: BigNumber): number {
   let t: BigNumber
   let r = 0
-  if ((t = (x.idiv('340282366920938463463374607431768211456'))).gt(_0)) { x = t; r += 128 }
-  if ((t = (x.idiv('18446744073709551616'))).gt(_0)) { x = t; r += 64 }
-  if ((t = (x.idiv('4294967296'))).gt(_0)) { x = t; r += 32 }
-  if ((t = (x.idiv('65536'))).gt(_0)) { x = t; r += 16 }
-  if ((t = (x.idiv('256'))).gt(_0)) { x = t; r += 8 }
-  if ((t = (x.idiv('16'))).gt(_0)) { x = t; r += 4 }
-  if ((t = (x.idiv('4'))).gt(_0)) { x = t; r += 2 }
-  if ((t = (x.idiv('2'))).gt(_0)) { x = t; r += 1 }
+  if ((t = x.idiv('340282366920938463463374607431768211456')).gt(_0)) {
+    x = t
+    r += 128
+  }
+  if ((t = x.idiv('18446744073709551616')).gt(_0)) {
+    x = t
+    r += 64
+  }
+  if ((t = x.idiv('4294967296')).gt(_0)) {
+    x = t
+    r += 32
+  }
+  if ((t = x.idiv('65536')).gt(_0)) {
+    x = t
+    r += 16
+  }
+  if ((t = x.idiv('256')).gt(_0)) {
+    x = t
+    r += 8
+  }
+  if ((t = x.idiv('16')).gt(_0)) {
+    x = t
+    r += 4
+  }
+  if ((t = x.idiv('4')).gt(_0)) {
+    x = t
+    r += 2
+  }
+  if ((t = x.idiv('2')).gt(_0)) {
+    x = t
+    r += 1
+  }
   return r
 }
 
@@ -63,7 +87,7 @@ export function sqrt(y: BigNumber): BigNumber {
   if (y.lt(_0)) {
     throw new InvalidArgumentError('negative sqrt')
   }
-  
+
   // we use 10**36 before sqrt
   y = y.shiftedBy(DECIMALS * 2).dp(0, BigNumber.ROUND_DOWN)
   if (y.lt(_3)) {
@@ -83,7 +107,10 @@ export function sqrt(y: BigNumber): BigNumber {
   let z = y
   while (next.lt(z)) {
     z = next
-    next = y.div(next).plus(next).div(_2)
+    next = y
+      .div(next)
+      .plus(next)
+      .div(_2)
     next = next.dp(0, BigNumber.ROUND_DOWN)
   }
   return z.shiftedBy(-DECIMALS).dp(DECIMALS, BigNumber.ROUND_DOWN)

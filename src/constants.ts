@@ -19,7 +19,7 @@ export const _MAX_UINT256: BigNumber = new BigNumber(
 
 export const CHAIN_ID_TO_READER_ADDRESS: { [chainID: number]: string } = {
   42: '0x034f78c7Ef34CBad13C1039e3e6457F20469Cb6C',
-  1337: '0x2Fe77342fab6F5f44C3E1C705Bf4E61b1631080a',
+  1337: '0x2Fe77342fab6F5f44C3E1C705Bf4E61b1631080a'
 }
 
 // leave 1% when calculating withdrawal penalty if position != 0

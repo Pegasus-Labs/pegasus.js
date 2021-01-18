@@ -25,24 +25,24 @@ export function extendExpect() {
 
       const message = pass
         ? () =>
-          this.utils.matcherHint('.not.toApproximate') +
-          '\n\n' +
-          `Expected value to not approximate:\n` +
-          `  ${this.utils.printExpected(expected)}\n` +
-          `Received:\n` +
-          `  ${this.utils.printReceived(received)}` +
-          `Error:\n` +
-          `  ${error.toString()}`
-        : () => {
-          return (
-            this.utils.matcherHint('.toApproximate') +
+            this.utils.matcherHint('.not.toApproximate') +
             '\n\n' +
-            `Expected value to approximate:\n` +
+            `Expected value to not approximate:\n` +
             `  ${this.utils.printExpected(expected)}\n` +
             `Received:\n` +
-            `  ${this.utils.printReceived(received)}`
-          )
-        }
+            `  ${this.utils.printReceived(received)}` +
+            `Error:\n` +
+            `  ${error.toString()}`
+        : () => {
+            return (
+              this.utils.matcherHint('.toApproximate') +
+              '\n\n' +
+              `Expected value to approximate:\n` +
+              `  ${this.utils.printExpected(expected)}\n` +
+              `Received:\n` +
+              `  ${this.utils.printReceived(received)}`
+            )
+          }
 
       return { pass, message }
     },
@@ -50,22 +50,22 @@ export function extendExpect() {
       let pass = received.isEqualTo(expected)
       const message = pass
         ? () =>
-          this.utils.matcherHint('.not.toBeBigNumber') +
-          '\n\n' +
-          `Expected value to not be BigNumber:\n` +
-          `  ${this.utils.printExpected(expected)}\n` +
-          `Received:\n` +
-          `  ${this.utils.printReceived(received)}`
-        : () => {
-          return (
-            this.utils.matcherHint('.toBeBigNumber') +
+            this.utils.matcherHint('.not.toBeBigNumber') +
             '\n\n' +
-            `Expected value to be BigNumber:\n` +
+            `Expected value to not be BigNumber:\n` +
             `  ${this.utils.printExpected(expected)}\n` +
             `Received:\n` +
             `  ${this.utils.printReceived(received)}`
-          )
-        }
+        : () => {
+            return (
+              this.utils.matcherHint('.toBeBigNumber') +
+              '\n\n' +
+              `Expected value to be BigNumber:\n` +
+              `  ${this.utils.printExpected(expected)}\n` +
+              `Received:\n` +
+              `  ${this.utils.printReceived(received)}`
+            )
+          }
       return { pass, message }
     }
   })

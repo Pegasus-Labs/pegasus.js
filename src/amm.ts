@@ -4,7 +4,7 @@
 
 import { BigNumber } from 'bignumber.js'
 import { DECIMALS, REMOVE_LIQUIDITY_MAX_SHARE_RELAX, _0, _1, _2, _4 } from './constants'
-import { LiquidityPoolStorage, AMMTradingContext, PerpetualState, BigNumberish} from './types'
+import { LiquidityPoolStorage, AMMTradingContext, PerpetualState, BigNumberish } from './types'
 import { sqrt, splitAmount, hasTheSameSign, normalizeBigNumberish } from './utils'
 import { InsufficientLiquidityError, BugError, InvalidArgumentError } from './types'
 
@@ -14,7 +14,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
       throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
     }
   }
-  
+
   let index = _0
   let position1 = _0
   let halfSpread = _0
@@ -23,7 +23,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
   let fundingRateLimit = _0
   let maxClosePriceDiscount = _0
   let ammMaxLeverage = _0
- 
+
   let otherIndex: BigNumber[] = []
   let otherPosition: BigNumber[] = []
   let otherOpenSlippageFactor: BigNumber[] = []
@@ -54,49 +54,69 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
       otherAMMMaxLeverage.push(perpetual.ammMaxLeverage.value)
     }
   })
-   
+
   let ret: AMMTradingContext = {
-    index, position1, halfSpread, openSlippageFactor, closeSlippageFactor,
-    fundingRateLimit, maxClosePriceDiscount, ammMaxLeverage,
-    otherIndex, otherPosition, otherOpenSlippageFactor, otherAMMMaxLeverage,
-    cash, poolMargin: _0, deltaMargin: _0, deltaPosition: _0, bestAskBidPrice: null,
-    valueWithoutCurrent: _0, squareValueWithoutCurrent: _0, positionMarginWithoutCurrent: _0,
+    index,
+    position1,
+    halfSpread,
+    openSlippageFactor,
+    closeSlippageFactor,
+    fundingRateLimit,
+    maxClosePriceDiscount,
+    ammMaxLeverage,
+    otherIndex,
+    otherPosition,
+    otherOpenSlippageFactor,
+    otherAMMMaxLeverage,
+    cash,
+    poolMargin: _0,
+    deltaMargin: _0,
+    deltaPosition: _0,
+    bestAskBidPrice: null,
+    valueWithoutCurrent: _0,
+    squareValueWithoutCurrent: _0,
+    positionMarginWithoutCurrent: _0
   }
   ret = initAMMTradingContextEagerEvaluation(ret)
   return ret
 }
- 
+
 export function initAMMTradingContextEagerEvaluation(context: AMMTradingContext): AMMTradingContext {
   let valueWithoutCurrent = _0
   let squareValueWithoutCurrent = _0
   let positionMarginWithoutCurrent = _0
-  
+
   for (let j = 0; j < context.otherIndex.length; j++) {
     // Σ_j (P_i N) where j ≠ id
-    valueWithoutCurrent = valueWithoutCurrent.plus(
-      context.otherIndex[j].times(context.otherPosition[j])
-    )
+    valueWithoutCurrent = valueWithoutCurrent.plus(context.otherIndex[j].times(context.otherPosition[j]))
     // Σ_j (β P_i^2 N^2) where j ≠ id
     squareValueWithoutCurrent = squareValueWithoutCurrent.plus(
-      context.otherOpenSlippageFactor[j].times(context.otherIndex[j]).times(context.otherIndex[j])
-      .times(context.otherPosition[j]).times(context.otherPosition[j])
+      context.otherOpenSlippageFactor[j]
+        .times(context.otherIndex[j])
+        .times(context.otherIndex[j])
+        .times(context.otherPosition[j])
+        .times(context.otherPosition[j])
     )
     // Σ_j (P_i_j * | N_j | / λ_j) where j ≠ id
     positionMarginWithoutCurrent = positionMarginWithoutCurrent.plus(
       context.otherIndex[j].times(context.otherPosition[j].abs()).div(context.otherAMMMaxLeverage[j])
     )
   }
-   
+
   return {
     ...context,
     valueWithoutCurrent,
     squareValueWithoutCurrent,
-    positionMarginWithoutCurrent,
+    positionMarginWithoutCurrent
   }
 }
 
 // the amount is the AMM's perspective
-export function computeAMMInternalTrade(p: LiquidityPoolStorage, perpetualIndex: number, amount: BigNumber): AMMTradingContext {
+export function computeAMMInternalTrade(
+  p: LiquidityPoolStorage,
+  perpetualIndex: number,
+  amount: BigNumber
+): AMMTradingContext {
   let context = initAMMTradingContext(p, perpetualIndex)
   const { close, open } = splitAmount(context.position1, amount)
   if (close.isZero() && open.isZero()) {
@@ -127,19 +147,26 @@ export function computeAMMInternalTrade(p: LiquidityPoolStorage, perpetualIndex:
 
 // get the price if ΔN -> 0. equal to lim_(ΔN -> 0) (computeDeltaMargin / (ΔN))
 // call computeAMMPoolMargin before this function. make sure isAMMSafe before this function
-export function computeBestAskBidPriceIfSafe(context: AMMTradingContext, beta: BigNumber, isAMMBuy: boolean): BigNumber {
+export function computeBestAskBidPriceIfSafe(
+  context: AMMTradingContext,
+  beta: BigNumber,
+  isAMMBuy: boolean
+): BigNumber {
   if (context.poolMargin.lte(_0)) {
     throw new InsufficientLiquidityError(`AMM poolMargin <= 0`)
   }
   // P_i (1 - β / M * P_i * N1)
-  let price = context.position1.times(context.index).div(context.poolMargin).times(beta)
+  let price = context.position1
+    .times(context.index)
+    .div(context.poolMargin)
+    .times(beta)
   price = _1.minus(price).times(context.index)
   return appendSpread(context, price, isAMMBuy)
 }
 
 export function computeBestAskBidPriceIfUnsafe(context: AMMTradingContext): BigNumber {
   if (context.position1.gt(_0) && context.closeSlippageFactor.gt('0.5')) {
-    // special case: long position, β2 > 0.5     
+    // special case: long position, β2 > 0.5
     return _1.minus(context.maxClosePriceDiscount).times(context.index)
   }
   return context.index
@@ -197,11 +224,17 @@ export function computeAMMInternalClose(context: AMMTradingContext, amount: BigN
   if (amount.lt(_0)) {
     discount = discount.negated()
   }
-  const limitValue = _1.plus(discount).times(context.index).times(amount).negated()
+  const limitValue = _1
+    .plus(discount)
+    .times(context.index)
+    .times(amount)
+    .negated()
   deltaMargin = BigNumber.maximum(deltaMargin, limitValue)
 
   if (hasTheSameSign(deltaMargin, amount)) {
-    throw new BugError(`close error. ΔM and amount has the same sign unexpectedly: ${deltaMargin.toFixed()} vs ${amount.toFixed()}`)
+    throw new BugError(
+      `close error. ΔM and amount has the same sign unexpectedly: ${deltaMargin.toFixed()} vs ${amount.toFixed()}`
+    )
   }
 
   // commit
@@ -217,7 +250,7 @@ export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNu
   const beta = context.openSlippageFactor
   let ret: AMMTradingContext = { ...context }
   const position2 = ret.position1.plus(amount)
-  
+
   // pre-check
   if (!isAMMSafe(ret, beta)) {
     throw new InsufficientLiquidityError(`AMM can not open position anymore: unsafe before trade`)
@@ -230,23 +263,29 @@ export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNu
     // 0.....position2.....safePosition2
     const safePosition2 = computeAMMSafeLongPositionAmount(ret, beta)
     if (position2.gt(safePosition2)) {
-      throw new InsufficientLiquidityError(`AMM can not open position anymore: position too large after trade ${position2.toFixed()} > ${safePosition2.toFixed()}`)
+      throw new InsufficientLiquidityError(
+        `AMM can not open position anymore: position too large after trade ${position2.toFixed()} > ${safePosition2.toFixed()}`
+      )
     }
   } else {
     // safePosition2.....position2.....0
     const safePosition2 = computeAMMSafeShortPositionAmount(ret, beta)
     if (position2.lt(safePosition2)) {
-      throw new InsufficientLiquidityError(`AMM can not open position anymore: position too large after trade ${position2.toFixed()} < ${safePosition2.toFixed()}`)
+      throw new InsufficientLiquidityError(
+        `AMM can not open position anymore: position too large after trade ${position2.toFixed()} < ${safePosition2.toFixed()}`
+      )
     }
   }
-  
+
   // trade
   if (ret.bestAskBidPrice === null) {
     ret.bestAskBidPrice = computeBestAskBidPriceIfSafe(ret, beta, amount.gt(_0))
   }
   const deltaMargin = computeDeltaMargin(ret, beta, position2)
   if (hasTheSameSign(deltaMargin, amount)) {
-    throw new BugError(`open error. ΔM and amount has the same sign unexpectedly: ${deltaMargin.toFixed()} vs ${amount.toFixed()}`)
+    throw new BugError(
+      `open error. ΔM and amount has the same sign unexpectedly: ${deltaMargin.toFixed()} vs ${amount.toFixed()}`
+    )
   }
 
   // commit
@@ -259,12 +298,21 @@ export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNu
 }
 
 // do not call this function if !isAMMSafe && !allowUnsafe
-export function computeAMMPoolMargin(context: AMMTradingContext, beta: BigNumber, allowUnsafe: boolean = false): AMMTradingContext {
+export function computeAMMPoolMargin(
+  context: AMMTradingContext,
+  beta: BigNumber,
+  allowUnsafe: boolean = false
+): AMMTradingContext {
   const marginBalanceWithCurrent = context.cash
     .plus(context.valueWithoutCurrent)
     .plus(context.index.times(context.position1))
-  const squareValueWithCurrent = context.squareValueWithoutCurrent
-    .plus(beta.times(context.index).times(context.index).times(context.position1).times(context.position1))
+  const squareValueWithCurrent = context.squareValueWithoutCurrent.plus(
+    beta
+      .times(context.index)
+      .times(context.index)
+      .times(context.position1)
+      .times(context.position1)
+  )
   // 1/2 (M_b + √(M_b^2 - 2(Σ β P_i_j^2 N_j^2)))
   let beforeSqrt = marginBalanceWithCurrent.times(marginBalanceWithCurrent).minus(_2.times(squareValueWithCurrent))
   if (beforeSqrt.lt(_0)) {
@@ -279,10 +327,14 @@ export function computeAMMPoolMargin(context: AMMTradingContext, beta: BigNumber
 }
 
 export function isAMMSafe(context: AMMTradingContext, beta: BigNumber): boolean {
-  const valueWithCurrent = context.valueWithoutCurrent
-    .plus(context.index.times(context.position1))
-  const squareValueWithCurrent = context.squareValueWithoutCurrent
-    .plus(beta.times(context.index).times(context.index).times(context.position1).times(context.position1))
+  const valueWithCurrent = context.valueWithoutCurrent.plus(context.index.times(context.position1))
+  const squareValueWithCurrent = context.squareValueWithoutCurrent.plus(
+    beta
+      .times(context.index)
+      .times(context.index)
+      .times(context.position1)
+      .times(context.position1)
+  )
   // √(2 Σ(β_j P_i_j^2 N_j^2)) - Σ(P_i_j N_j). always positive
   const beforeSqrt = _2.times(squareValueWithCurrent)
   const safeCash = sqrt(beforeSqrt).minus(valueWithCurrent)
@@ -345,14 +397,21 @@ export function computeAMMSafeCondition2(context: AMMTradingContext, beta: BigNu
   //  M - √(M(M - 2βλ^2 x))
   // ---------------------------
   //          β λ P_i
-  let beforeSqrt = x.times(context.ammMaxLeverage).times(context.ammMaxLeverage).times(beta).times(_2)
+  let beforeSqrt = x
+    .times(context.ammMaxLeverage)
+    .times(context.ammMaxLeverage)
+    .times(beta)
+    .times(_2)
   beforeSqrt = context.poolMargin.minus(beforeSqrt).times(context.poolMargin)
   if (beforeSqrt.lt(_0)) {
     // means the curve is always above the x-axis
     return true
   }
   let position2 = context.poolMargin.minus(sqrt(beforeSqrt))
-  position2 = position2.div(beta).div(context.ammMaxLeverage).div(context.index)
+  position2 = position2
+    .div(beta)
+    .div(context.ammMaxLeverage)
+    .div(context.index)
   return position2.dp(DECIMALS)
 }
 
@@ -361,8 +420,11 @@ export function computeAMMSafeCondition3(context: AMMTradingContext, beta: BigNu
   //   1      2M^2 - squareValueWithoutCurrent
   // ----- √(----------------------------------)
   //  P_i                   β
-  const beforeSqrt = _2.times(context.poolMargin).times(context.poolMargin)
-    .minus(context.squareValueWithoutCurrent).div(beta)
+  const beforeSqrt = _2
+    .times(context.poolMargin)
+    .times(context.poolMargin)
+    .minus(context.squareValueWithoutCurrent)
+    .div(beta)
   if (beforeSqrt.lt(_0)) {
     return false
   }
@@ -376,7 +438,10 @@ export function computeBasePrice(context: AMMTradingContext, beta: BigNumber, po
     throw new InsufficientLiquidityError(`AMM poolMargin <= 0`)
   }
   // P_i (1 - β / M * P_i * N)
-  let ret = context.index.times(position).div(context.poolMargin).times(beta)
+  let ret = context.index
+    .times(position)
+    .div(context.poolMargin)
+    .times(beta)
   ret = _1.minus(ret).times(context.index)
   return ret.dp(DECIMALS)
 }
@@ -384,17 +449,24 @@ export function computeBasePrice(context: AMMTradingContext, beta: BigNumber, po
 // ∫ computeBasePrice(p) dp
 // cash2 - cash1
 export function computeDeltaMargin(context: AMMTradingContext, beta: BigNumber, position2: BigNumber): BigNumber {
-  if (context.position1.gt(_0) && position2.lt(_0)
-    || context.position1.lt(_0) && position2.gt(_0)) {
+  if ((context.position1.gt(_0) && position2.lt(_0)) || (context.position1.lt(_0) && position2.gt(_0))) {
     throw new BugError('bug: cross direction is not supported')
   }
   if (context.poolMargin.lte(_0)) {
     throw new InsufficientLiquidityError(`AMM poolMargin <= 0`)
   }
   // P_i (N1 - N2) (1 - β / M * P_i * (N2 + N1) / 2)
-  let ret = position2.plus(context.position1).div(_2).times(context.index).div(context.poolMargin).times(beta)
+  let ret = position2
+    .plus(context.position1)
+    .div(_2)
+    .times(context.index)
+    .div(context.poolMargin)
+    .times(beta)
   ret = _1.minus(ret)
-  ret = context.position1.minus(position2).times(ret).times(context.index)
+  ret = context.position1
+    .minus(position2)
+    .times(ret)
+    .times(context.index)
   return ret.dp(DECIMALS)
 }
 
@@ -409,11 +481,13 @@ export function computeFundingRate(p: LiquidityPoolStorage, perpetualIndex: numb
       return context.fundingRateLimit
     }
   }
-  
+
   context = computeAMMPoolMargin(context, context.openSlippageFactor)
   let fr = context.fundingRateLimit
-    .times(context.index).times(context.position1)
-    .div(context.poolMargin).negated()
+    .times(context.index)
+    .times(context.position1)
+    .div(context.poolMargin)
+    .negated()
   fr = BigNumber.minimum(fr, context.fundingRateLimit)
   fr = BigNumber.maximum(fr, context.fundingRateLimit.negated())
   return fr
@@ -424,7 +498,7 @@ export function computeAMMShareToMint(
   p: LiquidityPoolStorage,
   totalShare: BigNumberish,
   cashToAdd: BigNumberish
-): { shareToMint: BigNumber, poolMargin: BigNumber, newPoolMargin: BigNumber } {
+): { shareToMint: BigNumber; poolMargin: BigNumber; newPoolMargin: BigNumber } {
   const normalizedCashToAdd = normalizeBigNumberish(cashToAdd)
   const normalizedTotalShare = normalizeBigNumberish(totalShare)
   let context = initAMMTradingContext(p)
@@ -432,23 +506,26 @@ export function computeAMMShareToMint(
   const poolMargin = context.poolMargin
   let newContext: AMMTradingContext = {
     ...context,
-    cash: context.cash.plus(normalizedCashToAdd),
+    cash: context.cash.plus(normalizedCashToAdd)
   }
   newContext = computeAMMPoolMargin(newContext, _0 /* useless */, true /* allowUnsafe */)
   const newPoolMargin = newContext.poolMargin
   let shareToMint = _0
   if (poolMargin.isZero()) {
     if (!normalizedTotalShare.isZero()) {
-      console.warn("WARN: addLiquidity while poolMargin = 0 but totalShare != 0")
+      console.warn('WARN: addLiquidity while poolMargin = 0 but totalShare != 0')
     }
-    shareToMint = newPoolMargin;
+    shareToMint = newPoolMargin
   } else {
-    shareToMint = newPoolMargin.minus(poolMargin).times(normalizedTotalShare).div(poolMargin)
+    shareToMint = newPoolMargin
+      .minus(poolMargin)
+      .times(normalizedTotalShare)
+      .div(poolMargin)
   }
   return {
     shareToMint,
     poolMargin,
-    newPoolMargin,
+    newPoolMargin
   }
 }
 
@@ -457,11 +534,13 @@ export function computeAMMCashToReturn(
   p: LiquidityPoolStorage,
   totalShare: BigNumberish,
   shareToRemove: BigNumberish
-): { cashToReturn: BigNumber, poolMargin: BigNumber, newPoolMargin: BigNumber } {
+): { cashToReturn: BigNumber; poolMargin: BigNumber; newPoolMargin: BigNumber } {
   const normalizedShareToRemove = normalizeBigNumberish(shareToRemove)
   const normalizedTotalShare = normalizeBigNumberish(totalShare)
   if (normalizedTotalShare.lte(_0) || normalizedShareToRemove.gt(normalizedTotalShare)) {
-    throw new InvalidArgumentError(`remove liquidity error. totalShare: ${normalizedTotalShare.toFixed()} shareToRemove: ${normalizedShareToRemove.toFixed()}`)
+    throw new InvalidArgumentError(
+      `remove liquidity error. totalShare: ${normalizedTotalShare.toFixed()} shareToRemove: ${normalizedShareToRemove.toFixed()}`
+    )
   }
   let context = initAMMTradingContext(p)
   if (!isAMMSafe(context, _0 /* useless */)) {
@@ -472,7 +551,10 @@ export function computeAMMCashToReturn(
   if (poolMargin.isZero()) {
     return { cashToReturn: _0, poolMargin: _0, newPoolMargin: _0 }
   }
-  const newPoolMargin = normalizedTotalShare.minus(normalizedShareToRemove).times(poolMargin).div(normalizedTotalShare)
+  const newPoolMargin = normalizedTotalShare
+    .minus(normalizedShareToRemove)
+    .times(poolMargin)
+    .div(normalizedTotalShare)
   const minPoolMargin = sqrt(context.squareValueWithoutCurrent.div(_2))
   if (newPoolMargin.lt(minPoolMargin)) {
     throw new InsufficientLiquidityError(`AMM can not remove liquidity: unsafe after removing liquidity`)
@@ -485,8 +567,11 @@ export function computeAMMCashToReturn(
     throw new InsufficientLiquidityError(`AMM can not remove liquidity: pool margin must be positive`)
   } else {
     // M - Σ P_i N + Σ (β P_i^2 N^2) / 2 / M
-    cashToReturn = context.squareValueWithoutCurrent.div(newPoolMargin).div(_2)
-      .plus(newPoolMargin).minus(context.valueWithoutCurrent)
+    cashToReturn = context.squareValueWithoutCurrent
+      .div(newPoolMargin)
+      .div(_2)
+      .plus(newPoolMargin)
+      .minus(context.valueWithoutCurrent)
     cashToReturn = context.cash.minus(cashToReturn)
   }
   if (cashToReturn.lt(_0)) {
@@ -501,16 +586,23 @@ export function computeAMMCashToReturn(
       throw new InsufficientLiquidityError(`AMM can not remove liquidity: negative price in ${j}`)
     }
   }
-  
+
   // prevent amm exceeding max leverage
-  if (context.cash.plus(context.valueWithoutCurrent).minus(cashToReturn).lt(context.positionMarginWithoutCurrent)) {
-    throw new InsufficientLiquidityError(`AMM can not remove liquidity: amm exceeds max leverage after removing liquidity`)
+  if (
+    context.cash
+      .plus(context.valueWithoutCurrent)
+      .minus(cashToReturn)
+      .lt(context.positionMarginWithoutCurrent)
+  ) {
+    throw new InsufficientLiquidityError(
+      `AMM can not remove liquidity: amm exceeds max leverage after removing liquidity`
+    )
   }
-  
+
   return {
     cashToReturn,
     poolMargin,
-    newPoolMargin,
+    newPoolMargin
   }
 }
 
@@ -533,7 +625,7 @@ export function computeMaxRemovableShare(p: LiquidityPoolStorage, totalShare: Bi
 
   // prevent amm unsafe
   let minPoolMargin = sqrt(context.squareValueWithoutCurrent.div(_2))
-  
+
   // prevent amm offering negative price
   for (let j = 0; j < context.otherIndex.length; j++) {
     // M >= β P_i N
@@ -542,16 +634,20 @@ export function computeMaxRemovableShare(p: LiquidityPoolStorage, totalShare: Bi
       context.otherOpenSlippageFactor[j].times(context.otherIndex[j]).times(context.otherPosition[j])
     )
   }
-  
+
   // prevent amm exceeding max leverage
   // newCash + Σ P_i N >= Σ P_i | N | / λ
   const minNewCash = context.positionMarginWithoutCurrent.minus(context.valueWithoutCurrent)
-  const contextForLev = computeAMMPoolMargin({
-    ...context,
-    cash: minNewCash
-  }, _0 /* useless */, true /* allowUnsafe */)
+  const contextForLev = computeAMMPoolMargin(
+    {
+      ...context,
+      cash: minNewCash
+    },
+    _0 /* useless */,
+    true /* allowUnsafe */
+  )
   minPoolMargin = BigNumber.maximum(minPoolMargin, contextForLev.poolMargin)
-  
+
   // share
   if (minPoolMargin.gte(poolMargin)) {
     return _0

@@ -14,12 +14,7 @@ import {
   computeMaxRemovableShare
 } from '../src/amm'
 import { _0, _1 } from '../src/constants'
-import {
-  PerpetualState,
-  PerpetualStorage,
-  LiquidityPoolStorage,
-  InsufficientLiquidityError,
-} from '../src/types'
+import { PerpetualState, PerpetualStorage, LiquidityPoolStorage, InsufficientLiquidityError } from '../src/types'
 import { normalizeBigNumberish } from '../src/utils'
 import { extendExpect } from './helper'
 
@@ -40,7 +35,7 @@ const defaultPool: LiquidityPoolStorage = {
   vaultFeeRate: new BigNumber(0.0001),
   poolCashBalance: _0, // set me later
   fundingTime: 1579601290,
-  
+
   perpetuals: new Map() // set me later
 }
 
@@ -49,7 +44,7 @@ const perpetual1: PerpetualStorage = {
   underlyingSymbol: 'T',
   isMarketClosed: false,
   state: PerpetualState.NORMAL,
-  oracle: "0x0",
+  oracle: '0x0',
   totalCollateral: _0,
 
   markPrice: new BigNumber(95),
@@ -60,7 +55,7 @@ const perpetual1: PerpetualStorage = {
   maintenanceMarginRate: new BigNumber(0.05),
   operatorFeeRate: new BigNumber(0.0001),
   lpFeeRate: new BigNumber(0.0008),
-  referrerRebateRate: new BigNumber(0.0000),
+  referrerRebateRate: new BigNumber(0.0),
   liquidationPenaltyRate: new BigNumber(0.005),
   keeperGasReward: new BigNumber(2),
   insuranceFundRate: new BigNumber(0.0001),
@@ -68,15 +63,15 @@ const perpetual1: PerpetualStorage = {
   insuranceFund: _0,
   donatedInsuranceFund: _0,
 
-  halfSpread: { value: new BigNumber(0.001), minValue: _0, maxValue: _0, },
-  openSlippageFactor: { value: new BigNumber(1), minValue: _0, maxValue: _0, },
-  closeSlippageFactor: { value: new BigNumber(0.9), minValue: _0, maxValue: _0, },
-  fundingRateLimit: { value: new BigNumber(0.005), minValue: _0, maxValue: _0, },
-  ammMaxLeverage: { value: new BigNumber(3), minValue: _0, maxValue: _0, },
-  maxClosePriceDiscount: { value: new BigNumber(0.2), minValue: _0, maxValue: _0, },
+  halfSpread: { value: new BigNumber(0.001), minValue: _0, maxValue: _0 },
+  openSlippageFactor: { value: new BigNumber(1), minValue: _0, maxValue: _0 },
+  closeSlippageFactor: { value: new BigNumber(0.9), minValue: _0, maxValue: _0 },
+  fundingRateLimit: { value: new BigNumber(0.005), minValue: _0, maxValue: _0 },
+  ammMaxLeverage: { value: new BigNumber(3), minValue: _0, maxValue: _0 },
+  maxClosePriceDiscount: { value: new BigNumber(0.2), minValue: _0, maxValue: _0 },
 
   ammCashBalance: _0, // assign me later
-  ammPositionAmount: _0, // assign me later
+  ammPositionAmount: _0 // assign me later
 }
 
 const TEST_MARKET_INDEX0 = 0
@@ -87,8 +82,8 @@ const poolInit: LiquidityPoolStorage = {
   poolCashBalance: _0,
   perpetuals: new Map([
     [TEST_MARKET_INDEX0, { ...perpetual1, ammPositionAmount: _0 }],
-    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: _0 }],
-  ]),
+    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: _0 }]
+  ])
 }
 
 // [0] zero
@@ -100,8 +95,8 @@ const poolStorage0: LiquidityPoolStorage = {
   poolCashBalance: new BigNumber('10000'),
   perpetuals: new Map([
     [TEST_MARKET_INDEX0, { ...perpetual1, ammPositionAmount: _0 }],
-    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: _0 }],
-  ]),
+    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: _0 }]
+  ])
 }
 
 // [1] short 1: normal
@@ -113,8 +108,8 @@ const poolStorage1: LiquidityPoolStorage = {
   poolCashBalance: new BigNumber('10100'),
   perpetuals: new Map([
     [TEST_MARKET_INDEX0, { ...perpetual1, ammPositionAmount: new BigNumber('-10') }],
-    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: new BigNumber('10') }],
-  ]),
+    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: new BigNumber('10') }]
+  ])
 }
 
 // [2] short 2: loss but safe
@@ -126,8 +121,8 @@ const poolStorage2: LiquidityPoolStorage = {
   poolCashBalance: new BigNumber('14599'),
   perpetuals: new Map([
     [TEST_MARKET_INDEX0, { ...perpetual1, ammPositionAmount: new BigNumber('-50') }],
-    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: new BigNumber('10') }],
-  ]),
+    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: new BigNumber('10') }]
+  ])
 }
 
 // [3] short 3: unsafe
@@ -138,8 +133,8 @@ const poolStorage3: LiquidityPoolStorage = {
   poolCashBalance: new BigNumber('17692'),
   perpetuals: new Map([
     [TEST_MARKET_INDEX0, { ...perpetual1, ammPositionAmount: new BigNumber('-80') }],
-    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: new BigNumber('10') }],
-  ]),
+    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: new BigNumber('10') }]
+  ])
 }
 
 // [4] long 1: normal
@@ -151,8 +146,8 @@ const poolStorage4: LiquidityPoolStorage = {
   poolCashBalance: new BigNumber('8138'),
   perpetuals: new Map([
     [TEST_MARKET_INDEX0, { ...perpetual1, ammPositionAmount: new BigNumber('10') }],
-    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: new BigNumber('10') }],
-  ]),
+    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: new BigNumber('10') }]
+  ])
 }
 
 // [5] long 2: loss but safe
@@ -164,8 +159,8 @@ const poolStorage5: LiquidityPoolStorage = {
   poolCashBalance: new BigNumber('1664'),
   perpetuals: new Map([
     [TEST_MARKET_INDEX0, { ...perpetual1, ammPositionAmount: new BigNumber('50') }],
-    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: new BigNumber('10') }],
-  ]),
+    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: new BigNumber('10') }]
+  ])
 }
 
 // [6]
@@ -177,11 +172,11 @@ const poolStorage6: LiquidityPoolStorage = {
   poolCashBalance: new BigNumber('1996'),
   perpetuals: new Map([
     [TEST_MARKET_INDEX0, { ...perpetual1, ammPositionAmount: new BigNumber('80') }],
-    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: new BigNumber('10') }],
-  ]),
+    [TEST_MARKET_INDEX1, { ...perpetual1, ammPositionAmount: new BigNumber('10') }]
+  ])
 }
 
-describe('computeM0', function () {
+describe('computeM0', function() {
   const beta = new BigNumber('1')
 
   interface ComputeAccountCase {
@@ -196,25 +191,25 @@ describe('computeM0', function () {
       amm: poolInit,
       availableCash: new BigNumber('0'),
       isAMMSafe: true,
-      poolMargin: new BigNumber('0'),
+      poolMargin: new BigNumber('0')
     },
     {
       amm: poolStorage0,
       availableCash: new BigNumber('10000'),
       isAMMSafe: true,
-      poolMargin: new BigNumber('10000'),
+      poolMargin: new BigNumber('10000')
     },
     {
       amm: poolStorage1,
       availableCash: new BigNumber('10100'),
       isAMMSafe: true,
-      poolMargin: new BigNumber('10000'),
+      poolMargin: new BigNumber('10000')
     },
     {
       amm: poolStorage2,
       availableCash: new BigNumber('14675'),
       isAMMSafe: true,
-      poolMargin: new BigNumber('9273.09477715884768908142691791'),
+      poolMargin: new BigNumber('9273.09477715884768908142691791')
     },
     {
       amm: poolStorage3,
@@ -226,24 +221,24 @@ describe('computeM0', function () {
       amm: poolStorage4,
       availableCash: new BigNumber('8100'),
       isAMMSafe: true,
-      poolMargin: new BigNumber('10000'),
+      poolMargin: new BigNumber('10000')
     },
     {
       amm: poolStorage5,
       availableCash: new BigNumber('1550'),
       isAMMSafe: true,
-      poolMargin: new BigNumber('4893.31346231725208539935787445'),
+      poolMargin: new BigNumber('4893.31346231725208539935787445')
     },
     {
       amm: poolStorage6,
       availableCash: new BigNumber('1825'),
       isAMMSafe: false,
-      poolMargin: _0,
-    },
+      poolMargin: _0
+    }
   ]
 
   successCases.forEach((element, index) => {
-    it(`${index}`, function () {
+    it(`${index}`, function() {
       const context1 = initAMMTradingContext(element.amm, TEST_MARKET_INDEX0)
       expect(context1.cash).toApproximate(normalizeBigNumberish(element.availableCash))
 
@@ -258,7 +253,7 @@ describe('computeM0', function () {
   })
 })
 
-describe('computeDeltaMargin', function () {
+describe('computeDeltaMargin', function() {
   const beta = new BigNumber('1')
   interface ComputeAccountCase {
     name: string
@@ -281,11 +276,11 @@ describe('computeDeltaMargin', function () {
       amm: poolStorage0,
       pos2: new BigNumber('-5'),
       deltaMargin: new BigNumber('512.5')
-    },
+    }
   ]
 
   successCases.forEach(element => {
-    it(element.name, function () {
+    it(element.name, function() {
       const context = computeAMMPoolMargin(initAMMTradingContext(element.amm, TEST_MARKET_INDEX0), beta)
       const deltaMargin = computeDeltaMargin(context, beta, element.pos2)
       expect(deltaMargin).toApproximate(normalizeBigNumberish(element.deltaMargin))
@@ -293,8 +288,8 @@ describe('computeDeltaMargin', function () {
   })
 })
 
-describe('safePosition', function () {
-  it('short: init', function () {
+describe('safePosition', function() {
+  it('short: init', function() {
     const beta = new BigNumber('1')
     const context = computeAMMPoolMargin(initAMMTradingContext(poolInit, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
@@ -302,7 +297,7 @@ describe('safePosition', function () {
     expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('0')))
   })
 
-  it('short: condition3 √, condition2 ∞. condition 3 selected', function () {
+  it('short: condition3 √, condition2 ∞. condition 3 selected', function() {
     const beta = new BigNumber('1')
     const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage1, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
@@ -310,48 +305,74 @@ describe('safePosition', function () {
     expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('-141.067359796658844252321636909')))
   })
 
-  it('short: condition3 √, condition2 √. condition 2 selected', function () {
+  it('short: condition3 √, condition2 √. condition 2 selected', function() {
     const beta = new BigNumber('1')
-    const context = computeAMMPoolMargin(initAMMTradingContext({
-      ...poolStorage1,
-      perpetuals: new Map([
-        [TEST_MARKET_INDEX0, {
-          ...poolStorage1.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage,
-          ammMaxLeverage: { value: new BigNumber('0.5'), minValue: _0, maxValue: _0 }}],
-        [TEST_MARKET_INDEX1, poolStorage1.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage],
-      ])
-    }, TEST_MARKET_INDEX0), beta)
+    const context = computeAMMPoolMargin(
+      initAMMTradingContext(
+        {
+          ...poolStorage1,
+          perpetuals: new Map([
+            [
+              TEST_MARKET_INDEX0,
+              {
+                ...(poolStorage1.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage),
+                ammMaxLeverage: { value: new BigNumber('0.5'), minValue: _0, maxValue: _0 }
+              }
+            ],
+            [TEST_MARKET_INDEX1, poolStorage1.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage]
+          ])
+        },
+        TEST_MARKET_INDEX0
+      ),
+      beta
+    )
     expect(isAMMSafe(context, beta)).toBeTruthy()
     const pos2 = computeAMMSafeShortPositionAmount(context, beta)
     expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('-56.589168238006977708561982164')))
   })
 
-  it('short: condition3 √, condition2 √. condition 3 selected', function () {
+  it('short: condition3 √, condition2 √. condition 3 selected', function() {
     const beta = new BigNumber('1.426933822319389')
-    const context = computeAMMPoolMargin(initAMMTradingContext({
-      ...poolStorage1,
-      perpetuals: new Map([
-        [TEST_MARKET_INDEX0, {
-          ...poolStorage1.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage,
-          indexPrice: new BigNumber(100), ammPositionAmount: new BigNumber('-10'),
-          ammMaxLeverage: { value: new BigNumber('0.5'), minValue: _0, maxValue: _0 },
-          openSlippageFactor: { value: beta, minValue: _0, maxValue: _0 }}],
-        [TEST_MARKET_INDEX1, {
-          ...poolStorage1.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage,
-          indexPrice: new BigNumber('90'), ammPositionAmount: new BigNumber('85.5148648938521'),
-          openSlippageFactor: { value: new BigNumber('2.222222222222222222'), minValue: _0, maxValue: _0 }}],
-        ])
-    }, TEST_MARKET_INDEX0), beta)
+    const context = computeAMMPoolMargin(
+      initAMMTradingContext(
+        {
+          ...poolStorage1,
+          perpetuals: new Map([
+            [
+              TEST_MARKET_INDEX0,
+              {
+                ...(poolStorage1.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage),
+                indexPrice: new BigNumber(100),
+                ammPositionAmount: new BigNumber('-10'),
+                ammMaxLeverage: { value: new BigNumber('0.5'), minValue: _0, maxValue: _0 },
+                openSlippageFactor: { value: beta, minValue: _0, maxValue: _0 }
+              }
+            ],
+            [
+              TEST_MARKET_INDEX1,
+              {
+                ...(poolStorage1.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage),
+                indexPrice: new BigNumber('90'),
+                ammPositionAmount: new BigNumber('85.5148648938521'),
+                openSlippageFactor: { value: new BigNumber('2.222222222222222222'), minValue: _0, maxValue: _0 }
+              }
+            ]
+          ])
+        },
+        TEST_MARKET_INDEX0
+      ),
+      beta
+    )
     expect(isAMMSafe(context, beta)).toBeTruthy()
     const pos2 = computeAMMSafeShortPositionAmount(context, beta)
     expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('-69.2197544117782')))
   })
 
-  it('short: condition3 ∞', function () {
+  it('short: condition3 ∞', function() {
     // TODO
   })
 
-  it('long: init', function () {
+  it('long: init', function() {
     const beta = new BigNumber('1')
     const context = computeAMMPoolMargin(initAMMTradingContext(poolInit, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
@@ -359,7 +380,7 @@ describe('safePosition', function () {
     expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('0')))
   })
 
-  it('long: condition3 √, condition2 ∞, condition 1 selected', function () {
+  it('long: condition3 √, condition2 ∞, condition 1 selected', function() {
     const beta = new BigNumber('1')
     const context = computeAMMPoolMargin(initAMMTradingContext(poolStorage4, TEST_MARKET_INDEX0), beta)
     expect(isAMMSafe(context, beta)).toBeTruthy()
@@ -367,47 +388,72 @@ describe('safePosition', function () {
     expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('100')))
   })
 
-  it('long: condition3 √, condition2 √, condition 2 selected', function () {
+  it('long: condition3 √, condition2 √, condition 2 selected', function() {
     const beta = new BigNumber('1')
-    const context = computeAMMPoolMargin(initAMMTradingContext({
-      ...poolStorage4,
-      perpetuals: new Map([
-        [TEST_MARKET_INDEX0, {
-          ...poolStorage4.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage,
-          ammMaxLeverage: { value: new BigNumber('0.5'), minValue: _0, maxValue: _0 }}],
-        [TEST_MARKET_INDEX1, poolStorage4.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage],
-      ])
-    }, TEST_MARKET_INDEX0), beta)
+    const context = computeAMMPoolMargin(
+      initAMMTradingContext(
+        {
+          ...poolStorage4,
+          perpetuals: new Map([
+            [
+              TEST_MARKET_INDEX0,
+              {
+                ...(poolStorage4.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage),
+                ammMaxLeverage: { value: new BigNumber('0.5'), minValue: _0, maxValue: _0 }
+              }
+            ],
+            [TEST_MARKET_INDEX1, poolStorage4.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage]
+          ])
+        },
+        TEST_MARKET_INDEX0
+      ),
+      beta
+    )
     expect(isAMMSafe(context, beta)).toBeTruthy()
     const pos2 = computeAMMSafeLongPositionAmount(context, beta)
     expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('56.589168238006977708561982164')))
   })
 
-  it('long: condition3 √, condition2 ∞, condition 3 selected', function () {
+  it('long: condition3 √, condition2 ∞, condition 3 selected', function() {
     const beta = new BigNumber('0.3977')
-    const context = computeAMMPoolMargin(initAMMTradingContext({
-      ...poolStorage4,
-      perpetuals: new Map([
-        [TEST_MARKET_INDEX0, {
-          ...poolStorage4.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage,
-          openSlippageFactor: { value: beta, minValue: _0, maxValue: _0 }}],
-        [TEST_MARKET_INDEX1, {
-          ...poolStorage4.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage,
-          indexPrice: new BigNumber('10'), ammPositionAmount: new BigNumber('-109'),
-          openSlippageFactor: { value: new BigNumber('3'), minValue: _0, maxValue: _0 }}],
-        ])
-    }, TEST_MARKET_INDEX0), beta)
+    const context = computeAMMPoolMargin(
+      initAMMTradingContext(
+        {
+          ...poolStorage4,
+          perpetuals: new Map([
+            [
+              TEST_MARKET_INDEX0,
+              {
+                ...(poolStorage4.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage),
+                openSlippageFactor: { value: beta, minValue: _0, maxValue: _0 }
+              }
+            ],
+            [
+              TEST_MARKET_INDEX1,
+              {
+                ...(poolStorage4.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage),
+                indexPrice: new BigNumber('10'),
+                ammPositionAmount: new BigNumber('-109'),
+                openSlippageFactor: { value: new BigNumber('3'), minValue: _0, maxValue: _0 }
+              }
+            ]
+          ])
+        },
+        TEST_MARKET_INDEX0
+      ),
+      beta
+    )
     expect(isAMMSafe(context, beta)).toBeTruthy()
     const pos2 = computeAMMSafeLongPositionAmount(context, beta)
     expect(pos2).toApproximate(normalizeBigNumberish(new BigNumber('176.61598769492977')))
   })
 
-  it('long: condition3 ∞', function () {
+  it('long: condition3 ∞', function() {
     // TODO
   })
 })
 
-describe('trade - success', function () {
+describe('trade - success', function() {
   interface ComputeAccountCase {
     name: string
     amm: LiquidityPoolStorage
@@ -525,18 +571,18 @@ describe('trade - success', function () {
       amm: poolStorage6,
       amount: new BigNumber('-0.1'),
       deltaMargin: new BigNumber('8')
-    },
+    }
   ]
 
   successCases.forEach(element => {
-  it(element.name, function () {
+    it(element.name, function() {
       const context = computeAMMInternalTrade(element.amm, TEST_MARKET_INDEX0, element.amount)
       expect(context.deltaMargin).toApproximate(normalizeBigNumberish(element.deltaMargin))
     })
   })
 })
 
-describe('trade - cross 0', function () {
+describe('trade - cross 0', function() {
   interface ComputeAccountCase {
     name: string
     amm: LiquidityPoolStorage
@@ -589,25 +635,29 @@ describe('trade - cross 0', function () {
       amount: new BigNumber('-20'),
       halfSpread: new BigNumber('0.15'),
       deltaMargin: new BigNumber('2093.104439454500179222644511570')
-    },
+    }
   ]
 
   successCases.forEach(element => {
-    it(element.name, function () {
+    it(element.name, function() {
       const p1 = element.amm.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage
-      const context = computeAMMInternalTrade({
-        ...element.amm,
-        perpetuals: new Map([
-          ...element.amm.perpetuals,
-          [TEST_MARKET_INDEX0, { ...p1, halfSpread: { value: element.halfSpread, minValue: _0, maxValue: _0 }}],
-        ]),
-      }, TEST_MARKET_INDEX0, element.amount)
+      const context = computeAMMInternalTrade(
+        {
+          ...element.amm,
+          perpetuals: new Map([
+            ...element.amm.perpetuals,
+            [TEST_MARKET_INDEX0, { ...p1, halfSpread: { value: element.halfSpread, minValue: _0, maxValue: _0 } }]
+          ])
+        },
+        TEST_MARKET_INDEX0,
+        element.amount
+      )
       expect(context.deltaMargin).toApproximate(normalizeBigNumberish(element.deltaMargin))
     })
   })
 })
 
-describe('trade - fail', function () {
+describe('trade - fail', function() {
   interface ComputeAccountCase {
     name: string
     amm: LiquidityPoolStorage
@@ -618,38 +668,38 @@ describe('trade - fail', function () {
     {
       name: 'poolMargin = 0',
       amm: poolInit,
-      amount: new BigNumber('1'),
+      amount: new BigNumber('1')
     },
     {
       name: 'open 0 -> -141.422, pos2 too large',
       amm: poolStorage0,
-      amount: new BigNumber('-141.422'),
+      amount: new BigNumber('-141.422')
     },
     {
       name: 'open -10 -> -141.068, pos2 too large',
       amm: poolStorage1,
-      amount: new BigNumber('-131.068'),
+      amount: new BigNumber('-131.068')
     },
     {
       name: 'open -10 already unsafe',
       amm: poolStorage3,
-      amount: new BigNumber('-0.01'),
+      amount: new BigNumber('-0.01')
     },
     {
       name: 'open 0 -> 100.001',
       amm: poolStorage0,
-      amount: new BigNumber('100.001'),
+      amount: new BigNumber('100.001')
     },
     {
       name: 'open 10 -> 100.001',
       amm: poolStorage4,
-      amount: new BigNumber('90.001'),
+      amount: new BigNumber('90.001')
     },
     {
       name: 'open 10 already unsafe',
       amm: poolStorage6,
-      amount: new BigNumber('0.01'),
-    },
+      amount: new BigNumber('0.01')
+    }
   ]
 
   failCases.forEach(element => {
@@ -661,7 +711,7 @@ describe('trade - fail', function () {
   })
 })
 
-describe('computeBestAskBidPrice', function () {
+describe('computeBestAskBidPrice', function() {
   interface ComputeAccountCase {
     name: string
     amm: LiquidityPoolStorage
@@ -719,22 +769,24 @@ describe('computeBestAskBidPrice', function () {
       amm: poolStorage6,
       isAMMBuy: false,
       price: new BigNumber('80')
-    },
+    }
   ]
 
   successCases.forEach(element => {
-    it(element.name, function () {
+    it(element.name, function() {
       const price = computeBestAskBidPrice(element.amm, TEST_MARKET_INDEX0, element.isAMMBuy)
       expect(price).toApproximate(normalizeBigNumberish(element.price))
     })
   })
 })
 
-describe('computeFundingRate', function () {
+describe('computeFundingRate', function() {
   it('normal', () => {
     expect(computeFundingRate(poolStorage0, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('0'))
     expect(computeFundingRate(poolStorage1, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('0.0005'))
-    expect(computeFundingRate(poolStorage2, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('0.00269597158238683137'))
+    expect(computeFundingRate(poolStorage2, TEST_MARKET_INDEX0)).toApproximate(
+      normalizeBigNumberish('0.00269597158238683137')
+    )
     expect(computeFundingRate(poolStorage3, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('0.005'))
     expect(computeFundingRate(poolStorage4, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('-0.0005'))
     expect(computeFundingRate(poolStorage5, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('-0.005')) // clip
@@ -825,7 +877,7 @@ describe('computeAMMCashToReturn', function() {
       totalShare: new BigNumber('100'),
       shareToRemove: new BigNumber('10'),
       isEmergency: false,
-      marginToRemove: _0,
+      marginToRemove: _0
     },
     {
       name: 'no position',
@@ -833,7 +885,7 @@ describe('computeAMMCashToReturn', function() {
       totalShare: new BigNumber('100'),
       shareToRemove: new BigNumber('10'),
       isEmergency: false,
-      marginToRemove: new BigNumber('1000'),
+      marginToRemove: new BigNumber('1000')
     },
     {
       name: 'no position, remove all',
@@ -841,7 +893,7 @@ describe('computeAMMCashToReturn', function() {
       totalShare: new BigNumber('100'),
       shareToRemove: new BigNumber('100'),
       isEmergency: false,
-      marginToRemove: new BigNumber('10000'),
+      marginToRemove: new BigNumber('10000')
     },
     {
       name: 'short',
@@ -849,7 +901,7 @@ describe('computeAMMCashToReturn', function() {
       totalShare: new BigNumber('100'),
       shareToRemove: new BigNumber('10'),
       isEmergency: false,
-      marginToRemove: new BigNumber('988.888888888888888888888888889'),
+      marginToRemove: new BigNumber('988.888888888888888888888888889')
     },
     {
       name: 'long',
@@ -857,7 +909,7 @@ describe('computeAMMCashToReturn', function() {
       totalShare: new BigNumber('100'),
       shareToRemove: new BigNumber('10'),
       isEmergency: false,
-      marginToRemove: new BigNumber('988.888888888888888888888888889'),
+      marginToRemove: new BigNumber('988.888888888888888888888888889')
     },
     {
       name: 'state != NORMAL',
@@ -865,7 +917,7 @@ describe('computeAMMCashToReturn', function() {
       totalShare: new BigNumber('100'),
       shareToRemove: new BigNumber('10'),
       isEmergency: true,
-      marginToRemove: new BigNumber('900.25420688843233693447638834'),
+      marginToRemove: new BigNumber('900.25420688843233693447638834')
     }
   ]
 
@@ -874,8 +926,8 @@ describe('computeAMMCashToReturn', function() {
       let pool = element.amm
       if (element.isEmergency) {
         pool.perpetuals.set(TEST_MARKET_INDEX1, {
-          ...pool.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage,
-          state: PerpetualState.EMERGENCY,
+          ...(pool.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage),
+          state: PerpetualState.EMERGENCY
         })
       }
       const ret = computeAMMCashToReturn(pool, element.totalShare, element.shareToRemove)
@@ -885,14 +937,14 @@ describe('computeAMMCashToReturn', function() {
 })
 
 describe('computeAMMCashToReturn', function() {
-    interface ComputeAccountCase {
-      name: string
-      amm: LiquidityPoolStorage
-      totalShare: BigNumber
-      shareToRemove: BigNumber
-      ammMaxLeverage: BigNumber
-    }
-  
+  interface ComputeAccountCase {
+    name: string
+    amm: LiquidityPoolStorage
+    totalShare: BigNumber
+    shareToRemove: BigNumber
+    ammMaxLeverage: BigNumber
+  }
+
   const failCases: Array<ComputeAccountCase> = [
     {
       name: 'short, before unsafe',
@@ -934,7 +986,7 @@ describe('computeAMMCashToReturn', function() {
       amm: poolStorage4,
       totalShare: new BigNumber('100'),
       shareToRemove: new BigNumber('0.001'),
-      ammMaxLeverage: new BigNumber('0.1'),
+      ammMaxLeverage: new BigNumber('0.1')
     }
   ]
 
@@ -943,7 +995,7 @@ describe('computeAMMCashToReturn', function() {
       expect((): void => {
         let pool = element.amm
         pool.perpetuals.set(TEST_MARKET_INDEX0, {
-          ...pool.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage,
+          ...(pool.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage),
           ammMaxLeverage: {
             value: element.ammMaxLeverage,
             minValue: _0,
@@ -951,7 +1003,7 @@ describe('computeAMMCashToReturn', function() {
           }
         })
         pool.perpetuals.set(TEST_MARKET_INDEX1, {
-          ...pool.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage,
+          ...(pool.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage),
           ammMaxLeverage: {
             value: element.ammMaxLeverage,
             minValue: _0,
@@ -963,7 +1015,6 @@ describe('computeAMMCashToReturn', function() {
     })
   })
 })
-
 
 describe('computeMaxRemovableShare', function() {
   interface ComputeAccountCase {
@@ -984,7 +1035,7 @@ describe('computeMaxRemovableShare', function() {
       totalShare: new BigNumber('0'),
       isEmergency: false,
       ammMaxLeverage: new BigNumber('3'),
-      shareToRemove: new BigNumber('0'),
+      shareToRemove: new BigNumber('0')
     },
     {
       name: 'no position',
@@ -992,7 +1043,7 @@ describe('computeMaxRemovableShare', function() {
       totalShare: new BigNumber('100'),
       isEmergency: false,
       ammMaxLeverage: new BigNumber('3'),
-      shareToRemove: new BigNumber('100'),
+      shareToRemove: new BigNumber('100')
     },
     {
       name: 'short',
@@ -1048,7 +1099,7 @@ describe('computeMaxRemovableShare', function() {
       totalShare: new BigNumber('100'),
       isEmergency: false,
       ammMaxLeverage: new BigNumber('3'),
-      shareToRemove: new BigNumber('0'),
+      shareToRemove: new BigNumber('0')
     },
     {
       name: 'long, after exceed leverage',
@@ -1056,7 +1107,7 @@ describe('computeMaxRemovableShare', function() {
       totalShare: new BigNumber('100'),
       isEmergency: false,
       ammMaxLeverage: new BigNumber('0.1'),
-      shareToRemove: new BigNumber('0'),
+      shareToRemove: new BigNumber('0')
     }
   ]
 
@@ -1065,12 +1116,12 @@ describe('computeMaxRemovableShare', function() {
       let pool = element.amm
       if (element.isEmergency) {
         pool.perpetuals.set(TEST_MARKET_INDEX1, {
-          ...pool.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage,
-          state: PerpetualState.EMERGENCY,
+          ...(pool.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage),
+          state: PerpetualState.EMERGENCY
         })
       }
       pool.perpetuals.set(TEST_MARKET_INDEX0, {
-        ...pool.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage,
+        ...(pool.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage),
         ammMaxLeverage: {
           value: element.ammMaxLeverage,
           minValue: _0,
@@ -1078,7 +1129,7 @@ describe('computeMaxRemovableShare', function() {
         }
       })
       pool.perpetuals.set(TEST_MARKET_INDEX1, {
-        ...pool.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage,
+        ...(pool.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage),
         ammMaxLeverage: {
           value: element.ammMaxLeverage,
           minValue: _0,

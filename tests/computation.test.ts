@@ -6,7 +6,7 @@ import {
   computeFee,
   computeTradeWithPrice,
   computeAMMPrice,
-  computeAMMTrade,
+  computeAMMTrade
 } from '../src/computation'
 import { _0, _1 } from '../src/constants'
 import {
@@ -16,7 +16,7 @@ import {
   LiquidityPoolStorage,
   AccountStorage,
   AccountComputed,
-  AccountDetails,
+  AccountDetails
 } from '../src/types'
 import { normalizeBigNumberish } from '../src/utils'
 import { extendExpect } from './helper'
@@ -38,7 +38,7 @@ const defaultPool: LiquidityPoolStorage = {
   vaultFeeRate: new BigNumber(0.0002),
   poolCashBalance: _0, // set me later
   fundingTime: 1579601290,
-  
+
   perpetuals: new Map() // set me later
 }
 
@@ -47,7 +47,7 @@ const perpetual1: PerpetualStorage = {
   underlyingSymbol: 'T',
   isMarketClosed: false,
   state: PerpetualState.NORMAL,
-  oracle: "0x0",
+  oracle: '0x0',
   totalCollateral: _0,
 
   markPrice: new BigNumber(6965),
@@ -58,7 +58,7 @@ const perpetual1: PerpetualStorage = {
   maintenanceMarginRate: new BigNumber(0.05),
   operatorFeeRate: new BigNumber(0.0001),
   lpFeeRate: new BigNumber(0.0007),
-  referrerRebateRate: new BigNumber(0.0000),
+  referrerRebateRate: new BigNumber(0.0),
   liquidationPenaltyRate: new BigNumber(0.005),
   keeperGasReward: new BigNumber(1),
   insuranceFundRate: new BigNumber(0.0001),
@@ -66,15 +66,15 @@ const perpetual1: PerpetualStorage = {
   insuranceFund: _0,
   donatedInsuranceFund: _0,
 
-  halfSpread: { value: new BigNumber(0.001), minValue: _0, maxValue: _0, },
-  openSlippageFactor: { value: new BigNumber('0.0142857142857142857142857142857'), minValue: _0, maxValue: _0, },
-  closeSlippageFactor: { value: new BigNumber('0.0128571428571428571428571428571'), minValue: _0, maxValue: _0, },
-  fundingRateLimit: { value: new BigNumber(0.005), minValue: _0, maxValue: _0, },
-  ammMaxLeverage: { value: new BigNumber(5), minValue: _0, maxValue: _0, },
-  maxClosePriceDiscount: { value: new BigNumber(0.05), minValue: _0, maxValue: _0, },
+  halfSpread: { value: new BigNumber(0.001), minValue: _0, maxValue: _0 },
+  openSlippageFactor: { value: new BigNumber('0.0142857142857142857142857142857'), minValue: _0, maxValue: _0 },
+  closeSlippageFactor: { value: new BigNumber('0.0128571428571428571428571428571'), minValue: _0, maxValue: _0 },
+  fundingRateLimit: { value: new BigNumber(0.005), minValue: _0, maxValue: _0 },
+  ammMaxLeverage: { value: new BigNumber(5), minValue: _0, maxValue: _0 },
+  maxClosePriceDiscount: { value: new BigNumber(0.05), minValue: _0, maxValue: _0 },
 
   ammCashBalance: _0, // assign me later
-  ammPositionAmount: _0, // assign me later
+  ammPositionAmount: _0 // assign me later
 }
 
 const TEST_MARKET_INDEX0 = 0
@@ -86,11 +86,14 @@ const poolStorage1: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('83941.29865625'),
   perpetuals: new Map([
-    [TEST_MARKET_INDEX0, {
-      ...perpetual1,
-      ammPositionAmount: new BigNumber('2.3'),
-    }]
-  ]),
+    [
+      TEST_MARKET_INDEX0,
+      {
+        ...perpetual1,
+        ammPositionAmount: new BigNumber('2.3')
+      }
+    ]
+  ])
 }
 
 // short unsafe
@@ -99,46 +102,49 @@ const poolStorage3: LiquidityPoolStorage = {
   ...defaultPool,
   poolCashBalance: new BigNumber('18119.79134375'),
   perpetuals: new Map([
-    [TEST_MARKET_INDEX0, {
-      ...perpetual1,
-      ammPositionAmount: new BigNumber('-2.3'),
-    }]
-  ]),
+    [
+      TEST_MARKET_INDEX0,
+      {
+        ...perpetual1,
+        ammPositionAmount: new BigNumber('-2.3')
+      }
+    ]
+  ])
 }
 
 const accountStorage1: AccountStorage = {
   cashBalance: new BigNumber('7698.86'), // 10000 - 2300.23 + (-0.91)
   positionAmount: new BigNumber('2.3'),
   entryValue: new BigNumber('2300.23'),
-  entryFunding: new BigNumber('-0.91'),
+  entryFunding: new BigNumber('-0.91')
 }
 
 const accountStorage2: AccountStorage = {
   cashBalance: new BigNumber('-1301.14'), // 1000 - 2300.23 + (-0.91)
   positionAmount: new BigNumber('2.3'),
   entryValue: new BigNumber('2300.23'),
-  entryFunding: new BigNumber('-0.91'),
+  entryFunding: new BigNumber('-0.91')
 }
 
 const accountStorage3: AccountStorage = {
   cashBalance: new BigNumber('16301.14'), // 14000 + 2300.23 + 0.91
   positionAmount: new BigNumber('-2.3'),
   entryValue: new BigNumber('-2300.23'),
-  entryFunding: new BigNumber('0.91'),
+  entryFunding: new BigNumber('0.91')
 }
 
 const accountStorage4: AccountStorage = {
   cashBalance: new BigNumber('10000'),
   positionAmount: _0,
   entryValue: _0,
-  entryFunding: _0,
+  entryFunding: _0
 }
 
 const accountDetails1 = computeAccount(poolStorage1, TEST_MARKET_INDEX0, accountStorage1)
 const accountDetails3 = computeAccount(poolStorage1, TEST_MARKET_INDEX0, accountStorage3)
 const accountDetails4 = computeAccount(poolStorage1, TEST_MARKET_INDEX0, accountStorage4)
 
-describe('computeAccount', function () {
+describe('computeAccount', function() {
   interface ComputeAccountCase {
     name: string
     accountStorage: AccountStorage
@@ -162,7 +168,7 @@ describe('computeAccount', function () {
     pnl1: new BigNumber('13719.27'),
     pnl2: new BigNumber('13695.57634375'),
     roe: new BigNumber('1.369557634375'),
-    liquidationPrice: _0,
+    liquidationPrice: _0
   }
 
   const expectOutput2: AccountComputed = {
@@ -182,7 +188,7 @@ describe('computeAccount', function () {
     pnl1: new BigNumber('13719.27'),
     pnl2: new BigNumber('13695.57634375'),
     roe: new BigNumber('13.69557634375'),
-    liquidationPrice: new BigNumber('607.01134203051266779676547395'),
+    liquidationPrice: new BigNumber('607.01134203051266779676547395')
   }
 
   const expectOutput3: AccountComputed = {
@@ -222,7 +228,7 @@ describe('computeAccount', function () {
     pnl1: _0,
     pnl2: _0,
     roe: _0,
-    liquidationPrice: _0,
+    liquidationPrice: _0
   }
 
   const successCases: Array<ComputeAccountCase> = [
@@ -249,7 +255,7 @@ describe('computeAccount', function () {
   ]
 
   successCases.forEach(element => {
-    it(element.name, function () {
+    it(element.name, function() {
       const accountStorage = element.accountStorage
       const expectedOutput = element.expectedOutput
       const accountDetails = computeAccount(poolStorage1, TEST_MARKET_INDEX0, accountStorage)
@@ -293,84 +299,87 @@ describe('computeAccount', function () {
   })
 })
 
-describe('computeTrade fail', function () {
-  it('decrease flat', function () {
+describe('computeTrade fail', function() {
+  it('decrease flat', function() {
     expect((): void => {
       computeDecreasePosition(poolStorage1, TEST_MARKET_INDEX0, accountStorage4, new BigNumber(7000), _1)
     }).toThrow()
   })
 
-  it('decrease zero price', function () {
+  it('decrease zero price', function() {
     expect((): void => {
       computeDecreasePosition(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, _0, _1)
     }).toThrow()
   })
 
-  it('decrease zero amount', function () {
+  it('decrease zero amount', function() {
     expect((): void => {
       computeDecreasePosition(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, _1, _0)
     }).toThrow()
   })
 
-  it('decrease large amount', function () {
+  it('decrease large amount', function() {
     expect((): void => {
       computeDecreasePosition(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, _1, new BigNumber(1000))
     }).toThrow()
   })
 
-  it('increase bad side', function () {
+  it('increase bad side', function() {
     expect((): void => {
       computeIncreasePosition(
-        poolStorage1, TEST_MARKET_INDEX0, accountStorage1,
-        new BigNumber(7000), _1.negated() // sell
+        poolStorage1,
+        TEST_MARKET_INDEX0,
+        accountStorage1,
+        new BigNumber(7000),
+        _1.negated() // sell
       )
     }).toThrow()
   })
 
-  it('increase zero price', function () {
+  it('increase zero price', function() {
     expect((): void => {
       computeIncreasePosition(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, _0, _1)
     }).toThrow()
   })
 
-  it('increase zero amount', function () {
+  it('increase zero amount', function() {
     expect((): void => {
       computeIncreasePosition(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, _1, _0)
     }).toThrow()
   })
 
-  it('increase bad side', function () {
+  it('increase bad side', function() {
     expect((): void => {
       computeIncreasePosition(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, _1, _0)
     }).toThrow()
   })
 
-  it('fee zero price', function () {
+  it('fee zero price', function() {
     expect((): void => {
       computeFee(0, 1, 0.1)
     }).toThrow()
   })
 
-  it('fee zero amount', function () {
+  it('fee zero amount', function() {
     expect((): void => {
       computeFee(1, 0, 0.1)
     }).toThrow()
   })
 
-  it('computeTradeWithPrice zero price', function () {
+  it('computeTradeWithPrice zero price', function() {
     expect((): void => {
       computeTradeWithPrice(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, _0, _1, _0)
     }).toThrow()
   })
 
-  it('computeTradeWithPrice zero amount', function () {
+  it('computeTradeWithPrice zero amount', function() {
     expect((): void => {
       computeTradeWithPrice(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, _1, _0, _0)
     }).toThrow()
   })
 })
 
-describe('computeTradeWithPrice', function () {
+describe('computeTradeWithPrice', function() {
   interface TradeCase {
     name: string
     input: {
@@ -386,7 +395,7 @@ describe('computeTradeWithPrice', function () {
         positionAmount: BigNumberish
         entryValue: BigNumberish
         entryFunding: BigNumberish
-      },
+      }
       fee: BigNumberish
     }
   }
@@ -667,14 +676,14 @@ describe('computeTradeWithPrice', function () {
     const name = element.name
     const expectedOutput = element.expectedOutput
 
-    it(name, function () {
+    it(name, function() {
       const { afterTrade } = computeTradeWithPrice(
         poolStorage1,
         TEST_MARKET_INDEX0,
         input.accountDetails.accountStorage,
         input.price,
         input.amount,
-        input.feeRate,
+        input.feeRate
       )
       expect(afterTrade.accountStorage.cashBalance).toApproximate(
         normalizeBigNumberish(expectedOutput.account.cashBalance)
@@ -695,49 +704,49 @@ describe('computeTradeWithPrice', function () {
   })
 })
 
-describe('computeAMMPrice', function () {
-  it(`amm holds long. trader sells`, function () {
+describe('computeAMMPrice', function() {
+  it(`amm holds long. trader sells`, function() {
     const { tradingPrice } = computeAMMPrice(poolStorage1, TEST_MARKET_INDEX0, '-0.5')
     expect(tradingPrice).toApproximate(new BigNumber('6976.9161'))
   })
 
-  it(`amm holds long. trader buys without cross 0`, function () {
+  it(`amm holds long. trader buys without cross 0`, function() {
     const { tradingPrice } = computeAMMPrice(poolStorage1, TEST_MARKET_INDEX0, '0.5')
     expect(tradingPrice).toApproximate(new BigNumber('6992.4957785904151334990367462'))
   })
 
-  it(`amm holds long. trader buys cross 0. spread only effects closing`, function () {
+  it(`amm holds long. trader buys cross 0. spread only effects closing`, function() {
     const { tradingPrice } = computeAMMPrice(poolStorage1, TEST_MARKET_INDEX0, '3.3')
     expect(tradingPrice).toApproximate(new BigNumber('6996.0111344722143116062591487')) // 16083.3368085704069965273648933 + 7003.49993518790023177329029757141254665377
   })
 
-  it(`amm holds short unsafe. trader sells cross 0. spread effects closing and part of opening`, function () {
+  it(`amm holds short unsafe. trader sells cross 0. spread effects closing and part of opening`, function() {
     const { tradingPrice } = computeAMMPrice(poolStorage3, TEST_MARKET_INDEX0, '-3.3')
     // m0 = 18142.575 - 7000 * 2.3 when pos = 0
     expect(tradingPrice).toApproximate(new BigNumber('6948.0750493565200491506747091'))
   })
 
-  it(`amm holds short unsafe. trader sells cross 0. spread effects all`, function () {
+  it(`amm holds short unsafe. trader sells cross 0. spread effects all`, function() {
     const { tradingPrice } = computeAMMPrice(poolStorage3, TEST_MARKET_INDEX0, '-2.31')
     // m0 = 18142.575 - 7000 * 2.3 when pos = 0
     expect(tradingPrice).toApproximate(new BigNumber('6999.9925821499080742927358107'))
   })
 
-  it(`buy too large`, function () {
+  it(`buy too large`, function() {
     expect((): void => {
       computeAMMPrice(poolStorage1, TEST_MARKET_INDEX0, '95.398') // 2.3 to -93.098
     }).toThrow()
   })
 
-  it(`sell too large`, function () {
+  it(`sell too large`, function() {
     expect((): void => {
       computeAMMPrice(poolStorage1, TEST_MARKET_INDEX0, '-90.796') // 2.3 to 93.096
     }).toThrow()
   })
 })
 
-describe('computeAMMTrade', function () {
-  it(`sell`, function () {
+describe('computeAMMTrade', function() {
+  it(`sell`, function() {
     const res = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '-0.5')
     expect(res.tradingPrice).toApproximate(new BigNumber('6976.9161')) // see computeAMMPrice's test case
     expect(res.lpFee).toApproximate(new BigNumber('2.441920635'))
@@ -751,7 +760,7 @@ describe('computeAMMTrade', function () {
     expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('2.8'))
   })
 
-  it(`buy without cross 0`, function () {
+  it(`buy without cross 0`, function() {
     const res = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '0.5')
     expect(res.tradingPrice).toApproximate(new BigNumber('6992.4957785904151334990367462')) // see computeAMMPrice's test case
     expect(res.lpFee).toApproximate(new BigNumber('2.44737352250664529672466286117'))
@@ -765,7 +774,7 @@ describe('computeAMMTrade', function () {
     expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('1.8'))
   })
 
-  it(`buy cross 0`, function () {
+  it(`buy cross 0`, function() {
     const res = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '3.3')
     expect(res.tradingPrice).toApproximate(new BigNumber('6996.0111344722143116062591487')) // see computeAMMPrice's test case
     expect(res.lpFee).toApproximate(new BigNumber('16.1607857206308150598104586335'))
@@ -779,7 +788,7 @@ describe('computeAMMTrade', function () {
     expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('-1'))
   })
 
-  it(`(saw) buy+sell`, function () {
+  it(`(saw) buy+sell`, function() {
     const res1 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '0.5')
     expect(res1.tradingPrice).toApproximate(new BigNumber('6992.4957785904151334990367462'))
     expect(res1.newPool.poolCashBalance).toApproximate(new BigNumber('87435.0409503177142120462430360')) // see the above case
@@ -797,10 +806,10 @@ describe('computeAMMTrade', function () {
     expect(res2.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('2.3'))
   })
 
-  it(`lower than keeperGasReward`, function () {
+  it(`lower than keeperGasReward`, function() {
     const trader: AccountStorage = {
       ...accountStorage4,
-      cashBalance: new BigNumber('1'),
+      cashBalance: new BigNumber('1')
     }
     const res1 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, trader, '0.0001')
     expect(res1.tradeIsSafe).toBeFalsy()

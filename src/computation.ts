@@ -12,11 +12,9 @@ import {
   AccountComputed,
   AMMTradingResult,
   InvalidArgumentError,
-  BugError,
+  BugError
 } from './types'
-import {
-  computeAMMInternalTrade
-} from './amm'
+import { computeAMMInternalTrade } from './amm'
 import { _0, _1 } from './constants'
 import { normalizeBigNumberish, hasTheSameSign, splitAmount } from './utils'
 
@@ -40,18 +38,18 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
   const isIMSafe = marginBalance.gte(BigNumber.maximum(reservedCash, positionMargin))
   const isMarginSafe = marginBalance.gte(reservedCash)
   const leverage = marginBalance.gt(0) ? positionValue.div(marginBalance) : _0
-  
+
   let fundingPNL: BigNumber | null = null
   if (s.entryFunding) {
     fundingPNL = s.entryFunding.minus(s.positionAmount.times(perpetual.unitAccumulativeFunding))
   }
-  
+
   let entryPrice: BigNumber | null = null
   let pnl1: BigNumber | null = null
   let pnl2: BigNumber | null = null
   let roe: BigNumber | null = null
   if (s.entryValue) {
-    entryPrice = (s.positionAmount.isZero() ? _0 : s.entryValue.div(s.positionAmount))
+    entryPrice = s.positionAmount.isZero() ? _0 : s.entryValue.div(s.positionAmount)
   }
   if (s.entryValue) {
     pnl1 = perpetual.markPrice.times(s.positionAmount).minus(s.entryValue)
@@ -61,7 +59,7 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
   }
   if (pnl2 && s.entryValue && s.entryFunding) {
     let entryCash = s.cashBalance.plus(s.entryValue).minus(s.entryFunding)
-    roe = (entryCash.isZero() ? _0 : pnl2.div(entryCash))
+    roe = entryCash.isZero() ? _0 : pnl2.div(entryCash)
   }
 
   // the estimated liquidation price helps traders to know when to close their positions.
@@ -70,8 +68,10 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
   let liquidationPrice = _0
   if (!s.positionAmount.isZero()) {
     let tradingFeeRate = p.vaultFeeRate.plus(perpetual.operatorFeeRate).plus(perpetual.lpFeeRate)
-    const t = perpetual.maintenanceMarginRate.plus(tradingFeeRate)
-      .times(s.positionAmount.abs()).minus(s.positionAmount)
+    const t = perpetual.maintenanceMarginRate
+      .plus(tradingFeeRate)
+      .times(s.positionAmount.abs())
+      .minus(s.positionAmount)
     liquidationPrice = availableCashBalance.minus(reservedCash).div(t)
     if (liquidationPrice.isNegative()) {
       liquidationPrice = _0
@@ -84,7 +84,6 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
     maintenanceMargin,
     availableCashBalance,
     marginBalance,
-    maxWithdrawable,
     availableMargin,
     withdrawableBalance,
     isMMSafe,
@@ -97,7 +96,7 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
     pnl1,
     pnl2,
     roe,
-    liquidationPrice,
+    liquidationPrice
   }
   return { accountStorage: s, accountComputed }
 }
@@ -118,7 +117,9 @@ export function computeDecreasePosition(
   let entryValue = a.entryValue
   let entryFunding = a.entryFunding
   if (oldAmount.isZero() || amount.isZero() || hasTheSameSign(oldAmount, amount)) {
-    throw new InvalidArgumentError(`bad amount ${amount.toFixed()} to decrease when position is ${oldAmount.toFixed()}.`)
+    throw new InvalidArgumentError(
+      `bad amount ${amount.toFixed()} to decrease when position is ${oldAmount.toFixed()}.`
+    )
   }
   if (price.lte(_0)) {
     throw new InvalidArgumentError(`bad price ${price.toFixed()}`)
@@ -129,12 +130,8 @@ export function computeDecreasePosition(
   cashBalance = cashBalance.minus(price.times(amount))
   cashBalance = cashBalance.plus(perpetual.unitAccumulativeFunding.times(amount))
   const positionAmount = oldAmount.plus(amount)
-  entryFunding = entryFunding
-    ? entryFunding.times(positionAmount).div(oldAmount)
-    : null
-  entryValue = entryValue
-    ? entryValue.times(positionAmount).div(oldAmount)
-    : null
+  entryFunding = entryFunding ? entryFunding.times(positionAmount).div(oldAmount) : null
+  entryValue = entryValue ? entryValue.times(positionAmount).div(oldAmount) : null
   return { cashBalance, entryValue, positionAmount, entryFunding }
 }
 
@@ -164,12 +161,8 @@ export function computeIncreasePosition(
   }
   cashBalance = cashBalance.minus(price.times(amount))
   cashBalance = cashBalance.plus(perpetual.unitAccumulativeFunding.times(amount))
-  entryValue = entryValue
-    ? entryValue.plus(price.times(amount))
-    : null
-  entryFunding = entryFunding
-    ? entryFunding.plus(perpetual.unitAccumulativeFunding.times(amount))
-    : null
+  entryValue = entryValue ? entryValue.plus(price.times(amount)) : null
+  entryFunding = entryFunding ? entryFunding.plus(perpetual.unitAccumulativeFunding.times(amount)) : null
   const positionAmount = oldAmount.plus(amount)
   return { cashBalance, entryValue, positionAmount, entryFunding }
 }
@@ -190,8 +183,8 @@ export function computeTradeWithPrice(
   a: AccountStorage,
   price: BigNumberish,
   amount: BigNumberish,
-  feeRate: BigNumberish,
-): { afterTrade: AccountDetails, tradeIsSafe: boolean } {
+  feeRate: BigNumberish
+): { afterTrade: AccountDetails; tradeIsSafe: boolean } {
   const normalizedPrice = normalizeBigNumberish(price)
   const normalizedAmount = normalizeBigNumberish(amount)
   const normalizedFeeRate = normalizeBigNumberish(feeRate)
@@ -215,7 +208,7 @@ export function computeTradeWithPrice(
   }
   return {
     afterTrade,
-    tradeIsSafe,
+    tradeIsSafe
   }
 }
 
@@ -223,7 +216,7 @@ export function computeAMMTrade(
   p: LiquidityPoolStorage,
   perpetualIndex: number,
   trader: AccountStorage,
-  amount: BigNumberish, // trader's perspective
+  amount: BigNumberish // trader's perspective
 ): AMMTradingResult {
   const normalizedAmount = normalizeBigNumberish(amount)
   if (normalizedAmount.isZero()) {
@@ -237,7 +230,9 @@ export function computeAMMTrade(
   // AMM
   const { deltaAMMAmount, tradingPrice } = computeAMMPrice(p, perpetualIndex, normalizedAmount)
   if (!deltaAMMAmount.negated().eq(normalizedAmount)) {
-    throw new BugError(`trading amount mismatched ${deltaAMMAmount.negated().toFixed()} != ${normalizedAmount.toFixed()}`)
+    throw new BugError(
+      `trading amount mismatched ${deltaAMMAmount.negated().toFixed()} != ${normalizedAmount.toFixed()}`
+    )
   }
 
   // fee
@@ -247,17 +242,22 @@ export function computeAMMTrade(
 
   // trader
   const traderResult = computeTradeWithPrice(
-    p, perpetualIndex, trader, tradingPrice, deltaAMMAmount.negated(),
-    perpetual.lpFeeRate.plus(p.vaultFeeRate).plus(perpetual.operatorFeeRate))
+    p,
+    perpetualIndex,
+    trader,
+    tradingPrice,
+    deltaAMMAmount.negated(),
+    perpetual.lpFeeRate.plus(p.vaultFeeRate).plus(perpetual.operatorFeeRate)
+  )
 
   // new AMM
   let fakeAMMAccount: AccountStorage = {
     cashBalance: p.poolCashBalance,
     positionAmount: perpetual.ammPositionAmount,
-    entryValue: null, entryFunding: null,
+    entryValue: null,
+    entryFunding: null
   }
-  const fakeAMMResult = computeTradeWithPrice(p, perpetualIndex, fakeAMMAccount,
-    tradingPrice, deltaAMMAmount, _0)
+  const fakeAMMResult = computeTradeWithPrice(p, perpetualIndex, fakeAMMAccount, tradingPrice, deltaAMMAmount, _0)
   fakeAMMAccount = fakeAMMResult.afterTrade.accountStorage
   fakeAMMAccount.cashBalance = fakeAMMAccount.cashBalance.plus(lpFee)
   const newPool: LiquidityPoolStorage = {
@@ -283,11 +283,11 @@ export function computeAMMTrade(
 export function computeAMMPrice(
   p: LiquidityPoolStorage,
   perpetualIndex: number,
-  amount: BigNumberish, // trader's perspective
+  amount: BigNumberish // trader's perspective
 ): {
-  deltaAMMAmount: BigNumber,
-  deltaAMMMargin: BigNumber,
-  tradingPrice: BigNumber,
+  deltaAMMAmount: BigNumber
+  deltaAMMMargin: BigNumber
+  tradingPrice: BigNumber
 } {
   const normalizedAmount = normalizeBigNumberish(amount)
   if (normalizedAmount.isZero()) {
