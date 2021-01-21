@@ -30,10 +30,29 @@ export async function erc20Symbol(erc20Contract: ethers.Contract): Promise<strin
   }
 }
 
+export async function erc20Name(erc20Contract: ethers.Contract): Promise<string> {
+  try {
+    return await erc20Contract.name()
+  } catch (err) {
+    if (err.code === 'CALL_EXCEPTION') {
+      return erc20NameBytes32(erc20Contract.address, erc20Contract.provider)
+    } else {
+      throw err
+    }
+  }
+}
+
 export async function erc20SymbolBytes32(erc20Address: string, provider: Provider): Promise<string> {
   getAddress(erc20Address)
   const erc20Contract = new ethers.Contract(erc20Address, ERC20_BYTES32_ABI, provider)
   const bytes32 = await erc20Contract.symbol()
+  return parseBytes32String(bytes32)
+}
+
+export async function erc20NameBytes32(erc20Address: string, provider: Provider): Promise<string> {
+  getAddress(erc20Address)
+  const erc20Contract = new ethers.Contract(erc20Address, ERC20_BYTES32_ABI, provider)
+  const bytes32 = await erc20Contract.name()
   return parseBytes32String(bytes32)
 }
 
