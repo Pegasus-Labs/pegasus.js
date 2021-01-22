@@ -78,7 +78,7 @@ export async function approveToken(
   spenderAddress: string,
   allowance: BigNumber,
   decimals: number,
-  overrides?: CallOverrides
+  overrides: CallOverrides = {}
 ): Promise<ethers.providers.TransactionResponse> {
   getAddress(spenderAddress)
   allowance = allowance.shiftedBy(decimals)
