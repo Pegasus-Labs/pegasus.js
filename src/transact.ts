@@ -7,6 +7,7 @@ import type { LiquidityPool } from './wrapper/LiquidityPool'
 import type { BrokerRelay } from './wrapper/BrokerRelay'
 import { Overrides, PayableOverrides } from '@ethersproject/contracts'
 import { getAddress } from '@ethersproject/address'
+import { Mining } from './wrapper/Mining'
 
 export async function perpetualTrade(
   liquidityPool: LiquidityPool,
@@ -196,4 +197,11 @@ export async function transferOperator(
 ): Promise<ethers.providers.TransactionResponse> {
   getAddress(targetAddress)
   return await liquidityPool.transferOperator(targetAddress, overrides)
+}
+
+export async function claimMiningReward(
+  mining: Mining,
+  overrides: Overrides = {},
+): Promise<ethers.providers.TransactionResponse> {
+  return await mining.getReward(overrides)
 }

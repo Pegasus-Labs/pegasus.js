@@ -21,3 +21,5 @@ export type { SymbolService, SymbolServiceInterface } from './wrapper/SymbolServ
 export { SymbolServiceFactory } from './wrapper/SymbolServiceFactory'
 export type { INonceGetter, INonceGetterInterface } from './wrapper/INonceGetter'
 export { INonceGetterFactory } from './wrapper/INonceGetterFactory'
+export type { Mining, MiningInterface } from './wrapper/Mining'
+export { MiningFactory } from './wrapper/MiningFactory'

@@ -15,6 +15,13 @@ import { Reader } from './wrapper/Reader'
 import { ReaderFactory } from './wrapper/ReaderFactory'
 import { SymbolService } from './wrapper/SymbolService'
 import { SymbolServiceFactory } from './wrapper/SymbolServiceFactory'
+import { Mining } from './wrapper/Mining'
+import { MiningFactory } from './wrapper/MiningFactory'
+
+export function getMiningContract(contractAddress: string, signerOrProvider: SignerOrProvider): Mining {
+  getAddress(contractAddress)
+  return MiningFactory.connect(contractAddress, signerOrProvider)
+}
 
 export function getLiquidityPoolContract(contractAddress: string, signerOrProvider: SignerOrProvider): LiquidityPool {
   getAddress(contractAddress)
@@ -244,4 +251,9 @@ export async function getPerpetualClearGasReward(
 export async function getClaimableOperatorFee(liquidityPool: LiquidityPool): Promise<BigNumber> {
   const operatorFee = await liquidityPool.getClaimableOperatorFee()
   return normalizeBigNumberish(operatorFee).shiftedBy(-DECIMALS)
+}
+
+export async function getClaimableMiningToken(mining: Mining, account: string): Promise<BigNumber> {
+  const claimableMiningTokenAmount = await mining.earned(account)
+  return normalizeBigNumberish(claimableMiningTokenAmount).shiftedBy(-DECIMALS)
 }
