@@ -299,3 +299,20 @@ export function computeAMMPrice(
   const tradingPrice = deltaAMMMargin.div(deltaAMMAmount).abs()
   return { deltaAMMAmount, deltaAMMMargin, tradingPrice }
 }
+
+// > 0 if more collateral required
+export function computeMarginCost(
+  afterTrade: AccountDetails,
+  targetLeverage: BigNumberish,
+): BigNumber {
+  const normalizedLeverage = normalizeBigNumberish(targetLeverage)
+  if (!normalizedLeverage.isPositive()) {
+    throw Error(`bad leverage ${targetLeverage.toString()}`)
+  }
+  let marginCost = _0
+  if (!afterTrade.accountStorage.positionAmount.isZero()) {
+    const positionMargin = afterTrade.accountComputed.positionValue.div(normalizedLeverage)
+    marginCost = positionMargin.minus(afterTrade.accountComputed.marginBalance)
+  }
+  return marginCost
+}

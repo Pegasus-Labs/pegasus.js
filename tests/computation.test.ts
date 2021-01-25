@@ -6,7 +6,8 @@ import {
   computeFee,
   computeTradeWithPrice,
   computeAMMPrice,
-  computeAMMTrade
+  computeAMMTrade,
+  computeMarginCost
 } from '../src/computation'
 import { _0, _1 } from '../src/constants'
 import {
@@ -386,6 +387,7 @@ describe('computeTradeWithPrice', function() {
       accountDetails: AccountDetails
       price: BigNumberish
       amount: BigNumberish
+      targetLeverage: BigNumberish
       feeRate: BigNumberish
     }
     expectedOutput: {
@@ -396,6 +398,8 @@ describe('computeTradeWithPrice', function() {
         entryValue: BigNumberish
         entryFunding: BigNumberish
       }
+      tradeIsSafe: boolean
+      marginCost: BigNumberish
       fee: BigNumberish
     }
   }
@@ -411,7 +415,8 @@ describe('computeTradeWithPrice', function() {
         accountDetails: accountDetails1,
         price: 2000,
         amount: 1,
-        feeRate: 0.01
+        targetLeverage: 2,
+        feeRate: 0.01,
       },
       expectedOutput: {
         account: {
@@ -427,6 +432,8 @@ describe('computeTradeWithPrice', function() {
           entryValue: '4300.23',
           entryFunding: '8.9959375'
         },
+        tradeIsSafe: true,
+        marginCost: '-17148.32634375',
         fee: 20
       }
     },
@@ -436,7 +443,8 @@ describe('computeTradeWithPrice', function() {
         accountDetails: accountDetails1,
         price: 7000,
         amount: 5,
-        feeRate: 0.01
+        targetLeverage: 2,
+        feeRate: 0.01,
       },
       expectedOutput: {
         account: {
@@ -452,6 +460,9 @@ describe('computeTradeWithPrice', function() {
           entryValue: '37300.23',
           entryFunding: '48.6196875'
         },
+        tradeIsSafe: true,
+        /*  6965 * 7.3 / 2 -23170.44634375 */
+        marginCost: '2251.67365625',
         fee: 350
       }
     },
@@ -461,7 +472,8 @@ describe('computeTradeWithPrice', function() {
         accountDetails: accountDetails1,
         price: 10000,
         amount: 10,
-        feeRate: 0.01
+        targetLeverage: 10,
+        feeRate: 0.01,
       },
       expectedOutput: {
         account: {
@@ -477,6 +489,8 @@ describe('computeTradeWithPrice', function() {
           entryValue: '102300.23',
           entryFunding: '98.149375'
         },
+        tradeIsSafe: false,
+        marginCost: '16221.37365625',
         fee: 1000
       }
     },
@@ -486,7 +500,8 @@ describe('computeTradeWithPrice', function() {
         accountDetails: accountDetails1,
         price: 2000,
         amount: -1, // sell
-        feeRate: 0.01
+        targetLeverage: 2,
+        feeRate: 0.01,
       },
       expectedOutput: {
         account: {
@@ -504,6 +519,8 @@ describe('computeTradeWithPrice', function() {
           */
           marginBalance: '18710.57634375'
         },
+        tradeIsSafe: true,
+        marginCost: '-14183.32634375',
         fee: 20
       }
     },
@@ -513,6 +530,7 @@ describe('computeTradeWithPrice', function() {
         accountDetails: accountDetails1,
         price: 2000,
         amount: -2.3, // sell
+        targetLeverage: 1,
         feeRate: 0.01
       },
       expectedOutput: {
@@ -524,6 +542,8 @@ describe('computeTradeWithPrice', function() {
           entryFunding: 0,
           marginBalance: '12230.07634375'
         },
+        tradeIsSafe: true,
+        marginCost: 0,
         fee: 46
       }
     },
@@ -533,6 +553,7 @@ describe('computeTradeWithPrice', function() {
         accountDetails: accountDetails1,
         price: 2000,
         amount: -3.3, // sell
+        targetLeverage: 1,
         feeRate: 0.01
       },
       expectedOutput: {
@@ -549,6 +570,8 @@ describe('computeTradeWithPrice', function() {
           */
           marginBalance: '7245.076343750000000000002'
         },
+        tradeIsSafe: true,
+        marginCost: '-280.076343750000000000002',
         fee: 66
       }
     },
@@ -558,6 +581,7 @@ describe('computeTradeWithPrice', function() {
         accountDetails: accountDetails4,
         price: 7000,
         amount: 2,
+        targetLeverage: 1,
         feeRate: 0.01
       },
       expectedOutput: {
@@ -572,6 +596,8 @@ describe('computeTradeWithPrice', function() {
           */
           marginBalance: '9790'
         },
+        tradeIsSafe: true,
+        marginCost: 4140,
         fee: 140
       }
     },
@@ -581,6 +607,7 @@ describe('computeTradeWithPrice', function() {
         accountDetails: accountDetails4,
         price: 7000,
         amount: -2, // sell
+        targetLeverage: 1,
         feeRate: 0.01
       },
       expectedOutput: {
@@ -596,6 +623,8 @@ describe('computeTradeWithPrice', function() {
           */
           marginBalance: '9930'
         },
+        tradeIsSafe: true,
+        marginCost: '4000',
         fee: 140
       }
     },
@@ -605,6 +634,7 @@ describe('computeTradeWithPrice', function() {
         accountDetails: accountDetails3,
         price: 2000,
         amount: 1,
+        targetLeverage: 2,
         feeRate: 0.01
       },
       expectedOutput: {
@@ -623,6 +653,8 @@ describe('computeTradeWithPrice', function() {
           */
           marginBalance: '5249.42365625'
         },
+        tradeIsSafe: true,
+        marginCost: '-722.17365625',
         fee: 20
       }
     },
@@ -632,6 +664,7 @@ describe('computeTradeWithPrice', function() {
         accountDetails: accountDetails3,
         price: 2000,
         amount: 2.3,
+        targetLeverage: 2,
         feeRate: 0.01
       },
       expectedOutput: {
@@ -643,6 +676,8 @@ describe('computeTradeWithPrice', function() {
           entryFunding: 0,
           marginBalance: '11677.92365625'
         },
+        tradeIsSafe: true,
+        marginCost: 0,
         fee: 46
       }
     },
@@ -652,6 +687,7 @@ describe('computeTradeWithPrice', function() {
         accountDetails: accountDetails3,
         price: 2000,
         amount: 3.3,
+        targetLeverage: 0.1,
         feeRate: 0.01
       },
       expectedOutput: {
@@ -666,6 +702,8 @@ describe('computeTradeWithPrice', function() {
           // 11657.92365625 + (6965-2000) * 1
           marginBalance: '16622.92365625'
         },
+        tradeIsSafe: true,
+        marginCost: '53027.07634375',
         fee: 66
       }
     }
@@ -677,7 +715,7 @@ describe('computeTradeWithPrice', function() {
     const expectedOutput = element.expectedOutput
 
     it(name, function() {
-      const { afterTrade } = computeTradeWithPrice(
+      const result = computeTradeWithPrice(
         poolStorage1,
         TEST_MARKET_INDEX0,
         input.accountDetails.accountStorage,
@@ -685,20 +723,26 @@ describe('computeTradeWithPrice', function() {
         input.amount,
         input.feeRate
       )
-      expect(afterTrade.accountStorage.cashBalance).toApproximate(
+      expect(result.afterTrade.accountStorage.cashBalance).toApproximate(
         normalizeBigNumberish(expectedOutput.account.cashBalance)
       )
-      expect(afterTrade.accountStorage.positionAmount).toBeBigNumber(
+      expect(result.afterTrade.accountStorage.positionAmount).toBeBigNumber(
         normalizeBigNumberish(expectedOutput.account.positionAmount)
       )
-      expect(afterTrade.accountStorage.entryValue).toBeBigNumber(
+      expect(result.afterTrade.accountStorage.entryValue).toBeBigNumber(
         normalizeBigNumberish(expectedOutput.account.entryValue)
       )
-      expect(afterTrade.accountStorage.entryFunding).toApproximate(
+      expect(result.afterTrade.accountStorage.entryFunding).toApproximate(
         normalizeBigNumberish(expectedOutput.account.entryFunding)
       )
-      expect(afterTrade.accountComputed.marginBalance).toApproximate(
+      expect(result.afterTrade.accountComputed.marginBalance).toApproximate(
         normalizeBigNumberish(expectedOutput.account.marginBalance)
+      )
+      expect(result.tradeIsSafe).toEqual(expectedOutput.tradeIsSafe)
+      
+      const marginCost = computeMarginCost(result.afterTrade, input.targetLeverage)
+      expect(marginCost).toApproximate(
+        normalizeBigNumberish(expectedOutput.marginCost)
       )
     })
   })
