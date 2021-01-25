@@ -772,10 +772,33 @@ describe('computeBestAskBidPrice', function() {
     }
   ]
 
+  const failCases: Array<ComputeAccountCase> = [
+    {
+      name: 'open unsafe -10',
+      amm: poolStorage3,
+      isAMMBuy: false,
+      price: _0, // unused
+    },
+    {
+      name: 'open unsafe 10',
+      amm: poolStorage6,
+      isAMMBuy: true,
+      price: _0, // unused
+    },
+  ]
+
   successCases.forEach(element => {
     it(element.name, function() {
       const price = computeBestAskBidPrice(element.amm, TEST_MARKET_INDEX0, element.isAMMBuy)
       expect(price).toApproximate(normalizeBigNumberish(element.price))
+    })
+  })
+
+  failCases.forEach(element => {
+    it(element.name, async () => {
+      expect((): void => {
+        computeBestAskBidPrice(element.amm, TEST_MARKET_INDEX0, element.isAMMBuy)
+      }).toThrow(InsufficientLiquidityError)
     })
   })
 })
