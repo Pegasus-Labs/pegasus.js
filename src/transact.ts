@@ -205,3 +205,25 @@ export async function claimMiningReward(
 ): Promise<ethers.providers.TransactionResponse> {
   return await mining.getReward(overrides)
 }
+
+export async function stakeMining(
+  mining: Mining,
+  lpTokenAmount: BigNumberish, // should be a decimal number (ie: 1.234)
+  overrides: Overrides = {},
+): Promise<ethers.providers.TransactionResponse> {
+  const largeAmount = normalizeBigNumberish(lpTokenAmount)
+    .shiftedBy(DECIMALS)
+    .dp(0, BigNumber.ROUND_DOWN)
+  return await mining.stake(largeAmount.toFixed(), overrides)
+}
+
+export async function unstakeMining(
+  mining: Mining,
+  lpTokenAmount: BigNumberish, // should be a decimal number (ie: 1.234)
+  overrides: Overrides = {},
+): Promise<ethers.providers.TransactionResponse> {
+  const largeAmount = normalizeBigNumberish(lpTokenAmount)
+    .shiftedBy(DECIMALS)
+    .dp(0, BigNumber.ROUND_DOWN)
+  return await mining.withdraw(largeAmount.toFixed(), overrides)
+}
