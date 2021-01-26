@@ -16,7 +16,7 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
-    filename: 'mai2.js',
+    filename: 'mai3.js',
     path: path.resolve(__dirname, 'dist'),
   },
 }
