@@ -1,11 +1,7 @@
 import BigNumber from 'bignumber.js'
-import ERC20_ABI_JSON from './abi/ERC20.json'
-import ERC20_BYTES32_ABI_JSON from './abi/ERC20Bytes32.json'
 
 export const DECIMALS = 18
 export const FUNDING_TIME = 28800
-export const ERC20_ABI: string = JSON.stringify(ERC20_ABI_JSON)
-export const ERC20_BYTES32_ABI: string = JSON.stringify(ERC20_BYTES32_ABI_JSON)
 
 export const _0: BigNumber = new BigNumber('0')
 export const _1: BigNumber = new BigNumber('1')

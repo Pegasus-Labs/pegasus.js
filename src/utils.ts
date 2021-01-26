@@ -1,15 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { _MAX_UINT256, _0, _1, _2, _3, DECIMALS } from './constants'
-import { BigNumberish, SignerOrProvider, InvalidArgumentError } from './types'
+import { BigNumberish, InvalidArgumentError } from './types'
 import { ethers } from 'ethers'
-
-export async function getContract(
-  address: string,
-  ABI: string,
-  signerOrProvider: SignerOrProvider
-): Promise<ethers.Contract> {
-  return new ethers.Contract(address, ABI, signerOrProvider)
-}
 
 export function normalizeBigNumberish(bigNumberish: BigNumberish): BigNumber {
   const bigNumber: BigNumber = bigNumberish instanceof BigNumber ? bigNumberish : new BigNumber(bigNumberish.toString())

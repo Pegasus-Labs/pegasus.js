@@ -5,20 +5,23 @@ import { CallOverrides } from '@ethersproject/contracts'
 import { Provider } from '@ethersproject/providers'
 import { parseBytes32String } from '@ethersproject/strings'
 import { SignerOrProvider } from './types'
-import { ERC20_ABI, ERC20_BYTES32_ABI } from './constants'
+import { IERC20 } from './abi/IERC20'
+import { IERC20Factory } from './abi/IERC20Factory'
+import { IERC20Bytes32 } from './abi/IERC20Bytes32'
+import { IERC20Bytes32Factory } from './abi/IERC20Bytes32Factory'
 import { normalizeBigNumberish } from './utils'
 
-export function getERC20Contract(erc20Address: string, signerOrProvider: SignerOrProvider): ethers.Contract {
+export function getERC20Contract(erc20Address: string, signerOrProvider: SignerOrProvider): IERC20 {
   getAddress(erc20Address)
-  return new ethers.Contract(erc20Address, ERC20_ABI, signerOrProvider)
+  return IERC20Factory.connect(erc20Address, signerOrProvider)
 }
 
-export function getERC20Bytes32Contract(erc20Address: string, signerOrProvider: SignerOrProvider): ethers.Contract {
+export function getERC20Bytes32Contract(erc20Address: string, signerOrProvider: SignerOrProvider): IERC20Bytes32 {
   getAddress(erc20Address)
-  return new ethers.Contract(erc20Address, ERC20_BYTES32_ABI, signerOrProvider)
+  return IERC20Bytes32Factory.connect(erc20Address, signerOrProvider)
 }
 
-export async function erc20Symbol(erc20Contract: ethers.Contract): Promise<string> {
+export async function erc20Symbol(erc20Contract: IERC20): Promise<string> {
   try {
     return await erc20Contract.symbol()
   } catch (err) {
@@ -30,7 +33,7 @@ export async function erc20Symbol(erc20Contract: ethers.Contract): Promise<strin
   }
 }
 
-export async function erc20Name(erc20Contract: ethers.Contract): Promise<string> {
+export async function erc20Name(erc20Contract: IERC20): Promise<string> {
   try {
     return await erc20Contract.name()
   } catch (err) {
@@ -44,25 +47,25 @@ export async function erc20Name(erc20Contract: ethers.Contract): Promise<string>
 
 export async function erc20SymbolBytes32(erc20Address: string, provider: Provider): Promise<string> {
   getAddress(erc20Address)
-  const erc20Contract = new ethers.Contract(erc20Address, ERC20_BYTES32_ABI, provider)
+  const erc20Contract = getERC20Bytes32Contract(erc20Address, provider)
   const bytes32 = await erc20Contract.symbol()
   return parseBytes32String(bytes32)
 }
 
 export async function erc20NameBytes32(erc20Address: string, provider: Provider): Promise<string> {
   getAddress(erc20Address)
-  const erc20Contract = new ethers.Contract(erc20Address, ERC20_BYTES32_ABI, provider)
+  const erc20Contract = getERC20Bytes32Contract(erc20Address, provider)
   const bytes32 = await erc20Contract.name()
   return parseBytes32String(bytes32)
 }
 
-export async function erc20Decimals(erc20Contract: ethers.Contract): Promise<number> {
+export async function erc20Decimals(erc20Contract: IERC20): Promise<number> {
   const decimals = await erc20Contract.decimals()
-  return decimals.toNumber()
+  return decimals
 }
 
 export async function allowance(
-  erc20Contract: ethers.Contract,
+  erc20Contract: IERC20,
   accountAddress: string,
   perpetualAddress: string,
   decimals: number
@@ -74,7 +77,7 @@ export async function allowance(
 }
 
 export async function approveToken(
-  erc20Contract: ethers.Contract,
+  erc20Contract: IERC20,
   spenderAddress: string,
   allowance: BigNumber,
   decimals: number,
@@ -86,7 +89,7 @@ export async function approveToken(
 }
 
 export async function balanceOf(
-  erc20Contract: ethers.Contract,
+  erc20Contract: IERC20,
   accountAddress: string,
   decimals: number
 ): Promise<BigNumber> {
@@ -95,7 +98,7 @@ export async function balanceOf(
   return normalizeBigNumberish(balance).shiftedBy(-decimals)
 }
 
-export async function totalSupply(erc20Contract: ethers.Contract, decimals: number): Promise<BigNumber> {
+export async function totalSupply(erc20Contract: IERC20, decimals: number): Promise<BigNumber> {
   const totalSupply = await erc20Contract.totalSupply()
   return normalizeBigNumberish(totalSupply).shiftedBy(-decimals)
 }

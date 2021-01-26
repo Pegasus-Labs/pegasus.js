@@ -3,11 +3,11 @@ import { DECIMALS } from './constants'
 import { BigNumberish, TradeFlag } from './types'
 import { normalizeBigNumberish } from './utils'
 import BigNumber from 'bignumber.js'
-import type { LiquidityPool } from './wrapper/LiquidityPool'
-import type { BrokerRelay } from './wrapper/BrokerRelay'
+import type { LiquidityPool } from './abi/LiquidityPool'
+import type { BrokerRelay } from './abi/BrokerRelay'
 import { Overrides, PayableOverrides } from '@ethersproject/contracts'
 import { getAddress } from '@ethersproject/address'
-import { Mining } from './wrapper/Mining'
+import { Mining } from './abi/Mining'
 
 export async function perpetualTrade(
   liquidityPool: LiquidityPool,
