@@ -17,6 +17,8 @@ import { SymbolService } from './abi/SymbolService'
 import { SymbolServiceFactory } from './abi/SymbolServiceFactory'
 import { Mining } from './abi/Mining'
 import { MiningFactory } from './abi/MiningFactory'
+import { LpGovernor } from './abi/LpGovernor'
+import { LpGovernorFactory } from './abi/LpGovernorFactory'
 
 export function getMiningContract(contractAddress: string, signerOrProvider: SignerOrProvider): Mining {
   getAddress(contractAddress)
@@ -41,6 +43,11 @@ export function getPoolCreatorContract(contractAddress: string, signerOrProvider
 export function getSymbolServiceContract(contractAddress: string, signerOrProvider: SignerOrProvider): SymbolService {
   getAddress(contractAddress)
   return SymbolServiceFactory.connect(contractAddress, signerOrProvider)
+}
+
+export function getLpGovernorContract(contractAddress: string, signerOrProvider: SignerOrProvider): LpGovernor {
+  getAddress(contractAddress)
+  return LpGovernorFactory.connect(contractAddress, signerOrProvider)
 }
 
 export async function getReaderContract(signerOrProvider: SignerOrProvider, contractAddress?: string): Promise<Reader> {
