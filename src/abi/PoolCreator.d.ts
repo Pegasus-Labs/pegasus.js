@@ -44,6 +44,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "isVersionCompatible(address,address)": FunctionFragment;
     "isVersionValid(address)": FunctionFragment;
     "listActiveLiquidityPoolsOf(address,uint256,uint256)": FunctionFragment;
+    "listAvailableVersions(uint256,uint256)": FunctionFragment;
     "listLiquidityPoolOwnedBy(address,uint256,uint256)": FunctionFragment;
     "listLiquidityPools(uint256,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -135,6 +136,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "listActiveLiquidityPoolsOf",
     values: [string, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "listAvailableVersions",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "listLiquidityPoolOwnedBy",
@@ -240,6 +245,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "listActiveLiquidityPoolsOf",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "listAvailableVersions",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -647,6 +656,24 @@ export class PoolCreator extends Contract {
       }[];
     }>;
 
+    listAvailableVersions(
+      start: BigNumberish,
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      result: string[];
+      0: string[];
+    }>;
+
+    "listAvailableVersions(uint256,uint256)"(
+      start: BigNumberish,
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      result: string[];
+      0: string[];
+    }>;
+
     listLiquidityPoolOwnedBy(
       operator: string,
       begin: BigNumberish,
@@ -994,6 +1021,18 @@ export class PoolCreator extends Contract {
     }[]
   >;
 
+  listAvailableVersions(
+    start: BigNumberish,
+    count: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
+  "listAvailableVersions(uint256,uint256)"(
+    start: BigNumberish,
+    count: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
   listLiquidityPoolOwnedBy(
     operator: string,
     begin: BigNumberish,
@@ -1320,6 +1359,18 @@ export class PoolCreator extends Contract {
         1: BigNumber;
       }[]
     >;
+
+    listAvailableVersions(
+      start: BigNumberish,
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
+    "listAvailableVersions(uint256,uint256)"(
+      start: BigNumberish,
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
 
     listLiquidityPoolOwnedBy(
       operator: string,
@@ -1650,6 +1701,18 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    listAvailableVersions(
+      start: BigNumberish,
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "listAvailableVersions(uint256,uint256)"(
+      start: BigNumberish,
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     listLiquidityPoolOwnedBy(
       operator: string,
       begin: BigNumberish,
@@ -1957,6 +2020,18 @@ export class PoolCreator extends Contract {
       trader: string,
       begin: BigNumberish,
       end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    listAvailableVersions(
+      start: BigNumberish,
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "listAvailableVersions(uint256,uint256)"(
+      start: BigNumberish,
+      count: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

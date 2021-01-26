@@ -24,6 +24,7 @@ interface IOracleInterface extends ethers.utils.Interface {
   functions: {
     "collateral()": FunctionFragment;
     "isMarketClosed()": FunctionFragment;
+    "isTerminated()": FunctionFragment;
     "priceTWAPLong()": FunctionFragment;
     "priceTWAPShort()": FunctionFragment;
     "underlyingAsset()": FunctionFragment;
@@ -35,6 +36,10 @@ interface IOracleInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "isMarketClosed",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isTerminated",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -53,6 +58,10 @@ interface IOracleInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "collateral", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isMarketClosed",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isTerminated",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -97,9 +106,29 @@ export class IOracle extends Contract {
       0: string;
     }>;
 
-    isMarketClosed(overrides?: Overrides): Promise<ContractTransaction>;
+    isMarketClosed(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
 
-    "isMarketClosed()"(overrides?: Overrides): Promise<ContractTransaction>;
+    "isMarketClosed()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    isTerminated(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "isTerminated()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
 
     priceTWAPLong(overrides?: Overrides): Promise<ContractTransaction>;
 
@@ -126,9 +155,13 @@ export class IOracle extends Contract {
 
   "collateral()"(overrides?: CallOverrides): Promise<string>;
 
-  isMarketClosed(overrides?: Overrides): Promise<ContractTransaction>;
+  isMarketClosed(overrides?: CallOverrides): Promise<boolean>;
 
-  "isMarketClosed()"(overrides?: Overrides): Promise<ContractTransaction>;
+  "isMarketClosed()"(overrides?: CallOverrides): Promise<boolean>;
+
+  isTerminated(overrides?: CallOverrides): Promise<boolean>;
+
+  "isTerminated()"(overrides?: CallOverrides): Promise<boolean>;
 
   priceTWAPLong(overrides?: Overrides): Promise<ContractTransaction>;
 
@@ -150,6 +183,10 @@ export class IOracle extends Contract {
     isMarketClosed(overrides?: CallOverrides): Promise<boolean>;
 
     "isMarketClosed()"(overrides?: CallOverrides): Promise<boolean>;
+
+    isTerminated(overrides?: CallOverrides): Promise<boolean>;
+
+    "isTerminated()"(overrides?: CallOverrides): Promise<boolean>;
 
     priceTWAPLong(
       overrides?: CallOverrides
@@ -199,9 +236,13 @@ export class IOracle extends Contract {
 
     "collateral()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    isMarketClosed(overrides?: Overrides): Promise<BigNumber>;
+    isMarketClosed(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "isMarketClosed()"(overrides?: Overrides): Promise<BigNumber>;
+    "isMarketClosed()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    isTerminated(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "isTerminated()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     priceTWAPLong(overrides?: Overrides): Promise<BigNumber>;
 
@@ -221,9 +262,15 @@ export class IOracle extends Contract {
 
     "collateral()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    isMarketClosed(overrides?: Overrides): Promise<PopulatedTransaction>;
+    isMarketClosed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "isMarketClosed()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+    "isMarketClosed()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isTerminated(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "isTerminated()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     priceTWAPLong(overrides?: Overrides): Promise<PopulatedTransaction>;
 

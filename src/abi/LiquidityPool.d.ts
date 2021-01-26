@@ -32,7 +32,8 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "createPerpetual(address,int256[9],int256[6],int256[6],int256[6])": FunctionFragment;
     "deposit(uint256,address,int256)": FunctionFragment;
     "donateInsuranceFund(uint256,int256)": FunctionFragment;
-    "forceToSetEmergencyState(uint256)": FunctionFragment;
+    "forceToSetEmergencyState(uint256,int256)": FunctionFragment;
+    "forceToSyncState()": FunctionFragment;
     "getActiveAccountCount(uint256)": FunctionFragment;
     "getClaimableFee(address)": FunctionFragment;
     "getClaimableOperatorFee()": FunctionFragment;
@@ -51,6 +52,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "runLiquidityPool()": FunctionFragment;
     "setEmergencyState(uint256)": FunctionFragment;
     "setLiquidityPoolParameter(bytes32,int256)": FunctionFragment;
+    "setOperator(address)": FunctionFragment;
     "setPerpetualBaseParameter(uint256,bytes32,int256)": FunctionFragment;
     "setPerpetualRiskParameter(uint256,bytes32,int256,int256,int256)": FunctionFragment;
     "settle(uint256,address)": FunctionFragment;
@@ -132,7 +134,11 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "forceToSetEmergencyState",
-    values: [BigNumberish]
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "forceToSyncState",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getActiveAccountCount",
@@ -206,6 +212,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     functionFragment: "setLiquidityPoolParameter",
     values: [BytesLike, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "setOperator", values: [string]): string;
   encodeFunctionData(
     functionFragment: "setPerpetualBaseParameter",
     values: [BigNumberish, BytesLike, BigNumberish]
@@ -272,6 +279,10 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "forceToSetEmergencyState",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "forceToSyncState",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -344,6 +355,10 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setOperator",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setPerpetualBaseParameter",
     data: BytesLike
   ): Result;
@@ -372,7 +387,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "Deposit(uint256,address,int256)": EventFragment;
     "DonateInsuranceFund(uint256,int256)": EventFragment;
     "IncreaseFee(address,int256)": EventFragment;
-    "Liquidate(uint256,address,address,int256,int256,int256)": EventFragment;
+    "Liquidate(uint256,address,address,int256,int256,int256,int256)": EventFragment;
     "RemoveLiquidity(address,int256,int256)": EventFragment;
     "RevokeOperator()": EventFragment;
     "RunLiquidityPool()": EventFragment;
@@ -383,12 +398,13 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "SetPerpetualBaseParameter(uint256,bytes32,int256)": EventFragment;
     "SetPerpetualRiskParameter(uint256,bytes32,int256,int256,int256)": EventFragment;
     "Settle(uint256,address,int256)": EventFragment;
-    "Trade(uint256,address,int256,int256,int256)": EventFragment;
+    "Trade(uint256,address,int256,int256,int256,int256)": EventFragment;
     "TransferOperatorTo(address)": EventFragment;
     "UpdatePerpetualRiskParameter(uint256,bytes32,int256)": EventFragment;
     "UpdatePoolMargin(int256)": EventFragment;
     "UpdateUnitAccumulativeFunding(uint256,int256)": EventFragment;
     "Withdraw(uint256,address,int256)": EventFragment;
+    "transferExcessInsuranceFundToLP(uint256,int256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "AddLiquidity"): EventFragment;
@@ -420,6 +436,9 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     nameOrSignatureOrTopic: "UpdateUnitAccumulativeFunding"
   ): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Withdraw"): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: "transferExcessInsuranceFundToLP"
+  ): EventFragment;
 }
 
 export class LiquidityPool extends Contract {
@@ -596,13 +615,19 @@ export class LiquidityPool extends Contract {
 
     forceToSetEmergencyState(
       perpetualIndex: BigNumberish,
+      settlementPrice: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "forceToSetEmergencyState(uint256)"(
+    "forceToSetEmergencyState(uint256,int256)"(
       perpetualIndex: BigNumberish,
+      settlementPrice: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    forceToSyncState(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "forceToSyncState()"(overrides?: Overrides): Promise<ContractTransaction>;
 
     getActiveAccountCount(
       perpetualIndex: BigNumberish,
@@ -722,13 +747,167 @@ export class LiquidityPool extends Contract {
 
     getPerpetualInfo(
       perpetualIndex: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
+      overrides?: CallOverrides
+    ): Promise<{
+      state: number;
+      oracle: string;
+      nums: [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber
+      ];
+      0: number;
+      1: string;
+      2: [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber
+      ];
+    }>;
 
     "getPerpetualInfo(uint256)"(
       perpetualIndex: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
+      overrides?: CallOverrides
+    ): Promise<{
+      state: number;
+      oracle: string;
+      nums: [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber
+      ];
+      0: number;
+      1: string;
+      2: [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber
+      ];
+    }>;
 
     getPoolMargin(
       overrides?: CallOverrides
@@ -873,6 +1052,16 @@ export class LiquidityPool extends Contract {
     "setLiquidityPoolParameter(bytes32,int256)"(
       key: BytesLike,
       newValue: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    setOperator(
+      newOperator: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setOperator(address)"(
+      newOperator: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1141,13 +1330,19 @@ export class LiquidityPool extends Contract {
 
   forceToSetEmergencyState(
     perpetualIndex: BigNumberish,
+    settlementPrice: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "forceToSetEmergencyState(uint256)"(
+  "forceToSetEmergencyState(uint256,int256)"(
     perpetualIndex: BigNumberish,
+    settlementPrice: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  forceToSyncState(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "forceToSyncState()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   getActiveAccountCount(
     perpetualIndex: BigNumberish,
@@ -1249,13 +1444,167 @@ export class LiquidityPool extends Contract {
 
   getPerpetualInfo(
     perpetualIndex: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+    overrides?: CallOverrides
+  ): Promise<{
+    state: number;
+    oracle: string;
+    nums: [
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber
+    ];
+    0: number;
+    1: string;
+    2: [
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber
+    ];
+  }>;
 
   "getPerpetualInfo(uint256)"(
     perpetualIndex: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+    overrides?: CallOverrides
+  ): Promise<{
+    state: number;
+    oracle: string;
+    nums: [
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber
+    ];
+    0: number;
+    1: string;
+    2: [
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber
+    ];
+  }>;
 
   getPoolMargin(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1384,6 +1733,16 @@ export class LiquidityPool extends Contract {
   "setLiquidityPoolParameter(bytes32,int256)"(
     key: BytesLike,
     newValue: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  setOperator(
+    newOperator: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setOperator(address)"(
+    newOperator: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1652,13 +2011,19 @@ export class LiquidityPool extends Contract {
 
     forceToSetEmergencyState(
       perpetualIndex: BigNumberish,
+      settlementPrice: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "forceToSetEmergencyState(uint256)"(
+    "forceToSetEmergencyState(uint256,int256)"(
       perpetualIndex: BigNumberish,
+      settlementPrice: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    forceToSyncState(overrides?: CallOverrides): Promise<void>;
+
+    "forceToSyncState()"(overrides?: CallOverrides): Promise<void>;
 
     getActiveAccountCount(
       perpetualIndex: BigNumberish,
@@ -2086,6 +2451,13 @@ export class LiquidityPool extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setOperator(newOperator: string, overrides?: CallOverrides): Promise<void>;
+
+    "setOperator(address)"(
+      newOperator: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setPerpetualBaseParameter(
       perpetualIndex: BigNumberish,
       key: BytesLike,
@@ -2231,7 +2603,8 @@ export class LiquidityPool extends Contract {
       trader: string | null,
       amount: null,
       price: null,
-      penalty: null
+      penalty: null,
+      penaltyToLP: null
     ): EventFilter;
 
     RemoveLiquidity(
@@ -2281,7 +2654,8 @@ export class LiquidityPool extends Contract {
       trader: string | null,
       position: null,
       price: null,
-      fee: null
+      fee: null,
+      lpFee: null
     ): EventFilter;
 
     TransferOperatorTo(newOperator: string | null): EventFilter;
@@ -2302,6 +2676,11 @@ export class LiquidityPool extends Contract {
     Withdraw(
       perpetualIndex: null,
       trader: string | null,
+      amount: null
+    ): EventFilter;
+
+    transferExcessInsuranceFundToLP(
+      perpetualIndex: null,
       amount: null
     ): EventFilter;
   };
@@ -2467,13 +2846,19 @@ export class LiquidityPool extends Contract {
 
     forceToSetEmergencyState(
       perpetualIndex: BigNumberish,
+      settlementPrice: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "forceToSetEmergencyState(uint256)"(
+    "forceToSetEmergencyState(uint256,int256)"(
       perpetualIndex: BigNumberish,
+      settlementPrice: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    forceToSyncState(overrides?: Overrides): Promise<BigNumber>;
+
+    "forceToSyncState()"(overrides?: Overrides): Promise<BigNumber>;
 
     getActiveAccountCount(
       perpetualIndex: BigNumberish,
@@ -2527,12 +2912,12 @@ export class LiquidityPool extends Contract {
 
     getPerpetualInfo(
       perpetualIndex: BigNumberish,
-      overrides?: Overrides
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     "getPerpetualInfo(uint256)"(
       perpetualIndex: BigNumberish,
-      overrides?: Overrides
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getPoolMargin(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2652,6 +3037,13 @@ export class LiquidityPool extends Contract {
     "setLiquidityPoolParameter(bytes32,int256)"(
       key: BytesLike,
       newValue: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    setOperator(newOperator: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "setOperator(address)"(
+      newOperator: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -2921,13 +3313,19 @@ export class LiquidityPool extends Contract {
 
     forceToSetEmergencyState(
       perpetualIndex: BigNumberish,
+      settlementPrice: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "forceToSetEmergencyState(uint256)"(
+    "forceToSetEmergencyState(uint256,int256)"(
       perpetualIndex: BigNumberish,
+      settlementPrice: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
+
+    forceToSyncState(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "forceToSyncState()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     getActiveAccountCount(
       perpetualIndex: BigNumberish,
@@ -2989,12 +3387,12 @@ export class LiquidityPool extends Contract {
 
     getPerpetualInfo(
       perpetualIndex: BigNumberish,
-      overrides?: Overrides
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     "getPerpetualInfo(uint256)"(
       perpetualIndex: BigNumberish,
-      overrides?: Overrides
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getPoolMargin(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -3114,6 +3512,16 @@ export class LiquidityPool extends Contract {
     "setLiquidityPoolParameter(bytes32,int256)"(
       key: BytesLike,
       newValue: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    setOperator(
+      newOperator: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setOperator(address)"(
+      newOperator: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
