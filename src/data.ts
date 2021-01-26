@@ -253,7 +253,7 @@ export async function getClaimableOperatorFee(liquidityPool: LiquidityPool): Pro
   return normalizeBigNumberish(operatorFee).shiftedBy(-DECIMALS)
 }
 
-export async function getClaimableMiningToken(mining: Mining, account: string): Promise<BigNumber> {
-  const claimableMiningTokenAmount = await mining.earned(account)
-  return normalizeBigNumberish(claimableMiningTokenAmount).shiftedBy(-DECIMALS)
+export async function getClaimableMiningReward(mining: Mining, account: string): Promise<BigNumber> {
+  const claimableMiningRewardAmount = await mining.earned(account)
+  return normalizeBigNumberish(claimableMiningRewardAmount).shiftedBy(-DECIMALS)
 }
