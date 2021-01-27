@@ -40,6 +40,10 @@ export function splitAmount(positionAmount: BigNumber, amount: BigNumber): { clo
 export function mostSignificantBit(x: BigNumber): number {
   let t: BigNumber
   let r = 0
+  if (x.gt('57896044618658097711785492504343953926634992332820282019728792003956564819967')) {
+    // 2**255 - 1
+    throw new InvalidArgumentError(`MSB(${x.toFixed()}) is too large`)
+  }
   if ((t = x.idiv('340282366920938463463374607431768211456')).gt(_0)) {
     x = t
     r += 128
@@ -75,35 +79,38 @@ export function mostSignificantBit(x: BigNumber): number {
   return r
 }
 
-export function sqrt(y: BigNumber): BigNumber {
-  if (y.lt(_0)) {
+export function sqrt(x: BigNumber): BigNumber {
+  if (x.lt(_0)) {
     throw new InvalidArgumentError('negative sqrt')
   }
 
   // we use 10**36 before sqrt
-  y = y.shiftedBy(DECIMALS * 2).dp(0, BigNumber.ROUND_DOWN)
-  if (y.lt(_3)) {
-    const z = y.plus(_1).div(_2)
+  x = x.shiftedBy(DECIMALS * 2).dp(0, BigNumber.ROUND_DOWN)
+  if (x.lt(_3)) {
+    const z = x.plus(_1).div(_2)
     return z.shiftedBy(-DECIMALS).dp(DECIMALS, BigNumber.ROUND_DOWN)
   }
 
   // binary estimate
-  // https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Binary_estimates
-  let n = mostSignificantBit(y)
-  n = Math.floor((n + 1) / 2)
-  let next = _2.pow(n - 1)
-  next = next.plus(y.div(_2.pow(n + 1)).dp(0, BigNumber.ROUND_DOWN))
-
+  // inspired by https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Binary_estimates
+  let n = mostSignificantBit(x)
+  // make sure initial estimate > sqrt(x)
+  // 2^ceil((n + 1) / 2) as initial estimate
+  // 2^(n + 1) > x
+  // => 2^ceil((n + 1) / 2) > 2^((n + 1) / 2) > sqrt(x)
+  n = Math.floor((n + 1) / 2) + 1
+  
   // modified babylonian method
   // https://github.com/Uniswap/uniswap-v2-core/blob/v1.0.1/contracts/libraries/Math.sol#L11
-  let z = y
-  while (next.lt(z)) {
-    z = next
-    next = y
+  let next = _2.pow(n) // 1 << n
+  let y: BigNumber
+  do {
+    y = next
+    next = x
       .div(next)
       .plus(next)
       .div(_2)
     next = next.dp(0, BigNumber.ROUND_DOWN)
-  }
-  return z.shiftedBy(-DECIMALS).dp(DECIMALS, BigNumber.ROUND_DOWN)
+  } while (next.lt(y));
+  return y.shiftedBy(-DECIMALS).dp(DECIMALS, BigNumber.ROUND_DOWN)
 }

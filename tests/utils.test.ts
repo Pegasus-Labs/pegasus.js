@@ -86,50 +86,82 @@ describe('mostSignificantBit', function() {
 })
 
 describe('sqrt', function() {
-  it('sqrt0', function() {
+  it('0', function() {
     const i = sqrt(new BigNumber('0'))
     expect(i).toApproximate(new BigNumber('0'))
   })
-  it('sqrt1e-36', function() {
+  it('1 * 1e-36', function() {
     const i = sqrt(new BigNumber('1').shiftedBy(-36))
     expect(i).toApproximate(new BigNumber('0'))
   })
-  it('sqrt2e-36', function() {
+  it('2 * 1e-36', function() {
     const i = sqrt(new BigNumber('2').shiftedBy(-36))
     expect(i).toApproximate(new BigNumber('1').shiftedBy(-18))
   })
-  it('sqrt3e-36', function() {
+  it('3 * 1e-36', function() {
     const i = sqrt(new BigNumber('3').shiftedBy(-36))
     expect(i).toApproximate(new BigNumber('1').shiftedBy(-18))
   })
-  it('sqrt4e-36', function() {
+  it('4 * 1e-36', function() {
     const i = sqrt(new BigNumber('4').shiftedBy(-36))
     expect(i).toApproximate(new BigNumber('2').shiftedBy(-18))
   })
-  it('sqrt0.1225', function() {
+  it('5 * 1e-36', function() {
+    const i = sqrt(new BigNumber('5').shiftedBy(-36))
+    expect(i).toApproximate(new BigNumber('2').shiftedBy(-18))
+  })
+  it('6 * 1e-36', function() {
+    const i = sqrt(new BigNumber('6').shiftedBy(-36))
+    expect(i).toApproximate(new BigNumber('2').shiftedBy(-18))
+  })
+  it('7 * 1e-36', function() {
+    const i = sqrt(new BigNumber('7').shiftedBy(-36))
+    expect(i).toApproximate(new BigNumber('2').shiftedBy(-18))
+  })
+  it('8 * 1e-36', function() {
+    const i = sqrt(new BigNumber('8').shiftedBy(-36))
+    expect(i).toApproximate(new BigNumber('2').shiftedBy(-18))
+  })
+  it('9 * 1e-36', function() {
+    const i = sqrt(new BigNumber('9').shiftedBy(-36))
+    expect(i).toApproximate(new BigNumber('3').shiftedBy(-18))
+  })
+  it('1e9 * 1e-36', function() {
+    const i = sqrt(new BigNumber('1000000000000000000').shiftedBy(-36))
+    expect(i).toApproximate(new BigNumber('1000000000').shiftedBy(-18))
+  })
+  it('0.1225 => 0.35', function() {
     const i = sqrt(new BigNumber('0.1225'))
     expect(i).toApproximate(new BigNumber('0.35'))
   })
-  it('sqrt1', function() {
+  it('1', function() {
     const i = sqrt(new BigNumber('1'))
     expect(i).toApproximate(new BigNumber('1'))
   })
-  it('sqrt25', function() {
+  it('25 => 5', function() {
     const i = sqrt(new BigNumber('25'))
     expect(i).toApproximate(new BigNumber('5'))
   })
-  it('sqrt2^144', function() {
-    const i = sqrt(new BigNumber('22300745198530623141535718272648361505980416'))
-    expect(i).toApproximate(new BigNumber('4722366482869645213696'))
+  it('49e8 => 7e4', function() {
+    const i = sqrt(new BigNumber('4900000000'))
+    expect(i).toApproximate(new BigNumber('70000'))
+  })
+  it('1e24 => 1e12', function() {
+    const i = sqrt(new BigNumber('1000000000000000000000000'))
+    expect(i).toApproximate(new BigNumber('1000000000000'))
+  })
+  it('2^254 => 2^127', function() {
+    const i = sqrt(new BigNumber('28948022309329048855892746252171976963317.496166410141009864396001978282409984'))
+    expect(i).toApproximate(new BigNumber('170141183460469231731.687303715884105728'))
+  })
+  it('max num', function() {
+    const i = sqrt(new BigNumber('57896044618658097711785492504343953926634.992332820282019728792003956564819967'))
+    expect(i).toApproximate(new BigNumber('240615969168004511545.033772477625056927'))
   })
   it('sqrt-1', function() {
     expect(() => {
       sqrt(new BigNumber('-1'))
     }).toThrow(InvalidArgumentError)
-  })
-  it('max num', function() {
-    const i = sqrt(new BigNumber('57896044618658097711785492504343953926634.992332820282019728792003956564819967'))
-    expect(i).toApproximate(new BigNumber('240615969168004511545.033772477625056927'))
   })
 })
 
