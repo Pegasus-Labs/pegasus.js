@@ -5,8 +5,8 @@ import { normalizeBigNumberish } from './utils'
 import { _0, DECIMALS, CHAIN_ID_TO_READER_ADDRESS } from './constants'
 import { AccountStorage, LiquidityPoolStorage, PerpetualState, PerpetualID } from './types'
 import { InvalidArgumentError, BugError, SignerOrProvider } from './types'
-import { BrokerRelay } from './abi/BrokerRelay'
-import { BrokerRelayFactory } from './abi/BrokerRelayFactory'
+import { Broker } from './abi/Broker'
+import { BrokerFactory } from './abi/BrokerFactory'
 import { LiquidityPool } from './abi/LiquidityPool'
 import { LiquidityPoolFactory } from './abi/LiquidityPoolFactory'
 import { PoolCreator } from './abi/PoolCreator'
@@ -15,24 +15,17 @@ import { Reader } from './abi/Reader'
 import { ReaderFactory } from './abi/ReaderFactory'
 import { SymbolService } from './abi/SymbolService'
 import { SymbolServiceFactory } from './abi/SymbolServiceFactory'
-import { Mining } from './abi/Mining'
-import { MiningFactory } from './abi/MiningFactory'
 import { LpGovernor } from './abi/LpGovernor'
 import { LpGovernorFactory } from './abi/LpGovernorFactory'
-
-export function getMiningContract(contractAddress: string, signerOrProvider: SignerOrProvider): Mining {
-  getAddress(contractAddress)
-  return MiningFactory.connect(contractAddress, signerOrProvider)
-}
 
 export function getLiquidityPoolContract(contractAddress: string, signerOrProvider: SignerOrProvider): LiquidityPool {
   getAddress(contractAddress)
   return LiquidityPoolFactory.connect(contractAddress, signerOrProvider)
 }
 
-export function getBrokerRelayContract(contractAddress: string, signerOrProvider: SignerOrProvider): BrokerRelay {
+export function getBrokerContract(contractAddress: string, signerOrProvider: SignerOrProvider): Broker {
   getAddress(contractAddress)
-  return BrokerRelayFactory.connect(contractAddress, signerOrProvider)
+  return BrokerFactory.connect(contractAddress, signerOrProvider)
 }
 
 export function getPoolCreatorContract(contractAddress: string, signerOrProvider: SignerOrProvider): PoolCreator {
@@ -175,7 +168,7 @@ export async function getAccountStorage(
   }
 }
 
-export async function getBrokerRelayBalanceOf(brokerRelay: BrokerRelay, trader: string): Promise<BigNumber> {
+export async function getBrokerRelayBalanceOf(brokerRelay: Broker, trader: string): Promise<BigNumber> {
   getAddress(trader)
   const balance = await brokerRelay.balanceOf(trader)
   return normalizeBigNumberish(balance).shiftedBy(-DECIMALS)
@@ -224,16 +217,6 @@ export async function listLiquidityPoolOfOperator(poolCreator: PoolCreator, oper
   return ret
 }
 
-export async function getPerpetualSettledMarginBalance(
-  liquidityPool: LiquidityPool,
-  perpetualIndex: number,
-  traderAddress: string
-): Promise<BigNumber> {
-  getAddress(traderAddress)
-  const collateralAmount = await liquidityPool.getSettleableMargin(perpetualIndex, traderAddress)
-  return normalizeBigNumberish(collateralAmount).shiftedBy(-DECIMALS)
-}
-
 export async function getPerpetualClearProgress(
   liquidityPool: LiquidityPool,
   perpetualIndex: number
@@ -254,14 +237,4 @@ export async function getPerpetualClearGasReward(
   const perpetualInfo = await liquidityPool.callStatic.getPerpetualInfo(perpetualIndex)
   const keeperGasReward = normalizeBigNumberish(perpetualInfo.nums[10]).shiftedBy(-DECIMALS)
   return keeperGasReward
-}
-
-export async function getClaimableOperatorFee(liquidityPool: LiquidityPool): Promise<BigNumber> {
-  const operatorFee = await liquidityPool.getClaimableOperatorFee()
-  return normalizeBigNumberish(operatorFee).shiftedBy(-DECIMALS)
-}
-
-export async function getClaimableMiningReward(mining: Mining, account: string): Promise<BigNumber> {
-  const claimableMiningRewardAmount = await mining.earned(account)
-  return normalizeBigNumberish(claimableMiningRewardAmount).shiftedBy(-DECIMALS)
 }
