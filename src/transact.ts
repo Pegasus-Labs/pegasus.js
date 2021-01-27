@@ -4,10 +4,10 @@ import { BigNumberish, TradeFlag } from './types'
 import { normalizeBigNumberish } from './utils'
 import BigNumber from 'bignumber.js'
 import type { LiquidityPool } from './abi/LiquidityPool'
-import type { BrokerRelay } from './abi/BrokerRelay'
+import type { Broker } from './abi/Broker'
 import { Overrides, PayableOverrides } from '@ethersproject/contracts'
 import { getAddress } from '@ethersproject/address'
-import { Mining } from './abi/Mining'
+import { LpGovernor } from './abi/LpGovernor'
 
 export async function perpetualTrade(
   liquidityPool: LiquidityPool,
@@ -76,8 +76,8 @@ export async function perpetualWithdraw(
   return await liquidityPool.withdraw(perpetualIndex, trader, largeAmount.toFixed(), overrides)
 }
 
-export async function brokerRelayDeposit(
-  brokerRelay: BrokerRelay,
+export async function brokerDeposit(
+  broker: Broker,
   tokenAmount: BigNumberish, // should be a decimal number (ie: 1.234)
   overrides: PayableOverrides = {},
 ): Promise<ethers.providers.TransactionResponse> {
@@ -85,18 +85,18 @@ export async function brokerRelayDeposit(
     .shiftedBy(DECIMALS)
     .dp(0, BigNumber.ROUND_DOWN)
   overrides.value = largeAmount.toFixed()
-  return await brokerRelay.deposit(overrides)
+  return await broker.deposit(overrides)
 }
 
-export async function brokerRelayWithdraw(
-  brokerRelay: BrokerRelay,
+export async function brokerWithdraw(
+  broker: Broker,
   tokenAmount: BigNumberish, // should be a decimal number (ie: 1.234)
   overrides: Overrides = {},
 ): Promise<ethers.providers.TransactionResponse> {
   const largeAmount = normalizeBigNumberish(tokenAmount)
     .shiftedBy(DECIMALS)
     .dp(0, BigNumber.ROUND_DOWN)
-  return await brokerRelay.withdraw(largeAmount.toFixed(), overrides)
+  return await broker.withdraw(largeAmount.toFixed(), overrides)
 }
 
 export async function perpetualClear(
@@ -200,14 +200,14 @@ export async function transferOperator(
 }
 
 export async function claimMiningReward(
-  mining: Mining,
+  mining: LpGovernor,
   overrides: Overrides = {},
 ): Promise<ethers.providers.TransactionResponse> {
   return await mining.getReward(overrides)
 }
 
 export async function stakeMining(
-  mining: Mining,
+  mining: LpGovernor,
   lpTokenAmount: BigNumberish, // should be a decimal number (ie: 1.234)
   overrides: Overrides = {},
 ): Promise<ethers.providers.TransactionResponse> {
@@ -218,7 +218,7 @@ export async function stakeMining(
 }
 
 export async function unstakeMining(
-  mining: Mining,
+  mining: LpGovernor,
   lpTokenAmount: BigNumberish, // should be a decimal number (ie: 1.234)
   overrides: Overrides = {},
 ): Promise<ethers.providers.TransactionResponse> {
