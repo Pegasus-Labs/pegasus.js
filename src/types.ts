@@ -66,9 +66,10 @@ export interface Option {
 }
 
 export interface LiquidityPoolStorage {
-  isRunning: boolean
-  isFastCreationEnabled: boolean
-
+  isSynced: boolean // rue if the funding state is synced to real-time data. False if error happens (oracle error, zero price etc.). In this case, trading, withdraw (if position != 0), addLiquidity, removeLiquidity will fail
+  isRunning: boolean // True if the liquidity pool is running
+  isFastCreationEnabled: boolean // True if the operator of the liquidity pool is allowed to create new perpetual when the liquidity pool is running
+  
   creator: string
   operator: string
   transferringOperator: string

@@ -106,29 +106,13 @@ export class IOracle extends Contract {
       0: string;
     }>;
 
-    isMarketClosed(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
+    isMarketClosed(overrides?: Overrides): Promise<ContractTransaction>;
 
-    "isMarketClosed()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
+    "isMarketClosed()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-    isTerminated(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
+    isTerminated(overrides?: Overrides): Promise<ContractTransaction>;
 
-    "isTerminated()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
+    "isTerminated()"(overrides?: Overrides): Promise<ContractTransaction>;
 
     priceTWAPLong(overrides?: Overrides): Promise<ContractTransaction>;
 
@@ -155,13 +139,13 @@ export class IOracle extends Contract {
 
   "collateral()"(overrides?: CallOverrides): Promise<string>;
 
-  isMarketClosed(overrides?: CallOverrides): Promise<boolean>;
+  isMarketClosed(overrides?: Overrides): Promise<ContractTransaction>;
 
-  "isMarketClosed()"(overrides?: CallOverrides): Promise<boolean>;
+  "isMarketClosed()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-  isTerminated(overrides?: CallOverrides): Promise<boolean>;
+  isTerminated(overrides?: Overrides): Promise<ContractTransaction>;
 
-  "isTerminated()"(overrides?: CallOverrides): Promise<boolean>;
+  "isTerminated()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   priceTWAPLong(overrides?: Overrides): Promise<ContractTransaction>;
 
@@ -236,13 +220,13 @@ export class IOracle extends Contract {
 
     "collateral()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    isMarketClosed(overrides?: CallOverrides): Promise<BigNumber>;
+    isMarketClosed(overrides?: Overrides): Promise<BigNumber>;
 
-    "isMarketClosed()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "isMarketClosed()"(overrides?: Overrides): Promise<BigNumber>;
 
-    isTerminated(overrides?: CallOverrides): Promise<BigNumber>;
+    isTerminated(overrides?: Overrides): Promise<BigNumber>;
 
-    "isTerminated()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "isTerminated()"(overrides?: Overrides): Promise<BigNumber>;
 
     priceTWAPLong(overrides?: Overrides): Promise<BigNumber>;
 
@@ -262,15 +246,13 @@ export class IOracle extends Contract {
 
     "collateral()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    isMarketClosed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    isMarketClosed(overrides?: Overrides): Promise<PopulatedTransaction>;
 
-    "isMarketClosed()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    "isMarketClosed()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
-    isTerminated(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    isTerminated(overrides?: Overrides): Promise<PopulatedTransaction>;
 
-    "isTerminated()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "isTerminated()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     priceTWAPLong(overrides?: Overrides): Promise<PopulatedTransaction>;
 

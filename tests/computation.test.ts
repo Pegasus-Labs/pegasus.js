@@ -25,6 +25,7 @@ import { extendExpect } from './helper'
 extendExpect()
 
 const defaultPool: LiquidityPoolStorage = {
+  isSynced: true,
   isRunning: true,
   isFastCreationEnabled: false,
   collateralDecimals: 18,

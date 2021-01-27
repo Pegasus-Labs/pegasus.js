@@ -117,10 +117,15 @@ export class Reader extends Contract {
       account: string,
       overrides?: CallOverrides
     ): Promise<{
-      cash: BigNumber;
-      position: BigNumber;
-      0: BigNumber;
-      1: BigNumber;
+      isSynced: boolean;
+      marginAccount: {
+        cash: BigNumber;
+        position: BigNumber;
+        0: BigNumber;
+        1: BigNumber;
+      };
+      0: boolean;
+      1: { cash: BigNumber; position: BigNumber; 0: BigNumber; 1: BigNumber };
     }>;
 
     "getAccountStorage(address,uint256,address)"(
@@ -129,406 +134,799 @@ export class Reader extends Contract {
       account: string,
       overrides?: CallOverrides
     ): Promise<{
-      cash: BigNumber;
-      position: BigNumber;
-      0: BigNumber;
-      1: BigNumber;
+      isSynced: boolean;
+      marginAccount: {
+        cash: BigNumber;
+        position: BigNumber;
+        0: BigNumber;
+        1: BigNumber;
+      };
+      0: boolean;
+      1: { cash: BigNumber; position: BigNumber; 0: BigNumber; 1: BigNumber };
     }>;
 
     getLiquidityPoolStorage(
       liquidityPool: string,
       overrides?: CallOverrides
     ): Promise<{
-      isRunning: boolean;
-      isFastCreationEnabled: boolean;
-      addresses: [string, string, string, string, string, string, string];
-      vaultFeeRate: BigNumber;
-      poolCash: BigNumber;
-      collateralDecimals: BigNumber;
-      perpetualCount: BigNumber;
-      fundingTime: BigNumber;
-      perpetuals: {
-        state: number;
-        oracle: string;
-        nums: [
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber
-        ];
-        symbol: BigNumber;
-        underlyingAsset: string;
-        isMarketClosed: boolean;
-        ammCashBalance: BigNumber;
-        ammPositionAmount: BigNumber;
-        0: number;
-        1: string;
-        2: [
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber
-        ];
+      isSynced: boolean;
+      pool: {
+        isRunning: boolean;
+        isFastCreationEnabled: boolean;
+        addresses: [string, string, string, string, string, string, string];
+        vaultFeeRate: BigNumber;
+        poolCash: BigNumber;
+        collateralDecimals: BigNumber;
+        fundingTime: BigNumber;
+        perpetuals: {
+          state: number;
+          oracle: string;
+          nums: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber
+          ];
+          symbol: BigNumber;
+          underlyingAsset: string;
+          isMarketClosed: boolean;
+          ammCashBalance: BigNumber;
+          ammPositionAmount: BigNumber;
+          0: number;
+          1: string;
+          2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber
+          ];
+          3: BigNumber;
+          4: string;
+          5: boolean;
+          6: BigNumber;
+          7: BigNumber;
+        }[];
+        0: boolean;
+        1: boolean;
+        2: [string, string, string, string, string, string, string];
         3: BigNumber;
-        4: string;
-        5: boolean;
+        4: BigNumber;
+        5: BigNumber;
         6: BigNumber;
-        7: BigNumber;
-      }[];
+        7: {
+          state: number;
+          oracle: string;
+          nums: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber
+          ];
+          symbol: BigNumber;
+          underlyingAsset: string;
+          isMarketClosed: boolean;
+          ammCashBalance: BigNumber;
+          ammPositionAmount: BigNumber;
+          0: number;
+          1: string;
+          2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber
+          ];
+          3: BigNumber;
+          4: string;
+          5: boolean;
+          6: BigNumber;
+          7: BigNumber;
+        }[];
+      };
       0: boolean;
-      1: boolean;
-      2: [string, string, string, string, string, string, string];
-      3: BigNumber;
-      4: BigNumber;
-      5: BigNumber;
-      6: BigNumber;
-      7: BigNumber;
-      8: {
-        state: number;
-        oracle: string;
-        nums: [
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber
-        ];
-        symbol: BigNumber;
-        underlyingAsset: string;
-        isMarketClosed: boolean;
-        ammCashBalance: BigNumber;
-        ammPositionAmount: BigNumber;
-        0: number;
-        1: string;
-        2: [
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber
-        ];
+      1: {
+        isRunning: boolean;
+        isFastCreationEnabled: boolean;
+        addresses: [string, string, string, string, string, string, string];
+        vaultFeeRate: BigNumber;
+        poolCash: BigNumber;
+        collateralDecimals: BigNumber;
+        fundingTime: BigNumber;
+        perpetuals: {
+          state: number;
+          oracle: string;
+          nums: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber
+          ];
+          symbol: BigNumber;
+          underlyingAsset: string;
+          isMarketClosed: boolean;
+          ammCashBalance: BigNumber;
+          ammPositionAmount: BigNumber;
+          0: number;
+          1: string;
+          2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber
+          ];
+          3: BigNumber;
+          4: string;
+          5: boolean;
+          6: BigNumber;
+          7: BigNumber;
+        }[];
+        0: boolean;
+        1: boolean;
+        2: [string, string, string, string, string, string, string];
         3: BigNumber;
-        4: string;
-        5: boolean;
+        4: BigNumber;
+        5: BigNumber;
         6: BigNumber;
-        7: BigNumber;
-      }[];
+        7: {
+          state: number;
+          oracle: string;
+          nums: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber
+          ];
+          symbol: BigNumber;
+          underlyingAsset: string;
+          isMarketClosed: boolean;
+          ammCashBalance: BigNumber;
+          ammPositionAmount: BigNumber;
+          0: number;
+          1: string;
+          2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber
+          ];
+          3: BigNumber;
+          4: string;
+          5: boolean;
+          6: BigNumber;
+          7: BigNumber;
+        }[];
+      };
     }>;
 
     "getLiquidityPoolStorage(address)"(
       liquidityPool: string,
       overrides?: CallOverrides
     ): Promise<{
-      isRunning: boolean;
-      isFastCreationEnabled: boolean;
-      addresses: [string, string, string, string, string, string, string];
-      vaultFeeRate: BigNumber;
-      poolCash: BigNumber;
-      collateralDecimals: BigNumber;
-      perpetualCount: BigNumber;
-      fundingTime: BigNumber;
-      perpetuals: {
-        state: number;
-        oracle: string;
-        nums: [
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber
-        ];
-        symbol: BigNumber;
-        underlyingAsset: string;
-        isMarketClosed: boolean;
-        ammCashBalance: BigNumber;
-        ammPositionAmount: BigNumber;
-        0: number;
-        1: string;
-        2: [
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber
-        ];
+      isSynced: boolean;
+      pool: {
+        isRunning: boolean;
+        isFastCreationEnabled: boolean;
+        addresses: [string, string, string, string, string, string, string];
+        vaultFeeRate: BigNumber;
+        poolCash: BigNumber;
+        collateralDecimals: BigNumber;
+        fundingTime: BigNumber;
+        perpetuals: {
+          state: number;
+          oracle: string;
+          nums: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber
+          ];
+          symbol: BigNumber;
+          underlyingAsset: string;
+          isMarketClosed: boolean;
+          ammCashBalance: BigNumber;
+          ammPositionAmount: BigNumber;
+          0: number;
+          1: string;
+          2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber
+          ];
+          3: BigNumber;
+          4: string;
+          5: boolean;
+          6: BigNumber;
+          7: BigNumber;
+        }[];
+        0: boolean;
+        1: boolean;
+        2: [string, string, string, string, string, string, string];
         3: BigNumber;
-        4: string;
-        5: boolean;
+        4: BigNumber;
+        5: BigNumber;
         6: BigNumber;
-        7: BigNumber;
-      }[];
+        7: {
+          state: number;
+          oracle: string;
+          nums: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber
+          ];
+          symbol: BigNumber;
+          underlyingAsset: string;
+          isMarketClosed: boolean;
+          ammCashBalance: BigNumber;
+          ammPositionAmount: BigNumber;
+          0: number;
+          1: string;
+          2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber
+          ];
+          3: BigNumber;
+          4: string;
+          5: boolean;
+          6: BigNumber;
+          7: BigNumber;
+        }[];
+      };
       0: boolean;
-      1: boolean;
-      2: [string, string, string, string, string, string, string];
-      3: BigNumber;
-      4: BigNumber;
-      5: BigNumber;
-      6: BigNumber;
-      7: BigNumber;
-      8: {
-        state: number;
-        oracle: string;
-        nums: [
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber
-        ];
-        symbol: BigNumber;
-        underlyingAsset: string;
-        isMarketClosed: boolean;
-        ammCashBalance: BigNumber;
-        ammPositionAmount: BigNumber;
-        0: number;
-        1: string;
-        2: [
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          BigNumber
-        ];
+      1: {
+        isRunning: boolean;
+        isFastCreationEnabled: boolean;
+        addresses: [string, string, string, string, string, string, string];
+        vaultFeeRate: BigNumber;
+        poolCash: BigNumber;
+        collateralDecimals: BigNumber;
+        fundingTime: BigNumber;
+        perpetuals: {
+          state: number;
+          oracle: string;
+          nums: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber
+          ];
+          symbol: BigNumber;
+          underlyingAsset: string;
+          isMarketClosed: boolean;
+          ammCashBalance: BigNumber;
+          ammPositionAmount: BigNumber;
+          0: number;
+          1: string;
+          2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber
+          ];
+          3: BigNumber;
+          4: string;
+          5: boolean;
+          6: BigNumber;
+          7: BigNumber;
+        }[];
+        0: boolean;
+        1: boolean;
+        2: [string, string, string, string, string, string, string];
         3: BigNumber;
-        4: string;
-        5: boolean;
+        4: BigNumber;
+        5: BigNumber;
         6: BigNumber;
-        7: BigNumber;
-      }[];
+        7: {
+          state: number;
+          oracle: string;
+          nums: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber
+          ];
+          symbol: BigNumber;
+          underlyingAsset: string;
+          isMarketClosed: boolean;
+          ammCashBalance: BigNumber;
+          ammPositionAmount: BigNumber;
+          0: number;
+          1: string;
+          2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber
+          ];
+          3: BigNumber;
+          4: string;
+          5: boolean;
+          6: BigNumber;
+          7: BigNumber;
+        }[];
+      };
     }>;
   };
 

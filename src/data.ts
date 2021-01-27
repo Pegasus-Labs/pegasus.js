@@ -71,8 +71,9 @@ export async function getReaderContract(signerOrProvider: SignerOrProvider, cont
 
 export async function getLiquidityPool(reader: Reader, liquidityPoolAddress: string): Promise<LiquidityPoolStorage> {
   getAddress(liquidityPoolAddress)
-  const pool = await reader.callStatic.getLiquidityPoolStorage(liquidityPoolAddress)
+  const { isSynced, pool } = await reader.callStatic.getLiquidityPoolStorage(liquidityPoolAddress)
   const ret: LiquidityPoolStorage = {
+    isSynced,
     isRunning: pool.isRunning,
     isFastCreationEnabled: pool.isFastCreationEnabled,
     creator: pool.addresses[0],
@@ -165,7 +166,7 @@ export async function getAccountStorage(
 ): Promise<AccountStorage> {
   getAddress(liquidityPoolAddress)
   getAddress(traderAddress)
-  const marginAccount = await reader.callStatic.getAccountStorage(liquidityPoolAddress, perpetualIndex, traderAddress)
+  const { marginAccount } = await reader.callStatic.getAccountStorage(liquidityPoolAddress, perpetualIndex, traderAddress)
   return {
     cashBalance: normalizeBigNumberish(marginAccount.cash).shiftedBy(-DECIMALS),
     positionAmount: normalizeBigNumberish(marginAccount.position).shiftedBy(-DECIMALS),
