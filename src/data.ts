@@ -168,9 +168,9 @@ export async function getAccountStorage(
   }
 }
 
-export async function getBrokerRelayBalanceOf(brokerRelay: Broker, trader: string): Promise<BigNumber> {
+export async function getBrokerBalanceOf(broker: Broker, trader: string): Promise<BigNumber> {
   getAddress(trader)
-  const balance = await brokerRelay.balanceOf(trader)
+  const balance = await broker.balanceOf(trader)
   return normalizeBigNumberish(balance).shiftedBy(-DECIMALS)
 }
 
