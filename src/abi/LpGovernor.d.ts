@@ -29,13 +29,9 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     "SIGNATURE_PERPETUAL_SETTLE()": FunctionFragment;
     "SIGNATURE_PERPETUAL_SET_OPERATOR()": FunctionFragment;
     "SIGNATURE_PERPETUAL_UPGRADE()": FunctionFragment;
-    "__abdicate()": FunctionFragment;
-    "__acceptAdmin()": FunctionFragment;
-    "__executeSetTimelockPendingAdmin(address,uint256)": FunctionFragment;
-    "__queueSetTimelockPendingAdmin(address,uint256)": FunctionFragment;
+    "_executeTransaction(address,uint256,string,bytes,uint256)": FunctionFragment;
     "_rewardToken()": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
-    "cancel(uint256)": FunctionFragment;
     "castVote(uint256,bool)": FunctionFragment;
     "castVoteBySig(uint256,bool,uint8,bytes32,bytes32)": FunctionFragment;
     "criticalQuorumVotes()": FunctionFragment;
@@ -60,7 +56,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     "getVoteBalanceCheckpointCount(address)": FunctionFragment;
     "gracePeriod()": FunctionFragment;
     "guardian()": FunctionFragment;
-    "initialize(address,address,address,address)": FunctionFragment;
+    "initialize(address,address,address)": FunctionFragment;
     "isCriticalFunction(string)": FunctionFragment;
     "isLocked(address)": FunctionFragment;
     "lastTimeRewardApplicable()": FunctionFragment;
@@ -75,8 +71,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     "proposalMaxOperations()": FunctionFragment;
     "proposalThreshold()": FunctionFragment;
     "proposals(uint256)": FunctionFragment;
-    "propose(address[],uint256[],string[],bytes[],string)": FunctionFragment;
-    "queue(uint256)": FunctionFragment;
+    "propose(string[],bytes[],string)": FunctionFragment;
     "quorumVotes()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "rewardDistribution()": FunctionFragment;
@@ -89,7 +84,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     "shareToken()": FunctionFragment;
     "stake(uint256)": FunctionFragment;
     "state(uint256)": FunctionFragment;
-    "timelock()": FunctionFragment;
+    "target()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "unlockBlocks(address)": FunctionFragment;
@@ -125,30 +120,14 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "__abdicate",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "__acceptAdmin",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "__executeSetTimelockPendingAdmin",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "__queueSetTimelockPendingAdmin",
-    values: [string, BigNumberish]
+    functionFragment: "_executeTransaction",
+    values: [string, BigNumberish, string, BytesLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "_rewardToken",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "cancel",
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "castVote",
     values: [BigNumberish, boolean]
@@ -233,7 +212,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "guardian", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [string, string, string, string]
+    values: [string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "isCriticalFunction",
@@ -284,9 +263,8 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "propose",
-    values: [string[], BigNumberish[], string[], BytesLike[], string]
+    values: [string[], BytesLike[], string]
   ): string;
-  encodeFunctionData(functionFragment: "queue", values: [BigNumberish]): string;
   encodeFunctionData(
     functionFragment: "quorumVotes",
     values?: undefined
@@ -326,7 +304,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "stake", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "state", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "timelock", values?: undefined): string;
+  encodeFunctionData(functionFragment: "target", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
     values?: undefined
@@ -384,17 +362,8 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     functionFragment: "SIGNATURE_PERPETUAL_UPGRADE",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "__abdicate", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "__acceptAdmin",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "__executeSetTimelockPendingAdmin",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "__queueSetTimelockPendingAdmin",
+    functionFragment: "_executeTransaction",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -402,7 +371,6 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "cancel", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "castVote", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "castVoteBySig",
@@ -515,7 +483,6 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "proposals", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "propose", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "queue", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "quorumVotes",
     data: BytesLike
@@ -549,7 +516,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "shareToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "stake", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "state", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "timelock", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "target", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
     data: BytesLike
@@ -583,6 +550,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   events: {
     "DelegateChanged(address,address,address)": EventFragment;
     "DelegateVotesChanged(address,uint256,uint256)": EventFragment;
+    "ExecuteTransaction(bytes32,address,uint256,string,bytes,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "ProposalCanceled(uint256)": EventFragment;
     "ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)": EventFragment;
@@ -599,6 +567,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: "DelegateChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "DelegateVotesChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ExecuteTransaction"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalCanceled"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalCreated"): EventFragment;
@@ -699,36 +668,22 @@ export class LpGovernor extends Contract {
       0: string;
     }>;
 
-    __abdicate(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "__abdicate()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-    __acceptAdmin(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "__acceptAdmin()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-    __executeSetTimelockPendingAdmin(
-      newPendingAdmin: string,
+    _executeTransaction(
+      target: string,
+      value: BigNumberish,
+      signature: string,
+      data: BytesLike,
       eta: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
-    "__executeSetTimelockPendingAdmin(address,uint256)"(
-      newPendingAdmin: string,
+    "_executeTransaction(address,uint256,string,bytes,uint256)"(
+      target: string,
+      value: BigNumberish,
+      signature: string,
+      data: BytesLike,
       eta: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    __queueSetTimelockPendingAdmin(
-      newPendingAdmin: string,
-      eta: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "__queueSetTimelockPendingAdmin(address,uint256)"(
-      newPendingAdmin: string,
-      eta: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     _rewardToken(
@@ -756,16 +711,6 @@ export class LpGovernor extends Contract {
     ): Promise<{
       0: BigNumber;
     }>;
-
-    cancel(
-      proposalId: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "cancel(uint256)"(
-      proposalId: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
 
     castVote(
       proposalId: BigNumberish,
@@ -1122,18 +1067,16 @@ export class LpGovernor extends Contract {
     }>;
 
     initialize(
+      target_: string,
       shareToken_: string,
       rewardToken_: string,
-      timelock_: string,
-      guardian_: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "initialize(address,address,address,address)"(
+    "initialize(address,address,address)"(
+      target_: string,
       shareToken_: string,
       rewardToken_: string,
-      timelock_: string,
-      guardian_: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1342,30 +1285,16 @@ export class LpGovernor extends Contract {
     }>;
 
     propose(
-      targets: string[],
-      values: BigNumberish[],
       signatures: string[],
       calldatas: BytesLike[],
       description: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "propose(address[],uint256[],string[],bytes[],string)"(
-      targets: string[],
-      values: BigNumberish[],
+    "propose(string[],bytes[],string)"(
       signatures: string[],
       calldatas: BytesLike[],
       description: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    queue(
-      proposalId: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "queue(uint256)"(
-      proposalId: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1503,13 +1432,13 @@ export class LpGovernor extends Contract {
       0: number;
     }>;
 
-    timelock(
+    target(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    "timelock()"(
+    "target()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -1638,36 +1567,22 @@ export class LpGovernor extends Contract {
 
   "SIGNATURE_PERPETUAL_UPGRADE()"(overrides?: CallOverrides): Promise<string>;
 
-  __abdicate(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "__abdicate()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-  __acceptAdmin(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "__acceptAdmin()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-  __executeSetTimelockPendingAdmin(
-    newPendingAdmin: string,
+  _executeTransaction(
+    target: string,
+    value: BigNumberish,
+    signature: string,
+    data: BytesLike,
     eta: BigNumberish,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
-  "__executeSetTimelockPendingAdmin(address,uint256)"(
-    newPendingAdmin: string,
+  "_executeTransaction(address,uint256,string,bytes,uint256)"(
+    target: string,
+    value: BigNumberish,
+    signature: string,
+    data: BytesLike,
     eta: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  __queueSetTimelockPendingAdmin(
-    newPendingAdmin: string,
-    eta: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "__queueSetTimelockPendingAdmin(address,uint256)"(
-    newPendingAdmin: string,
-    eta: BigNumberish,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   _rewardToken(overrides?: CallOverrides): Promise<string>;
@@ -1680,16 +1595,6 @@ export class LpGovernor extends Contract {
     account: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
-
-  cancel(
-    proposalId: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "cancel(uint256)"(
-    proposalId: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
 
   castVote(
     proposalId: BigNumberish,
@@ -1950,18 +1855,16 @@ export class LpGovernor extends Contract {
   "guardian()"(overrides?: CallOverrides): Promise<string>;
 
   initialize(
+    target_: string,
     shareToken_: string,
     rewardToken_: string,
-    timelock_: string,
-    guardian_: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "initialize(address,address,address,address)"(
+  "initialize(address,address,address)"(
+    target_: string,
     shareToken_: string,
     rewardToken_: string,
-    timelock_: string,
-    guardian_: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -2087,30 +1990,16 @@ export class LpGovernor extends Contract {
   }>;
 
   propose(
-    targets: string[],
-    values: BigNumberish[],
     signatures: string[],
     calldatas: BytesLike[],
     description: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "propose(address[],uint256[],string[],bytes[],string)"(
-    targets: string[],
-    values: BigNumberish[],
+  "propose(string[],bytes[],string)"(
     signatures: string[],
     calldatas: BytesLike[],
     description: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  queue(
-    proposalId: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "queue(uint256)"(
-    proposalId: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -2186,9 +2075,9 @@ export class LpGovernor extends Contract {
     overrides?: CallOverrides
   ): Promise<number>;
 
-  timelock(overrides?: CallOverrides): Promise<string>;
+  target(overrides?: CallOverrides): Promise<string>;
 
-  "timelock()"(overrides?: CallOverrides): Promise<string>;
+  "target()"(overrides?: CallOverrides): Promise<string>;
 
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2272,37 +2161,23 @@ export class LpGovernor extends Contract {
 
     "SIGNATURE_PERPETUAL_UPGRADE()"(overrides?: CallOverrides): Promise<string>;
 
-    __abdicate(overrides?: CallOverrides): Promise<void>;
-
-    "__abdicate()"(overrides?: CallOverrides): Promise<void>;
-
-    __acceptAdmin(overrides?: CallOverrides): Promise<void>;
-
-    "__acceptAdmin()"(overrides?: CallOverrides): Promise<void>;
-
-    __executeSetTimelockPendingAdmin(
-      newPendingAdmin: string,
+    _executeTransaction(
+      target: string,
+      value: BigNumberish,
+      signature: string,
+      data: BytesLike,
       eta: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<string>;
 
-    "__executeSetTimelockPendingAdmin(address,uint256)"(
-      newPendingAdmin: string,
+    "_executeTransaction(address,uint256,string,bytes,uint256)"(
+      target: string,
+      value: BigNumberish,
+      signature: string,
+      data: BytesLike,
       eta: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<void>;
-
-    __queueSetTimelockPendingAdmin(
-      newPendingAdmin: string,
-      eta: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "__queueSetTimelockPendingAdmin(address,uint256)"(
-      newPendingAdmin: string,
-      eta: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<string>;
 
     _rewardToken(overrides?: CallOverrides): Promise<string>;
 
@@ -2314,13 +2189,6 @@ export class LpGovernor extends Contract {
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    cancel(proposalId: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
-    "cancel(uint256)"(
-      proposalId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     castVote(
       proposalId: BigNumberish,
@@ -2575,18 +2443,16 @@ export class LpGovernor extends Contract {
     "guardian()"(overrides?: CallOverrides): Promise<string>;
 
     initialize(
+      target_: string,
       shareToken_: string,
       rewardToken_: string,
-      timelock_: string,
-      guardian_: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initialize(address,address,address,address)"(
+    "initialize(address,address,address)"(
+      target_: string,
       shareToken_: string,
       rewardToken_: string,
-      timelock_: string,
-      guardian_: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2712,29 +2578,18 @@ export class LpGovernor extends Contract {
     }>;
 
     propose(
-      targets: string[],
-      values: BigNumberish[],
       signatures: string[],
       calldatas: BytesLike[],
       description: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "propose(address[],uint256[],string[],bytes[],string)"(
-      targets: string[],
-      values: BigNumberish[],
+    "propose(string[],bytes[],string)"(
       signatures: string[],
       calldatas: BytesLike[],
       description: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    queue(proposalId: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
-    "queue(uint256)"(
-      proposalId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     quorumVotes(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2805,9 +2660,9 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<number>;
 
-    timelock(overrides?: CallOverrides): Promise<string>;
+    target(overrides?: CallOverrides): Promise<string>;
 
-    "timelock()"(overrides?: CallOverrides): Promise<string>;
+    "target()"(overrides?: CallOverrides): Promise<string>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2871,6 +2726,15 @@ export class LpGovernor extends Contract {
       delegate: string | null,
       previousBalance: null,
       newBalance: null
+    ): EventFilter;
+
+    ExecuteTransaction(
+      txHash: BytesLike | null,
+      target: string | null,
+      value: null,
+      signature: null,
+      data: null,
+      eta: null
     ): EventFilter;
 
     OwnershipTransferred(
@@ -2956,36 +2820,22 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    __abdicate(overrides?: Overrides): Promise<BigNumber>;
-
-    "__abdicate()"(overrides?: Overrides): Promise<BigNumber>;
-
-    __acceptAdmin(overrides?: Overrides): Promise<BigNumber>;
-
-    "__acceptAdmin()"(overrides?: Overrides): Promise<BigNumber>;
-
-    __executeSetTimelockPendingAdmin(
-      newPendingAdmin: string,
+    _executeTransaction(
+      target: string,
+      value: BigNumberish,
+      signature: string,
+      data: BytesLike,
       eta: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
-    "__executeSetTimelockPendingAdmin(address,uint256)"(
-      newPendingAdmin: string,
+    "_executeTransaction(address,uint256,string,bytes,uint256)"(
+      target: string,
+      value: BigNumberish,
+      signature: string,
+      data: BytesLike,
       eta: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    __queueSetTimelockPendingAdmin(
-      newPendingAdmin: string,
-      eta: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "__queueSetTimelockPendingAdmin(address,uint256)"(
-      newPendingAdmin: string,
-      eta: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     _rewardToken(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2997,13 +2847,6 @@ export class LpGovernor extends Contract {
     "balanceOf(address)"(
       account: string,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    cancel(proposalId: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
-
-    "cancel(uint256)"(
-      proposalId: BigNumberish,
-      overrides?: Overrides
     ): Promise<BigNumber>;
 
     castVote(
@@ -3224,18 +3067,16 @@ export class LpGovernor extends Contract {
     "guardian()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     initialize(
+      target_: string,
       shareToken_: string,
       rewardToken_: string,
-      timelock_: string,
-      guardian_: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "initialize(address,address,address,address)"(
+    "initialize(address,address,address)"(
+      target_: string,
       shareToken_: string,
       rewardToken_: string,
-      timelock_: string,
-      guardian_: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -3323,27 +3164,16 @@ export class LpGovernor extends Contract {
     ): Promise<BigNumber>;
 
     propose(
-      targets: string[],
-      values: BigNumberish[],
       signatures: string[],
       calldatas: BytesLike[],
       description: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "propose(address[],uint256[],string[],bytes[],string)"(
-      targets: string[],
-      values: BigNumberish[],
+    "propose(string[],bytes[],string)"(
       signatures: string[],
       calldatas: BytesLike[],
       description: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    queue(proposalId: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
-
-    "queue(uint256)"(
-      proposalId: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -3419,9 +3249,9 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    timelock(overrides?: CallOverrides): Promise<BigNumber>;
+    target(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "timelock()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "target()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -3519,36 +3349,22 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    __abdicate(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "__abdicate()"(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    __acceptAdmin(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "__acceptAdmin()"(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    __executeSetTimelockPendingAdmin(
-      newPendingAdmin: string,
+    _executeTransaction(
+      target: string,
+      value: BigNumberish,
+      signature: string,
+      data: BytesLike,
       eta: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
-    "__executeSetTimelockPendingAdmin(address,uint256)"(
-      newPendingAdmin: string,
+    "_executeTransaction(address,uint256,string,bytes,uint256)"(
+      target: string,
+      value: BigNumberish,
+      signature: string,
+      data: BytesLike,
       eta: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    __queueSetTimelockPendingAdmin(
-      newPendingAdmin: string,
-      eta: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "__queueSetTimelockPendingAdmin(address,uint256)"(
-      newPendingAdmin: string,
-      eta: BigNumberish,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     _rewardToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -3563,16 +3379,6 @@ export class LpGovernor extends Contract {
     "balanceOf(address)"(
       account: string,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    cancel(
-      proposalId: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "cancel(uint256)"(
-      proposalId: BigNumberish,
-      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     castVote(
@@ -3818,18 +3624,16 @@ export class LpGovernor extends Contract {
     "guardian()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     initialize(
+      target_: string,
       shareToken_: string,
       rewardToken_: string,
-      timelock_: string,
-      guardian_: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "initialize(address,address,address,address)"(
+    "initialize(address,address,address)"(
+      target_: string,
       shareToken_: string,
       rewardToken_: string,
-      timelock_: string,
-      guardian_: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -3932,30 +3736,16 @@ export class LpGovernor extends Contract {
     ): Promise<PopulatedTransaction>;
 
     propose(
-      targets: string[],
-      values: BigNumberish[],
       signatures: string[],
       calldatas: BytesLike[],
       description: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "propose(address[],uint256[],string[],bytes[],string)"(
-      targets: string[],
-      values: BigNumberish[],
+    "propose(string[],bytes[],string)"(
       signatures: string[],
       calldatas: BytesLike[],
       description: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    queue(
-      proposalId: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "queue(uint256)"(
-      proposalId: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -4047,9 +3837,9 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    timelock(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    target(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "timelock()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "target()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
