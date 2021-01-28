@@ -227,3 +227,8 @@ export async function unstakeMining(
     .dp(0, BigNumber.ROUND_DOWN)
   return await mining.withdraw(largeAmount.toFixed(), overrides)
 }
+
+export async function getClaimableMiningReward(mining: LpGovernor, account: string): Promise<BigNumber> {
+  const claimableMiningRewardAmount = await mining.earned(account)
+  return normalizeBigNumberish(claimableMiningRewardAmount).shiftedBy(-DECIMALS)
+}
