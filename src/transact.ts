@@ -76,13 +76,8 @@ export async function perpetualWithdraw(
   return await liquidityPool.withdraw(perpetualIndex, trader, largeAmount.toFixed(), overrides)
 }
 
-<<<<<<< HEAD
 export async function brokerDeposit(
   broker: Broker,
-=======
-export async function brokerRelayDeposit(
-  brokerRelay: Broker,
->>>>>>> add l2 relayer interface
   tokenAmount: BigNumberish, // should be a decimal number (ie: 1.234)
   overrides: PayableOverrides = {},
 ): Promise<ethers.providers.TransactionResponse> {
@@ -93,13 +88,8 @@ export async function brokerRelayDeposit(
   return await broker.deposit(overrides)
 }
 
-<<<<<<< HEAD
 export async function brokerWithdraw(
   broker: Broker,
-=======
-export async function brokerRelayWithdraw(
-  brokerRelay: Broker,
->>>>>>> add l2 relayer interface
   tokenAmount: BigNumberish, // should be a decimal number (ie: 1.234)
   overrides: Overrides = {},
 ): Promise<ethers.providers.TransactionResponse> {

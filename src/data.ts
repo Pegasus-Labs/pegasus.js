@@ -5,7 +5,6 @@ import { normalizeBigNumberish } from './utils'
 import { _0, DECIMALS, CHAIN_ID_TO_READER_ADDRESS } from './constants'
 import { AccountStorage, LiquidityPoolStorage, PerpetualState, PerpetualID } from './types'
 import { InvalidArgumentError, BugError, SignerOrProvider } from './types'
-<<<<<<< HEAD
 import { Broker } from './abi/Broker'
 import { BrokerFactory } from './abi/BrokerFactory'
 import { LiquidityPool } from './abi/LiquidityPool'
@@ -18,18 +17,6 @@ import { SymbolService } from './abi/SymbolService'
 import { SymbolServiceFactory } from './abi/SymbolServiceFactory'
 import { LpGovernor } from './abi/LpGovernor'
 import { LpGovernorFactory } from './abi/LpGovernorFactory'
-=======
-import { Broker } from './wrapper/Broker'
-import { BrokerFactory } from './wrapper/BrokerFactory'
-import { LiquidityPool } from './wrapper/LiquidityPool'
-import { LiquidityPoolFactory } from './wrapper/LiquidityPoolFactory'
-import { PoolCreator } from './wrapper/PoolCreator'
-import { PoolCreatorFactory } from './wrapper/PoolCreatorFactory'
-import { Reader } from './wrapper/Reader'
-import { ReaderFactory } from './wrapper/ReaderFactory'
-import { SymbolService } from './wrapper/SymbolService'
-import { SymbolServiceFactory } from './wrapper/SymbolServiceFactory'
->>>>>>> add l2 relayer interface
 
 export function getLiquidityPoolContract(contractAddress: string, signerOrProvider: SignerOrProvider): LiquidityPool {
   getAddress(contractAddress)
@@ -172,7 +159,11 @@ export async function getAccountStorage(
 ): Promise<AccountStorage> {
   getAddress(liquidityPoolAddress)
   getAddress(traderAddress)
-  const { marginAccount } = await reader.callStatic.getAccountStorage(liquidityPoolAddress, perpetualIndex, traderAddress)
+  const { marginAccount } = await reader.callStatic.getAccountStorage(
+    liquidityPoolAddress,
+    perpetualIndex,
+    traderAddress
+  )
   return {
     cashBalance: normalizeBigNumberish(marginAccount.cash).shiftedBy(-DECIMALS),
     positionAmount: normalizeBigNumberish(marginAccount.position).shiftedBy(-DECIMALS),
@@ -181,11 +172,7 @@ export async function getAccountStorage(
   }
 }
 
-<<<<<<< HEAD
 export async function getBrokerBalanceOf(broker: Broker, trader: string): Promise<BigNumber> {
-=======
-export async function getBrokerBalanceOf(brokerRelay: Broker, trader: string): Promise<BigNumber> {
->>>>>>> add l2 relayer interface
   getAddress(trader)
   const balance = await broker.balanceOf(trader)
   return normalizeBigNumberish(balance).shiftedBy(-DECIMALS)

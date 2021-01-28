@@ -14,9 +14,9 @@ import { TypedDataSigner } from '@ethersproject/abstract-signer'
 import { _TypedDataEncoder } from '@ethersproject/hash'
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 
-import { LiquidityPoolFactory } from './wrapper/LiquidityPoolFactory'
-import { Broker } from './wrapper/Broker'
-import { BrokerFactory } from './wrapper/BrokerFactory'
+import { LiquidityPoolFactory } from './abi/LiquidityPoolFactory'
+import { Broker } from './abi/Broker'
+import { BrokerFactory } from './abi/BrokerFactory'
 import { CHAIN_ID_TO_BROKER_ADDRESS } from './constants'
 
 export const DEFAULT_L2_TX_TIMEOUT = 30000
