@@ -23,5 +23,10 @@ export const CHAIN_ID_TO_BROKER_ADDRESS: { [chainID: number]: string } = {
   1337: '0xebEeEA5228721A39096c78f27583d7493f70dEBF'
 }
 
+export const CHAIN_ID_TO_BROKER_ADDRESS: { [chainID: number]: string } = {
+  42: '0x59dcAe1C11fF3eb7F30Bd671B0c9CAeB030F169A',
+  1337: '0x59dcAe1C11fF3eb7F30Bd671B0c9CAeB030F169A'
+}
+
 // leave 1% when calculating withdrawal penalty if position != 0
 export const REMOVE_LIQUIDITY_MAX_SHARE_RELAX = new BigNumber('0.99')
