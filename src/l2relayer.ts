@@ -45,7 +45,7 @@ export interface L2RelayerClinet {
 let _supportedFunctionList: { [signHash: string]: string } = {}
 
 function _initSupportedFunctionList() {
-  let lp = LiquidityPoolFactory.connect('', getDefaultProvider())
+  let lp = LiquidityPoolFactory.connect('0x0000000000000000000000000000000000000000', getDefaultProvider())
   for (let func in lp.interface.functions) {
     let signHash = lp.interface.getSighash(func)
     _supportedFunctionList[signHash] = func
