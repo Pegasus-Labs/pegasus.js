@@ -3,7 +3,7 @@
 */
 
 import { BigNumber } from 'bignumber.js'
-import { DECIMALS, REMOVE_LIQUIDITY_MAX_SHARE_RELAX, _0, _1, _2, _4 } from './constants'
+import { DECIMALS, REMOVE_LIQUIDITY_MAX_SHARE_RELAX, _0, _1, _2 } from './constants'
 import { LiquidityPoolStorage, AMMTradingContext, PerpetualState, BigNumberish } from './types'
 import { sqrt, splitAmount, hasTheSameSign, normalizeBigNumberish } from './utils'
 import { InsufficientLiquidityError, BugError, InvalidArgumentError } from './types'

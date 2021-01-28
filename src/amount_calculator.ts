@@ -17,7 +17,7 @@ import {
   computeBestAskBidPriceIfUnsafe
 } from './amm'
 import { BugError } from './types'
-import { DECIMALS, _0, _1, _2, _INF } from './constants'
+import { DECIMALS, _0, _1, _2 } from './constants'
 import { sqrt, normalizeBigNumberish } from './utils'
 import BigNumber from 'bignumber.js'
 const minimize = require('minimize-golden-section-1d')
