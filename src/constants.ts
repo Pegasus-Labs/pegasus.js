@@ -20,7 +20,8 @@ export const CHAIN_ID_TO_POOL_CREATOR_ADDRESS: { [chainID: number]: string } = {
 
 export const CHAIN_ID_TO_BROKER_ADDRESS: { [chainID: number]: string } = {
   42: '0x7e63e0559a16614B999D8C9Fe806A09EAAc39842',
-  1337: '0x59dcAe1C11fF3eb7F30Bd671B0c9CAeB030F169A'
+  1337: '0x59dcAe1C11fF3eb7F30Bd671B0c9CAeB030F169A',
+  246955447367734: '0x54Cf8F0d976E39F2F55A8b9bCa8ff336657ddea3'
 }
 
 // leave 1% when calculating withdrawal penalty if position != 0
