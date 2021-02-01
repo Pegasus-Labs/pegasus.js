@@ -17,6 +17,8 @@ import { SymbolService } from './abi/SymbolService'
 import { SymbolServiceFactory } from './abi/SymbolServiceFactory'
 import { LpGovernor } from './abi/LpGovernor'
 import { LpGovernorFactory } from './abi/LpGovernorFactory'
+import { ShareToken } from './abi/ShareToken'
+import { ShareTokenFactory } from './abi/ShareTokenFactory'
 
 export function getLiquidityPoolContract(contractAddress: string, signerOrProvider: SignerOrProvider): LiquidityPool {
   getAddress(contractAddress)
@@ -41,6 +43,11 @@ export function getSymbolServiceContract(contractAddress: string, signerOrProvid
 export function getLpGovernorContract(contractAddress: string, signerOrProvider: SignerOrProvider): LpGovernor {
   getAddress(contractAddress)
   return LpGovernorFactory.connect(contractAddress, signerOrProvider)
+}
+
+export function getShareTokenContract(contractAddress: string, signerOrProvider: SignerOrProvider): ShareToken {
+  getAddress(contractAddress)
+  return ShareTokenFactory.connect(contractAddress, signerOrProvider)
 }
 
 export async function getReaderContract(signerOrProvider: SignerOrProvider, contractAddress?: string): Promise<Reader> {
