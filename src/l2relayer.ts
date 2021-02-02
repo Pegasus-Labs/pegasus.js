@@ -38,7 +38,7 @@ export interface L2RelayerCallRequest {
   signature?: string
 }
 
-export interface L2RelayerClinet {
+export interface L2RelayerClient {
   callFunction(req: L2RelayerCallRequest): Promise<string>
 }
 
@@ -61,12 +61,12 @@ _initSupportedFunctionList()
 export class L2RelaySigner extends Signer {
   readonly provider: Provider
   readonly l2Signer: L2Signer
-  readonly relayerClient: L2RelayerClinet
+  readonly relayerClient: L2RelayerClient
   txTimeout: number
   broker: Broker | null = null
   private chainId?: number
 
-  constructor(provider: Provider, l2Signer: L2Signer, relayer: L2RelayerClinet, txTimeout = DEFAULT_L2_TX_TIMEOUT) {
+  constructor(provider: Provider, l2Signer: L2Signer, relayer: L2RelayerClient, txTimeout = DEFAULT_L2_TX_TIMEOUT) {
     super()
 
     this.provider = provider
@@ -145,7 +145,7 @@ export class L2RelaySigner extends Signer {
       tx.chainId = cid
 
       if (!(cid in CHAIN_ID_TO_BROKER_ADDRESS)) {
-        return logger.throwArgumentError('gat broker address fail', 'chainId', chainId)
+        return logger.throwArgumentError('get broker address fail', 'chainId', chainId)
       }
       const brokerAddress = CHAIN_ID_TO_BROKER_ADDRESS[cid]
       const broker = BrokerFactory.connect(brokerAddress, this.provider)
@@ -265,7 +265,7 @@ interface RelayerRPCResponse {
 function isRelayerRPCResponse(x: any): x is RelayerRPCResponse {
   return typeof x.status === 'number' && typeof x.desc === 'string'
 }
-export class L2RelayerRPCClient implements L2RelayerClinet {
+export class L2RelayerRPCClient implements L2RelayerClient {
   private axios: AxiosInstance
 
   constructor(rpcBaseURL: string, timeout: number = DEFAULT_L2_TX_TIMEOUT) {
@@ -334,7 +334,7 @@ function bodyify(value: any, type: string): string {
 export enum RelayerRPCError {
   InternalServerError = 1,
   InvalidRequestError = 2,
-  InsufficentGasError = 3,
+  InsufficientGasError = 3,
   EstimateGasError = 4,
   SendTransactionError = 5
 }
@@ -345,8 +345,8 @@ function checkRPCError(response: RelayerRPCResponse, request: any): never {
       return logger.throwError('relayer server internal error', Logger.errors.SERVER_ERROR, { response, request })
     case RelayerRPCError.InvalidRequestError:
       return logger.throwError('bad relayer rpc request', Logger.errors.INVALID_ARGUMENT, { response, request })
-    case RelayerRPCError.InsufficentGasError:
-      return logger.throwError('insufficent broker gas', Logger.errors.INSUFFICIENT_FUNDS, { response, request })
+    case RelayerRPCError.InsufficientGasError:
+      return logger.throwError('insufficient broker gas', Logger.errors.INSUFFICIENT_FUNDS, { response, request })
     case RelayerRPCError.EstimateGasError:
       return logger.throwError('cannot estimate gas; transaction always fail', Logger.errors.UNPREDICTABLE_GAS_LIMIT, {
         response,
