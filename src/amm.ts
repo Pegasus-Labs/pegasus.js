@@ -165,10 +165,6 @@ export function computeBestAskBidPriceIfSafe(
 }
 
 export function computeBestAskBidPriceIfUnsafe(context: AMMTradingContext): BigNumber {
-  if (context.position1.gt(_0) && context.closeSlippageFactor.gt('0.5')) {
-    // special case: long position, β2 > 0.5
-    return _1.minus(context.maxClosePriceDiscount).times(context.index)
-  }
   return context.index
 }
 

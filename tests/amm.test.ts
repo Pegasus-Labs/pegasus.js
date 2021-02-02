@@ -565,13 +565,13 @@ describe('trade - success', function() {
       name: 'close unsafe 10 -> 9, normal',
       amm: poolStorage6,
       amount: new BigNumber('-1'),
-      deltaMargin: new BigNumber('80')
+      deltaMargin: new BigNumber('100')
     },
     {
       name: 'close unsafe 10 -> 9, small',
       amm: poolStorage6,
       amount: new BigNumber('-0.1'),
-      deltaMargin: new BigNumber('8')
+      deltaMargin: new BigNumber('10')
     }
   ]
 
@@ -769,7 +769,7 @@ describe('computeBestAskBidPrice', function() {
       name: 'close unsafe 10',
       amm: poolStorage6,
       isAMMBuy: false,
-      price: new BigNumber('80')
+      price: new BigNumber('100')
     }
   ]
 
