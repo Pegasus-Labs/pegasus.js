@@ -24,6 +24,7 @@ interface ReaderInterface extends ethers.utils.Interface {
   functions: {
     "getAccountStorage(address,uint256,address)": FunctionFragment;
     "getLiquidityPoolStorage(address)": FunctionFragment;
+    "getPoolMargin(address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -34,6 +35,10 @@ interface ReaderInterface extends ethers.utils.Interface {
     functionFragment: "getLiquidityPoolStorage",
     values: [string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "getPoolMargin",
+    values: [string]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "getAccountStorage",
@@ -41,6 +46,10 @@ interface ReaderInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getLiquidityPoolStorage",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPoolMargin",
     data: BytesLike
   ): Result;
 
@@ -84,6 +93,16 @@ export class Reader extends Contract {
       liquidityPool: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    getPoolMargin(
+      liquidityPool: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "getPoolMargin(address)"(
+      liquidityPool: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
   };
 
   getAccountStorage(
@@ -110,6 +129,16 @@ export class Reader extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  getPoolMargin(
+    liquidityPool: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "getPoolMargin(address)"(
+    liquidityPool: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     getAccountStorage(
       liquidityPool: string,
@@ -118,14 +147,43 @@ export class Reader extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       isSynced: boolean;
-      marginAccount: {
+      accountStorage: {
         cash: BigNumber;
         position: BigNumber;
+        availableCash: BigNumber;
+        margin: BigNumber;
+        settleableMargin: BigNumber;
+        isInitialMarginSafe: boolean;
+        isMaintenanceMarginSafe: boolean;
+        isMarginSafe: boolean;
         0: BigNumber;
         1: BigNumber;
+        2: BigNumber;
+        3: BigNumber;
+        4: BigNumber;
+        5: boolean;
+        6: boolean;
+        7: boolean;
       };
       0: boolean;
-      1: { cash: BigNumber; position: BigNumber; 0: BigNumber; 1: BigNumber };
+      1: {
+        cash: BigNumber;
+        position: BigNumber;
+        availableCash: BigNumber;
+        margin: BigNumber;
+        settleableMargin: BigNumber;
+        isInitialMarginSafe: boolean;
+        isMaintenanceMarginSafe: boolean;
+        isMarginSafe: boolean;
+        0: BigNumber;
+        1: BigNumber;
+        2: BigNumber;
+        3: BigNumber;
+        4: BigNumber;
+        5: boolean;
+        6: boolean;
+        7: boolean;
+      };
     }>;
 
     "getAccountStorage(address,uint256,address)"(
@@ -135,14 +193,43 @@ export class Reader extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       isSynced: boolean;
-      marginAccount: {
+      accountStorage: {
         cash: BigNumber;
         position: BigNumber;
+        availableCash: BigNumber;
+        margin: BigNumber;
+        settleableMargin: BigNumber;
+        isInitialMarginSafe: boolean;
+        isMaintenanceMarginSafe: boolean;
+        isMarginSafe: boolean;
         0: BigNumber;
         1: BigNumber;
+        2: BigNumber;
+        3: BigNumber;
+        4: BigNumber;
+        5: boolean;
+        6: boolean;
+        7: boolean;
       };
       0: boolean;
-      1: { cash: BigNumber; position: BigNumber; 0: BigNumber; 1: BigNumber };
+      1: {
+        cash: BigNumber;
+        position: BigNumber;
+        availableCash: BigNumber;
+        margin: BigNumber;
+        settleableMargin: BigNumber;
+        isInitialMarginSafe: boolean;
+        isMaintenanceMarginSafe: boolean;
+        isMarginSafe: boolean;
+        0: BigNumber;
+        1: BigNumber;
+        2: BigNumber;
+        3: BigNumber;
+        4: BigNumber;
+        5: boolean;
+        6: boolean;
+        7: boolean;
+      };
     }>;
 
     getLiquidityPoolStorage(
@@ -927,6 +1014,26 @@ export class Reader extends Contract {
           7: BigNumber;
         }[];
       };
+    }>;
+
+    getPoolMargin(
+      liquidityPool: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      isSynced: boolean;
+      poolMargin: BigNumber;
+      0: boolean;
+      1: BigNumber;
+    }>;
+
+    "getPoolMargin(address)"(
+      liquidityPool: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      isSynced: boolean;
+      poolMargin: BigNumber;
+      0: boolean;
+      1: BigNumber;
     }>;
   };
 
@@ -956,6 +1063,16 @@ export class Reader extends Contract {
       liquidityPool: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    getPoolMargin(
+      liquidityPool: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "getPoolMargin(address)"(
+      liquidityPool: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -979,6 +1096,16 @@ export class Reader extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "getLiquidityPoolStorage(address)"(
+      liquidityPool: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    getPoolMargin(
+      liquidityPool: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "getPoolMargin(address)"(
       liquidityPool: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
