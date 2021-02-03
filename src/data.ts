@@ -243,9 +243,10 @@ export async function getPerpetualClearProgress(
 
 export async function getPerpetualClearGasReward(
   liquidityPool: LiquidityPool,
-  perpetualIndex: number
+  perpetualIndex: number,
+  collateralDecimals: number
 ): Promise<BigNumber> {
   const perpetualInfo = await liquidityPool.callStatic.getPerpetualInfo(perpetualIndex)
-  const keeperGasReward = normalizeBigNumberish(perpetualInfo.nums[10]).shiftedBy(-DECIMALS)
+  const keeperGasReward = normalizeBigNumberish(perpetualInfo.nums[11]).shiftedBy(-collateralDecimals)
   return keeperGasReward
 }
