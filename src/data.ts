@@ -166,14 +166,14 @@ export async function getAccountStorage(
 ): Promise<AccountStorage> {
   getAddress(liquidityPoolAddress)
   getAddress(traderAddress)
-  const { marginAccount } = await reader.callStatic.getAccountStorage(
+  const { accountStorage } = await reader.callStatic.getAccountStorage(
     liquidityPoolAddress,
     perpetualIndex,
     traderAddress
   )
   return {
-    cashBalance: normalizeBigNumberish(marginAccount.cash).shiftedBy(-DECIMALS),
-    positionAmount: normalizeBigNumberish(marginAccount.position).shiftedBy(-DECIMALS),
+    cashBalance: normalizeBigNumberish(accountStorage.cash).shiftedBy(-DECIMALS),
+    positionAmount: normalizeBigNumberish(accountStorage.position).shiftedBy(-DECIMALS),
     entryValue: null,
     entryFunding: null
   }
