@@ -32,6 +32,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "getDescription(address)": FunctionFragment;
     "getLatestVersion()": FunctionFragment;
     "getLiquidityPoolCount()": FunctionFragment;
+    "getMCBToken()": FunctionFragment;
     "getOwnedLiquidityPoolsCountOf(address)": FunctionFragment;
     "getSymbolService()": FunctionFragment;
     "getVault()": FunctionFragment;
@@ -93,6 +94,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getLiquidityPoolCount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getMCBToken",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -206,6 +211,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getLiquidityPoolCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getMCBToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -460,6 +469,18 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
+    }>;
+
+    getMCBToken(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "getMCBToken()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
     }>;
 
     getOwnedLiquidityPoolsCountOf(
@@ -895,6 +916,10 @@ export class PoolCreator extends Contract {
 
   "getLiquidityPoolCount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+  getMCBToken(overrides?: CallOverrides): Promise<string>;
+
+  "getMCBToken()"(overrides?: CallOverrides): Promise<string>;
+
   getOwnedLiquidityPoolsCountOf(
     operator: string,
     overrides?: CallOverrides
@@ -1233,6 +1258,10 @@ export class PoolCreator extends Contract {
     getLiquidityPoolCount(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getLiquidityPoolCount()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getMCBToken(overrides?: CallOverrides): Promise<string>;
+
+    "getMCBToken()"(overrides?: CallOverrides): Promise<string>;
 
     getOwnedLiquidityPoolsCountOf(
       operator: string,
@@ -1589,6 +1618,10 @@ export class PoolCreator extends Contract {
 
     "getLiquidityPoolCount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getMCBToken(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getMCBToken()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getOwnedLiquidityPoolsCountOf(
       operator: string,
       overrides?: CallOverrides
@@ -1906,6 +1939,10 @@ export class PoolCreator extends Contract {
     "getLiquidityPoolCount()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    getMCBToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getMCBToken()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getOwnedLiquidityPoolsCountOf(
       operator: string,

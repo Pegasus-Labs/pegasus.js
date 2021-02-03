@@ -23,90 +23,63 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface LpGovernorInterface extends ethers.utils.Interface {
   functions: {
-    "BALLOT_TYPEHASH()": FunctionFragment;
-    "DELEGATION_TYPEHASH()": FunctionFragment;
-    "DOMAIN_TYPEHASH()": FunctionFragment;
     "SIGNATURE_PERPETUAL_SETTLE()": FunctionFragment;
     "SIGNATURE_PERPETUAL_SET_OPERATOR()": FunctionFragment;
     "SIGNATURE_PERPETUAL_UPGRADE()": FunctionFragment;
-    "_executeTransaction(address,uint256,string,bytes,uint256)": FunctionFragment;
-    "_rewardToken()": FunctionFragment;
+    "allowance(address,address)": FunctionFragment;
+    "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
+    "burn(address,uint256)": FunctionFragment;
+    "canPropose(address)": FunctionFragment;
     "castVote(uint256,bool)": FunctionFragment;
-    "castVoteBySig(uint256,bool,uint8,bytes32,bytes32)": FunctionFragment;
-    "criticalQuorumVotes()": FunctionFragment;
-    "delayAfterSucceeded()": FunctionFragment;
-    "delegate(address)": FunctionFragment;
-    "delegateBySig(address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
-    "deposits(address)": FunctionFragment;
-    "domainSeparator()": FunctionFragment;
+    "criticalQuorumRate()": FunctionFragment;
+    "decimals()": FunctionFragment;
+    "decreaseAllowance(address,uint256)": FunctionFragment;
     "earned(address)": FunctionFragment;
     "execute(uint256)": FunctionFragment;
+    "executionDelay()": FunctionFragment;
     "getActions(uint256)": FunctionFragment;
-    "getDelegate(address)": FunctionFragment;
-    "getNonce(address)": FunctionFragment;
-    "getPriorThreshold(uint256)": FunctionFragment;
-    "getPriorVotes(address,uint256)": FunctionFragment;
+    "getProposalPriorThreshold()": FunctionFragment;
     "getQuorumVotes(uint256)": FunctionFragment;
     "getReceipt(uint256,address)": FunctionFragment;
     "getReward()": FunctionFragment;
-    "getVoteBalance(address)": FunctionFragment;
-    "getVoteBalanceAt(address,uint256)": FunctionFragment;
-    "getVoteBalanceCheckpointAt(address,uint256)": FunctionFragment;
-    "getVoteBalanceCheckpointCount(address)": FunctionFragment;
-    "gracePeriod()": FunctionFragment;
-    "guardian()": FunctionFragment;
-    "initialize(address,address,address)": FunctionFragment;
+    "getUnlockBlock(address)": FunctionFragment;
+    "increaseAllowance(address,uint256)": FunctionFragment;
+    "initialize(string,string,address,address,address,address)": FunctionFragment;
     "isCriticalFunction(string)": FunctionFragment;
     "isLocked(address)": FunctionFragment;
+    "isLockedByVoting(address)": FunctionFragment;
     "lastTimeRewardApplicable()": FunctionFragment;
     "lastUpdateTime()": FunctionFragment;
     "latestProposalIds(address)": FunctionFragment;
-    "liquidityPool()": FunctionFragment;
+    "mint(address,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "notifyRewardAmount(uint256)": FunctionFragment;
-    "owner()": FunctionFragment;
     "periodFinish()": FunctionFragment;
     "proposalCount()": FunctionFragment;
     "proposalMaxOperations()": FunctionFragment;
-    "proposalThreshold()": FunctionFragment;
+    "proposalThresholdRate()": FunctionFragment;
     "proposals(uint256)": FunctionFragment;
     "propose(string[],bytes[],string)": FunctionFragment;
-    "quorumVotes()": FunctionFragment;
-    "renounceOwnership()": FunctionFragment;
+    "quorumRate()": FunctionFragment;
     "rewardDistribution()": FunctionFragment;
     "rewardPerToken()": FunctionFragment;
     "rewardPerTokenStored()": FunctionFragment;
     "rewardRate()": FunctionFragment;
+    "rewardToken()": FunctionFragment;
     "rewards(address)": FunctionFragment;
-    "setRewardDistribution(address)": FunctionFragment;
     "setRewardRate(uint256)": FunctionFragment;
-    "shareToken()": FunctionFragment;
-    "stake(uint256)": FunctionFragment;
     "state(uint256)": FunctionFragment;
-    "target()": FunctionFragment;
+    "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
-    "transferOwnership(address)": FunctionFragment;
-    "unlockBlocks(address)": FunctionFragment;
+    "transfer(address,uint256)": FunctionFragment;
+    "transferFrom(address,address,uint256)": FunctionFragment;
     "unlockPeriod()": FunctionFragment;
     "userRewardPerTokenPaid(address)": FunctionFragment;
     "votingDelay()": FunctionFragment;
     "votingPeriod()": FunctionFragment;
-    "withdraw(uint256)": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "BALLOT_TYPEHASH",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "DELEGATION_TYPEHASH",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "DOMAIN_TYPEHASH",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "SIGNATURE_PERPETUAL_SETTLE",
     values?: undefined
@@ -120,46 +93,31 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "_executeTransaction",
-    values: [string, BigNumberish, string, BytesLike, BigNumberish]
+    functionFragment: "allowance",
+    values: [string, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "_rewardToken",
-    values?: undefined
+    functionFragment: "approve",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "burn",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "canPropose", values: [string]): string;
   encodeFunctionData(
     functionFragment: "castVote",
     values: [BigNumberish, boolean]
   ): string;
   encodeFunctionData(
-    functionFragment: "castVoteBySig",
-    values: [BigNumberish, boolean, BigNumberish, BytesLike, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "criticalQuorumVotes",
+    functionFragment: "criticalQuorumRate",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "delayAfterSucceeded",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "delegate", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "delegateBySig",
-    values: [
-      string,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BytesLike,
-      BytesLike
-    ]
-  ): string;
-  encodeFunctionData(functionFragment: "deposits", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "domainSeparator",
-    values?: undefined
+    functionFragment: "decreaseAllowance",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "earned", values: [string]): string;
   encodeFunctionData(
@@ -167,18 +125,16 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "executionDelay",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getActions",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "getDelegate", values: [string]): string;
-  encodeFunctionData(functionFragment: "getNonce", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "getPriorThreshold",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getPriorVotes",
-    values: [string, BigNumberish]
+    functionFragment: "getProposalPriorThreshold",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getQuorumVotes",
@@ -190,35 +146,26 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "getReward", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "getVoteBalance",
+    functionFragment: "getUnlockBlock",
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "getVoteBalanceAt",
+    functionFragment: "increaseAllowance",
     values: [string, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "getVoteBalanceCheckpointAt",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getVoteBalanceCheckpointCount",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "gracePeriod",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "guardian", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [string, string, string]
+    values: [string, string, string, string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "isCriticalFunction",
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "isLocked", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "isLockedByVoting",
+    values: [string]
+  ): string;
   encodeFunctionData(
     functionFragment: "lastTimeRewardApplicable",
     values?: undefined
@@ -232,15 +179,14 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "liquidityPool",
-    values?: undefined
+    functionFragment: "mint",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "notifyRewardAmount",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "periodFinish",
     values?: undefined
@@ -254,7 +200,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "proposalThreshold",
+    functionFragment: "proposalThresholdRate",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -266,11 +212,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     values: [string[], BytesLike[], string]
   ): string;
   encodeFunctionData(
-    functionFragment: "quorumVotes",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "renounceOwnership",
+    functionFragment: "quorumRate",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -289,33 +231,28 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     functionFragment: "rewardRate",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "rewards", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "setRewardDistribution",
-    values: [string]
+    functionFragment: "rewardToken",
+    values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "rewards", values: [string]): string;
   encodeFunctionData(
     functionFragment: "setRewardRate",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "shareToken",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "stake", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "state", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "target", values?: undefined): string;
+  encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [string]
+    functionFragment: "transfer",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "unlockBlocks",
-    values: [string]
+    functionFragment: "transferFrom",
+    values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "unlockPeriod",
@@ -333,23 +270,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     functionFragment: "votingPeriod",
     values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: "withdraw",
-    values: [BigNumberish]
-  ): string;
 
-  decodeFunctionResult(
-    functionFragment: "BALLOT_TYPEHASH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "DELEGATION_TYPEHASH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "DOMAIN_TYPEHASH",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "SIGNATURE_PERPETUAL_SETTLE",
     data: BytesLike
@@ -362,52 +283,30 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     functionFragment: "SIGNATURE_PERPETUAL_UPGRADE",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "_executeTransaction",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "_rewardToken",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "canPropose", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "castVote", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "castVoteBySig",
+    functionFragment: "criticalQuorumRate",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "criticalQuorumVotes",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "delayAfterSucceeded",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "delegate", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "delegateBySig",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "deposits", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "domainSeparator",
+    functionFragment: "decreaseAllowance",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "earned", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "execute", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "executionDelay",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getActions", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getDelegate",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "getNonce", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getPriorThreshold",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getPriorVotes",
+    functionFragment: "getProposalPriorThreshold",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -417,32 +316,23 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "getReceipt", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getReward", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getVoteBalance",
+    functionFragment: "getUnlockBlock",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getVoteBalanceAt",
+    functionFragment: "increaseAllowance",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "getVoteBalanceCheckpointAt",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getVoteBalanceCheckpointCount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "gracePeriod",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "guardian", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isCriticalFunction",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "isLocked", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "isLockedByVoting",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "lastTimeRewardApplicable",
     data: BytesLike
@@ -455,16 +345,12 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     functionFragment: "latestProposalIds",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "liquidityPool",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "notifyRewardAmount",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "periodFinish",
     data: BytesLike
@@ -478,19 +364,12 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "proposalThreshold",
+    functionFragment: "proposalThresholdRate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "proposals", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "propose", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "quorumVotes",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "quorumRate", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "rewardDistribution",
     data: BytesLike
@@ -504,29 +383,24 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "rewardRate", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "rewards", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "setRewardDistribution",
+    functionFragment: "rewardToken",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "rewards", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setRewardRate",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "shareToken", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "stake", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "state", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "target", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "transfer", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "transferOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "unlockBlocks",
+    functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -545,41 +419,28 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     functionFragment: "votingPeriod",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {
-    "DelegateChanged(address,address,address)": EventFragment;
-    "DelegateVotesChanged(address,uint256,uint256)": EventFragment;
-    "ExecuteTransaction(bytes32,address,uint256,string,bytes,uint256)": EventFragment;
-    "OwnershipTransferred(address,address)": EventFragment;
-    "ProposalCanceled(uint256)": EventFragment;
-    "ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)": EventFragment;
+    "Approval(address,address,uint256)": EventFragment;
+    "ExecuteTransaction(bytes32,address,string,bytes,uint256)": EventFragment;
+    "ProposalCreated(uint256,address,string[],bytes[],uint256,uint256,string)": EventFragment;
     "ProposalExecuted(uint256)": EventFragment;
-    "ProposalQueued(uint256,uint256)": EventFragment;
     "RewardAdded(uint256,uint256)": EventFragment;
     "RewardPaid(address,uint256)": EventFragment;
     "RewardRateChanged(uint256,uint256,uint256)": EventFragment;
-    "SaveVoteBalanceCheckpoint(address,uint256)": EventFragment;
-    "Stake(address,uint256)": EventFragment;
+    "Transfer(address,address,uint256)": EventFragment;
     "VoteCast(address,uint256,bool,uint256)": EventFragment;
-    "Withdraw(address,uint256)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "DelegateChanged"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "DelegateVotesChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ExecuteTransaction"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "ProposalCanceled"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalCreated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ProposalExecuted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "ProposalQueued"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RewardAdded"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RewardPaid"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RewardRateChanged"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SaveVoteBalanceCheckpoint"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Stake"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "VoteCast"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Withdraw"): EventFragment;
 }
 
 export class LpGovernor extends Contract {
@@ -596,42 +457,6 @@ export class LpGovernor extends Contract {
   interface: LpGovernorInterface;
 
   functions: {
-    BALLOT_TYPEHASH(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "BALLOT_TYPEHASH()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    DELEGATION_TYPEHASH(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "DELEGATION_TYPEHASH()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    DOMAIN_TYPEHASH(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "DOMAIN_TYPEHASH()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
     SIGNATURE_PERPETUAL_SETTLE(
       overrides?: CallOverrides
     ): Promise<{
@@ -668,35 +493,33 @@ export class LpGovernor extends Contract {
       0: string;
     }>;
 
-    _executeTransaction(
-      target: string,
-      value: BigNumberish,
-      signature: string,
-      data: BytesLike,
-      eta: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
-    "_executeTransaction(address,uint256,string,bytes,uint256)"(
-      target: string,
-      value: BigNumberish,
-      signature: string,
-      data: BytesLike,
-      eta: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
-    _rewardToken(
+    allowance(
+      owner: string,
+      spender: string,
       overrides?: CallOverrides
     ): Promise<{
-      0: string;
+      0: BigNumber;
     }>;
 
-    "_rewardToken()"(
+    "allowance(address,address)"(
+      owner: string,
+      spender: string,
       overrides?: CallOverrides
     ): Promise<{
-      0: string;
+      0: BigNumber;
     }>;
+
+    approve(
+      spender: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "approve(address,uint256)"(
+      spender: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     balanceOf(
       account: string,
@@ -712,6 +535,32 @@ export class LpGovernor extends Contract {
       0: BigNumber;
     }>;
 
+    burn(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "burn(address,uint256)"(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    canPropose(
+      voter: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "canPropose(address)"(
+      voter: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
     castVote(
       proposalId: BigNumberish,
       support: boolean,
@@ -724,103 +573,41 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    castVoteBySig(
-      proposalId: BigNumberish,
-      support: boolean,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "castVoteBySig(uint256,bool,uint8,bytes32,bytes32)"(
-      proposalId: BigNumberish,
-      support: boolean,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    criticalQuorumVotes(
+    criticalQuorumRate(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    "criticalQuorumVotes()"(
+    "criticalQuorumRate()"(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    delayAfterSucceeded(
+    decimals(
       overrides?: CallOverrides
     ): Promise<{
-      0: BigNumber;
+      0: number;
     }>;
 
-    "delayAfterSucceeded()"(
+    "decimals()"(
       overrides?: CallOverrides
     ): Promise<{
-      0: BigNumber;
+      0: number;
     }>;
 
-    delegate(
-      delegatee: string,
+    decreaseAllowance(
+      spender: string,
+      subtractedValue: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "delegate(address)"(
-      delegatee: string,
+    "decreaseAllowance(address,uint256)"(
+      spender: string,
+      subtractedValue: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
-
-    delegateBySig(
-      delegatee: string,
-      nonce: BigNumberish,
-      expiry: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "delegateBySig(address,uint256,uint256,uint8,bytes32,bytes32)"(
-      delegatee: string,
-      nonce: BigNumberish,
-      expiry: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    deposits(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "deposits(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    domainSeparator(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "domainSeparator()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
 
     earned(
       account: string,
@@ -846,87 +633,45 @@ export class LpGovernor extends Contract {
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
+    executionDelay(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "executionDelay()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
     getActions(
       proposalId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      targets: string[];
-      values: BigNumber[];
       signatures: string[];
       calldatas: string[];
       0: string[];
-      1: BigNumber[];
-      2: string[];
-      3: string[];
+      1: string[];
     }>;
 
     "getActions(uint256)"(
       proposalId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      targets: string[];
-      values: BigNumber[];
       signatures: string[];
       calldatas: string[];
       0: string[];
-      1: BigNumber[];
-      2: string[];
-      3: string[];
+      1: string[];
     }>;
 
-    getDelegate(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "getDelegate(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    getNonce(
-      account: string,
+    getProposalPriorThreshold(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    "getNonce(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    getPriorThreshold(
-      blockNumber: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "getPriorThreshold(uint256)"(
-      blockNumber: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    getPriorVotes(
-      account: string,
-      blockNumber: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "getPriorVotes(address,uint256)"(
-      account: string,
-      blockNumber: BigNumberish,
+    "getProposalPriorThreshold()"(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
@@ -980,103 +725,49 @@ export class LpGovernor extends Contract {
 
     "getReward()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-    getVoteBalance(
+    getUnlockBlock(
       account: string,
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    "getVoteBalance(address)"(
+    "getUnlockBlock(address)"(
       account: string,
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    getVoteBalanceAt(
-      account: string,
-      blockNumber: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "getVoteBalanceAt(address,uint256)"(
-      account: string,
-      blockNumber: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    getVoteBalanceCheckpointAt(
-      account: string,
-      checkpointIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-      1: BigNumber;
-    }>;
-
-    "getVoteBalanceCheckpointAt(address,uint256)"(
-      account: string,
-      checkpointIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-      1: BigNumber;
-    }>;
-
-    getVoteBalanceCheckpointCount(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "getVoteBalanceCheckpointCount(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    gracePeriod(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "gracePeriod()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    guardian(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "guardian()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    initialize(
-      target_: string,
-      shareToken_: string,
-      rewardToken_: string,
+    increaseAllowance(
+      spender: string,
+      addedValue: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "initialize(address,address,address)"(
-      target_: string,
-      shareToken_: string,
-      rewardToken_: string,
+    "increaseAllowance(address,uint256)"(
+      spender: string,
+      addedValue: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    initialize(
+      name: string,
+      symbol: string,
+      minter: string,
+      target: string,
+      rewardToken: string,
+      distributor: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "initialize(string,string,address,address,address,address)"(
+      name: string,
+      symbol: string,
+      minter: string,
+      target: string,
+      rewardToken: string,
+      distributor: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1095,12 +786,22 @@ export class LpGovernor extends Contract {
     }>;
 
     isLocked(
-      voter: string,
+      account: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "isLocked(address)"(
-      voter: string,
+      account: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    isLockedByVoting(
+      account: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "isLockedByVoting(address)"(
+      account: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1142,17 +843,17 @@ export class LpGovernor extends Contract {
       0: BigNumber;
     }>;
 
-    liquidityPool(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
+    mint(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
-    "liquidityPool()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
+    "mint(address,uint256)"(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     name(
       overrides?: CallOverrides
@@ -1175,18 +876,6 @@ export class LpGovernor extends Contract {
       reward: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
-
-    owner(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "owner()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
 
     periodFinish(
       overrides?: CallOverrides
@@ -1224,13 +913,13 @@ export class LpGovernor extends Contract {
       0: BigNumber;
     }>;
 
-    proposalThreshold(
+    proposalThresholdRate(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    "proposalThreshold()"(
+    "proposalThresholdRate()"(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
@@ -1298,21 +987,17 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    quorumVotes(
+    quorumRate(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    "quorumVotes()"(
+    "quorumRate()"(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
-
-    renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
 
     rewardDistribution(
       overrides?: CallOverrides
@@ -1362,6 +1047,18 @@ export class LpGovernor extends Contract {
       0: BigNumber;
     }>;
 
+    rewardToken(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "rewardToken()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
     rewards(
       arg0: string,
       overrides?: CallOverrides
@@ -1376,16 +1073,6 @@ export class LpGovernor extends Contract {
       0: BigNumber;
     }>;
 
-    setRewardDistribution(
-      _rewardDistribution: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setRewardDistribution(address)"(
-      _rewardDistribution: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     setRewardRate(
       newRewardRate: BigNumberish,
       overrides?: Overrides
@@ -1393,28 +1080,6 @@ export class LpGovernor extends Contract {
 
     "setRewardRate(uint256)"(
       newRewardRate: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    shareToken(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "shareToken()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    stake(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "stake(uint256)"(
-      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1432,13 +1097,13 @@ export class LpGovernor extends Contract {
       0: number;
     }>;
 
-    target(
+    symbol(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    "target()"(
+    "symbol()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -1456,29 +1121,31 @@ export class LpGovernor extends Contract {
       0: BigNumber;
     }>;
 
-    transferOwnership(
-      newOwner: string,
+    transfer(
+      recipient: string,
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "transferOwnership(address)"(
-      newOwner: string,
+    "transfer(address,uint256)"(
+      recipient: string,
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    unlockBlocks(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
+    transferFrom(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
-    "unlockBlocks(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
+    "transferFrom(address,address,uint256)"(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     unlockPeriod(
       overrides?: CallOverrides
@@ -1529,29 +1196,7 @@ export class LpGovernor extends Contract {
     ): Promise<{
       0: BigNumber;
     }>;
-
-    withdraw(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "withdraw(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
   };
-
-  BALLOT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
-
-  "BALLOT_TYPEHASH()"(overrides?: CallOverrides): Promise<string>;
-
-  DELEGATION_TYPEHASH(overrides?: CallOverrides): Promise<string>;
-
-  "DELEGATION_TYPEHASH()"(overrides?: CallOverrides): Promise<string>;
-
-  DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<string>;
-
-  "DOMAIN_TYPEHASH()"(overrides?: CallOverrides): Promise<string>;
 
   SIGNATURE_PERPETUAL_SETTLE(overrides?: CallOverrides): Promise<string>;
 
@@ -1567,27 +1212,29 @@ export class LpGovernor extends Contract {
 
   "SIGNATURE_PERPETUAL_UPGRADE()"(overrides?: CallOverrides): Promise<string>;
 
-  _executeTransaction(
-    target: string,
-    value: BigNumberish,
-    signature: string,
-    data: BytesLike,
-    eta: BigNumberish,
-    overrides?: PayableOverrides
+  allowance(
+    owner: string,
+    spender: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "allowance(address,address)"(
+    owner: string,
+    spender: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  approve(
+    spender: string,
+    amount: BigNumberish,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "_executeTransaction(address,uint256,string,bytes,uint256)"(
-    target: string,
-    value: BigNumberish,
-    signature: string,
-    data: BytesLike,
-    eta: BigNumberish,
-    overrides?: PayableOverrides
+  "approve(address,uint256)"(
+    spender: string,
+    amount: BigNumberish,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
-
-  _rewardToken(overrides?: CallOverrides): Promise<string>;
-
-  "_rewardToken()"(overrides?: CallOverrides): Promise<string>;
 
   balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1595,6 +1242,25 @@ export class LpGovernor extends Contract {
     account: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  burn(
+    account: string,
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "burn(address,uint256)"(
+    account: string,
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  canPropose(voter: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "canPropose(address)"(
+    voter: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   castVote(
     proposalId: BigNumberish,
@@ -1608,72 +1274,25 @@ export class LpGovernor extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  castVoteBySig(
-    proposalId: BigNumberish,
-    support: boolean,
-    v: BigNumberish,
-    r: BytesLike,
-    s: BytesLike,
+  criticalQuorumRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "criticalQuorumRate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  decimals(overrides?: CallOverrides): Promise<number>;
+
+  "decimals()"(overrides?: CallOverrides): Promise<number>;
+
+  decreaseAllowance(
+    spender: string,
+    subtractedValue: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "castVoteBySig(uint256,bool,uint8,bytes32,bytes32)"(
-    proposalId: BigNumberish,
-    support: boolean,
-    v: BigNumberish,
-    r: BytesLike,
-    s: BytesLike,
+  "decreaseAllowance(address,uint256)"(
+    spender: string,
+    subtractedValue: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
-
-  criticalQuorumVotes(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "criticalQuorumVotes()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  delayAfterSucceeded(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "delayAfterSucceeded()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  delegate(
-    delegatee: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "delegate(address)"(
-    delegatee: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  delegateBySig(
-    delegatee: string,
-    nonce: BigNumberish,
-    expiry: BigNumberish,
-    v: BigNumberish,
-    r: BytesLike,
-    s: BytesLike,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "delegateBySig(address,uint256,uint256,uint8,bytes32,bytes32)"(
-    delegatee: string,
-    nonce: BigNumberish,
-    expiry: BigNumberish,
-    v: BigNumberish,
-    r: BytesLike,
-    s: BytesLike,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  deposits(account: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-  "deposits(address)"(
-    account: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  domainSeparator(overrides?: CallOverrides): Promise<string>;
-
-  "domainSeparator()"(overrides?: CallOverrides): Promise<string>;
 
   earned(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1692,69 +1311,33 @@ export class LpGovernor extends Contract {
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
+  executionDelay(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "executionDelay()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   getActions(
     proposalId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<{
-    targets: string[];
-    values: BigNumber[];
     signatures: string[];
     calldatas: string[];
     0: string[];
-    1: BigNumber[];
-    2: string[];
-    3: string[];
+    1: string[];
   }>;
 
   "getActions(uint256)"(
     proposalId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<{
-    targets: string[];
-    values: BigNumber[];
     signatures: string[];
     calldatas: string[];
     0: string[];
-    1: BigNumber[];
-    2: string[];
-    3: string[];
+    1: string[];
   }>;
 
-  getDelegate(account: string, overrides?: CallOverrides): Promise<string>;
+  getProposalPriorThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "getDelegate(address)"(
-    account: string,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  getNonce(account: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-  "getNonce(address)"(
-    account: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getPriorThreshold(
-    blockNumber: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "getPriorThreshold(uint256)"(
-    blockNumber: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getPriorVotes(
-    account: string,
-    blockNumber: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "getPriorVotes(address,uint256)"(
-    account: string,
-    blockNumber: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  "getProposalPriorThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   getQuorumVotes(
     proposalId: BigNumberish,
@@ -1796,75 +1379,45 @@ export class LpGovernor extends Contract {
 
   "getReward()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-  getVoteBalance(
+  getUnlockBlock(
     account: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  "getVoteBalance(address)"(
+  "getUnlockBlock(address)"(
     account: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  getVoteBalanceAt(
-    account: string,
-    blockNumber: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "getVoteBalanceAt(address,uint256)"(
-    account: string,
-    blockNumber: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getVoteBalanceCheckpointAt(
-    account: string,
-    checkpointIndex: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<{
-    0: BigNumber;
-    1: BigNumber;
-  }>;
-
-  "getVoteBalanceCheckpointAt(address,uint256)"(
-    account: string,
-    checkpointIndex: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<{
-    0: BigNumber;
-    1: BigNumber;
-  }>;
-
-  getVoteBalanceCheckpointCount(
-    account: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "getVoteBalanceCheckpointCount(address)"(
-    account: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  gracePeriod(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "gracePeriod()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  guardian(overrides?: CallOverrides): Promise<string>;
-
-  "guardian()"(overrides?: CallOverrides): Promise<string>;
-
-  initialize(
-    target_: string,
-    shareToken_: string,
-    rewardToken_: string,
+  increaseAllowance(
+    spender: string,
+    addedValue: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "initialize(address,address,address)"(
-    target_: string,
-    shareToken_: string,
-    rewardToken_: string,
+  "increaseAllowance(address,uint256)"(
+    spender: string,
+    addedValue: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  initialize(
+    name: string,
+    symbol: string,
+    minter: string,
+    target: string,
+    rewardToken: string,
+    distributor: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "initialize(string,string,address,address,address,address)"(
+    name: string,
+    symbol: string,
+    minter: string,
+    target: string,
+    rewardToken: string,
+    distributor: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1878,10 +1431,23 @@ export class LpGovernor extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  isLocked(voter: string, overrides?: Overrides): Promise<ContractTransaction>;
+  isLocked(
+    account: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   "isLocked(address)"(
-    voter: string,
+    account: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  isLockedByVoting(
+    account: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "isLockedByVoting(address)"(
+    account: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1903,9 +1469,17 @@ export class LpGovernor extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  liquidityPool(overrides?: CallOverrides): Promise<string>;
+  mint(
+    account: string,
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  "liquidityPool()"(overrides?: CallOverrides): Promise<string>;
+  "mint(address,uint256)"(
+    account: string,
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   name(overrides?: CallOverrides): Promise<string>;
 
@@ -1921,10 +1495,6 @@ export class LpGovernor extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  "owner()"(overrides?: CallOverrides): Promise<string>;
-
   periodFinish(overrides?: CallOverrides): Promise<BigNumber>;
 
   "periodFinish()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1937,9 +1507,9 @@ export class LpGovernor extends Contract {
 
   "proposalMaxOperations()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-  proposalThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+  proposalThresholdRate(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "proposalThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "proposalThresholdRate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   proposals(
     arg0: BigNumberish,
@@ -2003,13 +1573,9 @@ export class LpGovernor extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  quorumVotes(overrides?: CallOverrides): Promise<BigNumber>;
+  quorumRate(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "quorumVotes()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
+  "quorumRate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   rewardDistribution(overrides?: CallOverrides): Promise<string>;
 
@@ -2027,22 +1593,16 @@ export class LpGovernor extends Contract {
 
   "rewardRate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+  rewardToken(overrides?: CallOverrides): Promise<string>;
+
+  "rewardToken()"(overrides?: CallOverrides): Promise<string>;
+
   rewards(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   "rewards(address)"(
     arg0: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
-
-  setRewardDistribution(
-    _rewardDistribution: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setRewardDistribution(address)"(
-    _rewardDistribution: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
 
   setRewardRate(
     newRewardRate: BigNumberish,
@@ -2054,20 +1614,6 @@ export class LpGovernor extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  shareToken(overrides?: CallOverrides): Promise<string>;
-
-  "shareToken()"(overrides?: CallOverrides): Promise<string>;
-
-  stake(
-    amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "stake(uint256)"(
-    amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   state(proposalId: BigNumberish, overrides?: CallOverrides): Promise<number>;
 
   "state(uint256)"(
@@ -2075,30 +1621,39 @@ export class LpGovernor extends Contract {
     overrides?: CallOverrides
   ): Promise<number>;
 
-  target(overrides?: CallOverrides): Promise<string>;
+  symbol(overrides?: CallOverrides): Promise<string>;
 
-  "target()"(overrides?: CallOverrides): Promise<string>;
+  "symbol()"(overrides?: CallOverrides): Promise<string>;
 
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
   "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-  transferOwnership(
-    newOwner: string,
+  transfer(
+    recipient: string,
+    amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "transferOwnership(address)"(
-    newOwner: string,
+  "transfer(address,uint256)"(
+    recipient: string,
+    amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  unlockBlocks(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+  transferFrom(
+    sender: string,
+    recipient: string,
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  "unlockBlocks(address)"(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  "transferFrom(address,address,uint256)"(
+    sender: string,
+    recipient: string,
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   unlockPeriod(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2122,29 +1677,7 @@ export class LpGovernor extends Contract {
 
   "votingPeriod()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-  withdraw(
-    amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "withdraw(uint256)"(
-    amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   callStatic: {
-    BALLOT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
-
-    "BALLOT_TYPEHASH()"(overrides?: CallOverrides): Promise<string>;
-
-    DELEGATION_TYPEHASH(overrides?: CallOverrides): Promise<string>;
-
-    "DELEGATION_TYPEHASH()"(overrides?: CallOverrides): Promise<string>;
-
-    DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<string>;
-
-    "DOMAIN_TYPEHASH()"(overrides?: CallOverrides): Promise<string>;
-
     SIGNATURE_PERPETUAL_SETTLE(overrides?: CallOverrides): Promise<string>;
 
     "SIGNATURE_PERPETUAL_SETTLE()"(overrides?: CallOverrides): Promise<string>;
@@ -2161,27 +1694,29 @@ export class LpGovernor extends Contract {
 
     "SIGNATURE_PERPETUAL_UPGRADE()"(overrides?: CallOverrides): Promise<string>;
 
-    _executeTransaction(
-      target: string,
-      value: BigNumberish,
-      signature: string,
-      data: BytesLike,
-      eta: BigNumberish,
+    allowance(
+      owner: string,
+      spender: string,
       overrides?: CallOverrides
-    ): Promise<string>;
+    ): Promise<BigNumber>;
 
-    "_executeTransaction(address,uint256,string,bytes,uint256)"(
-      target: string,
-      value: BigNumberish,
-      signature: string,
-      data: BytesLike,
-      eta: BigNumberish,
+    "allowance(address,address)"(
+      owner: string,
+      spender: string,
       overrides?: CallOverrides
-    ): Promise<string>;
+    ): Promise<BigNumber>;
 
-    _rewardToken(overrides?: CallOverrides): Promise<string>;
+    approve(
+      spender: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
-    "_rewardToken()"(overrides?: CallOverrides): Promise<string>;
+    "approve(address,uint256)"(
+      spender: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2189,6 +1724,25 @@ export class LpGovernor extends Contract {
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    burn(
+      account: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "burn(address,uint256)"(
+      account: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    canPropose(voter: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "canPropose(address)"(
+      voter: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     castVote(
       proposalId: BigNumberish,
@@ -2202,69 +1756,25 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    castVoteBySig(
-      proposalId: BigNumberish,
-      support: boolean,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
+    criticalQuorumRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "criticalQuorumRate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    decimals(overrides?: CallOverrides): Promise<number>;
+
+    "decimals()"(overrides?: CallOverrides): Promise<number>;
+
+    decreaseAllowance(
+      spender: string,
+      subtractedValue: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<boolean>;
 
-    "castVoteBySig(uint256,bool,uint8,bytes32,bytes32)"(
-      proposalId: BigNumberish,
-      support: boolean,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
+    "decreaseAllowance(address,uint256)"(
+      spender: string,
+      subtractedValue: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<void>;
-
-    criticalQuorumVotes(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "criticalQuorumVotes()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    delayAfterSucceeded(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "delayAfterSucceeded()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    delegate(delegatee: string, overrides?: CallOverrides): Promise<void>;
-
-    "delegate(address)"(
-      delegatee: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    delegateBySig(
-      delegatee: string,
-      nonce: BigNumberish,
-      expiry: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "delegateBySig(address,uint256,uint256,uint8,bytes32,bytes32)"(
-      delegatee: string,
-      nonce: BigNumberish,
-      expiry: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    deposits(account: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "deposits(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    domainSeparator(overrides?: CallOverrides): Promise<string>;
-
-    "domainSeparator()"(overrides?: CallOverrides): Promise<string>;
+    ): Promise<boolean>;
 
     earned(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2280,67 +1790,33 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    executionDelay(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "executionDelay()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getActions(
       proposalId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      targets: string[];
-      values: BigNumber[];
       signatures: string[];
       calldatas: string[];
       0: string[];
-      1: BigNumber[];
-      2: string[];
-      3: string[];
+      1: string[];
     }>;
 
     "getActions(uint256)"(
       proposalId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      targets: string[];
-      values: BigNumber[];
       signatures: string[];
       calldatas: string[];
       0: string[];
-      1: BigNumber[];
-      2: string[];
-      3: string[];
+      1: string[];
     }>;
 
-    getDelegate(account: string, overrides?: CallOverrides): Promise<string>;
+    getProposalPriorThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "getDelegate(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    getNonce(account: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getNonce(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getPriorThreshold(
-      blockNumber: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getPriorThreshold(uint256)"(
-      blockNumber: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getPriorVotes(
-      account: string,
-      blockNumber: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getPriorVotes(address,uint256)"(
-      account: string,
-      blockNumber: BigNumberish,
+    "getProposalPriorThreshold()"(
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2384,75 +1860,45 @@ export class LpGovernor extends Contract {
 
     "getReward()"(overrides?: CallOverrides): Promise<void>;
 
-    getVoteBalance(
+    getUnlockBlock(
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "getVoteBalance(address)"(
+    "getUnlockBlock(address)"(
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getVoteBalanceAt(
-      account: string,
-      blockNumber: BigNumberish,
+    increaseAllowance(
+      spender: string,
+      addedValue: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<boolean>;
 
-    "getVoteBalanceAt(address,uint256)"(
-      account: string,
-      blockNumber: BigNumberish,
+    "increaseAllowance(address,uint256)"(
+      spender: string,
+      addedValue: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getVoteBalanceCheckpointAt(
-      account: string,
-      checkpointIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-      1: BigNumber;
-    }>;
-
-    "getVoteBalanceCheckpointAt(address,uint256)"(
-      account: string,
-      checkpointIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-      1: BigNumber;
-    }>;
-
-    getVoteBalanceCheckpointCount(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getVoteBalanceCheckpointCount(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    gracePeriod(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "gracePeriod()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    guardian(overrides?: CallOverrides): Promise<string>;
-
-    "guardian()"(overrides?: CallOverrides): Promise<string>;
+    ): Promise<boolean>;
 
     initialize(
-      target_: string,
-      shareToken_: string,
-      rewardToken_: string,
+      name: string,
+      symbol: string,
+      minter: string,
+      target: string,
+      rewardToken: string,
+      distributor: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initialize(address,address,address)"(
-      target_: string,
-      shareToken_: string,
-      rewardToken_: string,
+    "initialize(string,string,address,address,address,address)"(
+      name: string,
+      symbol: string,
+      minter: string,
+      target: string,
+      rewardToken: string,
+      distributor: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2466,10 +1912,20 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    isLocked(voter: string, overrides?: CallOverrides): Promise<boolean>;
+    isLocked(account: string, overrides?: CallOverrides): Promise<boolean>;
 
     "isLocked(address)"(
-      voter: string,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    isLockedByVoting(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "isLockedByVoting(address)"(
+      account: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -2491,9 +1947,17 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    liquidityPool(overrides?: CallOverrides): Promise<string>;
+    mint(
+      account: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    "liquidityPool()"(overrides?: CallOverrides): Promise<string>;
+    "mint(address,uint256)"(
+      account: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -2509,10 +1973,6 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    owner(overrides?: CallOverrides): Promise<string>;
-
-    "owner()"(overrides?: CallOverrides): Promise<string>;
-
     periodFinish(overrides?: CallOverrides): Promise<BigNumber>;
 
     "periodFinish()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2525,9 +1985,9 @@ export class LpGovernor extends Contract {
 
     "proposalMaxOperations()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    proposalThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+    proposalThresholdRate(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "proposalThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "proposalThresholdRate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     proposals(
       arg0: BigNumberish,
@@ -2591,13 +2051,9 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    quorumVotes(overrides?: CallOverrides): Promise<BigNumber>;
+    quorumRate(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "quorumVotes()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
+    "quorumRate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     rewardDistribution(overrides?: CallOverrides): Promise<string>;
 
@@ -2615,22 +2071,16 @@ export class LpGovernor extends Contract {
 
     "rewardRate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    rewardToken(overrides?: CallOverrides): Promise<string>;
+
+    "rewardToken()"(overrides?: CallOverrides): Promise<string>;
+
     rewards(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "rewards(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    setRewardDistribution(
-      _rewardDistribution: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "setRewardDistribution(address)"(
-      _rewardDistribution: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     setRewardRate(
       newRewardRate: BigNumberish,
@@ -2642,17 +2092,6 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    shareToken(overrides?: CallOverrides): Promise<string>;
-
-    "shareToken()"(overrides?: CallOverrides): Promise<string>;
-
-    stake(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
-    "stake(uint256)"(
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     state(proposalId: BigNumberish, overrides?: CallOverrides): Promise<number>;
 
     "state(uint256)"(
@@ -2660,30 +2099,39 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<number>;
 
-    target(overrides?: CallOverrides): Promise<string>;
+    symbol(overrides?: CallOverrides): Promise<string>;
 
-    "target()"(overrides?: CallOverrides): Promise<string>;
+    "symbol()"(overrides?: CallOverrides): Promise<string>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    transferOwnership(
-      newOwner: string,
+    transfer(
+      recipient: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<boolean>;
 
-    "transferOwnership(address)"(
-      newOwner: string,
+    "transfer(address,uint256)"(
+      recipient: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<boolean>;
 
-    unlockBlocks(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "unlockBlocks(address)"(
-      arg0: string,
+    transferFrom(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<boolean>;
+
+    "transferFrom(address,address,uint256)"(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     unlockPeriod(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2706,49 +2154,26 @@ export class LpGovernor extends Contract {
     votingPeriod(overrides?: CallOverrides): Promise<BigNumber>;
 
     "votingPeriod()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    withdraw(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
-    "withdraw(uint256)"(
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
   };
 
   filters: {
-    DelegateChanged(
-      delegator: string | null,
-      fromDelegate: string | null,
-      toDelegate: string | null
-    ): EventFilter;
-
-    DelegateVotesChanged(
-      delegate: string | null,
-      previousBalance: null,
-      newBalance: null
+    Approval(
+      owner: string | null,
+      spender: string | null,
+      value: null
     ): EventFilter;
 
     ExecuteTransaction(
       txHash: BytesLike | null,
       target: string | null,
-      value: null,
       signature: null,
       data: null,
       eta: null
     ): EventFilter;
 
-    OwnershipTransferred(
-      previousOwner: string | null,
-      newOwner: string | null
-    ): EventFilter;
-
-    ProposalCanceled(id: null): EventFilter;
-
     ProposalCreated(
       id: null,
       proposer: null,
-      targets: null,
-      values: null,
       signatures: null,
       calldatas: null,
       startBlock: null,
@@ -2757,8 +2182,6 @@ export class LpGovernor extends Contract {
     ): EventFilter;
 
     ProposalExecuted(id: null): EventFilter;
-
-    ProposalQueued(id: null, eta: null): EventFilter;
 
     RewardAdded(reward: null, periodFinish: null): EventFilter;
 
@@ -2770,12 +2193,7 @@ export class LpGovernor extends Contract {
       periodFinish: null
     ): EventFilter;
 
-    SaveVoteBalanceCheckpoint(
-      account: string | null,
-      balance: null
-    ): EventFilter;
-
-    Stake(account: string | null, amount: null): EventFilter;
+    Transfer(from: string | null, to: string | null, value: null): EventFilter;
 
     VoteCast(
       voter: null,
@@ -2783,23 +2201,9 @@ export class LpGovernor extends Contract {
       support: null,
       votes: null
     ): EventFilter;
-
-    Withdraw(account: string | null, amount: null): EventFilter;
   };
 
   estimateGas: {
-    BALLOT_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "BALLOT_TYPEHASH()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    DELEGATION_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "DELEGATION_TYPEHASH()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "DOMAIN_TYPEHASH()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     SIGNATURE_PERPETUAL_SETTLE(overrides?: CallOverrides): Promise<BigNumber>;
 
     "SIGNATURE_PERPETUAL_SETTLE()"(
@@ -2820,32 +2224,53 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    _executeTransaction(
-      target: string,
-      value: BigNumberish,
-      signature: string,
-      data: BytesLike,
-      eta: BigNumberish,
-      overrides?: PayableOverrides
+    allowance(
+      owner: string,
+      spender: string,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "_executeTransaction(address,uint256,string,bytes,uint256)"(
-      target: string,
-      value: BigNumberish,
-      signature: string,
-      data: BytesLike,
-      eta: BigNumberish,
-      overrides?: PayableOverrides
+    "allowance(address,address)"(
+      owner: string,
+      spender: string,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    _rewardToken(overrides?: CallOverrides): Promise<BigNumber>;
+    approve(
+      spender: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
-    "_rewardToken()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "approve(address,uint256)"(
+      spender: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "balanceOf(address)"(
       account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    burn(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "burn(address,uint256)"(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    canPropose(voter: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "canPropose(address)"(
+      voter: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2861,69 +2286,25 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    castVoteBySig(
-      proposalId: BigNumberish,
-      support: boolean,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
+    criticalQuorumRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "criticalQuorumRate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    decimals(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "decimals()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    decreaseAllowance(
+      spender: string,
+      subtractedValue: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "castVoteBySig(uint256,bool,uint8,bytes32,bytes32)"(
-      proposalId: BigNumberish,
-      support: boolean,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
+    "decreaseAllowance(address,uint256)"(
+      spender: string,
+      subtractedValue: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
-
-    criticalQuorumVotes(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "criticalQuorumVotes()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    delayAfterSucceeded(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "delayAfterSucceeded()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    delegate(delegatee: string, overrides?: Overrides): Promise<BigNumber>;
-
-    "delegate(address)"(
-      delegatee: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    delegateBySig(
-      delegatee: string,
-      nonce: BigNumberish,
-      expiry: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "delegateBySig(address,uint256,uint256,uint8,bytes32,bytes32)"(
-      delegatee: string,
-      nonce: BigNumberish,
-      expiry: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    deposits(account: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "deposits(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    domainSeparator(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "domainSeparator()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     earned(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2942,6 +2323,10 @@ export class LpGovernor extends Contract {
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
+    executionDelay(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "executionDelay()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getActions(
       proposalId: BigNumberish,
       overrides?: CallOverrides
@@ -2952,39 +2337,9 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getDelegate(account: string, overrides?: CallOverrides): Promise<BigNumber>;
+    getProposalPriorThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "getDelegate(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getNonce(account: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getNonce(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getPriorThreshold(
-      blockNumber: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getPriorThreshold(uint256)"(
-      blockNumber: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getPriorVotes(
-      account: string,
-      blockNumber: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getPriorVotes(address,uint256)"(
-      account: string,
-      blockNumber: BigNumberish,
+    "getProposalPriorThreshold()"(
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -3014,69 +2369,45 @@ export class LpGovernor extends Contract {
 
     "getReward()"(overrides?: Overrides): Promise<BigNumber>;
 
-    getVoteBalance(
+    getUnlockBlock(
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "getVoteBalance(address)"(
+    "getUnlockBlock(address)"(
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getVoteBalanceAt(
-      account: string,
-      blockNumber: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getVoteBalanceAt(address,uint256)"(
-      account: string,
-      blockNumber: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getVoteBalanceCheckpointAt(
-      account: string,
-      checkpointIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getVoteBalanceCheckpointAt(address,uint256)"(
-      account: string,
-      checkpointIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getVoteBalanceCheckpointCount(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getVoteBalanceCheckpointCount(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    gracePeriod(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "gracePeriod()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    guardian(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "guardian()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    initialize(
-      target_: string,
-      shareToken_: string,
-      rewardToken_: string,
+    increaseAllowance(
+      spender: string,
+      addedValue: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "initialize(address,address,address)"(
-      target_: string,
-      shareToken_: string,
-      rewardToken_: string,
+    "increaseAllowance(address,uint256)"(
+      spender: string,
+      addedValue: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    initialize(
+      name: string,
+      symbol: string,
+      minter: string,
+      target: string,
+      rewardToken: string,
+      distributor: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "initialize(string,string,address,address,address,address)"(
+      name: string,
+      symbol: string,
+      minter: string,
+      target: string,
+      rewardToken: string,
+      distributor: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -3090,10 +2421,20 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    isLocked(voter: string, overrides?: Overrides): Promise<BigNumber>;
+    isLocked(account: string, overrides?: Overrides): Promise<BigNumber>;
 
     "isLocked(address)"(
-      voter: string,
+      account: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    isLockedByVoting(
+      account: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "isLockedByVoting(address)"(
+      account: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -3115,9 +2456,17 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    liquidityPool(overrides?: CallOverrides): Promise<BigNumber>;
+    mint(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
-    "liquidityPool()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "mint(address,uint256)"(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -3133,10 +2482,6 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     periodFinish(overrides?: CallOverrides): Promise<BigNumber>;
 
     "periodFinish()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -3149,9 +2494,9 @@ export class LpGovernor extends Contract {
 
     "proposalMaxOperations()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    proposalThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+    proposalThresholdRate(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "proposalThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "proposalThresholdRate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     proposals(
       arg0: BigNumberish,
@@ -3177,13 +2522,9 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    quorumVotes(overrides?: CallOverrides): Promise<BigNumber>;
+    quorumRate(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "quorumVotes()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    renounceOwnership(overrides?: Overrides): Promise<BigNumber>;
-
-    "renounceOwnership()"(overrides?: Overrides): Promise<BigNumber>;
+    "quorumRate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     rewardDistribution(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -3201,21 +2542,15 @@ export class LpGovernor extends Contract {
 
     "rewardRate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    rewardToken(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "rewardToken()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     rewards(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     "rewards(address)"(
       arg0: string,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    setRewardDistribution(
-      _rewardDistribution: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "setRewardDistribution(address)"(
-      _rewardDistribution: string,
-      overrides?: Overrides
     ): Promise<BigNumber>;
 
     setRewardRate(
@@ -3225,17 +2560,6 @@ export class LpGovernor extends Contract {
 
     "setRewardRate(uint256)"(
       newRewardRate: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    shareToken(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "shareToken()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    stake(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
-
-    "stake(uint256)"(
-      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -3249,29 +2573,38 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    target(overrides?: CallOverrides): Promise<BigNumber>;
+    symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "target()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "symbol()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    transferOwnership(
-      newOwner: string,
+    transfer(
+      recipient: string,
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "transferOwnership(address)"(
-      newOwner: string,
+    "transfer(address,uint256)"(
+      recipient: string,
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    unlockBlocks(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+    transferFrom(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
-    "unlockBlocks(address)"(
-      arg0: string,
-      overrides?: CallOverrides
+    "transferFrom(address,address,uint256)"(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     unlockPeriod(overrides?: CallOverrides): Promise<BigNumber>;
@@ -3295,36 +2628,9 @@ export class LpGovernor extends Contract {
     votingPeriod(overrides?: CallOverrides): Promise<BigNumber>;
 
     "votingPeriod()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    withdraw(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
-
-    "withdraw(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    BALLOT_TYPEHASH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "BALLOT_TYPEHASH()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    DELEGATION_TYPEHASH(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "DELEGATION_TYPEHASH()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "DOMAIN_TYPEHASH()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     SIGNATURE_PERPETUAL_SETTLE(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -3349,27 +2655,29 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    _executeTransaction(
-      target: string,
-      value: BigNumberish,
-      signature: string,
-      data: BytesLike,
-      eta: BigNumberish,
-      overrides?: PayableOverrides
+    allowance(
+      owner: string,
+      spender: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "_executeTransaction(address,uint256,string,bytes,uint256)"(
-      target: string,
-      value: BigNumberish,
-      signature: string,
-      data: BytesLike,
-      eta: BigNumberish,
-      overrides?: PayableOverrides
+    "allowance(address,address)"(
+      owner: string,
+      spender: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    _rewardToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    approve(
+      spender: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
-    "_rewardToken()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "approve(address,uint256)"(
+      spender: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
     balanceOf(
       account: string,
@@ -3378,6 +2686,28 @@ export class LpGovernor extends Contract {
 
     "balanceOf(address)"(
       account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    burn(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "burn(address,uint256)"(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    canPropose(
+      voter: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "canPropose(address)"(
+      voter: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -3393,84 +2723,28 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    castVoteBySig(
-      proposalId: BigNumberish,
-      support: boolean,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
+    criticalQuorumRate(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "criticalQuorumRate()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "decimals()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    decreaseAllowance(
+      spender: string,
+      subtractedValue: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "castVoteBySig(uint256,bool,uint8,bytes32,bytes32)"(
-      proposalId: BigNumberish,
-      support: boolean,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
+    "decreaseAllowance(address,uint256)"(
+      spender: string,
+      subtractedValue: BigNumberish,
       overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    criticalQuorumVotes(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "criticalQuorumVotes()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    delayAfterSucceeded(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "delayAfterSucceeded()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    delegate(
-      delegatee: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "delegate(address)"(
-      delegatee: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    delegateBySig(
-      delegatee: string,
-      nonce: BigNumberish,
-      expiry: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "delegateBySig(address,uint256,uint256,uint8,bytes32,bytes32)"(
-      delegatee: string,
-      nonce: BigNumberish,
-      expiry: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    deposits(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "deposits(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    domainSeparator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "domainSeparator()"(
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     earned(
@@ -3493,6 +2767,12 @@ export class LpGovernor extends Contract {
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
+    executionDelay(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "executionDelay()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getActions(
       proposalId: BigNumberish,
       overrides?: CallOverrides
@@ -3503,45 +2783,11 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getDelegate(
-      account: string,
+    getProposalPriorThreshold(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "getDelegate(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getNonce(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getNonce(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getPriorThreshold(
-      blockNumber: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getPriorThreshold(uint256)"(
-      blockNumber: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getPriorVotes(
-      account: string,
-      blockNumber: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getPriorVotes(address,uint256)"(
-      account: string,
-      blockNumber: BigNumberish,
+    "getProposalPriorThreshold()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -3571,69 +2817,45 @@ export class LpGovernor extends Contract {
 
     "getReward()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
-    getVoteBalance(
+    getUnlockBlock(
       account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "getVoteBalance(address)"(
+    "getUnlockBlock(address)"(
       account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getVoteBalanceAt(
-      account: string,
-      blockNumber: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getVoteBalanceAt(address,uint256)"(
-      account: string,
-      blockNumber: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getVoteBalanceCheckpointAt(
-      account: string,
-      checkpointIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getVoteBalanceCheckpointAt(address,uint256)"(
-      account: string,
-      checkpointIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getVoteBalanceCheckpointCount(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getVoteBalanceCheckpointCount(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    gracePeriod(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "gracePeriod()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    guardian(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "guardian()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    initialize(
-      target_: string,
-      shareToken_: string,
-      rewardToken_: string,
+    increaseAllowance(
+      spender: string,
+      addedValue: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "initialize(address,address,address)"(
-      target_: string,
-      shareToken_: string,
-      rewardToken_: string,
+    "increaseAllowance(address,uint256)"(
+      spender: string,
+      addedValue: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      name: string,
+      symbol: string,
+      minter: string,
+      target: string,
+      rewardToken: string,
+      distributor: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "initialize(string,string,address,address,address,address)"(
+      name: string,
+      symbol: string,
+      minter: string,
+      target: string,
+      rewardToken: string,
+      distributor: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -3648,12 +2870,22 @@ export class LpGovernor extends Contract {
     ): Promise<PopulatedTransaction>;
 
     isLocked(
-      voter: string,
+      account: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "isLocked(address)"(
-      voter: string,
+      account: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    isLockedByVoting(
+      account: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "isLockedByVoting(address)"(
+      account: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -3681,9 +2913,17 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    liquidityPool(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    mint(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
-    "liquidityPool()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "mint(address,uint256)"(
+      account: string,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -3698,10 +2938,6 @@ export class LpGovernor extends Contract {
       reward: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "owner()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     periodFinish(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -3719,9 +2955,11 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    proposalThreshold(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    proposalThresholdRate(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    "proposalThreshold()"(
+    "proposalThresholdRate()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -3749,13 +2987,9 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    quorumVotes(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    quorumRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "quorumVotes()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    renounceOwnership(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "renounceOwnership()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+    "quorumRate()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     rewardDistribution(
       overrides?: CallOverrides
@@ -3783,6 +3017,10 @@ export class LpGovernor extends Contract {
 
     "rewardRate()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    rewardToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "rewardToken()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     rewards(
       arg0: string,
       overrides?: CallOverrides
@@ -3793,16 +3031,6 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    setRewardDistribution(
-      _rewardDistribution: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setRewardDistribution(address)"(
-      _rewardDistribution: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
     setRewardRate(
       newRewardRate: BigNumberish,
       overrides?: Overrides
@@ -3810,20 +3038,6 @@ export class LpGovernor extends Contract {
 
     "setRewardRate(uint256)"(
       newRewardRate: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    shareToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "shareToken()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    stake(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "stake(uint256)"(
-      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -3837,32 +3051,38 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    target(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "target()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "symbol()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "totalSupply()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    transferOwnership(
-      newOwner: string,
+    transfer(
+      recipient: string,
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "transferOwnership(address)"(
-      newOwner: string,
+    "transfer(address,uint256)"(
+      recipient: string,
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    unlockBlocks(
-      arg0: string,
-      overrides?: CallOverrides
+    transferFrom(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "unlockBlocks(address)"(
-      arg0: string,
-      overrides?: CallOverrides
+    "transferFrom(address,address,uint256)"(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     unlockPeriod(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -3886,15 +3106,5 @@ export class LpGovernor extends Contract {
     votingPeriod(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "votingPeriod()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    withdraw(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "withdraw(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
   };
 }
