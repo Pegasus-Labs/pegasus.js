@@ -183,13 +183,6 @@ export async function takerOverOperator(
   return await liquidityPool.claimOperator(overrides)
 }
 
-export async function claimOperatorFee(
-  liquidityPool: LiquidityPool,
-  overrides: Overrides = {},
-): Promise<ethers.providers.TransactionResponse> {
-  return await liquidityPool.claimOperatorFee(overrides)
-}
-
 export async function transferOperator(
   liquidityPool: LiquidityPool,
   targetAddress: string,
@@ -204,31 +197,4 @@ export async function claimMiningReward(
   overrides: Overrides = {},
 ): Promise<ethers.providers.TransactionResponse> {
   return await mining.getReward(overrides)
-}
-
-export async function stakeMining(
-  mining: LpGovernor,
-  lpTokenAmount: BigNumberish, // should be a decimal number (ie: 1.234)
-  overrides: Overrides = {},
-): Promise<ethers.providers.TransactionResponse> {
-  const largeAmount = normalizeBigNumberish(lpTokenAmount)
-    .shiftedBy(DECIMALS)
-    .dp(0, BigNumber.ROUND_DOWN)
-  return await mining.stake(largeAmount.toFixed(), overrides)
-}
-
-export async function unstakeMining(
-  mining: LpGovernor,
-  lpTokenAmount: BigNumberish, // should be a decimal number (ie: 1.234)
-  overrides: Overrides = {},
-): Promise<ethers.providers.TransactionResponse> {
-  const largeAmount = normalizeBigNumberish(lpTokenAmount)
-    .shiftedBy(DECIMALS)
-    .dp(0, BigNumber.ROUND_DOWN)
-  return await mining.withdraw(largeAmount.toFixed(), overrides)
-}
-
-export async function getClaimableMiningReward(mining: LpGovernor, account: string): Promise<BigNumber> {
-  const claimableMiningRewardAmount = await mining.earned(account)
-  return normalizeBigNumberish(claimableMiningRewardAmount).shiftedBy(-DECIMALS)
 }

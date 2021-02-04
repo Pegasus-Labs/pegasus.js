@@ -315,3 +315,9 @@ export async function previewOracleRouter(path: Array<OracleRoute>, signerOrProv
   }
   return ret
 }
+
+export async function getClaimableMiningReward(mining: LpGovernor, account: string): Promise<BigNumber> {
+  const claimableMiningRewardAmount = await mining.earned(account)
+  return normalizeBigNumberish(claimableMiningRewardAmount).shiftedBy(-DECIMALS)
+}
+
