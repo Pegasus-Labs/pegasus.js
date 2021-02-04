@@ -348,6 +348,24 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "address",
+        name: "governor",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "share",
+        type: "address",
+      },
+    ],
+    name: "debugSetTemplate",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "getAccessController",
     outputs: [

@@ -30,7 +30,6 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "burn(address,uint256)": FunctionFragment;
-    "canPropose(address)": FunctionFragment;
     "castVote(uint256,bool)": FunctionFragment;
     "criticalQuorumRate()": FunctionFragment;
     "decimals()": FunctionFragment;
@@ -39,7 +38,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     "execute(uint256)": FunctionFragment;
     "executionDelay()": FunctionFragment;
     "getActions(uint256)": FunctionFragment;
-    "getProposalPriorThreshold()": FunctionFragment;
+    "getProposalThreshold()": FunctionFragment;
     "getQuorumVotes(uint256)": FunctionFragment;
     "getReceipt(uint256,address)": FunctionFragment;
     "getReward()": FunctionFragment;
@@ -105,7 +104,6 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     functionFragment: "burn",
     values: [string, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "canPropose", values: [string]): string;
   encodeFunctionData(
     functionFragment: "castVote",
     values: [BigNumberish, boolean]
@@ -133,7 +131,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getProposalPriorThreshold",
+    functionFragment: "getProposalThreshold",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -287,7 +285,6 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "canPropose", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "castVote", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "criticalQuorumRate",
@@ -306,7 +303,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "getActions", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getProposalPriorThreshold",
+    functionFragment: "getProposalThreshold",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -423,7 +420,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ExecuteTransaction(bytes32,address,string,bytes,uint256)": EventFragment;
-    "ProposalCreated(uint256,address,string[],bytes[],uint256,uint256,string)": EventFragment;
+    "ProposalCreated(uint256,address,string[],bytes[],uint256,uint256,uint256,string)": EventFragment;
     "ProposalExecuted(uint256)": EventFragment;
     "RewardAdded(uint256,uint256)": EventFragment;
     "RewardPaid(address,uint256)": EventFragment;
@@ -547,20 +544,6 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    canPropose(
-      voter: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
-
-    "canPropose(address)"(
-      voter: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
-
     castVote(
       proposalId: BigNumberish,
       support: boolean,
@@ -665,13 +648,13 @@ export class LpGovernor extends Contract {
       1: string[];
     }>;
 
-    getProposalPriorThreshold(
+    getProposalThreshold(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    "getProposalPriorThreshold()"(
+    "getProposalThreshold()"(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
@@ -693,7 +676,7 @@ export class LpGovernor extends Contract {
 
     getReceipt(
       proposalId: BigNumberish,
-      voter: string,
+      account: string,
       overrides?: CallOverrides
     ): Promise<{
       0: {
@@ -708,7 +691,7 @@ export class LpGovernor extends Contract {
 
     "getReceipt(uint256,address)"(
       proposalId: BigNumberish,
-      voter: string,
+      account: string,
       overrides?: CallOverrides
     ): Promise<{
       0: {
@@ -934,6 +917,7 @@ export class LpGovernor extends Contract {
       eta: BigNumber;
       startBlock: BigNumber;
       endBlock: BigNumber;
+      quorumVotes: BigNumber;
       forVotes: BigNumber;
       againstVotes: BigNumber;
       canceled: boolean;
@@ -945,8 +929,9 @@ export class LpGovernor extends Contract {
       4: BigNumber;
       5: BigNumber;
       6: BigNumber;
-      7: boolean;
+      7: BigNumber;
       8: boolean;
+      9: boolean;
     }>;
 
     "proposals(uint256)"(
@@ -958,6 +943,7 @@ export class LpGovernor extends Contract {
       eta: BigNumber;
       startBlock: BigNumber;
       endBlock: BigNumber;
+      quorumVotes: BigNumber;
       forVotes: BigNumber;
       againstVotes: BigNumber;
       canceled: boolean;
@@ -969,8 +955,9 @@ export class LpGovernor extends Contract {
       4: BigNumber;
       5: BigNumber;
       6: BigNumber;
-      7: boolean;
+      7: BigNumber;
       8: boolean;
+      9: boolean;
     }>;
 
     propose(
@@ -1255,13 +1242,6 @@ export class LpGovernor extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  canPropose(voter: string, overrides?: CallOverrides): Promise<boolean>;
-
-  "canPropose(address)"(
-    voter: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
   castVote(
     proposalId: BigNumberish,
     support: boolean,
@@ -1335,9 +1315,9 @@ export class LpGovernor extends Contract {
     1: string[];
   }>;
 
-  getProposalPriorThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+  getProposalThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "getProposalPriorThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "getProposalThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   getQuorumVotes(
     proposalId: BigNumberish,
@@ -1351,7 +1331,7 @@ export class LpGovernor extends Contract {
 
   getReceipt(
     proposalId: BigNumberish,
-    voter: string,
+    account: string,
     overrides?: CallOverrides
   ): Promise<{
     hasVoted: boolean;
@@ -1364,7 +1344,7 @@ export class LpGovernor extends Contract {
 
   "getReceipt(uint256,address)"(
     proposalId: BigNumberish,
-    voter: string,
+    account: string,
     overrides?: CallOverrides
   ): Promise<{
     hasVoted: boolean;
@@ -1520,6 +1500,7 @@ export class LpGovernor extends Contract {
     eta: BigNumber;
     startBlock: BigNumber;
     endBlock: BigNumber;
+    quorumVotes: BigNumber;
     forVotes: BigNumber;
     againstVotes: BigNumber;
     canceled: boolean;
@@ -1531,8 +1512,9 @@ export class LpGovernor extends Contract {
     4: BigNumber;
     5: BigNumber;
     6: BigNumber;
-    7: boolean;
+    7: BigNumber;
     8: boolean;
+    9: boolean;
   }>;
 
   "proposals(uint256)"(
@@ -1544,6 +1526,7 @@ export class LpGovernor extends Contract {
     eta: BigNumber;
     startBlock: BigNumber;
     endBlock: BigNumber;
+    quorumVotes: BigNumber;
     forVotes: BigNumber;
     againstVotes: BigNumber;
     canceled: boolean;
@@ -1555,8 +1538,9 @@ export class LpGovernor extends Contract {
     4: BigNumber;
     5: BigNumber;
     6: BigNumber;
-    7: boolean;
+    7: BigNumber;
     8: boolean;
+    9: boolean;
   }>;
 
   propose(
@@ -1737,13 +1721,6 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    canPropose(voter: string, overrides?: CallOverrides): Promise<boolean>;
-
-    "canPropose(address)"(
-      voter: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     castVote(
       proposalId: BigNumberish,
       support: boolean,
@@ -1814,11 +1791,9 @@ export class LpGovernor extends Contract {
       1: string[];
     }>;
 
-    getProposalPriorThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+    getProposalThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "getProposalPriorThreshold()"(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    "getProposalThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getQuorumVotes(
       proposalId: BigNumberish,
@@ -1832,7 +1807,7 @@ export class LpGovernor extends Contract {
 
     getReceipt(
       proposalId: BigNumberish,
-      voter: string,
+      account: string,
       overrides?: CallOverrides
     ): Promise<{
       hasVoted: boolean;
@@ -1845,7 +1820,7 @@ export class LpGovernor extends Contract {
 
     "getReceipt(uint256,address)"(
       proposalId: BigNumberish,
-      voter: string,
+      account: string,
       overrides?: CallOverrides
     ): Promise<{
       hasVoted: boolean;
@@ -1998,6 +1973,7 @@ export class LpGovernor extends Contract {
       eta: BigNumber;
       startBlock: BigNumber;
       endBlock: BigNumber;
+      quorumVotes: BigNumber;
       forVotes: BigNumber;
       againstVotes: BigNumber;
       canceled: boolean;
@@ -2009,8 +1985,9 @@ export class LpGovernor extends Contract {
       4: BigNumber;
       5: BigNumber;
       6: BigNumber;
-      7: boolean;
+      7: BigNumber;
       8: boolean;
+      9: boolean;
     }>;
 
     "proposals(uint256)"(
@@ -2022,6 +1999,7 @@ export class LpGovernor extends Contract {
       eta: BigNumber;
       startBlock: BigNumber;
       endBlock: BigNumber;
+      quorumVotes: BigNumber;
       forVotes: BigNumber;
       againstVotes: BigNumber;
       canceled: boolean;
@@ -2033,8 +2011,9 @@ export class LpGovernor extends Contract {
       4: BigNumber;
       5: BigNumber;
       6: BigNumber;
-      7: boolean;
+      7: BigNumber;
       8: boolean;
+      9: boolean;
     }>;
 
     propose(
@@ -2178,6 +2157,7 @@ export class LpGovernor extends Contract {
       calldatas: null,
       startBlock: null,
       endBlock: null,
+      quorumVotes: null,
       description: null
     ): EventFilter;
 
@@ -2196,7 +2176,7 @@ export class LpGovernor extends Contract {
     Transfer(from: string | null, to: string | null, value: null): EventFilter;
 
     VoteCast(
-      voter: null,
+      account: null,
       proposalId: null,
       support: null,
       votes: null
@@ -2267,13 +2247,6 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    canPropose(voter: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "canPropose(address)"(
-      voter: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     castVote(
       proposalId: BigNumberish,
       support: boolean,
@@ -2337,11 +2310,9 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getProposalPriorThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+    getProposalThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "getProposalPriorThreshold()"(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    "getProposalThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getQuorumVotes(
       proposalId: BigNumberish,
@@ -2355,13 +2326,13 @@ export class LpGovernor extends Contract {
 
     getReceipt(
       proposalId: BigNumberish,
-      voter: string,
+      account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     "getReceipt(uint256,address)"(
       proposalId: BigNumberish,
-      voter: string,
+      account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2701,16 +2672,6 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    canPropose(
-      voter: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "canPropose(address)"(
-      voter: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     castVote(
       proposalId: BigNumberish,
       support: boolean,
@@ -2783,11 +2744,11 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getProposalPriorThreshold(
+    getProposalThreshold(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "getProposalPriorThreshold()"(
+    "getProposalThreshold()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2803,13 +2764,13 @@ export class LpGovernor extends Contract {
 
     getReceipt(
       proposalId: BigNumberish,
-      voter: string,
+      account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     "getReceipt(uint256,address)"(
       proposalId: BigNumberish,
-      voter: string,
+      account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

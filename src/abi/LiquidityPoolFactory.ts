@@ -262,6 +262,12 @@ const _abi = [
   },
   {
     anonymous: false,
+    inputs: [],
+    name: "OperatorCheckIn",
+    type: "event",
+  },
+  {
+    anonymous: false,
     inputs: [
       {
         indexed: true,
@@ -664,6 +670,13 @@ const _abi = [
         type: "int256",
       },
     ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "checkIn",
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -1199,6 +1212,24 @@ const _abi = [
       },
     ],
     name: "setOperator",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "oracle",
+        type: "address",
+      },
+    ],
+    name: "setOracle",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

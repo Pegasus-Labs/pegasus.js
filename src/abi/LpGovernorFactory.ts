@@ -120,6 +120,12 @@ const _abi = [
       },
       {
         indexed: false,
+        internalType: "uint256",
+        name: "quorumVotes",
+        type: "uint256",
+      },
+      {
+        indexed: false,
         internalType: "string",
         name: "description",
         type: "string",
@@ -235,7 +241,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "address",
-        name: "voter",
+        name: "account",
         type: "address",
       },
       {
@@ -387,25 +393,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "voter",
-        type: "address",
-      },
-    ],
-    name: "canPropose",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "uint256",
         name: "proposalId",
         type: "uint256",
@@ -542,7 +529,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "getProposalPriorThreshold",
+    name: "getProposalThreshold",
     outputs: [
       {
         internalType: "uint256",
@@ -581,7 +568,7 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "voter",
+        name: "account",
         type: "address",
       },
     ],
@@ -932,6 +919,11 @@ const _abi = [
       {
         internalType: "uint256",
         name: "endBlock",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "quorumVotes",
         type: "uint256",
       },
       {

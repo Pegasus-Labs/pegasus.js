@@ -25,6 +25,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   functions: {
     "addLiquidity(int256)": FunctionFragment;
     "brokerTrade(bytes,int256)": FunctionFragment;
+    "checkIn()": FunctionFragment;
     "claimOperator()": FunctionFragment;
     "clear(uint256)": FunctionFragment;
     "createPerpetual(address,int256[9],int256[6],int256[6],int256[6])": FunctionFragment;
@@ -49,6 +50,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "setEmergencyState(uint256)": FunctionFragment;
     "setLiquidityPoolParameter(int256[1])": FunctionFragment;
     "setOperator(address)": FunctionFragment;
+    "setOracle(uint256,address)": FunctionFragment;
     "setPerpetualBaseParameter(uint256,int256[9])": FunctionFragment;
     "setPerpetualRiskParameter(uint256,int256[6],int256[6],int256[6])": FunctionFragment;
     "settle(uint256,address)": FunctionFragment;
@@ -66,6 +68,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     functionFragment: "brokerTrade",
     values: [BytesLike, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "checkIn", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "claimOperator",
     values?: undefined
@@ -194,6 +197,10 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "setOperator", values: [string]): string;
   encodeFunctionData(
+    functionFragment: "setOracle",
+    values: [BigNumberish, string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setPerpetualBaseParameter",
     values: [
       BigNumberish,
@@ -287,6 +294,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     functionFragment: "brokerTrade",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "checkIn", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "claimOperator",
     data: BytesLike
@@ -374,6 +382,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     functionFragment: "setOperator",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setOracle", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setPerpetualBaseParameter",
     data: BytesLike
@@ -404,6 +413,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "DonateInsuranceFund(uint256,int256)": EventFragment;
     "IncreaseFee(address,int256)": EventFragment;
     "Liquidate(uint256,address,address,int256,int256,int256,int256)": EventFragment;
+    "OperatorCheckIn()": EventFragment;
     "RemoveLiquidity(address,int256,int256)": EventFragment;
     "RevokeOperator()": EventFragment;
     "RunLiquidityPool()": EventFragment;
@@ -433,6 +443,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "DonateInsuranceFund"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "IncreaseFee"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Liquidate"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OperatorCheckIn"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveLiquidity"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RevokeOperator"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RunLiquidityPool"): EventFragment;
@@ -494,6 +505,10 @@ export class LiquidityPool extends Contract {
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    checkIn(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "checkIn()"(overrides?: Overrides): Promise<ContractTransaction>;
 
     claimOperator(overrides?: Overrides): Promise<ContractTransaction>;
 
@@ -1073,6 +1088,18 @@ export class LiquidityPool extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    setOracle(
+      perpetualIndex: BigNumberish,
+      oracle: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setOracle(uint256,address)"(
+      perpetualIndex: BigNumberish,
+      oracle: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     setPerpetualBaseParameter(
       perpetualIndex: BigNumberish,
       baseParams: [
@@ -1269,6 +1296,10 @@ export class LiquidityPool extends Contract {
     amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  checkIn(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "checkIn()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   claimOperator(overrides?: Overrides): Promise<ContractTransaction>;
 
@@ -1826,6 +1857,18 @@ export class LiquidityPool extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  setOracle(
+    perpetualIndex: BigNumberish,
+    oracle: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setOracle(uint256,address)"(
+    perpetualIndex: BigNumberish,
+    oracle: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   setPerpetualBaseParameter(
     perpetualIndex: BigNumberish,
     baseParams: [
@@ -2022,6 +2065,10 @@ export class LiquidityPool extends Contract {
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    checkIn(overrides?: CallOverrides): Promise<void>;
+
+    "checkIn()"(overrides?: CallOverrides): Promise<void>;
 
     claimOperator(overrides?: CallOverrides): Promise<void>;
 
@@ -2576,6 +2623,18 @@ export class LiquidityPool extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setOracle(
+      perpetualIndex: BigNumberish,
+      oracle: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setOracle(uint256,address)"(
+      perpetualIndex: BigNumberish,
+      oracle: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setPerpetualBaseParameter(
       perpetualIndex: BigNumberish,
       baseParams: [
@@ -2795,6 +2854,8 @@ export class LiquidityPool extends Contract {
       penaltyToLP: null
     ): EventFilter;
 
+    OperatorCheckIn(): EventFilter;
+
     RemoveLiquidity(
       trader: string | null,
       returnedCash: null,
@@ -2900,6 +2961,10 @@ export class LiquidityPool extends Contract {
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    checkIn(overrides?: Overrides): Promise<BigNumber>;
+
+    "checkIn()"(overrides?: Overrides): Promise<BigNumber>;
 
     claimOperator(overrides?: Overrides): Promise<BigNumber>;
 
@@ -3208,6 +3273,18 @@ export class LiquidityPool extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    setOracle(
+      perpetualIndex: BigNumberish,
+      oracle: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "setOracle(uint256,address)"(
+      perpetualIndex: BigNumberish,
+      oracle: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     setPerpetualBaseParameter(
       perpetualIndex: BigNumberish,
       baseParams: [
@@ -3405,6 +3482,10 @@ export class LiquidityPool extends Contract {
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
+
+    checkIn(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "checkIn()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     claimOperator(overrides?: Overrides): Promise<PopulatedTransaction>;
 
@@ -3717,6 +3798,18 @@ export class LiquidityPool extends Contract {
 
     "setOperator(address)"(
       newOperator: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    setOracle(
+      perpetualIndex: BigNumberish,
+      oracle: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setOracle(uint256,address)"(
+      perpetualIndex: BigNumberish,
+      oracle: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
