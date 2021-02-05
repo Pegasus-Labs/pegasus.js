@@ -418,7 +418,7 @@ describe('computeTradeWithPrice', function() {
         price: 2000,
         amount: 1,
         targetLeverage: 2,
-        feeRate: 0.01,
+        feeRate: 0.01
       },
       expectedOutput: {
         account: {
@@ -446,7 +446,7 @@ describe('computeTradeWithPrice', function() {
         price: 7000,
         amount: 5,
         targetLeverage: 2,
-        feeRate: 0.01,
+        feeRate: 0.01
       },
       expectedOutput: {
         account: {
@@ -475,7 +475,7 @@ describe('computeTradeWithPrice', function() {
         price: 10000,
         amount: 10,
         targetLeverage: 10,
-        feeRate: 0.01,
+        feeRate: 0.01
       },
       expectedOutput: {
         account: {
@@ -503,7 +503,7 @@ describe('computeTradeWithPrice', function() {
         price: 2000,
         amount: -1, // sell
         targetLeverage: 2,
-        feeRate: 0.01,
+        feeRate: 0.01
       },
       expectedOutput: {
         account: {
@@ -741,11 +741,9 @@ describe('computeTradeWithPrice', function() {
         normalizeBigNumberish(expectedOutput.account.marginBalance)
       )
       expect(result.tradeIsSafe).toEqual(expectedOutput.tradeIsSafe)
-      
-      const marginCost = computeMarginCost(result.afterTrade, input.targetLeverage)
-      expect(marginCost).toApproximate(
-        normalizeBigNumberish(expectedOutput.marginCost)
-      )
+
+      const marginCost = computeMarginCost(poolStorage1, TEST_MARKET_INDEX0, result.afterTrade, input.targetLeverage)
+      expect(marginCost).toApproximate(normalizeBigNumberish(expectedOutput.marginCost))
     })
   })
 })
@@ -851,14 +849,31 @@ describe('computeAMMTrade', function() {
     expect(res2.newPool.poolCashBalance).toApproximate(new BigNumber('83952.2303942594101523525039365'))
     expect(res2.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('2.3'))
   })
+})
 
-  it(`lower than keeperGasReward`, function() {
+describe('lower than keeperGasReward', function() {
+  it(`computeAMMTrade should fail`, function() {
     const trader: AccountStorage = {
       ...accountStorage4,
       cashBalance: new BigNumber('1')
     }
-    const res1 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, trader, '0.0001')
-    expect(res1.trader.accountComputed.availableMargin).toBeBigNumber(new BigNumber('0'))
-    expect(res1.tradeIsSafe).toBeFalsy()
+
+    // trade should fail
+    const amount = '0.0001'
+    const targetLeverage = 10
+    const query1 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, trader, amount)
+    expect(query1.trader.accountComputed.availableMargin).toBeBigNumber(new BigNumber('0'))
+    expect(query1.tradeIsSafe).toBeFalsy()
+    expect(query1.tradingPrice).toApproximate(normalizeBigNumberish('6992.495778590415133499'))
+
+    // cost
+    const marginCost = computeMarginCost(poolStorage1, TEST_MARKET_INDEX0, query1.trader, targetLeverage)
+    expect(marginCost).toApproximate(normalizeBigNumberish('0.0034488274369005548632499'))
+    trader.cashBalance = trader.cashBalance.plus('0.0034488274369005548632499')
+
+    // trade again, should success
+    const query2 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, trader, amount)
+    expect(query2.tradeIsSafe).toBeTruthy()
+    expect(query2.trader.accountComputed.availableMargin).toApproximate(normalizeBigNumberish('0'))
   })
 })

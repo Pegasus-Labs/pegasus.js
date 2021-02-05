@@ -32,7 +32,7 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
   }
   const availableCashBalance = s.cashBalance.minus(s.positionAmount.times(perpetual.unitAccumulativeFunding))
   const marginBalance = availableCashBalance.plus(perpetual.markPrice.times(s.positionAmount))
-  const availableMargin = BigNumber.max(_0, marginBalance.minus(BigNumber.maximum(reservedCash, positionMargin)))
+  const availableMargin = BigNumber.maximum(_0, marginBalance.minus(BigNumber.maximum(reservedCash, positionMargin)))
   const withdrawableBalance = availableMargin
   const isMMSafe = marginBalance.gte(BigNumber.maximum(reservedCash, maintenanceMargin))
   const isIMSafe = marginBalance.gte(BigNumber.maximum(reservedCash, positionMargin))
@@ -302,17 +302,26 @@ export function computeAMMPrice(
 
 // > 0 if more collateral required
 export function computeMarginCost(
+  p: LiquidityPoolStorage,
+  perpetualIndex: number,
   afterTrade: AccountDetails,
-  targetLeverage: BigNumberish,
+  targetLeverage: BigNumberish
 ): BigNumber {
   const normalizedLeverage = normalizeBigNumberish(targetLeverage)
   if (!normalizedLeverage.isPositive()) {
     throw Error(`bad leverage ${targetLeverage.toString()}`)
   }
+  const perpetual = p.perpetuals.get(perpetualIndex)
+  if (!perpetual) {
+    throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
+  }
+  let reservedCash = _0
   let marginCost = _0
   if (!afterTrade.accountStorage.positionAmount.isZero()) {
+    reservedCash = perpetual.keeperGasReward
     const positionMargin = afterTrade.accountComputed.positionValue.div(normalizedLeverage)
-    marginCost = positionMargin.minus(afterTrade.accountComputed.marginBalance)
+    const minAvailableMargin = BigNumber.maximum(reservedCash, positionMargin)
+    marginCost = minAvailableMargin.minus(afterTrade.accountComputed.marginBalance)
   }
   return marginCost
 }
