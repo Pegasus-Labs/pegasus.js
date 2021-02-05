@@ -33,8 +33,12 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
   // M_c = ammCash - Σ accumulatedFunding * N
   let cash = p.poolCashBalance
   p.perpetuals.forEach((perpetual, id) => {
+    // only involve normal market
     if (perpetual.state !== PerpetualState.NORMAL) {
       return
+    }
+    if (perpetual.indexPrice.lte(_0)) {
+      throw new InvalidArgumentError("index price must be positive");
     }
     cash = cash.plus(perpetual.ammCashBalance)
     cash = cash.minus(perpetual.unitAccumulativeFunding.times(perpetual.ammPositionAmount))
@@ -101,6 +105,14 @@ export function initAMMTradingContextEagerEvaluation(context: AMMTradingContext)
     positionMarginWithoutCurrent = positionMarginWithoutCurrent.plus(
       context.otherIndex[j].times(context.otherPosition[j].abs()).div(context.otherAMMMaxLeverage[j])
     )
+  }
+
+  // prevent margin balance < 0
+  const marginBalanceWithCurrent = context.cash
+    .plus(valueWithoutCurrent)
+    .plus(context.index.times(context.position1))
+  if (marginBalanceWithCurrent.lt(_0)) {
+    throw new InsufficientLiquidityError("AMM is emergency")
   }
 
   return {
@@ -319,6 +331,9 @@ export function computeAMMPoolMargin(
     }
   }
   const poolMargin = marginBalanceWithCurrent.plus(sqrt(beforeSqrt)).div(_2)
+  if (poolMargin.lt(_0)) {
+    throw new InsufficientLiquidityError('pool margin is negative')
+  }
   return { ...context, poolMargin }
 }
 
@@ -404,6 +419,7 @@ export function computeAMMSafeCondition2(context: AMMTradingContext, beta: BigNu
     return true
   }
   let position2 = context.poolMargin.minus(sqrt(beforeSqrt))
+  position2 = BigNumber.max(position2, _0) // might be negative, clip to zero
   position2 = position2
     .div(beta)
     .div(context.ammMaxLeverage)
