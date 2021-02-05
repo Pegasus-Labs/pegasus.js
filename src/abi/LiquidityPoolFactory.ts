@@ -872,19 +872,9 @@ const _abi = [
         type: "int256",
       },
       {
-        internalType: "uint256",
-        name: "collateralDecimals",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "perpetualCount",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "fundingTime",
-        type: "uint256",
+        internalType: "uint256[4]",
+        name: "nums",
+        type: "uint256[4]",
       },
     ],
     stateMutability: "view",

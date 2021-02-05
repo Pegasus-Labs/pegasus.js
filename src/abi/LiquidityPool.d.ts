@@ -690,17 +690,13 @@ export class LiquidityPool extends Contract {
       addresses: [string, string, string, string, string, string, string];
       vaultFeeRate: BigNumber;
       poolCash: BigNumber;
-      collateralDecimals: BigNumber;
-      perpetualCount: BigNumber;
-      fundingTime: BigNumber;
+      nums: [BigNumber, BigNumber, BigNumber, BigNumber];
       0: boolean;
       1: boolean;
       2: [string, string, string, string, string, string, string];
       3: BigNumber;
       4: BigNumber;
-      5: BigNumber;
-      6: BigNumber;
-      7: BigNumber;
+      5: [BigNumber, BigNumber, BigNumber, BigNumber];
     }>;
 
     "getLiquidityPoolInfo()"(
@@ -711,17 +707,13 @@ export class LiquidityPool extends Contract {
       addresses: [string, string, string, string, string, string, string];
       vaultFeeRate: BigNumber;
       poolCash: BigNumber;
-      collateralDecimals: BigNumber;
-      perpetualCount: BigNumber;
-      fundingTime: BigNumber;
+      nums: [BigNumber, BigNumber, BigNumber, BigNumber];
       0: boolean;
       1: boolean;
       2: [string, string, string, string, string, string, string];
       3: BigNumber;
       4: BigNumber;
-      5: BigNumber;
-      6: BigNumber;
-      7: BigNumber;
+      5: [BigNumber, BigNumber, BigNumber, BigNumber];
     }>;
 
     getMarginAccount(
@@ -1475,17 +1467,13 @@ export class LiquidityPool extends Contract {
     addresses: [string, string, string, string, string, string, string];
     vaultFeeRate: BigNumber;
     poolCash: BigNumber;
-    collateralDecimals: BigNumber;
-    perpetualCount: BigNumber;
-    fundingTime: BigNumber;
+    nums: [BigNumber, BigNumber, BigNumber, BigNumber];
     0: boolean;
     1: boolean;
     2: [string, string, string, string, string, string, string];
     3: BigNumber;
     4: BigNumber;
-    5: BigNumber;
-    6: BigNumber;
-    7: BigNumber;
+    5: [BigNumber, BigNumber, BigNumber, BigNumber];
   }>;
 
   "getLiquidityPoolInfo()"(
@@ -1496,17 +1484,13 @@ export class LiquidityPool extends Contract {
     addresses: [string, string, string, string, string, string, string];
     vaultFeeRate: BigNumber;
     poolCash: BigNumber;
-    collateralDecimals: BigNumber;
-    perpetualCount: BigNumber;
-    fundingTime: BigNumber;
+    nums: [BigNumber, BigNumber, BigNumber, BigNumber];
     0: boolean;
     1: boolean;
     2: [string, string, string, string, string, string, string];
     3: BigNumber;
     4: BigNumber;
-    5: BigNumber;
-    6: BigNumber;
-    7: BigNumber;
+    5: [BigNumber, BigNumber, BigNumber, BigNumber];
   }>;
 
   getMarginAccount(
@@ -2244,17 +2228,13 @@ export class LiquidityPool extends Contract {
       addresses: [string, string, string, string, string, string, string];
       vaultFeeRate: BigNumber;
       poolCash: BigNumber;
-      collateralDecimals: BigNumber;
-      perpetualCount: BigNumber;
-      fundingTime: BigNumber;
+      nums: [BigNumber, BigNumber, BigNumber, BigNumber];
       0: boolean;
       1: boolean;
       2: [string, string, string, string, string, string, string];
       3: BigNumber;
       4: BigNumber;
-      5: BigNumber;
-      6: BigNumber;
-      7: BigNumber;
+      5: [BigNumber, BigNumber, BigNumber, BigNumber];
     }>;
 
     "getLiquidityPoolInfo()"(
@@ -2265,17 +2245,13 @@ export class LiquidityPool extends Contract {
       addresses: [string, string, string, string, string, string, string];
       vaultFeeRate: BigNumber;
       poolCash: BigNumber;
-      collateralDecimals: BigNumber;
-      perpetualCount: BigNumber;
-      fundingTime: BigNumber;
+      nums: [BigNumber, BigNumber, BigNumber, BigNumber];
       0: boolean;
       1: boolean;
       2: [string, string, string, string, string, string, string];
       3: BigNumber;
       4: BigNumber;
-      5: BigNumber;
-      6: BigNumber;
-      7: BigNumber;
+      5: [BigNumber, BigNumber, BigNumber, BigNumber];
     }>;
 
     getMarginAccount(

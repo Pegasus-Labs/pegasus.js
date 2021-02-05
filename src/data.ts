@@ -85,8 +85,9 @@ export async function getLiquidityPool(reader: Reader, liquidityPoolAddress: str
     vault: pool.addresses[6],
     vaultFeeRate: normalizeBigNumberish(pool.vaultFeeRate).shiftedBy(-DECIMALS),
     poolCashBalance: normalizeBigNumberish(pool.poolCash).shiftedBy(-DECIMALS),
-    collateralDecimals: pool.collateralDecimals.toNumber(),
-    fundingTime: pool.fundingTime.toNumber(),
+    collateralDecimals: pool.nums[0].toNumber(),
+    fundingTime: pool.nums[2].toNumber(),
+    operatorExpiration: pool.nums[3].toNumber(),
     perpetuals: new Map()
   }
   pool.perpetuals.forEach((m, i) => {

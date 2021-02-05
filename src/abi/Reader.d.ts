@@ -243,8 +243,7 @@ export class Reader extends Contract {
         addresses: [string, string, string, string, string, string, string];
         vaultFeeRate: BigNumber;
         poolCash: BigNumber;
-        collateralDecimals: BigNumber;
-        fundingTime: BigNumber;
+        nums: [BigNumber, BigNumber, BigNumber, BigNumber];
         perpetuals: {
           state: number;
           oracle: string;
@@ -338,9 +337,8 @@ export class Reader extends Contract {
         2: [string, string, string, string, string, string, string];
         3: BigNumber;
         4: BigNumber;
-        5: BigNumber;
-        6: BigNumber;
-        7: {
+        5: [BigNumber, BigNumber, BigNumber, BigNumber];
+        6: {
           state: number;
           oracle: string;
           nums: [
@@ -436,8 +434,7 @@ export class Reader extends Contract {
         addresses: [string, string, string, string, string, string, string];
         vaultFeeRate: BigNumber;
         poolCash: BigNumber;
-        collateralDecimals: BigNumber;
-        fundingTime: BigNumber;
+        nums: [BigNumber, BigNumber, BigNumber, BigNumber];
         perpetuals: {
           state: number;
           oracle: string;
@@ -531,9 +528,8 @@ export class Reader extends Contract {
         2: [string, string, string, string, string, string, string];
         3: BigNumber;
         4: BigNumber;
-        5: BigNumber;
-        6: BigNumber;
-        7: {
+        5: [BigNumber, BigNumber, BigNumber, BigNumber];
+        6: {
           state: number;
           oracle: string;
           nums: [
@@ -635,8 +631,7 @@ export class Reader extends Contract {
         addresses: [string, string, string, string, string, string, string];
         vaultFeeRate: BigNumber;
         poolCash: BigNumber;
-        collateralDecimals: BigNumber;
-        fundingTime: BigNumber;
+        nums: [BigNumber, BigNumber, BigNumber, BigNumber];
         perpetuals: {
           state: number;
           oracle: string;
@@ -730,9 +725,8 @@ export class Reader extends Contract {
         2: [string, string, string, string, string, string, string];
         3: BigNumber;
         4: BigNumber;
-        5: BigNumber;
-        6: BigNumber;
-        7: {
+        5: [BigNumber, BigNumber, BigNumber, BigNumber];
+        6: {
           state: number;
           oracle: string;
           nums: [
@@ -828,8 +822,7 @@ export class Reader extends Contract {
         addresses: [string, string, string, string, string, string, string];
         vaultFeeRate: BigNumber;
         poolCash: BigNumber;
-        collateralDecimals: BigNumber;
-        fundingTime: BigNumber;
+        nums: [BigNumber, BigNumber, BigNumber, BigNumber];
         perpetuals: {
           state: number;
           oracle: string;
@@ -923,9 +916,8 @@ export class Reader extends Contract {
         2: [string, string, string, string, string, string, string];
         3: BigNumber;
         4: BigNumber;
-        5: BigNumber;
-        6: BigNumber;
-        7: {
+        5: [BigNumber, BigNumber, BigNumber, BigNumber];
+        6: {
           state: number;
           oracle: string;
           nums: [

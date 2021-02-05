@@ -40,6 +40,7 @@ const defaultPool: LiquidityPoolStorage = {
   vaultFeeRate: new BigNumber(0.0002),
   poolCashBalance: _0, // set me later
   fundingTime: 1579601290,
+  operatorExpiration: 1579601290,
 
   perpetuals: new Map() // set me later
 }

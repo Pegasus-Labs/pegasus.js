@@ -80,8 +80,10 @@ export interface LiquidityPoolStorage {
 
   vaultFeeRate: BigNumber
   poolCashBalance: BigNumber
+  
   collateralDecimals: number
   fundingTime: number
+  operatorExpiration: number
 
   perpetuals: Map<number, PerpetualStorage>
 }
