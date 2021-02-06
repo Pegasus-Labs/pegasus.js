@@ -19,10 +19,17 @@ import { LpGovernor } from './abi/LpGovernor'
 import { LpGovernorFactory } from './abi/LpGovernorFactory'
 import { ShareToken } from './abi/ShareToken'
 import { ShareTokenFactory } from './abi/ShareTokenFactory'
+import { IOracle } from './abi/IOracle'
+import { IOracleFactory } from './abi/IOracleFactory'
 
 export function getLiquidityPoolContract(contractAddress: string, signerOrProvider: SignerOrProvider): LiquidityPool {
   getAddress(contractAddress)
   return LiquidityPoolFactory.connect(contractAddress, signerOrProvider)
+}
+
+export function getOracleContract(contractAddress: string, signerOrProvider: SignerOrProvider): IOracle {
+  getAddress(contractAddress)
+  return IOracleFactory.connect(contractAddress, signerOrProvider)
 }
 
 export function getBrokerContract(contractAddress: string, signerOrProvider: SignerOrProvider): Broker {
