@@ -25,7 +25,7 @@ export const CHAIN_ID_TO_BROKER_ADDRESS: { [chainID: number]: string } = {
   1337: '0xA794E448e60a4e800DfEDa5Df87abddfEa3f686C',
 }
 
-export const CHAIN_ID_TO_ORACLE_ROUTER_ADDRESS: { [chainID: number]: string } = {
+export const CHAIN_ID_TO_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: number]: string } = {
   42: '0xEb91772706F9ac9C89F223937A89D3308016dAF1',
   1337: '0xc7b1229fd865f8CC0964FeEDCE7ACa288a8E0A36',
 }
