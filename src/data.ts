@@ -21,6 +21,8 @@ import { ShareToken } from './abi/ShareToken'
 import { ShareTokenFactory } from './abi/ShareTokenFactory'
 import { IOracle } from './abi/IOracle'
 import { IOracleFactory } from './abi/IOracleFactory'
+import { OracleRouterCreatorFactory } from './abi/OracleRouterCreatorFactory'
+import { OracleRouterCreator } from './abi/OracleRouterCreator'
 
 export function getLiquidityPoolContract(contractAddress: string, signerOrProvider: SignerOrProvider): LiquidityPool {
   getAddress(contractAddress)
@@ -40,6 +42,11 @@ export function getBrokerContract(contractAddress: string, signerOrProvider: Sig
 export function getPoolCreatorContract(contractAddress: string, signerOrProvider: SignerOrProvider): PoolCreator {
   getAddress(contractAddress)
   return PoolCreatorFactory.connect(contractAddress, signerOrProvider)
+}
+
+export function getOracleRouterCreatorContract(contractAddress: string, signerOrProvider: SignerOrProvider): OracleRouterCreator {
+  getAddress(contractAddress)
+  return OracleRouterCreatorFactory.connect(contractAddress, signerOrProvider)
 }
 
 export function getSymbolServiceContract(contractAddress: string, signerOrProvider: SignerOrProvider): SymbolService {
