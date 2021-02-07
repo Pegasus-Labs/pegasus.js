@@ -209,3 +209,17 @@ export interface AMMTradingResult {
   operatorFee: BigNumber
   tradingPrice: BigNumber
 }
+
+export interface OracleRoute {
+  oracle: string
+  isInverse: boolean
+}
+
+export interface PreviewOracleRouterResult {
+  markPrice: BigNumber
+  markPriceTime: number
+  indexPrice: BigNumber
+  indexPriceTime: number
+  isMarketClosed: boolean
+  isTerminated: boolean
+}

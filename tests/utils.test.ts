@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
 import { BigNumberish, InvalidArgumentError } from '../src/types'
-import { normalizeBigNumberish, hasTheSameSign, mostSignificantBit, sqrt, splitAmount } from '../src/utils'
+import { normalizeBigNumberish, hasTheSameSign, mostSignificantBit, sqrt, splitAmount, getOracleRouterKey } from '../src/utils'
 import { _0, _1 } from '../src/constants'
 
 import { extendExpect } from './helper'
@@ -242,4 +242,12 @@ describe('normalizeBigNumberish', (): void => {
     testSuccesses(expectedSuccesses)
     testFailures(expectedFailures)
   })
+})
+
+describe('getOracleRouterKey', (): void => {
+  const key = getOracleRouterKey([
+    { oracle: '0x5FbDB2315678afecb367f032d93F642f64180aa3', isInverse: false},
+    { oracle: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512', isInverse: true},
+  ])
+  expect(key).toEqual('0x9552d4caa8c0f86dd82c8e6440f35ac070a1181499ace3d895069c2ae3e20f25')
 })

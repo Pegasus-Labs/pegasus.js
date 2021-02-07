@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { _0, _1, _2, _3, DECIMALS } from './constants'
-import { BigNumberish, InvalidArgumentError } from './types'
+import { BigNumberish, InvalidArgumentError, OracleRoute } from './types'
 import { ethers } from 'ethers'
 
 export function normalizeBigNumberish(bigNumberish: BigNumberish): BigNumber {
@@ -113,4 +113,13 @@ export function sqrt(x: BigNumber): BigNumber {
     next = next.dp(0, BigNumber.ROUND_DOWN)
   } while (next.lt(y));
   return y.shiftedBy(-DECIMALS).dp(DECIMALS, BigNumber.ROUND_DOWN)
+}
+
+export function getOracleRouterKey(path: Array<OracleRoute>): string {
+  if (path.length === 0) {
+    throw new InvalidArgumentError('empty path')
+  }
+  const encodedPath = ethers.utils.defaultAbiCoder.encode(["tuple(address oracle, bool isInverse)[]"], [path]);
+  const hash = ethers.utils.keccak256(encodedPath);
+  return hash
 }

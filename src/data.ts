@@ -2,9 +2,9 @@ import { ethers } from 'ethers'
 import { getAddress } from '@ethersproject/address'
 import { BigNumber } from 'bignumber.js'
 import { normalizeBigNumberish } from './utils'
-import { _0, DECIMALS, CHAIN_ID_TO_READER_ADDRESS } from './constants'
-import { AccountStorage, LiquidityPoolStorage, PerpetualState, PerpetualID } from './types'
-import { InvalidArgumentError, BugError, SignerOrProvider } from './types'
+import { _0, DECIMALS, CHAIN_ID_TO_READER_ADDRESS, _1 } from './constants'
+import { AccountStorage, LiquidityPoolStorage, PerpetualState, PerpetualID, PreviewOracleRouterResult } from './types'
+import { InvalidArgumentError, BugError, SignerOrProvider, OracleRoute } from './types'
 import { Broker } from './abi/Broker'
 import { BrokerFactory } from './abi/BrokerFactory'
 import { LiquidityPool } from './abi/LiquidityPool'
@@ -257,4 +257,54 @@ export async function getPerpetualClearGasReward(
   const perpetualInfo = await liquidityPool.callStatic.getPerpetualInfo(perpetualIndex)
   const keeperGasReward = normalizeBigNumberish(perpetualInfo.nums[11]).shiftedBy(-collateralDecimals)
   return keeperGasReward
+}
+
+export async function previewOracleRouter(path: Array<OracleRoute>, signerOrProvider: SignerOrProvider): Promise<PreviewOracleRouterResult> {
+  if (path.length === 0) {
+    throw new InvalidArgumentError('empty path')
+  }
+  const ret: PreviewOracleRouterResult = {
+    markPrice: _1,
+    markPriceTime: 0,
+    indexPrice: _1,
+    indexPriceTime: 0,
+    isMarketClosed: false,
+    isTerminated: false,
+  }
+  const query: Array<Promise<boolean | { newPrice: ethers.BigNumber; newTimestamp: ethers.BigNumber; }>> = []
+  for (let i = 0; i < path.length; i++) {
+    const iOracle = getOracleContract(path[i].oracle, signerOrProvider)
+    query.push(iOracle.callStatic.priceTWAPLong())
+    query.push(iOracle.callStatic.priceTWAPShort())
+    query.push(iOracle.callStatic.isMarketClosed())
+    query.push(iOracle.callStatic.isTerminated())
+  }
+  const prices = await Promise.all(query)
+  for (let i = 0; i < path.length; i++) {
+    {
+      const { newPrice, newTimestamp } = prices[i * 4 + 0] as { newPrice: ethers.BigNumber; newTimestamp: ethers.BigNumber; }
+      let p = new BigNumber(newPrice.toString()).shiftedBy(-DECIMALS)
+      if (path[i].isInverse && !p.isZero()) {
+        p = _1.div(p)
+      }
+      ret.markPrice = ret.markPrice.times(p)
+      ret.markPriceTime = Math.max(ret.markPriceTime, newTimestamp.toNumber())
+    }
+    {
+      const { newPrice, newTimestamp } = prices[i * 4 + 1] as { newPrice: ethers.BigNumber; newTimestamp: ethers.BigNumber; }
+      let p = new BigNumber(newPrice.toString()).shiftedBy(-DECIMALS)
+      if (path[i].isInverse && !p.isZero()) {
+        p = _1.div(p)
+      }
+      ret.indexPrice = ret.indexPrice.times(p)
+      ret.indexPriceTime = Math.max(ret.indexPriceTime, newTimestamp.toNumber())
+    }
+    if (prices[i * 4 + 2] as boolean) {
+      ret.isMarketClosed = true
+    }
+    if (prices[i * 4 + 3] as boolean) {
+      ret.isTerminated = true
+    }
+  }
+  return ret
 }
