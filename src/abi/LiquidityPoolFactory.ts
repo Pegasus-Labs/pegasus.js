@@ -666,7 +666,7 @@ const _abi = [
     outputs: [
       {
         internalType: "int256",
-        name: "",
+        name: "tradeAmount",
         type: "int256",
       },
     ],
@@ -1196,19 +1196,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "newOperator",
-        type: "address",
-      },
-    ],
-    name: "setOperator",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "uint256",
         name: "perpetualIndex",
         type: "uint256",
@@ -1330,7 +1317,7 @@ const _abi = [
     outputs: [
       {
         internalType: "int256",
-        name: "",
+        name: "tradeAmount",
         type: "int256",
       },
     ],

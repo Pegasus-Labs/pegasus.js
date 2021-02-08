@@ -281,7 +281,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "SIGNATURE_PERPETUAL_SET_OPERATOR",
+    name: "SIGNATURE_PERPETUAL_TRANSFER_OPERATOR",
     outputs: [
       {
         internalType: "bytes32",
@@ -908,11 +908,6 @@ const _abi = [
       },
       {
         internalType: "uint256",
-        name: "eta",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
         name: "startBlock",
         type: "uint256",
       },
@@ -935,11 +930,6 @@ const _abi = [
         internalType: "uint256",
         name: "againstVotes",
         type: "uint256",
-      },
-      {
-        internalType: "bool",
-        name: "canceled",
-        type: "bool",
       },
       {
         internalType: "bool",
@@ -1189,7 +1179,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "unlockPeriod",
+    name: "unlockDelay",
     outputs: [
       {
         internalType: "uint256",

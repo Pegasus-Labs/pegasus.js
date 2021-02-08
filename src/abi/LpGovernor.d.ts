@@ -24,7 +24,7 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface LpGovernorInterface extends ethers.utils.Interface {
   functions: {
     "SIGNATURE_PERPETUAL_SETTLE()": FunctionFragment;
-    "SIGNATURE_PERPETUAL_SET_OPERATOR()": FunctionFragment;
+    "SIGNATURE_PERPETUAL_TRANSFER_OPERATOR()": FunctionFragment;
     "SIGNATURE_PERPETUAL_UPGRADE()": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
@@ -73,7 +73,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
-    "unlockPeriod()": FunctionFragment;
+    "unlockDelay()": FunctionFragment;
     "userRewardPerTokenPaid(address)": FunctionFragment;
     "votingDelay()": FunctionFragment;
     "votingPeriod()": FunctionFragment;
@@ -84,7 +84,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "SIGNATURE_PERPETUAL_SET_OPERATOR",
+    functionFragment: "SIGNATURE_PERPETUAL_TRANSFER_OPERATOR",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -253,7 +253,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "unlockPeriod",
+    functionFragment: "unlockDelay",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -274,7 +274,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "SIGNATURE_PERPETUAL_SET_OPERATOR",
+    functionFragment: "SIGNATURE_PERPETUAL_TRANSFER_OPERATOR",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -401,7 +401,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "unlockPeriod",
+    functionFragment: "unlockDelay",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -466,13 +466,13 @@ export class LpGovernor extends Contract {
       0: string;
     }>;
 
-    SIGNATURE_PERPETUAL_SET_OPERATOR(
+    SIGNATURE_PERPETUAL_TRANSFER_OPERATOR(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    "SIGNATURE_PERPETUAL_SET_OPERATOR()"(
+    "SIGNATURE_PERPETUAL_TRANSFER_OPERATOR()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -914,13 +914,11 @@ export class LpGovernor extends Contract {
     ): Promise<{
       id: BigNumber;
       proposer: string;
-      eta: BigNumber;
       startBlock: BigNumber;
       endBlock: BigNumber;
       quorumVotes: BigNumber;
       forVotes: BigNumber;
       againstVotes: BigNumber;
-      canceled: boolean;
       executed: boolean;
       0: BigNumber;
       1: string;
@@ -929,9 +927,7 @@ export class LpGovernor extends Contract {
       4: BigNumber;
       5: BigNumber;
       6: BigNumber;
-      7: BigNumber;
-      8: boolean;
-      9: boolean;
+      7: boolean;
     }>;
 
     "proposals(uint256)"(
@@ -940,13 +936,11 @@ export class LpGovernor extends Contract {
     ): Promise<{
       id: BigNumber;
       proposer: string;
-      eta: BigNumber;
       startBlock: BigNumber;
       endBlock: BigNumber;
       quorumVotes: BigNumber;
       forVotes: BigNumber;
       againstVotes: BigNumber;
-      canceled: boolean;
       executed: boolean;
       0: BigNumber;
       1: string;
@@ -955,9 +949,7 @@ export class LpGovernor extends Contract {
       4: BigNumber;
       5: BigNumber;
       6: BigNumber;
-      7: BigNumber;
-      8: boolean;
-      9: boolean;
+      7: boolean;
     }>;
 
     propose(
@@ -1134,13 +1126,13 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    unlockPeriod(
+    unlockDelay(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    "unlockPeriod()"(
+    "unlockDelay()"(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
@@ -1189,9 +1181,11 @@ export class LpGovernor extends Contract {
 
   "SIGNATURE_PERPETUAL_SETTLE()"(overrides?: CallOverrides): Promise<string>;
 
-  SIGNATURE_PERPETUAL_SET_OPERATOR(overrides?: CallOverrides): Promise<string>;
+  SIGNATURE_PERPETUAL_TRANSFER_OPERATOR(
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-  "SIGNATURE_PERPETUAL_SET_OPERATOR()"(
+  "SIGNATURE_PERPETUAL_TRANSFER_OPERATOR()"(
     overrides?: CallOverrides
   ): Promise<string>;
 
@@ -1497,13 +1491,11 @@ export class LpGovernor extends Contract {
   ): Promise<{
     id: BigNumber;
     proposer: string;
-    eta: BigNumber;
     startBlock: BigNumber;
     endBlock: BigNumber;
     quorumVotes: BigNumber;
     forVotes: BigNumber;
     againstVotes: BigNumber;
-    canceled: boolean;
     executed: boolean;
     0: BigNumber;
     1: string;
@@ -1512,9 +1504,7 @@ export class LpGovernor extends Contract {
     4: BigNumber;
     5: BigNumber;
     6: BigNumber;
-    7: BigNumber;
-    8: boolean;
-    9: boolean;
+    7: boolean;
   }>;
 
   "proposals(uint256)"(
@@ -1523,13 +1513,11 @@ export class LpGovernor extends Contract {
   ): Promise<{
     id: BigNumber;
     proposer: string;
-    eta: BigNumber;
     startBlock: BigNumber;
     endBlock: BigNumber;
     quorumVotes: BigNumber;
     forVotes: BigNumber;
     againstVotes: BigNumber;
-    canceled: boolean;
     executed: boolean;
     0: BigNumber;
     1: string;
@@ -1538,9 +1526,7 @@ export class LpGovernor extends Contract {
     4: BigNumber;
     5: BigNumber;
     6: BigNumber;
-    7: BigNumber;
-    8: boolean;
-    9: boolean;
+    7: boolean;
   }>;
 
   propose(
@@ -1639,9 +1625,9 @@ export class LpGovernor extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  unlockPeriod(overrides?: CallOverrides): Promise<BigNumber>;
+  unlockDelay(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "unlockPeriod()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "unlockDelay()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   userRewardPerTokenPaid(
     arg0: string,
@@ -1666,11 +1652,11 @@ export class LpGovernor extends Contract {
 
     "SIGNATURE_PERPETUAL_SETTLE()"(overrides?: CallOverrides): Promise<string>;
 
-    SIGNATURE_PERPETUAL_SET_OPERATOR(
+    SIGNATURE_PERPETUAL_TRANSFER_OPERATOR(
       overrides?: CallOverrides
     ): Promise<string>;
 
-    "SIGNATURE_PERPETUAL_SET_OPERATOR()"(
+    "SIGNATURE_PERPETUAL_TRANSFER_OPERATOR()"(
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -1970,13 +1956,11 @@ export class LpGovernor extends Contract {
     ): Promise<{
       id: BigNumber;
       proposer: string;
-      eta: BigNumber;
       startBlock: BigNumber;
       endBlock: BigNumber;
       quorumVotes: BigNumber;
       forVotes: BigNumber;
       againstVotes: BigNumber;
-      canceled: boolean;
       executed: boolean;
       0: BigNumber;
       1: string;
@@ -1985,9 +1969,7 @@ export class LpGovernor extends Contract {
       4: BigNumber;
       5: BigNumber;
       6: BigNumber;
-      7: BigNumber;
-      8: boolean;
-      9: boolean;
+      7: boolean;
     }>;
 
     "proposals(uint256)"(
@@ -1996,13 +1978,11 @@ export class LpGovernor extends Contract {
     ): Promise<{
       id: BigNumber;
       proposer: string;
-      eta: BigNumber;
       startBlock: BigNumber;
       endBlock: BigNumber;
       quorumVotes: BigNumber;
       forVotes: BigNumber;
       againstVotes: BigNumber;
-      canceled: boolean;
       executed: boolean;
       0: BigNumber;
       1: string;
@@ -2011,9 +1991,7 @@ export class LpGovernor extends Contract {
       4: BigNumber;
       5: BigNumber;
       6: BigNumber;
-      7: BigNumber;
-      8: boolean;
-      9: boolean;
+      7: boolean;
     }>;
 
     propose(
@@ -2112,9 +2090,9 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    unlockPeriod(overrides?: CallOverrides): Promise<BigNumber>;
+    unlockDelay(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "unlockPeriod()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "unlockDelay()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     userRewardPerTokenPaid(
       arg0: string,
@@ -2190,11 +2168,11 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    SIGNATURE_PERPETUAL_SET_OPERATOR(
+    SIGNATURE_PERPETUAL_TRANSFER_OPERATOR(
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "SIGNATURE_PERPETUAL_SET_OPERATOR()"(
+    "SIGNATURE_PERPETUAL_TRANSFER_OPERATOR()"(
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2578,9 +2556,9 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    unlockPeriod(overrides?: CallOverrides): Promise<BigNumber>;
+    unlockDelay(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "unlockPeriod()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "unlockDelay()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     userRewardPerTokenPaid(
       arg0: string,
@@ -2610,11 +2588,11 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    SIGNATURE_PERPETUAL_SET_OPERATOR(
+    SIGNATURE_PERPETUAL_TRANSFER_OPERATOR(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "SIGNATURE_PERPETUAL_SET_OPERATOR()"(
+    "SIGNATURE_PERPETUAL_TRANSFER_OPERATOR()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -3046,9 +3024,9 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    unlockPeriod(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    unlockDelay(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "unlockPeriod()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "unlockDelay()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     userRewardPerTokenPaid(
       arg0: string,
