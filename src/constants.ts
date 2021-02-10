@@ -21,7 +21,7 @@ export const CHAIN_ID_TO_POOL_CREATOR_ADDRESS: { [chainID: number]: string } = {
 }
 
 export const CHAIN_ID_TO_BROKER_ADDRESS: { [chainID: number]: string } = {
-  42: '0x243d3bB879779911a5299592d38e84E54B83fd19',
+  42: '0xA529f01Fd86908b3b1afccB16eCf0A1a3d9F4d32',
   1337: '0xA794E448e60a4e800DfEDa5Df87abddfEa3f686C'
 }
 

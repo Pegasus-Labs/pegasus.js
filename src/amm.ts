@@ -38,7 +38,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
       return
     }
     if (perpetual.indexPrice.lte(_0)) {
-      throw new InvalidArgumentError("index price must be positive");
+      throw new InvalidArgumentError('index price must be positive')
     }
     cash = cash.plus(perpetual.ammCashBalance)
     cash = cash.minus(perpetual.unitAccumulativeFunding.times(perpetual.ammPositionAmount))
@@ -108,11 +108,9 @@ export function initAMMTradingContextEagerEvaluation(context: AMMTradingContext)
   }
 
   // prevent margin balance < 0
-  const marginBalanceWithCurrent = context.cash
-    .plus(valueWithoutCurrent)
-    .plus(context.index.times(context.position1))
+  const marginBalanceWithCurrent = context.cash.plus(valueWithoutCurrent).plus(context.index.times(context.position1))
   if (marginBalanceWithCurrent.lt(_0)) {
-    throw new InsufficientLiquidityError("AMM is emergency")
+    throw new InsufficientLiquidityError('AMM is emergency')
   }
 
   return {
