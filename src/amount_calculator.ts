@@ -23,8 +23,6 @@ import BigNumber from 'bignumber.js'
 const minimize = require('minimize-golden-section-1d')
 
 // the returned amount is the trader's perspective
-// note: the position value is "mark * | x |" but we use "price * | x |" instead. because this function
-//       is designed for "stop order". when stop order matches, the mark price is near the trading price.
 export function computeMaxTradeAmountWithPrice(
   p: LiquidityPoolStorage,
   perpetualIndex: number,
@@ -34,6 +32,10 @@ export function computeMaxTradeAmountWithPrice(
   feeRate: BigNumberish,
   isTraderBuy: boolean
 ) {
+  const perpetual = p.perpetuals.get(perpetualIndex)
+  if (!perpetual) {
+    throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
+  }
   const normalizedPrice = normalizeBigNumberish(price)
   const normalizedMaxLeverage = normalizeBigNumberish(traderMaxLeverage)
   const normalizedFeeRate = normalizeBigNumberish(feeRate)
@@ -41,7 +43,8 @@ export function computeMaxTradeAmountWithPrice(
     throw Error(`bad price ${normalizedPrice.toFixed()} or ammMaxLeverage ${normalizedMaxLeverage.toFixed()}`)
   }
 
-  // close all
+  // close all existing positions to make the method simpler. 
+  // this step consumes fees, so that the final amount will be smaller than safe amount.
   let newDetails = computeAccount(p, perpetualIndex, s)
   let closeAmount = s.positionAmount.negated()
   if (!closeAmount.isZero()) {
@@ -50,25 +53,27 @@ export function computeMaxTradeAmountWithPrice(
   }
 
   // open again
-  //                        price | x |
-  // lev = ----------------------------------------------
-  //        (cash - price x - price | x | fee) + price x
-  //                 cash lev
-  // => x = ± ---------------------
-  //           (1 + lev fee) price
+  //                        mark | x |
+  // lev = ---------------------------------------------
+  //        (cash - price x - price | x | fee) + mark x
+  //                       cash lev                                        - cash lev
+  // => x = -------------------------------------- if x > 0, -------------------------------------- if x < 0,
+  //         mark (1 - lev) + price lev (fee + 1)             mark (1 + lev) + price lev (fee - 1)
   const cash = newDetails.accountComputed.availableCashBalance
-  let denominator = normalizedMaxLeverage
-    .times(normalizedFeeRate)
-    .plus(_1)
-    .times(normalizedPrice)
+  let denominator = perpetual.markPrice
+  if (isTraderBuy) {
+    denominator = denominator.times(_1.minus(normalizedMaxLeverage))
+    denominator = denominator.plus(normalizedPrice.times(normalizedMaxLeverage).times(normalizedFeeRate.plus(_1)))
+  } else {
+    denominator = denominator.times(_1.plus(normalizedMaxLeverage))
+    denominator = denominator.plus(normalizedPrice.times(normalizedMaxLeverage).times(normalizedFeeRate.minus(_1)))
+    denominator = denominator.negated()
+  }
   if (denominator.isZero()) {
     // no solution
     return _0
   }
   let openAmount = cash.times(normalizedMaxLeverage).div(denominator)
-  if (!isTraderBuy) {
-    openAmount = openAmount.negated()
-  }
   const result = closeAmount.plus(openAmount)
 
   // check the direction
