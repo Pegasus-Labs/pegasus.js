@@ -31,6 +31,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "createPerpetual(address,int256[9],int256[6],int256[6],int256[6])": FunctionFragment;
     "deposit(uint256,address,int256)": FunctionFragment;
     "donateInsuranceFund(uint256,int256)": FunctionFragment;
+    "donateLiquidity(int256)": FunctionFragment;
     "forceToSetEmergencyState(uint256,int256)": FunctionFragment;
     "forceToSyncState()": FunctionFragment;
     "getActiveAccountCount(uint256)": FunctionFragment;
@@ -121,6 +122,10 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "donateInsuranceFund",
     values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "donateLiquidity",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "forceToSetEmergencyState",
@@ -305,6 +310,10 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "donateInsuranceFund",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "donateLiquidity",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -624,6 +633,16 @@ export class LiquidityPool extends Contract {
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
+    donateLiquidity(
+      cashToAdd: BigNumberish,
+      overrides?: PayableOverrides
+    ): Promise<ContractTransaction>;
+
+    "donateLiquidity(int256)"(
+      cashToAdd: BigNumberish,
+      overrides?: PayableOverrides
+    ): Promise<ContractTransaction>;
+
     forceToSetEmergencyState(
       perpetualIndex: BigNumberish,
       settlementPrice: BigNumberish,
@@ -924,14 +943,18 @@ export class LiquidityPool extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       poolMargin: BigNumber;
+      isSafe: boolean;
       0: BigNumber;
+      1: boolean;
     }>;
 
     "getPoolMargin()"(
       overrides?: CallOverrides
     ): Promise<{
       poolMargin: BigNumber;
+      isSafe: boolean;
       0: BigNumber;
+      1: boolean;
     }>;
 
     initialize(
@@ -1397,6 +1420,16 @@ export class LiquidityPool extends Contract {
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
+  donateLiquidity(
+    cashToAdd: BigNumberish,
+    overrides?: PayableOverrides
+  ): Promise<ContractTransaction>;
+
+  "donateLiquidity(int256)"(
+    cashToAdd: BigNumberish,
+    overrides?: PayableOverrides
+  ): Promise<ContractTransaction>;
+
   forceToSetEmergencyState(
     perpetualIndex: BigNumberish,
     settlementPrice: BigNumberish,
@@ -1687,9 +1720,23 @@ export class LiquidityPool extends Contract {
     ];
   }>;
 
-  getPoolMargin(overrides?: CallOverrides): Promise<BigNumber>;
+  getPoolMargin(
+    overrides?: CallOverrides
+  ): Promise<{
+    poolMargin: BigNumber;
+    isSafe: boolean;
+    0: BigNumber;
+    1: boolean;
+  }>;
 
-  "getPoolMargin()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "getPoolMargin()"(
+    overrides?: CallOverrides
+  ): Promise<{
+    poolMargin: BigNumber;
+    isSafe: boolean;
+    0: BigNumber;
+    1: boolean;
+  }>;
 
   initialize(
     operator: string,
@@ -2148,6 +2195,16 @@ export class LiquidityPool extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    donateLiquidity(
+      cashToAdd: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "donateLiquidity(int256)"(
+      cashToAdd: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     forceToSetEmergencyState(
       perpetualIndex: BigNumberish,
       settlementPrice: BigNumberish,
@@ -2438,9 +2495,23 @@ export class LiquidityPool extends Contract {
       ];
     }>;
 
-    getPoolMargin(overrides?: CallOverrides): Promise<BigNumber>;
+    getPoolMargin(
+      overrides?: CallOverrides
+    ): Promise<{
+      poolMargin: BigNumber;
+      isSafe: boolean;
+      0: BigNumber;
+      1: boolean;
+    }>;
 
-    "getPoolMargin()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "getPoolMargin()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      poolMargin: BigNumber;
+      isSafe: boolean;
+      0: BigNumber;
+      1: boolean;
+    }>;
 
     initialize(
       operator: string,
@@ -3029,6 +3100,16 @@ export class LiquidityPool extends Contract {
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
+    donateLiquidity(
+      cashToAdd: BigNumberish,
+      overrides?: PayableOverrides
+    ): Promise<BigNumber>;
+
+    "donateLiquidity(int256)"(
+      cashToAdd: BigNumberish,
+      overrides?: PayableOverrides
+    ): Promise<BigNumber>;
+
     forceToSetEmergencyState(
       perpetualIndex: BigNumberish,
       settlementPrice: BigNumberish,
@@ -3540,6 +3621,16 @@ export class LiquidityPool extends Contract {
     "donateInsuranceFund(uint256,int256)"(
       perpetualIndex: BigNumberish,
       amount: BigNumberish,
+      overrides?: PayableOverrides
+    ): Promise<PopulatedTransaction>;
+
+    donateLiquidity(
+      cashToAdd: BigNumberish,
+      overrides?: PayableOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "donateLiquidity(int256)"(
+      cashToAdd: BigNumberish,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 

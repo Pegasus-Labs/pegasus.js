@@ -30,6 +30,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "burn(address,uint256)": FunctionFragment;
+    "callFunction(address,string,bytes,uint32,uint32,uint64,bytes)": FunctionFragment;
     "castVote(uint256,bool)": FunctionFragment;
     "criticalQuorumRate()": FunctionFragment;
     "decimals()": FunctionFragment;
@@ -103,6 +104,18 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "burn",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "callFunction",
+    values: [
+      string,
+      string,
+      BytesLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BytesLike
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "castVote",
@@ -285,6 +298,10 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "callFunction",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "castVote", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "criticalQuorumRate",
@@ -541,6 +558,28 @@ export class LpGovernor extends Contract {
     "burn(address,uint256)"(
       account: string,
       amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    callFunction(
+      from: string,
+      method: string,
+      callData: BytesLike,
+      nonce: BigNumberish,
+      expiration: BigNumberish,
+      gasLimit: BigNumberish,
+      signature: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "callFunction(address,string,bytes,uint32,uint32,uint64,bytes)"(
+      from: string,
+      method: string,
+      callData: BytesLike,
+      nonce: BigNumberish,
+      expiration: BigNumberish,
+      gasLimit: BigNumberish,
+      signature: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1236,6 +1275,28 @@ export class LpGovernor extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  callFunction(
+    from: string,
+    method: string,
+    callData: BytesLike,
+    nonce: BigNumberish,
+    expiration: BigNumberish,
+    gasLimit: BigNumberish,
+    signature: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "callFunction(address,string,bytes,uint32,uint32,uint64,bytes)"(
+    from: string,
+    method: string,
+    callData: BytesLike,
+    nonce: BigNumberish,
+    expiration: BigNumberish,
+    gasLimit: BigNumberish,
+    signature: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   castVote(
     proposalId: BigNumberish,
     support: boolean,
@@ -1704,6 +1765,28 @@ export class LpGovernor extends Contract {
     "burn(address,uint256)"(
       account: string,
       amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    callFunction(
+      from: string,
+      method: string,
+      callData: BytesLike,
+      nonce: BigNumberish,
+      expiration: BigNumberish,
+      gasLimit: BigNumberish,
+      signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "callFunction(address,string,bytes,uint32,uint32,uint64,bytes)"(
+      from: string,
+      method: string,
+      callData: BytesLike,
+      nonce: BigNumberish,
+      expiration: BigNumberish,
+      gasLimit: BigNumberish,
+      signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2225,6 +2308,28 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    callFunction(
+      from: string,
+      method: string,
+      callData: BytesLike,
+      nonce: BigNumberish,
+      expiration: BigNumberish,
+      gasLimit: BigNumberish,
+      signature: BytesLike,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "callFunction(address,string,bytes,uint32,uint32,uint64,bytes)"(
+      from: string,
+      method: string,
+      callData: BytesLike,
+      nonce: BigNumberish,
+      expiration: BigNumberish,
+      gasLimit: BigNumberish,
+      signature: BytesLike,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     castVote(
       proposalId: BigNumberish,
       support: boolean,
@@ -2647,6 +2752,28 @@ export class LpGovernor extends Contract {
     "burn(address,uint256)"(
       account: string,
       amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    callFunction(
+      from: string,
+      method: string,
+      callData: BytesLike,
+      nonce: BigNumberish,
+      expiration: BigNumberish,
+      gasLimit: BigNumberish,
+      signature: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "callFunction(address,string,bytes,uint32,uint32,uint64,bytes)"(
+      from: string,
+      method: string,
+      callData: BytesLike,
+      nonce: BigNumberish,
+      expiration: BigNumberish,
+      gasLimit: BigNumberish,
+      signature: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

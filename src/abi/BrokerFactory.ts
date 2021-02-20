@@ -561,6 +561,198 @@ const _abi = [
   {
     inputs: [
       {
+        components: [
+          {
+            internalType: "address",
+            name: "trader",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "broker",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "relayer",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "referrer",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "liquidityPool",
+            type: "address",
+          },
+          {
+            internalType: "int256",
+            name: "minTradeAmount",
+            type: "int256",
+          },
+          {
+            internalType: "int256",
+            name: "amount",
+            type: "int256",
+          },
+          {
+            internalType: "int256",
+            name: "limitPrice",
+            type: "int256",
+          },
+          {
+            internalType: "int256",
+            name: "triggerPrice",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "chainID",
+            type: "uint256",
+          },
+          {
+            internalType: "uint64",
+            name: "expiredAt",
+            type: "uint64",
+          },
+          {
+            internalType: "uint32",
+            name: "perpetualIndex",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "brokerFeeLimit",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "flags",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "salt",
+            type: "uint32",
+          },
+        ],
+        internalType: "struct Order",
+        name: "order",
+        type: "tuple",
+      },
+    ],
+    name: "getOrderFilledAmount",
+    outputs: [
+      {
+        internalType: "int256",
+        name: "filledAmount",
+        type: "int256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "trader",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "broker",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "relayer",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "referrer",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "liquidityPool",
+            type: "address",
+          },
+          {
+            internalType: "int256",
+            name: "minTradeAmount",
+            type: "int256",
+          },
+          {
+            internalType: "int256",
+            name: "amount",
+            type: "int256",
+          },
+          {
+            internalType: "int256",
+            name: "limitPrice",
+            type: "int256",
+          },
+          {
+            internalType: "int256",
+            name: "triggerPrice",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "chainID",
+            type: "uint256",
+          },
+          {
+            internalType: "uint64",
+            name: "expiredAt",
+            type: "uint64",
+          },
+          {
+            internalType: "uint32",
+            name: "perpetualIndex",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "brokerFeeLimit",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "flags",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "salt",
+            type: "uint32",
+          },
+        ],
+        internalType: "struct Order",
+        name: "order",
+        type: "tuple",
+      },
+    ],
+    name: "isOrderCanceled",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "amount",
         type: "uint256",

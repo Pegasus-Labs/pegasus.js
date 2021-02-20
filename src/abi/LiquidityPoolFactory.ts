@@ -777,6 +777,19 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "int256",
+        name: "cashToAdd",
+        type: "int256",
+      },
+    ],
+    name: "donateLiquidity",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "perpetualIndex",
         type: "uint256",
@@ -977,6 +990,11 @@ const _abi = [
         name: "poolMargin",
         type: "int256",
       },
+      {
+        internalType: "bool",
+        name: "isSafe",
+        type: "bool",
+      },
     ],
     stateMutability: "view",
     type: "function",
@@ -1036,7 +1054,7 @@ const _abi = [
     outputs: [
       {
         internalType: "int256",
-        name: "",
+        name: "liquidationAmount",
         type: "int256",
       },
     ],
@@ -1075,7 +1093,7 @@ const _abi = [
     outputs: [
       {
         internalType: "int256",
-        name: "",
+        name: "liquidationAmount",
         type: "int256",
       },
     ],

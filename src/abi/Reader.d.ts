@@ -1014,8 +1014,10 @@ export class Reader extends Contract {
     ): Promise<{
       isSynced: boolean;
       poolMargin: BigNumber;
+      isSafe: boolean;
       0: boolean;
       1: BigNumber;
+      2: boolean;
     }>;
 
     "getPoolMargin(address)"(
@@ -1024,8 +1026,10 @@ export class Reader extends Contract {
     ): Promise<{
       isSynced: boolean;
       poolMargin: BigNumber;
+      isSafe: boolean;
       0: boolean;
       1: BigNumber;
+      2: boolean;
     }>;
   };
 

@@ -27,7 +27,6 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "createLiquidityPool(address,uint256,bool,int256)": FunctionFragment;
     "createLiquidityPoolWith(address,address,uint256,bool,int256)": FunctionFragment;
     "deactivatePerpetualFor(address,uint256)": FunctionFragment;
-    "debugSetTemplate(address,address)": FunctionFragment;
     "getAccessController()": FunctionFragment;
     "getActiveLiquidityPoolCountOf(address)": FunctionFragment;
     "getDescription(address)": FunctionFragment;
@@ -76,10 +75,6 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "deactivatePerpetualFor",
     values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "debugSetTemplate",
-    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "getAccessController",
@@ -196,10 +191,6 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "deactivatePerpetualFor",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "debugSetTemplate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -399,18 +390,6 @@ export class PoolCreator extends Contract {
     "deactivatePerpetualFor(address,uint256)"(
       trader: string,
       perpetualIndex: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    debugSetTemplate(
-      governor: string,
-      share: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "debugSetTemplate(address,address)"(
-      governor: string,
-      share: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -699,8 +678,8 @@ export class PoolCreator extends Contract {
     }>;
 
     listAvailableVersions(
-      start: BigNumberish,
-      count: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       result: string[];
@@ -708,8 +687,8 @@ export class PoolCreator extends Contract {
     }>;
 
     "listAvailableVersions(uint256,uint256)"(
-      start: BigNumberish,
-      count: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       result: string[];
@@ -884,18 +863,6 @@ export class PoolCreator extends Contract {
   "deactivatePerpetualFor(address,uint256)"(
     trader: string,
     perpetualIndex: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  debugSetTemplate(
-    governor: string,
-    share: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "debugSetTemplate(address,address)"(
-    governor: string,
-    share: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1080,14 +1047,14 @@ export class PoolCreator extends Contract {
   >;
 
   listAvailableVersions(
-    start: BigNumberish,
-    count: BigNumberish,
+    begin: BigNumberish,
+    end: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string[]>;
 
   "listAvailableVersions(uint256,uint256)"(
-    start: BigNumberish,
-    count: BigNumberish,
+    begin: BigNumberish,
+    end: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string[]>;
 
@@ -1241,18 +1208,6 @@ export class PoolCreator extends Contract {
       perpetualIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
-
-    debugSetTemplate(
-      governor: string,
-      share: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "debugSetTemplate(address,address)"(
-      governor: string,
-      share: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     getAccessController(overrides?: CallOverrides): Promise<string>;
 
@@ -1435,14 +1390,14 @@ export class PoolCreator extends Contract {
     >;
 
     listAvailableVersions(
-      start: BigNumberish,
-      count: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string[]>;
 
     "listAvailableVersions(uint256,uint256)"(
-      start: BigNumberish,
-      count: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string[]>;
 
@@ -1631,18 +1586,6 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    debugSetTemplate(
-      governor: string,
-      share: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "debugSetTemplate(address,address)"(
-      governor: string,
-      share: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     getAccessController(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getAccessController()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1792,14 +1735,14 @@ export class PoolCreator extends Contract {
     ): Promise<BigNumber>;
 
     listAvailableVersions(
-      start: BigNumberish,
-      count: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     "listAvailableVersions(uint256,uint256)"(
-      start: BigNumberish,
-      count: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1952,18 +1895,6 @@ export class PoolCreator extends Contract {
     "deactivatePerpetualFor(address,uint256)"(
       trader: string,
       perpetualIndex: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    debugSetTemplate(
-      governor: string,
-      share: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "debugSetTemplate(address,address)"(
-      governor: string,
-      share: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -2130,14 +2061,14 @@ export class PoolCreator extends Contract {
     ): Promise<PopulatedTransaction>;
 
     listAvailableVersions(
-      start: BigNumberish,
-      count: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     "listAvailableVersions(uint256,uint256)"(
-      start: BigNumberish,
-      count: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

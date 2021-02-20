@@ -277,7 +277,7 @@ const _abi = [
     outputs: [
       {
         internalType: "address",
-        name: "",
+        name: "liquidityPool",
         type: "address",
       },
     ],
@@ -316,7 +316,7 @@ const _abi = [
     outputs: [
       {
         internalType: "address",
-        name: "",
+        name: "liquidityPool",
         type: "address",
       },
     ],
@@ -344,24 +344,6 @@ const _abi = [
         type: "bool",
       },
     ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "governor",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "share",
-        type: "address",
-      },
-    ],
-    name: "debugSetTemplate",
-    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -724,12 +706,12 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "start",
+        name: "begin",
         type: "uint256",
       },
       {
         internalType: "uint256",
-        name: "count",
+        name: "end",
         type: "uint256",
       },
     ],

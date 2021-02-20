@@ -213,6 +213,11 @@ const _abi = [
         name: "poolMargin",
         type: "int256",
       },
+      {
+        internalType: "bool",
+        name: "isSafe",
+        type: "bool",
+      },
     ],
     stateMutability: "nonpayable",
     type: "function",

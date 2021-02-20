@@ -29,6 +29,8 @@ interface BrokerInterface extends ethers.utils.Interface {
     "cancelOrder(tuple)": FunctionFragment;
     "deposit()": FunctionFragment;
     "getNonce(address)": FunctionFragment;
+    "getOrderFilledAmount(tuple)": FunctionFragment;
+    "isOrderCanceled(tuple)": FunctionFragment;
     "withdraw(uint256)": FunctionFragment;
   };
 
@@ -66,6 +68,50 @@ interface BrokerInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "deposit", values?: undefined): string;
   encodeFunctionData(functionFragment: "getNonce", values: [string]): string;
   encodeFunctionData(
+    functionFragment: "getOrderFilledAmount",
+    values: [
+      {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      }
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isOrderCanceled",
+    values: [
+      {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      }
+    ]
+  ): string;
+  encodeFunctionData(
     functionFragment: "withdraw",
     values: [BigNumberish]
   ): string;
@@ -82,6 +128,14 @@ interface BrokerInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getNonce", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getOrderFilledAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isOrderCanceled",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {
@@ -227,6 +281,100 @@ export class Broker extends Contract {
       0: number;
     }>;
 
+    getOrderFilledAmount(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
+      overrides?: CallOverrides
+    ): Promise<{
+      filledAmount: BigNumber;
+      0: BigNumber;
+    }>;
+
+    "getOrderFilledAmount(tuple)"(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
+      overrides?: CallOverrides
+    ): Promise<{
+      filledAmount: BigNumber;
+      0: BigNumber;
+    }>;
+
+    isOrderCanceled(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "isOrderCanceled(tuple)"(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
     withdraw(
       amount: BigNumberish,
       overrides?: Overrides
@@ -330,6 +478,90 @@ export class Broker extends Contract {
     overrides?: CallOverrides
   ): Promise<number>;
 
+  getOrderFilledAmount(
+    order: {
+      trader: string;
+      broker: string;
+      relayer: string;
+      referrer: string;
+      liquidityPool: string;
+      minTradeAmount: BigNumberish;
+      amount: BigNumberish;
+      limitPrice: BigNumberish;
+      triggerPrice: BigNumberish;
+      chainID: BigNumberish;
+      expiredAt: BigNumberish;
+      perpetualIndex: BigNumberish;
+      brokerFeeLimit: BigNumberish;
+      flags: BigNumberish;
+      salt: BigNumberish;
+    },
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "getOrderFilledAmount(tuple)"(
+    order: {
+      trader: string;
+      broker: string;
+      relayer: string;
+      referrer: string;
+      liquidityPool: string;
+      minTradeAmount: BigNumberish;
+      amount: BigNumberish;
+      limitPrice: BigNumberish;
+      triggerPrice: BigNumberish;
+      chainID: BigNumberish;
+      expiredAt: BigNumberish;
+      perpetualIndex: BigNumberish;
+      brokerFeeLimit: BigNumberish;
+      flags: BigNumberish;
+      salt: BigNumberish;
+    },
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  isOrderCanceled(
+    order: {
+      trader: string;
+      broker: string;
+      relayer: string;
+      referrer: string;
+      liquidityPool: string;
+      minTradeAmount: BigNumberish;
+      amount: BigNumberish;
+      limitPrice: BigNumberish;
+      triggerPrice: BigNumberish;
+      chainID: BigNumberish;
+      expiredAt: BigNumberish;
+      perpetualIndex: BigNumberish;
+      brokerFeeLimit: BigNumberish;
+      flags: BigNumberish;
+      salt: BigNumberish;
+    },
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  "isOrderCanceled(tuple)"(
+    order: {
+      trader: string;
+      broker: string;
+      relayer: string;
+      referrer: string;
+      liquidityPool: string;
+      minTradeAmount: BigNumberish;
+      amount: BigNumberish;
+      limitPrice: BigNumberish;
+      triggerPrice: BigNumberish;
+      chainID: BigNumberish;
+      expiredAt: BigNumberish;
+      perpetualIndex: BigNumberish;
+      brokerFeeLimit: BigNumberish;
+      flags: BigNumberish;
+      salt: BigNumberish;
+    },
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   withdraw(
     amount: BigNumberish,
     overrides?: Overrides
@@ -432,6 +664,90 @@ export class Broker extends Contract {
       account: string,
       overrides?: CallOverrides
     ): Promise<number>;
+
+    getOrderFilledAmount(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getOrderFilledAmount(tuple)"(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isOrderCanceled(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "isOrderCanceled(tuple)"(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     withdraw(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
@@ -572,6 +888,90 @@ export class Broker extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getOrderFilledAmount(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getOrderFilledAmount(tuple)"(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isOrderCanceled(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "isOrderCanceled(tuple)"(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     withdraw(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
 
     "withdraw(uint256)"(
@@ -676,6 +1076,90 @@ export class Broker extends Contract {
 
     "getNonce(address)"(
       account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getOrderFilledAmount(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getOrderFilledAmount(tuple)"(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isOrderCanceled(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isOrderCanceled(tuple)"(
+      order: {
+        trader: string;
+        broker: string;
+        relayer: string;
+        referrer: string;
+        liquidityPool: string;
+        minTradeAmount: BigNumberish;
+        amount: BigNumberish;
+        limitPrice: BigNumberish;
+        triggerPrice: BigNumberish;
+        chainID: BigNumberish;
+        expiredAt: BigNumberish;
+        perpetualIndex: BigNumberish;
+        brokerFeeLimit: BigNumberish;
+        flags: BigNumberish;
+        salt: BigNumberish;
+      },
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
