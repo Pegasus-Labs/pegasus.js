@@ -95,7 +95,8 @@ export interface PerpetualStorage {
   totalCollateral: BigNumber
   markPrice: BigNumber // markPrice = settlementPrice if it is in EMERGENCY state
   indexPrice: BigNumber
-  unitAccumulativeFunding: BigNumber
+  realTimeUnitAccumulativeFunding: BigNumber // funding payment for next funding period
+  unitAccumulativeFunding: BigNumber // committed funding payment
 
   initialMarginRate: BigNumber
   maintenanceMarginRate: BigNumber
@@ -108,11 +109,16 @@ export interface PerpetualStorage {
   insuranceFundCap: BigNumber
   insuranceFund: BigNumber
   donatedInsuranceFund: BigNumber
+  syncFundingInterval: number // 1 if funding payment is collected every second
+  syncFundingTime: number // funding time that aligned to syncFundingInterval
+  openInterest: BigNumber
+  maxOpenInterestRate: BigNumber // openInterest <= poolMargin * maxOpenInterestRate / indexPrice
 
   halfSpread: Option // α
   openSlippageFactor: Option // β1
   closeSlippageFactor: Option // β2
   fundingRateFactor: Option // γ
+  fundingRateLimit: Option // Γ
   ammMaxLeverage: Option // λ
   maxClosePriceDiscount: Option // δ
 
@@ -176,6 +182,7 @@ export interface AMMTradingContext {
   openSlippageFactor: BigNumber // β1_m
   closeSlippageFactor: BigNumber // β2_m
   fundingRateFactor: BigNumber // γ_m
+  fundingRateLimit: BigNumber // Γ_m
   maxClosePriceDiscount: BigNumber // δ_m
   ammMaxLeverage: BigNumber // λ_m
 

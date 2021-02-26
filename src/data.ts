@@ -118,51 +118,60 @@ export async function getLiquidityPool(reader: Reader, liquidityPoolAddress: str
       totalCollateral: parsePerpNums(0),
       markPrice: parsePerpNums(1),
       indexPrice: parsePerpNums(2),
-      unitAccumulativeFunding: parsePerpNums(4),
+      realTimeUnitAccumulativeFunding: parsePerpNums(4),
+      unitAccumulativeFunding: parsePerpNums(5),
 
-      initialMarginRate: parsePerpNums(5),
-      maintenanceMarginRate: parsePerpNums(6),
-      operatorFeeRate: parsePerpNums(7),
-      lpFeeRate: parsePerpNums(8),
-      referrerRebateRate: parsePerpNums(9),
-      liquidationPenaltyRate: parsePerpNums(10),
-      keeperGasReward: parsePerpNums(11),
-      insuranceFundRate: parsePerpNums(12),
-      insuranceFundCap: parsePerpNums(13),
-      insuranceFund: parsePerpNums(14),
-      donatedInsuranceFund: parsePerpNums(15),
+      initialMarginRate: parsePerpNums(6),
+      maintenanceMarginRate: parsePerpNums(7),
+      operatorFeeRate: parsePerpNums(8),
+      lpFeeRate: parsePerpNums(9),
+      referrerRebateRate: parsePerpNums(10),
+      liquidationPenaltyRate: parsePerpNums(11),
+      keeperGasReward: parsePerpNums(12),
+      insuranceFundRate: parsePerpNums(13),
+      insuranceFundCap: parsePerpNums(14),
+      syncFundingInterval: m.nums[15].toNumber(),
+      insuranceFund: parsePerpNums(16),
+      donatedInsuranceFund: parsePerpNums(17),
 
       halfSpread: {
-        value: parsePerpNums(16),
-        minValue: parsePerpNums(17),
-        maxValue: parsePerpNums(18)
+        value: parsePerpNums(18),
+        minValue: parsePerpNums(19),
+        maxValue: parsePerpNums(20)
       },
       openSlippageFactor: {
-        value: parsePerpNums(19),
-        minValue: parsePerpNums(20),
-        maxValue: parsePerpNums(21)
+        value: parsePerpNums(21),
+        minValue: parsePerpNums(22),
+        maxValue: parsePerpNums(23)
       },
       closeSlippageFactor: {
-        value: parsePerpNums(22),
-        minValue: parsePerpNums(23),
-        maxValue: parsePerpNums(24)
+        value: parsePerpNums(24),
+        minValue: parsePerpNums(25),
+        maxValue: parsePerpNums(26)
       },
-      fundingRateFactor: {
-        value: parsePerpNums(25),
-        minValue: parsePerpNums(26),
-        maxValue: parsePerpNums(27)
+      fundingRateLimit: {
+        value: parsePerpNums(27),
+        minValue: parsePerpNums(28),
+        maxValue: parsePerpNums(29)
       },
       ammMaxLeverage: {
-        value: parsePerpNums(28),
-        minValue: parsePerpNums(29),
-        maxValue: parsePerpNums(30)
+        value: parsePerpNums(30),
+        minValue: parsePerpNums(31),
+        maxValue: parsePerpNums(32)
       },
       maxClosePriceDiscount: {
-        value: parsePerpNums(31),
-        minValue: parsePerpNums(32),
-        maxValue: parsePerpNums(33)
+        value: parsePerpNums(33),
+        minValue: parsePerpNums(34),
+        maxValue: parsePerpNums(35)
       },
-
+      openInterest: parsePerpNums(36),
+      maxOpenInterestRate: parsePerpNums(37),
+      fundingRateFactor: {
+        value: parsePerpNums(38),
+        minValue: parsePerpNums(39),
+        maxValue: parsePerpNums(40)
+      },
+      syncFundingTime: m.syncFundingTime.toNumber(),
       symbol: m.symbol.toNumber(),
       underlyingSymbol: m.underlyingAsset,
       isMarketClosed: m.isMarketClosed,

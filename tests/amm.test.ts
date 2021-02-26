@@ -51,6 +51,7 @@ const perpetual1: PerpetualStorage = {
 
   markPrice: new BigNumber(95),
   indexPrice: new BigNumber(100),
+  realTimeUnitAccumulativeFunding: new BigNumber('1.9'),
   unitAccumulativeFunding: new BigNumber('1.9'),
 
   initialMarginRate: new BigNumber(0.1),
@@ -64,11 +65,16 @@ const perpetual1: PerpetualStorage = {
   insuranceFundCap: new BigNumber(10000),
   insuranceFund: _0,
   donatedInsuranceFund: _0,
+  syncFundingInterval: 1,
+  syncFundingTime: 1579601290,
+  openInterest: _0,
+  maxOpenInterestRate: _1,
 
   halfSpread: { value: new BigNumber(0.001), minValue: _0, maxValue: _0 },
   openSlippageFactor: { value: new BigNumber(1), minValue: _0, maxValue: _0 },
   closeSlippageFactor: { value: new BigNumber(0.9), minValue: _0, maxValue: _0 },
   fundingRateFactor: { value: new BigNumber(0.005), minValue: _0, maxValue: _0 },
+  fundingRateLimit: { value: new BigNumber(0.005), minValue: _0, maxValue: _0 },
   ammMaxLeverage: { value: new BigNumber(3), minValue: _0, maxValue: _0 },
   maxClosePriceDiscount: { value: new BigNumber(0.2), minValue: _0, maxValue: _0 },
 
