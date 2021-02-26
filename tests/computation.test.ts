@@ -7,7 +7,8 @@ import {
   computeTradeWithPrice,
   computeAMMPrice,
   computeAMMTrade,
-  computeMarginCost
+  computeMarginCost,
+  computeOpenInterest
 } from '../src/computation'
 import { _0, _1 } from '../src/constants'
 import {
@@ -71,8 +72,8 @@ const perpetual1: PerpetualStorage = {
   donatedInsuranceFund: _0,
   syncFundingInterval: 1,
   syncFundingTime: 1579601290,
-  openInterest: _0,
-  maxOpenInterestRate: _1,
+  openInterest: new BigNumber('10'),
+  maxOpenInterestRate: new BigNumber('100'),
 
   halfSpread: { value: new BigNumber(0.001), minValue: _0, maxValue: _0 },
   openSlippageFactor: { value: new BigNumber('0.0142857142857142857142857142857'), minValue: _0, maxValue: _0 },
@@ -807,7 +808,8 @@ describe('computeAMMTrade', function() {
     expect(res.trader.accountStorage.cashBalance).toApproximate(new BigNumber('11178.8766232'))
     // 83941.29865625 - 6976.9161 * 0.5 + 9.9059375 * (0.5) + 2.441920635
     expect(res.newPool.poolCashBalance).toApproximate(new BigNumber('80460.235495635'))
-    expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('2.8'))
+    expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)!.ammPositionAmount).toApproximate(new BigNumber('2.8'))
+    expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)!.openInterest).toApproximate(new BigNumber('10'))
   })
 
   it(`buy without cross 0`, function() {
@@ -821,7 +823,8 @@ describe('computeAMMTrade', function() {
     expect(res.trader.accountStorage.cashBalance).toApproximate(new BigNumber('4204.0688315654972256837321085'))
     // 83941.29865625 - 6992.4957785904151334990367462 * (-0.5) + 9.9059375 * (-0.5) + 2.44737352250664529672466286117
     expect(res.newPool.poolCashBalance).toApproximate(new BigNumber('87435.0409503177142120462430360'))
-    expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('1.8'))
+    expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)!.ammPositionAmount).toApproximate(new BigNumber('1.8'))
+    expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)!.openInterest).toApproximate(new BigNumber('10'))
   })
 
   it(`buy cross 0`, function() {
@@ -835,14 +838,16 @@ describe('computeAMMTrade', function() {
     expect(res.trader.accountStorage.cashBalance).toApproximate(new BigNumber('-15378.3739867520655355289558459'))
     // 83941.29865625 - 6996.0111344722143116062591487 * (-3.3) + 9.9059375 * (-3.3) + 16.1607857206308150598104586335
     expect(res.newPool.poolCashBalance).toApproximate(new BigNumber('107011.606591978938043360465649'))
-    expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('-1'))
+    expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)!.ammPositionAmount).toApproximate(new BigNumber('-1'))
+    expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)!.openInterest).toApproximate(new BigNumber('11'))
   })
 
   it(`(saw) buy+sell`, function() {
     const res1 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '0.5')
     expect(res1.tradingPrice).toApproximate(new BigNumber('6992.4957785904151334990367462'))
     expect(res1.newPool.poolCashBalance).toApproximate(new BigNumber('87435.0409503177142120462430360')) // see the above case
-    expect(res1.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('1.8'))
+    expect(res1.newPool.perpetuals.get(TEST_MARKET_INDEX0)!.ammPositionAmount).toApproximate(new BigNumber('1.8'))
+    expect(res1.newPool.perpetuals.get(TEST_MARKET_INDEX0)!.openInterest).toApproximate(new BigNumber('10'))
 
     // availableCash = 87435.0409503177142120462430360 - 9.9059375 * (1.8) = 87417.2102628177142120462430360
     // m0 = 100005.870928541926673731114517
@@ -853,12 +858,13 @@ describe('computeAMMTrade', function() {
     expect(res2.trader.accountStorage.cashBalance).toApproximate(new BigNumber('7685.8323256229582040026006769'))
     // 87435.0409503177142120462430360 - 6980.4133389538758324702073441 * (0.5) + 9.9059375 * (0.5) + 6980.4133389538758324702073441 * 0.5 * 0.0007
     expect(res2.newPool.poolCashBalance).toApproximate(new BigNumber('83952.2303942594101523525039365'))
-    expect(res2.newPool.perpetuals.get(TEST_MARKET_INDEX0)?.ammPositionAmount).toApproximate(new BigNumber('2.3'))
+    expect(res2.newPool.perpetuals.get(TEST_MARKET_INDEX0)!.ammPositionAmount).toApproximate(new BigNumber('2.3'))
+    expect(res2.newPool.perpetuals.get(TEST_MARKET_INDEX0)!.openInterest).toApproximate(new BigNumber('10'))
   })
 })
 
-describe('lower than keeperGasReward', function() {
-  it(`computeAMMTrade should fail`, function() {
+describe('computeAMMTrade should fail on limits', function() {
+  it(`lower than keeperGasReward`, function() {
     const trader: AccountStorage = {
       ...accountStorage4,
       cashBalance: new BigNumber('1')
@@ -881,5 +887,59 @@ describe('lower than keeperGasReward', function() {
     const query2 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, trader, amount)
     expect(query2.tradeIsSafe).toBeTruthy()
     expect(query2.trader.accountComputed.availableMargin).toApproximate(normalizeBigNumberish('0'))
+  })
+
+  it(`exceeds open interest limit`, function() {
+    const poolStorage = {
+      ...poolStorage1,
+      perpetuals: new Map([
+        [
+          TEST_MARKET_INDEX0,
+          {
+            ...(poolStorage1.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage),
+            maxOpenInterestRate: new BigNumber(0.77),
+          }
+        ],
+      ])
+    }
+    const res = computeAMMTrade(poolStorage, TEST_MARKET_INDEX0, accountStorage1, '3.3')
+    expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)!.openInterest).toApproximate(new BigNumber('11'))
+    poolStorage.perpetuals.get(TEST_MARKET_INDEX0)!.maxOpenInterestRate = new BigNumber(0.76)
+    expect((): void => {
+      computeAMMTrade(poolStorage, TEST_MARKET_INDEX0, accountStorage1, '3.3')
+    }).toThrow()
+  })
+})
+
+describe('computeOpenInterest', function() {
+  it(`1 account`, function() {
+    let openInterest = _0
+    // 0 -> 5
+    openInterest = computeOpenInterest(openInterest, new BigNumber('0'), new BigNumber('5'))
+    expect(openInterest).toBeBigNumber(normalizeBigNumberish('5'))
+    // 5 -> 7
+    openInterest = computeOpenInterest(openInterest, new BigNumber('5'), new BigNumber('2'))
+    expect(openInterest).toBeBigNumber(normalizeBigNumberish('7'))
+    // 7 -> 5
+    openInterest = computeOpenInterest(openInterest, new BigNumber('7'), new BigNumber('-2'))
+    expect(openInterest).toBeBigNumber(normalizeBigNumberish('5'))
+    // 5 -> -2
+    openInterest = computeOpenInterest(openInterest, new BigNumber('5'), new BigNumber('-7'))
+    expect(openInterest).toBeBigNumber(normalizeBigNumberish('0'))
+    // -2 -> -5
+    openInterest = computeOpenInterest(openInterest, new BigNumber('-2'), new BigNumber('-3'))
+    expect(openInterest).toBeBigNumber(normalizeBigNumberish('0'))
+    // -5 -> -3
+    openInterest = computeOpenInterest(openInterest, new BigNumber('-5'), new BigNumber('2'))
+    expect(openInterest).toBeBigNumber(normalizeBigNumberish('0'))
+    // -3 -> 1
+    openInterest = computeOpenInterest(openInterest, new BigNumber('-3'), new BigNumber('4'))
+    expect(openInterest).toBeBigNumber(normalizeBigNumberish('1'))
+    // 1 -> 0
+    openInterest = computeOpenInterest(openInterest, new BigNumber('1'), new BigNumber('-1'))
+    expect(openInterest).toBeBigNumber(normalizeBigNumberish('0'))
+    // 0 -> -1
+    openInterest = computeOpenInterest(openInterest, new BigNumber('0'), new BigNumber('-1'))
+    expect(openInterest).toBeBigNumber(normalizeBigNumberish('0'))
   })
 })

@@ -67,8 +67,8 @@ const perpetual1: PerpetualStorage = {
   donatedInsuranceFund: _0,
   syncFundingInterval: 1,
   syncFundingTime: 1579601290,
-  openInterest: _0,
-  maxOpenInterestRate: _1,
+  openInterest: new BigNumber('10'),
+  maxOpenInterestRate: new BigNumber('100'),
 
   halfSpread: { value: new BigNumber(0.001), minValue: _0, maxValue: _0 },
   openSlippageFactor: { value: new BigNumber(1), minValue: _0, maxValue: _0 },

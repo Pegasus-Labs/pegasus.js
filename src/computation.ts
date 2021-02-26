@@ -12,9 +12,10 @@ import {
   AccountComputed,
   AMMTradingResult,
   InvalidArgumentError,
-  BugError
+  BugError,
+  InsufficientLiquidityError
 } from './types'
-import { computeAMMInternalTrade } from './amm'
+import { computeAMMInternalTrade, computeAMMPoolMargin, initAMMTradingContext } from './amm'
 import { _0, _1 } from './constants'
 import { normalizeBigNumberish, hasTheSameSign, splitAmount } from './utils'
 
@@ -226,6 +227,8 @@ export function computeAMMTrade(
   if (!perpetual) {
     throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
   }
+  let oldOpenInterest = perpetual.openInterest
+  let newOpenInterest = oldOpenInterest
 
   // AMM
   const { deltaAMMAmount, tradingPrice } = computeAMMPrice(p, perpetualIndex, normalizedAmount)
@@ -249,6 +252,7 @@ export function computeAMMTrade(
     deltaAMMAmount.negated(),
     perpetual.lpFeeRate.plus(p.vaultFeeRate).plus(perpetual.operatorFeeRate)
   )
+  newOpenInterest = computeOpenInterest(newOpenInterest, trader.positionAmount, deltaAMMAmount.negated())
 
   // new AMM
   let fakeAMMAccount: AccountStorage = {
@@ -260,13 +264,28 @@ export function computeAMMTrade(
   const fakeAMMResult = computeTradeWithPrice(p, perpetualIndex, fakeAMMAccount, tradingPrice, deltaAMMAmount, _0)
   fakeAMMAccount = fakeAMMResult.afterTrade.accountStorage
   fakeAMMAccount.cashBalance = fakeAMMAccount.cashBalance.plus(lpFee)
+  newOpenInterest = computeOpenInterest(newOpenInterest, perpetual.ammPositionAmount, deltaAMMAmount)
   const newPool: LiquidityPoolStorage = {
     // clone the old pool to keep the return value immutable
     ...p,
     poolCashBalance: fakeAMMAccount.cashBalance,
     perpetuals: new Map(p.perpetuals)
   }
-  newPool.perpetuals.set(perpetualIndex, { ...perpetual, ammPositionAmount: fakeAMMAccount.positionAmount })
+  newPool.perpetuals.set(perpetualIndex, {
+    ...perpetual,
+    ammPositionAmount: fakeAMMAccount.positionAmount,
+    openInterest: newOpenInterest,
+  })
+
+  // check open interest limit
+  if (newOpenInterest.gt(oldOpenInterest)) {
+    let context = initAMMTradingContext(newPool, perpetualIndex)
+    context = computeAMMPoolMargin(context, context.openSlippageFactor, true /* allowUnsafe */)
+    const limit = context.poolMargin.times(perpetual.maxOpenInterestRate).div(perpetual.indexPrice)
+    if (newOpenInterest.gt(limit)) {
+      throw new InsufficientLiquidityError(`open interest exceeds limit: ${newOpenInterest.toFixed()} > ${limit.toFixed()}`)
+    }
+  }
 
   return {
     tradeIsSafe: traderResult.tradeIsSafe,
@@ -324,4 +343,20 @@ export function computeMarginCost(
     marginCost = minAvailableMargin.minus(afterTrade.accountComputed.marginBalance)
   }
   return marginCost
+}
+
+// > 0 if more collateral required
+export function computeOpenInterest(
+  oldOpenInterest: BigNumber,
+  oldPosition: BigNumber,
+  tradeAmount: BigNumber): BigNumber {
+  let newOpenInterest = oldOpenInterest
+  let newPosition = oldPosition.plus(tradeAmount)
+  if (oldPosition.gt(_0)) {
+    newOpenInterest = newOpenInterest.minus(oldPosition)
+  }
+  if (newPosition.gt(_0)) {
+    newOpenInterest = newOpenInterest.plus(newPosition)
+  }
+  return newOpenInterest
 }
