@@ -281,8 +281,16 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
+          syncFundingTime: BigNumber;
           symbol: BigNumber;
           underlyingAsset: string;
           isMarketClosed: boolean;
@@ -324,13 +332,21 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           3: BigNumber;
-          4: string;
-          5: boolean;
-          6: BigNumber;
+          4: BigNumber;
+          5: string;
+          6: boolean;
           7: BigNumber;
+          8: BigNumber;
         }[];
         0: boolean;
         1: boolean;
@@ -375,8 +391,16 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
+          syncFundingTime: BigNumber;
           symbol: BigNumber;
           underlyingAsset: string;
           isMarketClosed: boolean;
@@ -418,13 +442,21 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           3: BigNumber;
-          4: string;
-          5: boolean;
-          6: BigNumber;
+          4: BigNumber;
+          5: string;
+          6: boolean;
           7: BigNumber;
+          8: BigNumber;
         }[];
       };
       0: boolean;
@@ -472,8 +504,16 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
+          syncFundingTime: BigNumber;
           symbol: BigNumber;
           underlyingAsset: string;
           isMarketClosed: boolean;
@@ -515,13 +555,21 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           3: BigNumber;
-          4: string;
-          5: boolean;
-          6: BigNumber;
+          4: BigNumber;
+          5: string;
+          6: boolean;
           7: BigNumber;
+          8: BigNumber;
         }[];
         0: boolean;
         1: boolean;
@@ -566,8 +614,16 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
+          syncFundingTime: BigNumber;
           symbol: BigNumber;
           underlyingAsset: string;
           isMarketClosed: boolean;
@@ -609,13 +665,21 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           3: BigNumber;
-          4: string;
-          5: boolean;
-          6: BigNumber;
+          4: BigNumber;
+          5: string;
+          6: boolean;
           7: BigNumber;
+          8: BigNumber;
         }[];
       };
     }>;
@@ -669,8 +733,16 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
+          syncFundingTime: BigNumber;
           symbol: BigNumber;
           underlyingAsset: string;
           isMarketClosed: boolean;
@@ -712,13 +784,21 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           3: BigNumber;
-          4: string;
-          5: boolean;
-          6: BigNumber;
+          4: BigNumber;
+          5: string;
+          6: boolean;
           7: BigNumber;
+          8: BigNumber;
         }[];
         0: boolean;
         1: boolean;
@@ -763,8 +843,16 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
+          syncFundingTime: BigNumber;
           symbol: BigNumber;
           underlyingAsset: string;
           isMarketClosed: boolean;
@@ -806,13 +894,21 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           3: BigNumber;
-          4: string;
-          5: boolean;
-          6: BigNumber;
+          4: BigNumber;
+          5: string;
+          6: boolean;
           7: BigNumber;
+          8: BigNumber;
         }[];
       };
       0: boolean;
@@ -860,8 +956,16 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
+          syncFundingTime: BigNumber;
           symbol: BigNumber;
           underlyingAsset: string;
           isMarketClosed: boolean;
@@ -903,13 +1007,21 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           3: BigNumber;
-          4: string;
-          5: boolean;
-          6: BigNumber;
+          4: BigNumber;
+          5: string;
+          6: boolean;
           7: BigNumber;
+          8: BigNumber;
         }[];
         0: boolean;
         1: boolean;
@@ -954,8 +1066,16 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
+          syncFundingTime: BigNumber;
           symbol: BigNumber;
           underlyingAsset: string;
           isMarketClosed: boolean;
@@ -997,13 +1117,21 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           3: BigNumber;
-          4: string;
-          5: boolean;
-          6: BigNumber;
+          4: BigNumber;
+          5: string;
+          6: boolean;
           7: BigNumber;
+          8: BigNumber;
         }[];
       };
     }>;

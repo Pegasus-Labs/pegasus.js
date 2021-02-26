@@ -28,7 +28,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "checkIn()": FunctionFragment;
     "claimOperator()": FunctionFragment;
     "clear(uint256)": FunctionFragment;
-    "createPerpetual(address,int256[9],int256[6],int256[6],int256[6])": FunctionFragment;
+    "createPerpetual(address,int256[11],int256[7],int256[7],int256[7])": FunctionFragment;
     "deposit(uint256,address,int256)": FunctionFragment;
     "donateInsuranceFund(uint256,int256)": FunctionFragment;
     "donateLiquidity(int256)": FunctionFragment;
@@ -51,12 +51,12 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "setEmergencyState(uint256)": FunctionFragment;
     "setLiquidityPoolParameter(int256[1])": FunctionFragment;
     "setOracle(uint256,address)": FunctionFragment;
-    "setPerpetualBaseParameter(uint256,int256[9])": FunctionFragment;
-    "setPerpetualRiskParameter(uint256,int256[6],int256[6],int256[6])": FunctionFragment;
+    "setPerpetualBaseParameter(uint256,int256[11])": FunctionFragment;
+    "setPerpetualRiskParameter(uint256,int256[7],int256[7],int256[7])": FunctionFragment;
     "settle(uint256,address)": FunctionFragment;
     "trade(uint256,address,int256,int256,uint256,address,uint32)": FunctionFragment;
     "transferOperator(address)": FunctionFragment;
-    "updatePerpetualRiskParameter(uint256,int256[6])": FunctionFragment;
+    "updatePerpetualRiskParameter(uint256,int256[7])": FunctionFragment;
     "withdraw(uint256,address,int256)": FunctionFragment;
   };
 
@@ -87,12 +87,6 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
         BigNumberish,
         BigNumberish,
         BigNumberish,
-        BigNumberish
-      ],
-      [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish
@@ -103,9 +97,20 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       [
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish
+      ],
+      [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -216,6 +221,8 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
+        BigNumberish,
         BigNumberish
       ]
     ]
@@ -230,17 +237,20 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
         BigNumberish,
         BigNumberish,
         BigNumberish,
-        BigNumberish
-      ],
-      [
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
-        BigNumberish,
         BigNumberish,
         BigNumberish
       ],
       [
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish,
+        BigNumberish
+      ],
+      [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -275,6 +285,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     values: [
       BigNumberish,
       [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -411,7 +422,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "ClaimFee(address,int256)": EventFragment;
     "ClaimOperator(address)": EventFragment;
     "Clear(uint256,address)": EventFragment;
-    "CreatePerpetual(uint256,address,address,address,address,address,int256[9],int256[6])": EventFragment;
+    "CreatePerpetual(uint256,address,address,address,address,address,int256[11],int256[7])": EventFragment;
     "Deposit(uint256,address,int256)": EventFragment;
     "DonateInsuranceFund(uint256,int256)": EventFragment;
     "IncreaseFee(address,int256)": EventFragment;
@@ -529,7 +540,9 @@ export class LiquidityPool extends Contract {
 
     createPerpetual(
       oracle: string,
-      coreParams: [
+      baseParams: [
+        BigNumberish,
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -546,6 +559,7 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       minRiskParamValues: [
@@ -554,9 +568,11 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       maxRiskParamValues: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -567,9 +583,11 @@ export class LiquidityPool extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "createPerpetual(address,int256[9],int256[6],int256[6],int256[6])"(
+    "createPerpetual(address,int256[11],int256[7],int256[7],int256[7])"(
       oracle: string,
-      coreParams: [
+      baseParams: [
+        BigNumberish,
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -586,6 +604,7 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       minRiskParamValues: [
@@ -594,9 +613,11 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       maxRiskParamValues: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -815,8 +836,16 @@ export class LiquidityPool extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
         BigNumber
       ];
+      syncFundingTime: BigNumber;
       0: number;
       1: string;
       2: [
@@ -853,8 +882,16 @@ export class LiquidityPool extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
         BigNumber
       ];
+      3: BigNumber;
     }>;
 
     "getPerpetualInfo(uint256)"(
@@ -897,8 +934,16 @@ export class LiquidityPool extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
         BigNumber
       ];
+      syncFundingTime: BigNumber;
       0: number;
       1: string;
       2: [
@@ -935,8 +980,16 @@ export class LiquidityPool extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
         BigNumber
       ];
+      3: BigNumber;
     }>;
 
     getPoolMargin(
@@ -1110,14 +1163,18 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "setPerpetualBaseParameter(uint256,int256[9])"(
+    "setPerpetualBaseParameter(uint256,int256[11])"(
       perpetualIndex: BigNumberish,
       baseParams: [
+        BigNumberish,
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -1139,6 +1196,7 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       minRiskParamValues: [
@@ -1147,9 +1205,11 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       maxRiskParamValues: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -1160,9 +1220,10 @@ export class LiquidityPool extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "setPerpetualRiskParameter(uint256,int256[6],int256[6],int256[6])"(
+    "setPerpetualRiskParameter(uint256,int256[7],int256[7],int256[7])"(
       perpetualIndex: BigNumberish,
       riskParams: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -1176,9 +1237,11 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       maxRiskParamValues: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -1241,14 +1304,16 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "updatePerpetualRiskParameter(uint256,int256[6])"(
+    "updatePerpetualRiskParameter(uint256,int256[7])"(
       perpetualIndex: BigNumberish,
       riskParams: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -1316,7 +1381,9 @@ export class LiquidityPool extends Contract {
 
   createPerpetual(
     oracle: string,
-    coreParams: [
+    baseParams: [
+      BigNumberish,
+      BigNumberish,
       BigNumberish,
       BigNumberish,
       BigNumberish,
@@ -1333,6 +1400,7 @@ export class LiquidityPool extends Contract {
       BigNumberish,
       BigNumberish,
       BigNumberish,
+      BigNumberish,
       BigNumberish
     ],
     minRiskParamValues: [
@@ -1341,9 +1409,11 @@ export class LiquidityPool extends Contract {
       BigNumberish,
       BigNumberish,
       BigNumberish,
+      BigNumberish,
       BigNumberish
     ],
     maxRiskParamValues: [
+      BigNumberish,
       BigNumberish,
       BigNumberish,
       BigNumberish,
@@ -1354,9 +1424,11 @@ export class LiquidityPool extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "createPerpetual(address,int256[9],int256[6],int256[6],int256[6])"(
+  "createPerpetual(address,int256[11],int256[7],int256[7],int256[7])"(
     oracle: string,
-    coreParams: [
+    baseParams: [
+      BigNumberish,
+      BigNumberish,
       BigNumberish,
       BigNumberish,
       BigNumberish,
@@ -1373,6 +1445,7 @@ export class LiquidityPool extends Contract {
       BigNumberish,
       BigNumberish,
       BigNumberish,
+      BigNumberish,
       BigNumberish
     ],
     minRiskParamValues: [
@@ -1381,9 +1454,11 @@ export class LiquidityPool extends Contract {
       BigNumberish,
       BigNumberish,
       BigNumberish,
+      BigNumberish,
       BigNumberish
     ],
     maxRiskParamValues: [
+      BigNumberish,
       BigNumberish,
       BigNumberish,
       BigNumberish,
@@ -1596,8 +1671,16 @@ export class LiquidityPool extends Contract {
       BigNumber,
       BigNumber,
       BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
       BigNumber
     ];
+    syncFundingTime: BigNumber;
     0: number;
     1: string;
     2: [
@@ -1634,8 +1717,16 @@ export class LiquidityPool extends Contract {
       BigNumber,
       BigNumber,
       BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
       BigNumber
     ];
+    3: BigNumber;
   }>;
 
   "getPerpetualInfo(uint256)"(
@@ -1678,8 +1769,16 @@ export class LiquidityPool extends Contract {
       BigNumber,
       BigNumber,
       BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
       BigNumber
     ];
+    syncFundingTime: BigNumber;
     0: number;
     1: string;
     2: [
@@ -1716,8 +1815,16 @@ export class LiquidityPool extends Contract {
       BigNumber,
       BigNumber,
       BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
       BigNumber
     ];
+    3: BigNumber;
   }>;
 
   getPoolMargin(
@@ -1885,14 +1992,18 @@ export class LiquidityPool extends Contract {
       BigNumberish,
       BigNumberish,
       BigNumberish,
+      BigNumberish,
+      BigNumberish,
       BigNumberish
     ],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "setPerpetualBaseParameter(uint256,int256[9])"(
+  "setPerpetualBaseParameter(uint256,int256[11])"(
     perpetualIndex: BigNumberish,
     baseParams: [
+      BigNumberish,
+      BigNumberish,
       BigNumberish,
       BigNumberish,
       BigNumberish,
@@ -1914,6 +2025,7 @@ export class LiquidityPool extends Contract {
       BigNumberish,
       BigNumberish,
       BigNumberish,
+      BigNumberish,
       BigNumberish
     ],
     minRiskParamValues: [
@@ -1922,9 +2034,11 @@ export class LiquidityPool extends Contract {
       BigNumberish,
       BigNumberish,
       BigNumberish,
+      BigNumberish,
       BigNumberish
     ],
     maxRiskParamValues: [
+      BigNumberish,
       BigNumberish,
       BigNumberish,
       BigNumberish,
@@ -1935,9 +2049,10 @@ export class LiquidityPool extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "setPerpetualRiskParameter(uint256,int256[6],int256[6],int256[6])"(
+  "setPerpetualRiskParameter(uint256,int256[7],int256[7],int256[7])"(
     perpetualIndex: BigNumberish,
     riskParams: [
+      BigNumberish,
       BigNumberish,
       BigNumberish,
       BigNumberish,
@@ -1951,9 +2066,11 @@ export class LiquidityPool extends Contract {
       BigNumberish,
       BigNumberish,
       BigNumberish,
+      BigNumberish,
       BigNumberish
     ],
     maxRiskParamValues: [
+      BigNumberish,
       BigNumberish,
       BigNumberish,
       BigNumberish,
@@ -2016,14 +2133,16 @@ export class LiquidityPool extends Contract {
       BigNumberish,
       BigNumberish,
       BigNumberish,
+      BigNumberish,
       BigNumberish
     ],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "updatePerpetualRiskParameter(uint256,int256[6])"(
+  "updatePerpetualRiskParameter(uint256,int256[7])"(
     perpetualIndex: BigNumberish,
     riskParams: [
+      BigNumberish,
       BigNumberish,
       BigNumberish,
       BigNumberish,
@@ -2091,7 +2210,9 @@ export class LiquidityPool extends Contract {
 
     createPerpetual(
       oracle: string,
-      coreParams: [
+      baseParams: [
+        BigNumberish,
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -2108,6 +2229,7 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       minRiskParamValues: [
@@ -2116,9 +2238,11 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       maxRiskParamValues: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -2129,9 +2253,11 @@ export class LiquidityPool extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "createPerpetual(address,int256[9],int256[6],int256[6],int256[6])"(
+    "createPerpetual(address,int256[11],int256[7],int256[7],int256[7])"(
       oracle: string,
-      coreParams: [
+      baseParams: [
+        BigNumberish,
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -2148,6 +2274,7 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       minRiskParamValues: [
@@ -2156,9 +2283,11 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       maxRiskParamValues: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -2371,8 +2500,16 @@ export class LiquidityPool extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
         BigNumber
       ];
+      syncFundingTime: BigNumber;
       0: number;
       1: string;
       2: [
@@ -2409,8 +2546,16 @@ export class LiquidityPool extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
         BigNumber
       ];
+      3: BigNumber;
     }>;
 
     "getPerpetualInfo(uint256)"(
@@ -2453,8 +2598,16 @@ export class LiquidityPool extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
         BigNumber
       ];
+      syncFundingTime: BigNumber;
       0: number;
       1: string;
       2: [
@@ -2491,8 +2644,16 @@ export class LiquidityPool extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
         BigNumber
       ];
+      3: BigNumber;
     }>;
 
     getPoolMargin(
@@ -2660,14 +2821,18 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "setPerpetualBaseParameter(uint256,int256[9])"(
+    "setPerpetualBaseParameter(uint256,int256[11])"(
       perpetualIndex: BigNumberish,
       baseParams: [
+        BigNumberish,
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -2689,6 +2854,7 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       minRiskParamValues: [
@@ -2697,9 +2863,11 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       maxRiskParamValues: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -2710,9 +2878,10 @@ export class LiquidityPool extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "setPerpetualRiskParameter(uint256,int256[6],int256[6],int256[6])"(
+    "setPerpetualRiskParameter(uint256,int256[7],int256[7],int256[7])"(
       perpetualIndex: BigNumberish,
       riskParams: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -2726,9 +2895,11 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       maxRiskParamValues: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -2791,14 +2962,16 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "updatePerpetualRiskParameter(uint256,int256[6])"(
+    "updatePerpetualRiskParameter(uint256,int256[7])"(
       perpetualIndex: BigNumberish,
       riskParams: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -2844,7 +3017,7 @@ export class LiquidityPool extends Contract {
       operator: null,
       oracle: null,
       collateral: null,
-      coreParams: null,
+      baseParams: null,
       riskParams: null
     ): EventFilter;
 
@@ -2996,7 +3169,9 @@ export class LiquidityPool extends Contract {
 
     createPerpetual(
       oracle: string,
-      coreParams: [
+      baseParams: [
+        BigNumberish,
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -3013,6 +3188,7 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       minRiskParamValues: [
@@ -3021,9 +3197,11 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       maxRiskParamValues: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -3034,9 +3212,11 @@ export class LiquidityPool extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "createPerpetual(address,int256[9],int256[6],int256[6],int256[6])"(
+    "createPerpetual(address,int256[11],int256[7],int256[7],int256[7])"(
       oracle: string,
-      coreParams: [
+      baseParams: [
+        BigNumberish,
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -3053,6 +3233,7 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       minRiskParamValues: [
@@ -3061,9 +3242,11 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       maxRiskParamValues: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -3313,14 +3496,18 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "setPerpetualBaseParameter(uint256,int256[9])"(
+    "setPerpetualBaseParameter(uint256,int256[11])"(
       perpetualIndex: BigNumberish,
       baseParams: [
+        BigNumberish,
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -3342,6 +3529,7 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       minRiskParamValues: [
@@ -3350,9 +3538,11 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       maxRiskParamValues: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -3363,9 +3553,10 @@ export class LiquidityPool extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "setPerpetualRiskParameter(uint256,int256[6],int256[6],int256[6])"(
+    "setPerpetualRiskParameter(uint256,int256[7],int256[7],int256[7])"(
       perpetualIndex: BigNumberish,
       riskParams: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -3379,9 +3570,11 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       maxRiskParamValues: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -3444,14 +3637,16 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "updatePerpetualRiskParameter(uint256,int256[6])"(
+    "updatePerpetualRiskParameter(uint256,int256[7])"(
       perpetualIndex: BigNumberish,
       riskParams: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -3520,7 +3715,9 @@ export class LiquidityPool extends Contract {
 
     createPerpetual(
       oracle: string,
-      coreParams: [
+      baseParams: [
+        BigNumberish,
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -3537,6 +3734,7 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       minRiskParamValues: [
@@ -3545,9 +3743,11 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       maxRiskParamValues: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -3558,9 +3758,11 @@ export class LiquidityPool extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "createPerpetual(address,int256[9],int256[6],int256[6],int256[6])"(
+    "createPerpetual(address,int256[11],int256[7],int256[7],int256[7])"(
       oracle: string,
-      coreParams: [
+      baseParams: [
+        BigNumberish,
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -3577,6 +3779,7 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       minRiskParamValues: [
@@ -3585,9 +3788,11 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       maxRiskParamValues: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -3841,14 +4046,18 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "setPerpetualBaseParameter(uint256,int256[9])"(
+    "setPerpetualBaseParameter(uint256,int256[11])"(
       perpetualIndex: BigNumberish,
       baseParams: [
+        BigNumberish,
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -3870,6 +4079,7 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       minRiskParamValues: [
@@ -3878,9 +4088,11 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       maxRiskParamValues: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -3891,9 +4103,10 @@ export class LiquidityPool extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "setPerpetualRiskParameter(uint256,int256[6],int256[6],int256[6])"(
+    "setPerpetualRiskParameter(uint256,int256[7],int256[7],int256[7])"(
       perpetualIndex: BigNumberish,
       riskParams: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -3907,9 +4120,11 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       maxRiskParamValues: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,
@@ -3972,14 +4187,16 @@ export class LiquidityPool extends Contract {
         BigNumberish,
         BigNumberish,
         BigNumberish,
+        BigNumberish,
         BigNumberish
       ],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "updatePerpetualRiskParameter(uint256,int256[6])"(
+    "updatePerpetualRiskParameter(uint256,int256[7])"(
       perpetualIndex: BigNumberish,
       riskParams: [
+        BigNumberish,
         BigNumberish,
         BigNumberish,
         BigNumberish,

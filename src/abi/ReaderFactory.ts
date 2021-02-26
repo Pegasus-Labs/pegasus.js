@@ -150,9 +150,14 @@ const _abi = [
                 type: "address",
               },
               {
-                internalType: "int256[34]",
+                internalType: "int256[41]",
                 name: "nums",
-                type: "int256[34]",
+                type: "int256[41]",
+              },
+              {
+                internalType: "uint256",
+                name: "syncFundingTime",
+                type: "uint256",
               },
               {
                 internalType: "uint256",
