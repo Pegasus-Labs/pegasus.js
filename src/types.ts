@@ -112,7 +112,7 @@ export interface PerpetualStorage {
   halfSpread: Option // α
   openSlippageFactor: Option // β1
   closeSlippageFactor: Option // β2
-  fundingRateLimit: Option // γ
+  fundingRateFactor: Option // γ
   ammMaxLeverage: Option // λ
   maxClosePriceDiscount: Option // δ
 
@@ -175,7 +175,7 @@ export interface AMMTradingContext {
   halfSpread: BigNumber // α_m
   openSlippageFactor: BigNumber // β1_m
   closeSlippageFactor: BigNumber // β2_m
-  fundingRateLimit: BigNumber // γ_m
+  fundingRateFactor: BigNumber // γ_m
   maxClosePriceDiscount: BigNumber // δ_m
   ammMaxLeverage: BigNumber // λ_m
 

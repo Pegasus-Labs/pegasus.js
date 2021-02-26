@@ -147,7 +147,7 @@ export async function getLiquidityPool(reader: Reader, liquidityPoolAddress: str
         minValue: parsePerpNums(23),
         maxValue: parsePerpNums(24)
       },
-      fundingRateLimit: {
+      fundingRateFactor: {
         value: parsePerpNums(25),
         minValue: parsePerpNums(26),
         maxValue: parsePerpNums(27)

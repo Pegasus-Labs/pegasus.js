@@ -20,7 +20,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
   let halfSpread = _0
   let openSlippageFactor = _0
   let closeSlippageFactor = _0
-  let fundingRateLimit = _0
+  let fundingRateFactor = _0
   let maxClosePriceDiscount = _0
   let ammMaxLeverage = _0
 
@@ -48,7 +48,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
       halfSpread = perpetual.halfSpread.value
       openSlippageFactor = perpetual.openSlippageFactor.value
       closeSlippageFactor = perpetual.closeSlippageFactor.value
-      fundingRateLimit = perpetual.fundingRateLimit.value
+      fundingRateFactor = perpetual.fundingRateFactor.value
       maxClosePriceDiscount = perpetual.maxClosePriceDiscount.value
       ammMaxLeverage = perpetual.ammMaxLeverage.value
     } else {
@@ -65,7 +65,7 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
     halfSpread,
     openSlippageFactor,
     closeSlippageFactor,
-    fundingRateLimit,
+    fundingRateFactor,
     maxClosePriceDiscount,
     ammMaxLeverage,
     otherIndex,
@@ -486,20 +486,20 @@ export function computeFundingRate(p: LiquidityPoolStorage, perpetualIndex: numb
     if (context.position1.isZero()) {
       return _0
     } else if (context.position1.gt(_0)) {
-      return context.fundingRateLimit.negated()
+      return context.fundingRateFactor.negated()
     } else {
-      return context.fundingRateLimit
+      return context.fundingRateFactor
     }
   }
 
   context = computeAMMPoolMargin(context, context.openSlippageFactor)
-  let fr = context.fundingRateLimit
+  let fr = context.fundingRateFactor
     .times(context.index)
     .times(context.position1)
     .div(context.poolMargin)
     .negated()
-  fr = BigNumber.minimum(fr, context.fundingRateLimit)
-  fr = BigNumber.maximum(fr, context.fundingRateLimit.negated())
+  fr = BigNumber.minimum(fr, context.fundingRateFactor)
+  fr = BigNumber.maximum(fr, context.fundingRateFactor.negated())
   return fr
 }
 

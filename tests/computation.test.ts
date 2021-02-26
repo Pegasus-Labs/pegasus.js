@@ -72,7 +72,7 @@ const perpetual1: PerpetualStorage = {
   halfSpread: { value: new BigNumber(0.001), minValue: _0, maxValue: _0 },
   openSlippageFactor: { value: new BigNumber('0.0142857142857142857142857142857'), minValue: _0, maxValue: _0 },
   closeSlippageFactor: { value: new BigNumber('0.0128571428571428571428571428571'), minValue: _0, maxValue: _0 },
-  fundingRateLimit: { value: new BigNumber(0.005), minValue: _0, maxValue: _0 },
+  fundingRateFactor: { value: new BigNumber(0.005), minValue: _0, maxValue: _0 },
   ammMaxLeverage: { value: new BigNumber(5), minValue: _0, maxValue: _0 },
   maxClosePriceDiscount: { value: new BigNumber(0.05), minValue: _0, maxValue: _0 },
 
