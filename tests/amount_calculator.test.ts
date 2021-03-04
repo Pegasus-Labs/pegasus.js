@@ -46,7 +46,6 @@ const perpetual1: PerpetualStorage = {
 
   markPrice: new BigNumber(6965),
   indexPrice: new BigNumber(7000),
-  realTimeUnitAccumulativeFunding: new BigNumber('9.9059375'),
   unitAccumulativeFunding: new BigNumber('9.9059375'),
 
   initialMarginRate: new BigNumber(0.1),
@@ -60,8 +59,6 @@ const perpetual1: PerpetualStorage = {
   insuranceFundCap: new BigNumber(10000),
   insuranceFund: _0,
   donatedInsuranceFund: _0,
-  syncFundingInterval: 1,
-  syncFundingTime: 1579601290,
   openInterest: new BigNumber('10'),
   maxOpenInterestRate: new BigNumber('100'),
 

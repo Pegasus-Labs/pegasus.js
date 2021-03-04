@@ -134,9 +134,9 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: "int256[11]",
+        internalType: "int256[10]",
         name: "baseParams",
-        type: "int256[11]",
+        type: "int256[10]",
       },
       {
         indexed: false,
@@ -708,9 +708,9 @@ const _abi = [
         type: "address",
       },
       {
-        internalType: "int256[11]",
+        internalType: "int256[10]",
         name: "baseParams",
-        type: "int256[11]",
+        type: "int256[10]",
       },
       {
         internalType: "int256[7]",
@@ -973,14 +973,9 @@ const _abi = [
         type: "address",
       },
       {
-        internalType: "int256[41]",
+        internalType: "int256[39]",
         name: "nums",
-        type: "int256[41]",
-      },
-      {
-        internalType: "uint256",
-        name: "syncFundingTime",
-        type: "uint256",
+        type: "int256[39]",
       },
     ],
     stateMutability: "view",
@@ -1242,9 +1237,9 @@ const _abi = [
         type: "uint256",
       },
       {
-        internalType: "int256[11]",
+        internalType: "int256[10]",
         name: "baseParams",
-        type: "int256[11]",
+        type: "int256[10]",
       },
     ],
     name: "setPerpetualBaseParameter",

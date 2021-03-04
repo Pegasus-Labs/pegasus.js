@@ -95,7 +95,6 @@ export interface PerpetualStorage {
   totalCollateral: BigNumber
   markPrice: BigNumber // markPrice = settlementPrice if it is in EMERGENCY state
   indexPrice: BigNumber
-  realTimeUnitAccumulativeFunding: BigNumber // funding payment for next funding period
   unitAccumulativeFunding: BigNumber // committed funding payment
 
   initialMarginRate: BigNumber
@@ -109,8 +108,6 @@ export interface PerpetualStorage {
   insuranceFundCap: BigNumber
   insuranceFund: BigNumber
   donatedInsuranceFund: BigNumber
-  syncFundingInterval: number // 1 if funding payment is collected every second
-  syncFundingTime: number // funding time that aligned to syncFundingInterval
   openInterest: BigNumber
   maxOpenInterestRate: BigNumber // openInterest <= poolMargin * maxOpenInterestRate / indexPrice
 
