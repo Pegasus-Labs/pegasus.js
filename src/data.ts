@@ -23,6 +23,10 @@ import { IOracle } from './abi/IOracle'
 import { IOracleFactory } from './abi/IOracleFactory'
 import { OracleRouterCreatorFactory } from './abi/OracleRouterCreatorFactory'
 import { OracleRouterCreator } from './abi/OracleRouterCreator'
+import { Minter } from './abi/Minter'
+import { MinterFactory } from './abi/MinterFactory'
+import { ValueCapture } from './abi/ValueCapture'
+import { ValueCaptureFactory } from './abi/ValueCaptureFactory'
 
 export function getLiquidityPoolContract(contractAddress: string, signerOrProvider: SignerOrProvider): LiquidityPool {
   getAddress(contractAddress)
@@ -62,6 +66,16 @@ export function getLpGovernorContract(contractAddress: string, signerOrProvider:
 export function getShareTokenContract(contractAddress: string, signerOrProvider: SignerOrProvider): ShareToken {
   getAddress(contractAddress)
   return ShareTokenFactory.connect(contractAddress, signerOrProvider)
+}
+
+export function getMinterContract(contractAddress: string, signerOrProvider: SignerOrProvider): Minter {
+  getAddress(contractAddress)
+  return MinterFactory.connect(contractAddress, signerOrProvider)
+}
+
+export function getValueCaptureContract(contractAddress: string, signerOrProvider: SignerOrProvider): ValueCapture {
+  getAddress(contractAddress)
+  return ValueCaptureFactory.connect(contractAddress, signerOrProvider)
 }
 
 export async function getReaderContract(signerOrProvider: SignerOrProvider, contractAddress?: string): Promise<Reader> {
