@@ -27,6 +27,8 @@ import { Minter } from './abi/Minter'
 import { MinterFactory } from './abi/MinterFactory'
 import { ValueCapture } from './abi/ValueCapture'
 import { ValueCaptureFactory } from './abi/ValueCaptureFactory'
+import { RewardDistribution } from './abi/RewardDistribution'
+import { RewardDistributionFactory } from './abi/RewardDistributionFactory'
 
 export function getLiquidityPoolContract(contractAddress: string, signerOrProvider: SignerOrProvider): LiquidityPool {
   getAddress(contractAddress)
@@ -76,6 +78,11 @@ export function getMinterContract(contractAddress: string, signerOrProvider: Sig
 export function getValueCaptureContract(contractAddress: string, signerOrProvider: SignerOrProvider): ValueCapture {
   getAddress(contractAddress)
   return ValueCaptureFactory.connect(contractAddress, signerOrProvider)
+}
+
+export function getRewardDistributionContract(contractAddress: string, signerOrProvider: SignerOrProvider): RewardDistribution {
+  getAddress(contractAddress)
+  return RewardDistributionFactory.connect(contractAddress, signerOrProvider)
 }
 
 export async function getReaderContract(signerOrProvider: SignerOrProvider, contractAddress?: string): Promise<Reader> {
