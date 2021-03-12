@@ -139,6 +139,7 @@ export async function getLiquidityPool(reader: Reader, liquidityPoolAddress: str
       totalCollateral: parsePerpNums(0),
       markPrice: parsePerpNums(1),
       indexPrice: parsePerpNums(2),
+      fundingRate: parsePerpNums(3),
       unitAccumulativeFunding: parsePerpNums(4),
 
       initialMarginRate: parsePerpNums(5),

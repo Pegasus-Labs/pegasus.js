@@ -95,6 +95,7 @@ export interface PerpetualStorage {
   totalCollateral: BigNumber
   markPrice: BigNumber // markPrice = settlementPrice if it is in EMERGENCY state
   indexPrice: BigNumber
+  fundingRate: BigNumber
   unitAccumulativeFunding: BigNumber // committed funding payment
 
   initialMarginRate: BigNumber

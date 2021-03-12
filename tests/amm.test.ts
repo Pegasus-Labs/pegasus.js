@@ -51,6 +51,7 @@ const perpetual1: PerpetualStorage = {
 
   markPrice: new BigNumber(95),
   indexPrice: new BigNumber(100),
+  fundingRate: _0, // useless
   unitAccumulativeFunding: new BigNumber('1.9'),
 
   initialMarginRate: new BigNumber(0.1),
