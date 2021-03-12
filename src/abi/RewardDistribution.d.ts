@@ -27,6 +27,7 @@ interface RewardDistributionInterface extends ethers.utils.Interface {
     "beforeMintingToken(address,uint256,uint256)": FunctionFragment;
     "createRewardPlan(address,uint256)": FunctionFragment;
     "earned(address,address)": FunctionFragment;
+    "getAllRewards()": FunctionFragment;
     "getReward(address)": FunctionFragment;
     "getRewardPlan(address)": FunctionFragment;
     "getRewardTokens()": FunctionFragment;
@@ -57,6 +58,10 @@ interface RewardDistributionInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "earned",
     values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAllRewards",
+    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "getReward", values: [string]): string;
   encodeFunctionData(
@@ -109,6 +114,10 @@ interface RewardDistributionInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "earned", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getAllRewards",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getReward", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getRewardPlan",
@@ -242,6 +251,10 @@ export class RewardDistribution extends Contract {
     ): Promise<{
       0: BigNumber;
     }>;
+
+    getAllRewards(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "getAllRewards()"(overrides?: Overrides): Promise<ContractTransaction>;
 
     getReward(
       token: string,
@@ -442,6 +455,10 @@ export class RewardDistribution extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  getAllRewards(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "getAllRewards()"(overrides?: Overrides): Promise<ContractTransaction>;
+
   getReward(token: string, overrides?: Overrides): Promise<ContractTransaction>;
 
   "getReward(address)"(
@@ -595,6 +612,10 @@ export class RewardDistribution extends Contract {
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getAllRewards(overrides?: CallOverrides): Promise<void>;
+
+    "getAllRewards()"(overrides?: CallOverrides): Promise<void>;
 
     getReward(token: string, overrides?: CallOverrides): Promise<void>;
 
@@ -773,6 +794,10 @@ export class RewardDistribution extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getAllRewards(overrides?: Overrides): Promise<BigNumber>;
+
+    "getAllRewards()"(overrides?: Overrides): Promise<BigNumber>;
+
     getReward(token: string, overrides?: Overrides): Promise<BigNumber>;
 
     "getReward(address)"(
@@ -921,6 +946,10 @@ export class RewardDistribution extends Contract {
       account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    getAllRewards(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "getAllRewards()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     getReward(
       token: string,
