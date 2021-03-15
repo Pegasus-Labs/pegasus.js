@@ -10,7 +10,7 @@ export const _3: BigNumber = new BigNumber('3')
 
 export const CHAIN_ID_TO_READER_ADDRESS: { [chainID: number]: string } = {
   // kovan
-  42: '0x45b7dCcC99D111450e37cb13F5327c4AbC27E285',
+  42: '0xF65efAf648938926134F9F245BF1fE77a6Ec7486',
   // s10poa
   1337: '0x33C92C61ba0278253dab37F5ACfef661196d9cef',
   // bsc

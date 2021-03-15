@@ -25,6 +25,7 @@ interface ReaderInterface extends ethers.utils.Interface {
     "getAccountStorage(address,uint256,address)": FunctionFragment;
     "getLiquidityPoolStorage(address)": FunctionFragment;
     "getPoolMargin(address)": FunctionFragment;
+    "queryTradeWithAMM(address,uint256,int256)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -39,6 +40,10 @@ interface ReaderInterface extends ethers.utils.Interface {
     functionFragment: "getPoolMargin",
     values: [string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "queryTradeWithAMM",
+    values: [string, BigNumberish, BigNumberish]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "getAccountStorage",
@@ -50,6 +55,10 @@ interface ReaderInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getPoolMargin",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "queryTradeWithAMM",
     data: BytesLike
   ): Result;
 
@@ -103,6 +112,20 @@ export class Reader extends Contract {
       liquidityPool: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    queryTradeWithAMM(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "queryTradeWithAMM(address,uint256,int256)"(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
   };
 
   getAccountStorage(
@@ -136,6 +159,20 @@ export class Reader extends Contract {
 
   "getPoolMargin(address)"(
     liquidityPool: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  queryTradeWithAMM(
+    liquidityPool: string,
+    perpetualIndex: BigNumberish,
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "queryTradeWithAMM(address,uint256,int256)"(
+    liquidityPool: string,
+    perpetualIndex: BigNumberish,
+    amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1111,6 +1148,34 @@ export class Reader extends Contract {
       1: BigNumber;
       2: boolean;
     }>;
+
+    queryTradeWithAMM(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      isSynced: boolean;
+      deltaCash: BigNumber;
+      deltaPosition: BigNumber;
+      0: boolean;
+      1: BigNumber;
+      2: BigNumber;
+    }>;
+
+    "queryTradeWithAMM(address,uint256,int256)"(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      isSynced: boolean;
+      deltaCash: BigNumber;
+      deltaPosition: BigNumber;
+      0: boolean;
+      1: BigNumber;
+      2: BigNumber;
+    }>;
   };
 
   filters: {};
@@ -1149,6 +1214,20 @@ export class Reader extends Contract {
       liquidityPool: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    queryTradeWithAMM(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "queryTradeWithAMM(address,uint256,int256)"(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -1183,6 +1262,20 @@ export class Reader extends Contract {
 
     "getPoolMargin(address)"(
       liquidityPool: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    queryTradeWithAMM(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "queryTradeWithAMM(address,uint256,int256)"(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
   };

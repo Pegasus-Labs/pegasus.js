@@ -222,4 +222,43 @@ const _abi = [
     stateMutability: "nonpayable",
     type: "function",
   },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "liquidityPool",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
+      {
+        internalType: "int256",
+        name: "amount",
+        type: "int256",
+      },
+    ],
+    name: "queryTradeWithAMM",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "isSynced",
+        type: "bool",
+      },
+      {
+        internalType: "int256",
+        name: "deltaCash",
+        type: "int256",
+      },
+      {
+        internalType: "int256",
+        name: "deltaPosition",
+        type: "int256",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
 ];
