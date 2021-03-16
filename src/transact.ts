@@ -8,6 +8,7 @@ import type { Broker } from './abi/Broker'
 import { Overrides, PayableOverrides } from '@ethersproject/contracts'
 import { getAddress } from '@ethersproject/address'
 import { LpGovernor } from './abi/LpGovernor'
+import { Xmcb } from './abi/Xmcb'
 
 export async function perpetualTrade(
   liquidityPool: LiquidityPool,
@@ -197,4 +198,26 @@ export async function claimMiningReward(
   overrides: Overrides = {},
 ): Promise<ethers.providers.TransactionResponse> {
   return await mining.getReward(overrides)
+}
+
+export async function stakeMCB(
+  xmcb: Xmcb,
+  amount: BigNumberish, // should be a decimal number (ie: 1.234)
+  overrides: Overrides = {},
+): Promise<ethers.providers.TransactionResponse> {
+  const largeAmount = normalizeBigNumberish(amount)
+    .shiftedBy(DECIMALS)
+    .dp(0, BigNumber.ROUND_DOWN)
+  return await xmcb.deposit(largeAmount.toFixed(), overrides)
+}
+
+export async function unstakeMCB(
+  xmcb: Xmcb,
+  amount: BigNumberish, // should be a decimal number (ie: 1.234)
+  overrides: Overrides = {},
+): Promise<ethers.providers.TransactionResponse> {
+  const largeAmount = normalizeBigNumberish(amount)
+    .shiftedBy(DECIMALS)
+    .dp(0, BigNumber.ROUND_DOWN)
+  return await xmcb.withdraw(largeAmount.toFixed(), overrides)
 }

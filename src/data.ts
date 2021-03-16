@@ -29,6 +29,8 @@ import { ValueCapture } from './abi/ValueCapture'
 import { ValueCaptureFactory } from './abi/ValueCaptureFactory'
 import { RewardDistribution } from './abi/RewardDistribution'
 import { RewardDistributionFactory } from './abi/RewardDistributionFactory'
+import { Xmcb } from './abi/Xmcb'
+import { XmcbFactory } from './abi/XmcbFactory'
 
 export function getLiquidityPoolContract(contractAddress: string, signerOrProvider: SignerOrProvider): LiquidityPool {
   getAddress(contractAddress)
@@ -83,6 +85,11 @@ export function getValueCaptureContract(contractAddress: string, signerOrProvide
 export function getRewardDistributionContract(contractAddress: string, signerOrProvider: SignerOrProvider): RewardDistribution {
   getAddress(contractAddress)
   return RewardDistributionFactory.connect(contractAddress, signerOrProvider)
+}
+
+export function getXmcbFactory(contractAddress: string, signerOrProvider: SignerOrProvider): Xmcb {
+  getAddress(contractAddress)
+  return XmcbFactory.connect(contractAddress, signerOrProvider)
 }
 
 export async function getReaderContract(signerOrProvider: SignerOrProvider, contractAddress?: string): Promise<Reader> {
