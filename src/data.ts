@@ -87,7 +87,7 @@ export function getRewardDistributionContract(contractAddress: string, signerOrP
   return RewardDistributionFactory.connect(contractAddress, signerOrProvider)
 }
 
-export function getXmcbFactory(contractAddress: string, signerOrProvider: SignerOrProvider): Xmcb {
+export function getXmcbContract(contractAddress: string, signerOrProvider: SignerOrProvider): Xmcb {
   getAddress(contractAddress)
   return XmcbFactory.connect(contractAddress, signerOrProvider)
 }
