@@ -31,6 +31,8 @@ import { RewardDistribution } from './abi/RewardDistribution'
 import { RewardDistributionFactory } from './abi/RewardDistributionFactory'
 import { Xmcb } from './abi/Xmcb'
 import { XmcbFactory } from './abi/XmcbFactory'
+import { GovernorAlpha } from './abi/GovernorAlpha'
+import { GovernorAlphaFactory } from './abi/GovernorAlphaFactory'
 
 export function getLiquidityPoolContract(contractAddress: string, signerOrProvider: SignerOrProvider): LiquidityPool {
   getAddress(contractAddress)
@@ -90,6 +92,11 @@ export function getRewardDistributionContract(contractAddress: string, signerOrP
 export function getXmcbContract(contractAddress: string, signerOrProvider: SignerOrProvider): Xmcb {
   getAddress(contractAddress)
   return XmcbFactory.connect(contractAddress, signerOrProvider)
+}
+
+export function getDaoGovernorContracrt(contractAddress: string, signerOrProvider: SignerOrProvider): GovernorAlpha {
+  getAddress(contractAddress)
+  return GovernorAlphaFactory.connect(contractAddress, signerOrProvider)
 }
 
 export async function getReaderContract(signerOrProvider: SignerOrProvider, contractAddress?: string): Promise<Reader> {
