@@ -36,6 +36,7 @@ interface XmcbInterface extends ethers.utils.Interface {
     "delegates(address)": FunctionFragment;
     "deposit(uint256)": FunctionFragment;
     "getCurrentVotes(address)": FunctionFragment;
+    "getDelegate(address)": FunctionFragment;
     "getPriorVotes(address,uint256)": FunctionFragment;
     "initialize(address,address,uint256)": FunctionFragment;
     "listComponents(uint256,uint256)": FunctionFragment;
@@ -109,6 +110,7 @@ interface XmcbInterface extends ethers.utils.Interface {
     functionFragment: "getCurrentVotes",
     values: [string]
   ): string;
+  encodeFunctionData(functionFragment: "getDelegate", values: [string]): string;
   encodeFunctionData(
     functionFragment: "getPriorVotes",
     values: [string, BigNumberish]
@@ -208,6 +210,10 @@ interface XmcbInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getCurrentVotes",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDelegate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -498,6 +504,20 @@ export class Xmcb extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
+    }>;
+
+    getDelegate(
+      delegator: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "getDelegate(address)"(
+      delegator: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
     }>;
 
     getPriorVotes(
@@ -889,6 +909,13 @@ export class Xmcb extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  getDelegate(delegator: string, overrides?: CallOverrides): Promise<string>;
+
+  "getDelegate(address)"(
+    delegator: string,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   getPriorVotes(
     account: string,
     blockNumber: BigNumberish,
@@ -1173,6 +1200,13 @@ export class Xmcb extends Contract {
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getDelegate(delegator: string, overrides?: CallOverrides): Promise<string>;
+
+    "getDelegate(address)"(
+      delegator: string,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     getPriorVotes(
       account: string,
@@ -1490,6 +1524,16 @@ export class Xmcb extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getDelegate(
+      delegator: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getDelegate(address)"(
+      delegator: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getPriorVotes(
       account: string,
       blockNumber: BigNumberish,
@@ -1786,6 +1830,16 @@ export class Xmcb extends Contract {
 
     "getCurrentVotes(address)"(
       account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getDelegate(
+      delegator: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getDelegate(address)"(
+      delegator: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
