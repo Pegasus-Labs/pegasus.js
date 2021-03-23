@@ -192,6 +192,8 @@ export function computeTradeWithPrice(
   if (normalizedPrice.lte(_0) || normalizedAmount.isZero()) {
     throw new InvalidArgumentError(`bad price ${normalizedPrice.toFixed()} or amount ${normalizedAmount.toFixed()}`)
   }
+
+  // trade
   let newAccount: AccountStorage = { ...a }
   let { close, open } = splitAmount(newAccount.positionAmount, normalizedAmount)
   if (!close.isZero()) {
@@ -200,8 +202,12 @@ export function computeTradeWithPrice(
   if (!open.isZero()) {
     newAccount = computeIncreasePosition(p, perpetualIndex, newAccount, normalizedPrice, open)
   }
+  
+  // fee
   const fee = computeFee(normalizedPrice, normalizedAmount, normalizedFeeRate)
   newAccount.cashBalance = newAccount.cashBalance.minus(fee)
+
+  // open position requires margin > IM. close position requires !bankrupt
   const afterTrade = computeAccount(p, perpetualIndex, newAccount)
   let tradeIsSafe = afterTrade.accountComputed.isMarginSafe
   if (!open.isZero()) {
