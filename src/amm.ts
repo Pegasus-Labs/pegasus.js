@@ -639,7 +639,7 @@ export function computeMaxRemovableShare(p: LiquidityPoolStorage, totalShare: Bi
   // prevent amm unsafe
   let minPoolMargin = sqrt(context.squareValueWithoutCurrent.div(_2))
 
-  // prevent amm offering negative price
+  // prevent amm offering negative price. note: perp.state != PerpetualState.NORMAL are already skipped
   for (let j = 0; j < context.otherIndex.length; j++) {
     // M >= β P_i N
     minPoolMargin = BigNumber.maximum(
