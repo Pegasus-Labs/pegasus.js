@@ -94,7 +94,7 @@ export function getXmcbContract(contractAddress: string, signerOrProvider: Signe
   return XmcbFactory.connect(contractAddress, signerOrProvider)
 }
 
-export function getDaoGovernorContracrt(contractAddress: string, signerOrProvider: SignerOrProvider): GovernorAlpha {
+export function getDaoGovernorContract(contractAddress: string, signerOrProvider: SignerOrProvider): GovernorAlpha {
   getAddress(contractAddress)
   return GovernorAlphaFactory.connect(contractAddress, signerOrProvider)
 }
