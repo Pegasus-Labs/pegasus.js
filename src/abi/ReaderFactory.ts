@@ -53,7 +53,7 @@ const _abi = [
           },
           {
             internalType: "int256",
-            name: "availableCash",
+            name: "availableMargin",
             type: "int256",
           },
           {
@@ -85,6 +85,67 @@ const _abi = [
         internalType: "struct Reader.AccountReaderResult",
         name: "accountStorage",
         type: "tuple",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "liquidityPool",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "begin",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "end",
+        type: "uint256",
+      },
+    ],
+    name: "getAccountsInfo",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "isSynced",
+        type: "bool",
+      },
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "account",
+            type: "address",
+          },
+          {
+            internalType: "int256",
+            name: "position",
+            type: "int256",
+          },
+          {
+            internalType: "int256",
+            name: "margin",
+            type: "int256",
+          },
+          {
+            internalType: "bool",
+            name: "isSafe",
+            type: "bool",
+          },
+        ],
+        internalType: "struct Reader.AccountsResult[]",
+        name: "result",
+        type: "tuple[]",
       },
     ],
     stateMutability: "nonpayable",

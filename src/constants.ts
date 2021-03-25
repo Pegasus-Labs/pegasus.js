@@ -10,13 +10,13 @@ export const _3: BigNumber = new BigNumber('3')
 
 export const CHAIN_ID_TO_READER_ADDRESS: { [chainID: number]: string } = {
   // kovan
-  42: '0xF65efAf648938926134F9F245BF1fE77a6Ec7486',
+  42: '0x50DD9E7d582F13637137F8bDD8357E0b6b5f6B5B',
   // s10poa
   1337: '0x33C92C61ba0278253dab37F5ACfef661196d9cef',
   // bsc
   // 56: '',
   // bsc testnet
-  97: '0x74F5b3581d70FfdEcE47090E568a8743f9659787',
+  97: '0x207eD1742cc0BeBD03E50e855d3a14E41f93A461',
 }
 
 export const CHAIN_ID_TO_POOL_CREATOR_ADDRESS: { [chainID: number]: string } = {
