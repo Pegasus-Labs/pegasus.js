@@ -22,168 +22,152 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface ValueCaptureInterface extends ethers.utils.Interface {
   functions: {
-    "collectToken(address)": FunctionFragment;
-    "getAllUSDTokens()": FunctionFragment;
-    "getUSDToken(uint256)": FunctionFragment;
-    "getUSDTokenCount()": FunctionFragment;
-    "getUSDTokenInfo(address)": FunctionFragment;
-    "guardian()": FunctionFragment;
+    "SYSTEM_DECIMALS()": FunctionFragment;
+    "VALUE_CAPTURE_ADMIN_ROLE()": FunctionFragment;
+    "addUSDToken(address,uint256)": FunctionFragment;
+    "assetEntries(address)": FunctionFragment;
+    "authenticator()": FunctionFragment;
+    "forwardAsset(address)": FunctionFragment;
+    "forwardERC20Token(address,uint256)": FunctionFragment;
+    "forwardERC721Token(address,uint256)": FunctionFragment;
+    "forwardETH(uint256)": FunctionFragment;
     "initialize(address,address)": FunctionFragment;
-    "owner()": FunctionFragment;
-    "renounceOwnership()": FunctionFragment;
-    "sendERC20(address,address,uint256)": FunctionFragment;
-    "sendERC721(address,address,uint256)": FunctionFragment;
-    "sendNativeToken(address,uint256)": FunctionFragment;
-    "setGuardian(address)": FunctionFragment;
-    "setUSDConverter(address,address)": FunctionFragment;
-    "setUSDToken(address,uint256)": FunctionFragment;
+    "listUSDTokens(uint256,uint256)": FunctionFragment;
+    "removeUSDToken(address)": FunctionFragment;
+    "setConvertor(address,address,address,uint256)": FunctionFragment;
     "totalCapturedUSD()": FunctionFragment;
-    "transferOwnership(address)": FunctionFragment;
-    "unsetUSDToken(address)": FunctionFragment;
     "vault()": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "collectToken",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getAllUSDTokens",
+    functionFragment: "SYSTEM_DECIMALS",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getUSDToken",
+    functionFragment: "VALUE_CAPTURE_ADMIN_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addUSDToken",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "assetEntries",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "authenticator",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "forwardAsset",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "forwardERC20Token",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "forwardERC721Token",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "forwardETH",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "getUSDTokenCount",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getUSDTokenInfo",
-    values: [string]
-  ): string;
-  encodeFunctionData(functionFragment: "guardian", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "initialize",
     values: [string, string]
   ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
+    functionFragment: "listUSDTokens",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "sendERC20",
-    values: [string, string, BigNumberish]
+    functionFragment: "removeUSDToken",
+    values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "sendERC721",
-    values: [string, string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "sendNativeToken",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(functionFragment: "setGuardian", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "setUSDConverter",
-    values: [string, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setUSDToken",
-    values: [string, BigNumberish]
+    functionFragment: "setConvertor",
+    values: [string, string, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "totalCapturedUSD",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "unsetUSDToken",
-    values: [string]
   ): string;
   encodeFunctionData(functionFragment: "vault", values?: undefined): string;
 
   decodeFunctionResult(
-    functionFragment: "collectToken",
+    functionFragment: "SYSTEM_DECIMALS",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getAllUSDTokens",
+    functionFragment: "VALUE_CAPTURE_ADMIN_ROLE",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getUSDToken",
+    functionFragment: "addUSDToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getUSDTokenCount",
+    functionFragment: "assetEntries",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getUSDTokenInfo",
+    functionFragment: "authenticator",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "guardian", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "forwardAsset",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "forwardERC20Token",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "forwardERC721Token",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "forwardETH", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "sendERC20", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "sendERC721", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "sendNativeToken",
+    functionFragment: "listUSDTokens",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setGuardian",
+    functionFragment: "removeUSDToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setUSDConverter",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setUSDToken",
+    functionFragment: "setConvertor",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "totalCapturedUSD",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "unsetUSDToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "vault", data: BytesLike): Result;
 
   events: {
     "AddUSDToken(address)": EventFragment;
-    "ConvertToUSD(address,uint256,address,uint256)": EventFragment;
-    "OwnershipTransferred(address,address)": EventFragment;
+    "ConvertToken(address,uint256,address,uint256)": EventFragment;
+    "ForwardAsset(address,uint256,uint256)": EventFragment;
+    "ForwardERC20Token(address,uint256)": EventFragment;
+    "ForwardERC721Token(address,uint256)": EventFragment;
+    "ForwardETH(uint256)": EventFragment;
     "RemoveUSDToken(address)": EventFragment;
-    "SetGuardian(address,address)": EventFragment;
-    "SetUSDConverter(address,address)": EventFragment;
-    "TranferToVault(address,uint256)": EventFragment;
+    "SetConvertor(address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "AddUSDToken"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "ConvertToUSD"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ConvertToken"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ForwardAsset"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ForwardERC20Token"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ForwardERC721Token"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ForwardETH"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveUSDToken"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SetGuardian"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SetUSDConverter"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "TranferToVault"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetConvertor"): EventFragment;
 }
 
 export class ValueCapture extends Contract {
@@ -200,183 +184,179 @@ export class ValueCapture extends Contract {
   interface: ValueCaptureInterface;
 
   functions: {
-    collectToken(
+    SYSTEM_DECIMALS(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "SYSTEM_DECIMALS()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    VALUE_CAPTURE_ADMIN_ROLE(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "VALUE_CAPTURE_ADMIN_ROLE()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    addUSDToken(
+      token: string,
+      decimals: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "addUSDToken(address,uint256)"(
+      token: string,
+      decimals: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    assetEntries(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      oracle: string;
+      convertor: string;
+      slippageTolerance: BigNumber;
+      cumulativeConvertedAmount: BigNumber;
+      0: string;
+      1: string;
+      2: BigNumber;
+      3: BigNumber;
+    }>;
+
+    "assetEntries(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      oracle: string;
+      convertor: string;
+      slippageTolerance: BigNumber;
+      cumulativeConvertedAmount: BigNumber;
+      0: string;
+      1: string;
+      2: BigNumber;
+      3: BigNumber;
+    }>;
+
+    authenticator(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "authenticator()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    forwardAsset(
       token: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "collectToken(address)"(
+    "forwardAsset(address)"(
       token: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    getAllUSDTokens(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string[];
-    }>;
-
-    "getAllUSDTokens()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string[];
-    }>;
-
-    getUSDToken(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "getUSDToken(uint256)"(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    getUSDTokenCount(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "getUSDTokenCount()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    getUSDTokenInfo(
+    forwardERC20Token(
       token: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-      1: BigNumber;
-      2: string;
-    }>;
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
-    "getUSDTokenInfo(address)"(
+    "forwardERC20Token(address,uint256)"(
       token: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-      1: BigNumber;
-      2: string;
-    }>;
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
-    guardian(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
+    forwardERC721Token(
+      token: string,
+      tokenID: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
-    "guardian()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
+    "forwardERC721Token(address,uint256)"(
+      token: string,
+      tokenID: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    forwardETH(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "forwardETH(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     initialize(
+      authenticator_: string,
       vault_: string,
-      owner_: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "initialize(address,address)"(
+      authenticator_: string,
       vault_: string,
-      owner_: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    owner(
+    listUSDTokens(
+      begin: BigNumberish,
+      end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      0: string;
+      result: string[];
+      0: string[];
     }>;
 
-    "owner()"(
+    "listUSDTokens(uint256,uint256)"(
+      begin: BigNumberish,
+      end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      0: string;
+      result: string[];
+      0: string[];
     }>;
 
-    renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-    sendERC20(
+    removeUSDToken(
       token: string,
-      to: string,
-      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "sendERC20(address,address,uint256)"(
+    "removeUSDToken(address)"(
       token: string,
-      to: string,
-      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    sendERC721(
+    setConvertor(
       token: string,
-      to: string,
-      tokenID: BigNumberish,
+      oracle: string,
+      convertor_: string,
+      slippageTolerance: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "sendERC721(address,address,uint256)"(
+    "setConvertor(address,address,address,uint256)"(
       token: string,
-      to: string,
-      tokenID: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    sendNativeToken(
-      to: string,
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "sendNativeToken(address,uint256)"(
-      to: string,
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    setGuardian(
-      newGuardian: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setGuardian(address)"(
-      newGuardian: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    setUSDConverter(
-      token: string,
-      converter: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setUSDConverter(address,address)"(
-      token: string,
-      converter: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    setUSDToken(
-      token: string,
-      decimals: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setUSDToken(address,uint256)"(
-      token: string,
-      decimals: BigNumberish,
+      oracle: string,
+      convertor_: string,
+      slippageTolerance: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -392,26 +372,6 @@ export class ValueCapture extends Contract {
       0: BigNumber;
     }>;
 
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "transferOwnership(address)"(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    unsetUSDToken(
-      token: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "unsetUSDToken(address)"(
-      token: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     vault(
       overrides?: CallOverrides
     ): Promise<{
@@ -425,144 +385,149 @@ export class ValueCapture extends Contract {
     }>;
   };
 
-  collectToken(
+  SYSTEM_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "SYSTEM_DECIMALS()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  VALUE_CAPTURE_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  "VALUE_CAPTURE_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<string>;
+
+  addUSDToken(
+    token: string,
+    decimals: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "addUSDToken(address,uint256)"(
+    token: string,
+    decimals: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  assetEntries(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<{
+    oracle: string;
+    convertor: string;
+    slippageTolerance: BigNumber;
+    cumulativeConvertedAmount: BigNumber;
+    0: string;
+    1: string;
+    2: BigNumber;
+    3: BigNumber;
+  }>;
+
+  "assetEntries(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<{
+    oracle: string;
+    convertor: string;
+    slippageTolerance: BigNumber;
+    cumulativeConvertedAmount: BigNumber;
+    0: string;
+    1: string;
+    2: BigNumber;
+    3: BigNumber;
+  }>;
+
+  authenticator(overrides?: CallOverrides): Promise<string>;
+
+  "authenticator()"(overrides?: CallOverrides): Promise<string>;
+
+  forwardAsset(
     token: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "collectToken(address)"(
+  "forwardAsset(address)"(
     token: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  getAllUSDTokens(overrides?: CallOverrides): Promise<string[]>;
-
-  "getAllUSDTokens()"(overrides?: CallOverrides): Promise<string[]>;
-
-  getUSDToken(index: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  "getUSDToken(uint256)"(
-    index: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  getUSDTokenCount(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "getUSDTokenCount()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  getUSDTokenInfo(
+  forwardERC20Token(
     token: string,
-    overrides?: CallOverrides
-  ): Promise<{
-    0: BigNumber;
-    1: BigNumber;
-    2: string;
-  }>;
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  "getUSDTokenInfo(address)"(
+  "forwardERC20Token(address,uint256)"(
     token: string,
-    overrides?: CallOverrides
-  ): Promise<{
-    0: BigNumber;
-    1: BigNumber;
-    2: string;
-  }>;
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  guardian(overrides?: CallOverrides): Promise<string>;
+  forwardERC721Token(
+    token: string,
+    tokenID: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  "guardian()"(overrides?: CallOverrides): Promise<string>;
+  "forwardERC721Token(address,uint256)"(
+    token: string,
+    tokenID: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  forwardETH(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "forwardETH(uint256)"(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   initialize(
+    authenticator_: string,
     vault_: string,
-    owner_: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "initialize(address,address)"(
+    authenticator_: string,
     vault_: string,
-    owner_: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  owner(overrides?: CallOverrides): Promise<string>;
+  listUSDTokens(
+    begin: BigNumberish,
+    end: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
 
-  "owner()"(overrides?: CallOverrides): Promise<string>;
+  "listUSDTokens(uint256,uint256)"(
+    begin: BigNumberish,
+    end: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
 
-  renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-  sendERC20(
+  removeUSDToken(
     token: string,
-    to: string,
-    amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "sendERC20(address,address,uint256)"(
+  "removeUSDToken(address)"(
     token: string,
-    to: string,
-    amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  sendERC721(
+  setConvertor(
     token: string,
-    to: string,
-    tokenID: BigNumberish,
+    oracle: string,
+    convertor_: string,
+    slippageTolerance: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "sendERC721(address,address,uint256)"(
+  "setConvertor(address,address,address,uint256)"(
     token: string,
-    to: string,
-    tokenID: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  sendNativeToken(
-    to: string,
-    amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "sendNativeToken(address,uint256)"(
-    to: string,
-    amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  setGuardian(
-    newGuardian: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setGuardian(address)"(
-    newGuardian: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  setUSDConverter(
-    token: string,
-    converter: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setUSDConverter(address,address)"(
-    token: string,
-    converter: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  setUSDToken(
-    token: string,
-    decimals: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setUSDToken(address,uint256)"(
-    token: string,
-    decimals: BigNumberish,
+    oracle: string,
+    convertor_: string,
+    slippageTolerance: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -570,189 +535,151 @@ export class ValueCapture extends Contract {
 
   "totalCapturedUSD()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-  transferOwnership(
-    newOwner: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "transferOwnership(address)"(
-    newOwner: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  unsetUSDToken(
-    token: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "unsetUSDToken(address)"(
-    token: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   vault(overrides?: CallOverrides): Promise<string>;
 
   "vault()"(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
-    collectToken(token: string, overrides?: CallOverrides): Promise<void>;
+    SYSTEM_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "collectToken(address)"(
+    "SYSTEM_DECIMALS()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    VALUE_CAPTURE_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    "VALUE_CAPTURE_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<string>;
+
+    addUSDToken(
+      token: string,
+      decimals: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "addUSDToken(address,uint256)"(
+      token: string,
+      decimals: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    assetEntries(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      oracle: string;
+      convertor: string;
+      slippageTolerance: BigNumber;
+      cumulativeConvertedAmount: BigNumber;
+      0: string;
+      1: string;
+      2: BigNumber;
+      3: BigNumber;
+    }>;
+
+    "assetEntries(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      oracle: string;
+      convertor: string;
+      slippageTolerance: BigNumber;
+      cumulativeConvertedAmount: BigNumber;
+      0: string;
+      1: string;
+      2: BigNumber;
+      3: BigNumber;
+    }>;
+
+    authenticator(overrides?: CallOverrides): Promise<string>;
+
+    "authenticator()"(overrides?: CallOverrides): Promise<string>;
+
+    forwardAsset(token: string, overrides?: CallOverrides): Promise<void>;
+
+    "forwardAsset(address)"(
       token: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    getAllUSDTokens(overrides?: CallOverrides): Promise<string[]>;
-
-    "getAllUSDTokens()"(overrides?: CallOverrides): Promise<string[]>;
-
-    getUSDToken(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    "getUSDToken(uint256)"(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    getUSDTokenCount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getUSDTokenCount()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getUSDTokenInfo(
+    forwardERC20Token(
       token: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-      1: BigNumber;
-      2: string;
-    }>;
+    ): Promise<void>;
 
-    "getUSDTokenInfo(address)"(
+    "forwardERC20Token(address,uint256)"(
       token: string,
+      amount: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-      1: BigNumber;
-      2: string;
-    }>;
+    ): Promise<void>;
 
-    guardian(overrides?: CallOverrides): Promise<string>;
+    forwardERC721Token(
+      token: string,
+      tokenID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    "guardian()"(overrides?: CallOverrides): Promise<string>;
+    "forwardERC721Token(address,uint256)"(
+      token: string,
+      tokenID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    forwardETH(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    "forwardETH(uint256)"(
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     initialize(
+      authenticator_: string,
       vault_: string,
-      owner_: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     "initialize(address,address)"(
+      authenticator_: string,
       vault_: string,
-      owner_: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    owner(overrides?: CallOverrides): Promise<string>;
+    listUSDTokens(
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
 
-    "owner()"(overrides?: CallOverrides): Promise<string>;
+    "listUSDTokens(uint256,uint256)"(
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
 
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+    removeUSDToken(token: string, overrides?: CallOverrides): Promise<void>;
 
-    "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
-
-    sendERC20(
+    "removeUSDToken(address)"(
       token: string,
-      to: string,
-      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "sendERC20(address,address,uint256)"(
+    setConvertor(
       token: string,
-      to: string,
-      amount: BigNumberish,
+      oracle: string,
+      convertor_: string,
+      slippageTolerance: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    sendERC721(
+    "setConvertor(address,address,address,uint256)"(
       token: string,
-      to: string,
-      tokenID: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "sendERC721(address,address,uint256)"(
-      token: string,
-      to: string,
-      tokenID: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    sendNativeToken(
-      to: string,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "sendNativeToken(address,uint256)"(
-      to: string,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setGuardian(newGuardian: string, overrides?: CallOverrides): Promise<void>;
-
-    "setGuardian(address)"(
-      newGuardian: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setUSDConverter(
-      token: string,
-      converter: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "setUSDConverter(address,address)"(
-      token: string,
-      converter: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setUSDToken(
-      token: string,
-      decimals: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "setUSDToken(address,uint256)"(
-      token: string,
-      decimals: BigNumberish,
+      oracle: string,
+      convertor_: string,
+      slippageTolerance: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     totalCapturedUSD(overrides?: CallOverrides): Promise<BigNumber>;
 
     "totalCapturedUSD()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    transferOwnership(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "transferOwnership(address)"(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    unsetUSDToken(token: string, overrides?: CallOverrides): Promise<void>;
-
-    "unsetUSDToken(address)"(
-      token: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     vault(overrides?: CallOverrides): Promise<string>;
 
@@ -760,163 +687,149 @@ export class ValueCapture extends Contract {
   };
 
   filters: {
-    AddUSDToken(tokenAddresss: string | null): EventFilter;
+    AddUSDToken(usdToken: string | null): EventFilter;
 
-    ConvertToUSD(
+    ConvertToken(
       tokenIn: string | null,
       balanceIn: null,
       tokenOut: string | null,
       balanceOut: null
     ): EventFilter;
 
-    OwnershipTransferred(
-      previousOwner: string | null,
-      newOwner: string | null
+    ForwardAsset(
+      tokenOut: string | null,
+      amountOut: null,
+      normalizeAmountOut: null
     ): EventFilter;
 
-    RemoveUSDToken(tokenAddresss: string | null): EventFilter;
+    ForwardERC20Token(tokenOut: string | null, amount: null): EventFilter;
 
-    SetGuardian(
-      previousGuardian: string | null,
-      newGuardian: string | null
-    ): EventFilter;
+    ForwardERC721Token(tokenOut: string | null, tokenID: null): EventFilter;
 
-    SetUSDConverter(
+    ForwardETH(amount: null): EventFilter;
+
+    RemoveUSDToken(usdToken: string | null): EventFilter;
+
+    SetConvertor(
       tokenAddress: string | null,
-      converter: string | null
+      convertor: string | null
     ): EventFilter;
-
-    TranferToVault(tokenAddress: string | null, amount: null): EventFilter;
   };
 
   estimateGas: {
-    collectToken(token: string, overrides?: Overrides): Promise<BigNumber>;
+    SYSTEM_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "collectToken(address)"(
+    "SYSTEM_DECIMALS()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    VALUE_CAPTURE_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "VALUE_CAPTURE_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    addUSDToken(
+      token: string,
+      decimals: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "addUSDToken(address,uint256)"(
+      token: string,
+      decimals: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    assetEntries(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "assetEntries(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    authenticator(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "authenticator()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    forwardAsset(token: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "forwardAsset(address)"(
       token: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    getAllUSDTokens(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getAllUSDTokens()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getUSDToken(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getUSDToken(uint256)"(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getUSDTokenCount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getUSDTokenCount()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getUSDTokenInfo(
+    forwardERC20Token(
       token: string,
-      overrides?: CallOverrides
+      amount: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "getUSDTokenInfo(address)"(
+    "forwardERC20Token(address,uint256)"(
       token: string,
-      overrides?: CallOverrides
+      amount: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
-    guardian(overrides?: CallOverrides): Promise<BigNumber>;
+    forwardERC721Token(
+      token: string,
+      tokenID: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
-    "guardian()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "forwardERC721Token(address,uint256)"(
+      token: string,
+      tokenID: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    forwardETH(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
+
+    "forwardETH(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
     initialize(
+      authenticator_: string,
       vault_: string,
-      owner_: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "initialize(address,address)"(
+      authenticator_: string,
       vault_: string,
-      owner_: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
+    listUSDTokens(
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "listUSDTokens(uint256,uint256)"(
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    renounceOwnership(overrides?: Overrides): Promise<BigNumber>;
+    removeUSDToken(token: string, overrides?: Overrides): Promise<BigNumber>;
 
-    "renounceOwnership()"(overrides?: Overrides): Promise<BigNumber>;
-
-    sendERC20(
+    "removeUSDToken(address)"(
       token: string,
-      to: string,
-      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "sendERC20(address,address,uint256)"(
+    setConvertor(
       token: string,
-      to: string,
-      amount: BigNumberish,
+      oracle: string,
+      convertor_: string,
+      slippageTolerance: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    sendERC721(
+    "setConvertor(address,address,address,uint256)"(
       token: string,
-      to: string,
-      tokenID: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "sendERC721(address,address,uint256)"(
-      token: string,
-      to: string,
-      tokenID: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    sendNativeToken(
-      to: string,
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "sendNativeToken(address,uint256)"(
-      to: string,
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    setGuardian(newGuardian: string, overrides?: Overrides): Promise<BigNumber>;
-
-    "setGuardian(address)"(
-      newGuardian: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    setUSDConverter(
-      token: string,
-      converter: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "setUSDConverter(address,address)"(
-      token: string,
-      converter: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    setUSDToken(
-      token: string,
-      decimals: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "setUSDToken(address,uint256)"(
-      token: string,
-      decimals: BigNumberish,
+      oracle: string,
+      convertor_: string,
+      slippageTolerance: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -924,166 +837,143 @@ export class ValueCapture extends Contract {
 
     "totalCapturedUSD()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "transferOwnership(address)"(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    unsetUSDToken(token: string, overrides?: Overrides): Promise<BigNumber>;
-
-    "unsetUSDToken(address)"(
-      token: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     vault(overrides?: CallOverrides): Promise<BigNumber>;
 
     "vault()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    collectToken(
+    SYSTEM_DECIMALS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "SYSTEM_DECIMALS()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    VALUE_CAPTURE_ADMIN_ROLE(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "VALUE_CAPTURE_ADMIN_ROLE()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    addUSDToken(
+      token: string,
+      decimals: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "addUSDToken(address,uint256)"(
+      token: string,
+      decimals: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    assetEntries(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "assetEntries(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    authenticator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "authenticator()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    forwardAsset(
       token: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "collectToken(address)"(
+    "forwardAsset(address)"(
       token: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    getAllUSDTokens(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "getAllUSDTokens()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getUSDToken(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getUSDToken(uint256)"(
-      index: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getUSDTokenCount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "getUSDTokenCount()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getUSDTokenInfo(
+    forwardERC20Token(
       token: string,
-      overrides?: CallOverrides
+      amount: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "getUSDTokenInfo(address)"(
+    "forwardERC20Token(address,uint256)"(
       token: string,
-      overrides?: CallOverrides
+      amount: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    guardian(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    forwardERC721Token(
+      token: string,
+      tokenID: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
-    "guardian()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "forwardERC721Token(address,uint256)"(
+      token: string,
+      tokenID: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    forwardETH(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "forwardETH(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
     initialize(
+      authenticator_: string,
       vault_: string,
-      owner_: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "initialize(address,address)"(
+      authenticator_: string,
       vault_: string,
-      owner_: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    listUSDTokens(
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    "owner()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "listUSDTokens(uint256,uint256)"(
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    renounceOwnership(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "renounceOwnership()"(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    sendERC20(
+    removeUSDToken(
       token: string,
-      to: string,
-      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "sendERC20(address,address,uint256)"(
+    "removeUSDToken(address)"(
       token: string,
-      to: string,
-      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    sendERC721(
+    setConvertor(
       token: string,
-      to: string,
-      tokenID: BigNumberish,
+      oracle: string,
+      convertor_: string,
+      slippageTolerance: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "sendERC721(address,address,uint256)"(
+    "setConvertor(address,address,address,uint256)"(
       token: string,
-      to: string,
-      tokenID: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    sendNativeToken(
-      to: string,
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "sendNativeToken(address,uint256)"(
-      to: string,
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    setGuardian(
-      newGuardian: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setGuardian(address)"(
-      newGuardian: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    setUSDConverter(
-      token: string,
-      converter: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setUSDConverter(address,address)"(
-      token: string,
-      converter: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    setUSDToken(
-      token: string,
-      decimals: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setUSDToken(address,uint256)"(
-      token: string,
-      decimals: BigNumberish,
+      oracle: string,
+      convertor_: string,
+      slippageTolerance: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -1091,26 +981,6 @@ export class ValueCapture extends Contract {
 
     "totalCapturedUSD()"(
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "transferOwnership(address)"(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    unsetUSDToken(
-      token: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "unsetUSDToken(address)"(
-      token: string,
-      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     vault(overrides?: CallOverrides): Promise<PopulatedTransaction>;

@@ -40,6 +40,8 @@ export type { RewardDistribution, RewardDistributionInterface } from './abi/Rewa
 export { RewardDistributionFactory } from './abi/RewardDistributionFactory'
 export type { ValueCapture, ValueCaptureInterface } from './abi/ValueCapture'
 export { ValueCaptureFactory } from './abi/ValueCaptureFactory'
+export type { Vault, VaultInterface } from './abi/Vault'
+export { VaultFactory } from './abi/VaultFactory'
 export type { GovernorAlpha, GovernorAlphaInterface } from './abi/GovernorAlpha'
 export { GovernorAlphaFactory } from './abi/GovernorAlphaFactory'
 export type { Minter, MinterInterface } from './abi/Minter'

@@ -24,9 +24,11 @@ interface XmcbInterface extends ethers.utils.Interface {
   functions: {
     "DELEGATION_TYPEHASH()": FunctionFragment;
     "DOMAIN_TYPEHASH()": FunctionFragment;
+    "XMCB_ADMIN_ROLE()": FunctionFragment;
     "addComponent(address)": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
+    "authenticator()": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "checkpoints(address,uint32)": FunctionFragment;
     "componentCount()": FunctionFragment;
@@ -43,18 +45,15 @@ interface XmcbInterface extends ethers.utils.Interface {
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "numCheckpoints(address)": FunctionFragment;
-    "owner()": FunctionFragment;
     "rawBalanceOf(address)": FunctionFragment;
     "rawToken()": FunctionFragment;
     "rawTotalSupply()": FunctionFragment;
     "removeComponent(address)": FunctionFragment;
-    "renounceOwnership()": FunctionFragment;
     "setWithdrawalPenaltyRate(uint256)": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
-    "transferOwnership(address)": FunctionFragment;
     "withdraw(uint256)": FunctionFragment;
     "withdrawalPenaltyRate()": FunctionFragment;
   };
@@ -68,6 +67,10 @@ interface XmcbInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "XMCB_ADMIN_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "addComponent",
     values: [string]
   ): string;
@@ -78,6 +81,10 @@ interface XmcbInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "approve",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "authenticator",
+    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(
@@ -129,7 +136,6 @@ interface XmcbInterface extends ethers.utils.Interface {
     functionFragment: "numCheckpoints",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "rawBalanceOf",
     values: [string]
@@ -142,10 +148,6 @@ interface XmcbInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "removeComponent",
     values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "setWithdrawalPenaltyRate",
@@ -165,10 +167,6 @@ interface XmcbInterface extends ethers.utils.Interface {
     values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "withdraw",
     values: [BigNumberish]
   ): string;
@@ -186,11 +184,19 @@ interface XmcbInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "XMCB_ADMIN_ROLE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "addComponent",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "authenticator",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "checkpoints",
@@ -231,7 +237,6 @@ interface XmcbInterface extends ethers.utils.Interface {
     functionFragment: "numCheckpoints",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "rawBalanceOf",
     data: BytesLike
@@ -243,10 +248,6 @@ interface XmcbInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "removeComponent",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -263,10 +264,6 @@ interface XmcbInterface extends ethers.utils.Interface {
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOwnership",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "withdrawalPenaltyRate",
@@ -274,25 +271,23 @@ interface XmcbInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
-    "AddComponent(address)": EventFragment;
+    "AddListener(address)": EventFragment;
     "Approval(address,address,uint256)": EventFragment;
     "DelegateChanged(address,address,address)": EventFragment;
     "DelegateVotesChanged(address,uint256,uint256)": EventFragment;
     "Depoist(address,uint256)": EventFragment;
-    "OwnershipTransferred(address,address)": EventFragment;
-    "RemoveComponent(address)": EventFragment;
+    "RemoveListener(address)": EventFragment;
     "SetWithdrawalPenaltyRate(uint256,uint256)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
     "Withdraw(address,uint256,uint256)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "AddComponent"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "AddListener"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "DelegateChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "DelegateVotesChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Depoist"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "RemoveComponent"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RemoveListener"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetWithdrawalPenaltyRate"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Withdraw"): EventFragment;
@@ -331,6 +326,18 @@ export class Xmcb extends Contract {
     }>;
 
     "DOMAIN_TYPEHASH()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    XMCB_ADMIN_ROLE(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "XMCB_ADMIN_ROLE()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -376,6 +383,18 @@ export class Xmcb extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: boolean;
+    }>;
+
+    authenticator(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "authenticator()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
     }>;
 
     balanceOf(
@@ -537,14 +556,14 @@ export class Xmcb extends Contract {
     }>;
 
     initialize(
-      owner_: string,
+      authenticator_: string,
       rawToken_: string,
       withdrawalPenaltyRate_: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "initialize(address,address,uint256)"(
-      owner_: string,
+      authenticator_: string,
       rawToken_: string,
       withdrawalPenaltyRate_: BigNumberish,
       overrides?: Overrides
@@ -608,18 +627,6 @@ export class Xmcb extends Contract {
       0: number;
     }>;
 
-    owner(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "owner()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
     rawBalanceOf(
       account: string,
       overrides?: CallOverrides
@@ -667,10 +674,6 @@ export class Xmcb extends Contract {
       component: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
-
-    renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
 
     setWithdrawalPenaltyRate(
       withdrawalPenaltyRate_: BigNumberish,
@@ -740,16 +743,6 @@ export class Xmcb extends Contract {
       0: boolean;
     }>;
 
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "transferOwnership(address)"(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     withdraw(
       amount: BigNumberish,
       overrides?: Overrides
@@ -780,6 +773,10 @@ export class Xmcb extends Contract {
   DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<string>;
 
   "DOMAIN_TYPEHASH()"(overrides?: CallOverrides): Promise<string>;
+
+  XMCB_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  "XMCB_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<string>;
 
   addComponent(
     component: string,
@@ -814,6 +811,10 @@ export class Xmcb extends Contract {
     arg1: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  authenticator(overrides?: CallOverrides): Promise<string>;
+
+  "authenticator()"(overrides?: CallOverrides): Promise<string>;
 
   balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -929,14 +930,14 @@ export class Xmcb extends Contract {
   ): Promise<BigNumber>;
 
   initialize(
-    owner_: string,
+    authenticator_: string,
     rawToken_: string,
     withdrawalPenaltyRate_: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "initialize(address,address,uint256)"(
-    owner_: string,
+    authenticator_: string,
     rawToken_: string,
     withdrawalPenaltyRate_: BigNumberish,
     overrides?: Overrides
@@ -972,10 +973,6 @@ export class Xmcb extends Contract {
     overrides?: CallOverrides
   ): Promise<number>;
 
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  "owner()"(overrides?: CallOverrides): Promise<string>;
-
   rawBalanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   "rawBalanceOf(address)"(
@@ -1000,10 +997,6 @@ export class Xmcb extends Contract {
     component: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
-
-  renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   setWithdrawalPenaltyRate(
     withdrawalPenaltyRate_: BigNumberish,
@@ -1049,16 +1042,6 @@ export class Xmcb extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  transferOwnership(
-    newOwner: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "transferOwnership(address)"(
-    newOwner: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   withdraw(
     amount: BigNumberish,
     overrides?: Overrides
@@ -1081,6 +1064,10 @@ export class Xmcb extends Contract {
     DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<string>;
 
     "DOMAIN_TYPEHASH()"(overrides?: CallOverrides): Promise<string>;
+
+    XMCB_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    "XMCB_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<string>;
 
     addComponent(component: string, overrides?: CallOverrides): Promise<void>;
 
@@ -1112,6 +1099,10 @@ export class Xmcb extends Contract {
       arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    authenticator(overrides?: CallOverrides): Promise<string>;
+
+    "authenticator()"(overrides?: CallOverrides): Promise<string>;
 
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1221,14 +1212,14 @@ export class Xmcb extends Contract {
     ): Promise<BigNumber>;
 
     initialize(
-      owner_: string,
+      authenticator_: string,
       rawToken_: string,
       withdrawalPenaltyRate_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     "initialize(address,address,uint256)"(
-      owner_: string,
+      authenticator_: string,
       rawToken_: string,
       withdrawalPenaltyRate_: BigNumberish,
       overrides?: CallOverrides
@@ -1264,10 +1255,6 @@ export class Xmcb extends Contract {
       overrides?: CallOverrides
     ): Promise<number>;
 
-    owner(overrides?: CallOverrides): Promise<string>;
-
-    "owner()"(overrides?: CallOverrides): Promise<string>;
-
     rawBalanceOf(
       account: string,
       overrides?: CallOverrides
@@ -1295,10 +1282,6 @@ export class Xmcb extends Contract {
       component: string,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
 
     setWithdrawalPenaltyRate(
       withdrawalPenaltyRate_: BigNumberish,
@@ -1344,16 +1327,6 @@ export class Xmcb extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    transferOwnership(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "transferOwnership(address)"(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     withdraw(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     "withdraw(uint256)"(
@@ -1367,7 +1340,7 @@ export class Xmcb extends Contract {
   };
 
   filters: {
-    AddComponent(component: string | null): EventFilter;
+    AddListener(component: string | null): EventFilter;
 
     Approval(
       owner: string | null,
@@ -1389,12 +1362,7 @@ export class Xmcb extends Contract {
 
     Depoist(account: string | null, amount: null): EventFilter;
 
-    OwnershipTransferred(
-      previousOwner: string | null,
-      newOwner: string | null
-    ): EventFilter;
-
-    RemoveComponent(component: string | null): EventFilter;
+    RemoveListener(component: string | null): EventFilter;
 
     SetWithdrawalPenaltyRate(
       previousPenaltyRate: null,
@@ -1414,6 +1382,10 @@ export class Xmcb extends Contract {
     DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
 
     "DOMAIN_TYPEHASH()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    XMCB_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "XMCB_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     addComponent(component: string, overrides?: Overrides): Promise<BigNumber>;
 
@@ -1445,6 +1417,10 @@ export class Xmcb extends Contract {
       arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    authenticator(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "authenticator()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1547,14 +1523,14 @@ export class Xmcb extends Contract {
     ): Promise<BigNumber>;
 
     initialize(
-      owner_: string,
+      authenticator_: string,
       rawToken_: string,
       withdrawalPenaltyRate_: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "initialize(address,address,uint256)"(
-      owner_: string,
+      authenticator_: string,
       rawToken_: string,
       withdrawalPenaltyRate_: BigNumberish,
       overrides?: Overrides
@@ -1590,10 +1566,6 @@ export class Xmcb extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     rawBalanceOf(
       account: string,
       overrides?: CallOverrides
@@ -1621,10 +1593,6 @@ export class Xmcb extends Contract {
       component: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
-
-    renounceOwnership(overrides?: Overrides): Promise<BigNumber>;
-
-    "renounceOwnership()"(overrides?: Overrides): Promise<BigNumber>;
 
     setWithdrawalPenaltyRate(
       withdrawalPenaltyRate_: BigNumberish,
@@ -1670,16 +1638,6 @@ export class Xmcb extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "transferOwnership(address)"(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     withdraw(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
 
     "withdraw(uint256)"(
@@ -1704,6 +1662,12 @@ export class Xmcb extends Contract {
     DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "DOMAIN_TYPEHASH()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    XMCB_ADMIN_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "XMCB_ADMIN_ROLE()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1740,6 +1704,10 @@ export class Xmcb extends Contract {
       arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    authenticator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "authenticator()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     balanceOf(
       account: string,
@@ -1856,14 +1824,14 @@ export class Xmcb extends Contract {
     ): Promise<PopulatedTransaction>;
 
     initialize(
-      owner_: string,
+      authenticator_: string,
       rawToken_: string,
       withdrawalPenaltyRate_: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "initialize(address,address,uint256)"(
-      owner_: string,
+      authenticator_: string,
       rawToken_: string,
       withdrawalPenaltyRate_: BigNumberish,
       overrides?: Overrides
@@ -1905,10 +1873,6 @@ export class Xmcb extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "owner()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     rawBalanceOf(
       account: string,
       overrides?: CallOverrides
@@ -1938,10 +1902,6 @@ export class Xmcb extends Contract {
       component: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
-
-    renounceOwnership(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "renounceOwnership()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     setWithdrawalPenaltyRate(
       withdrawalPenaltyRate_: BigNumberish,
@@ -1985,16 +1945,6 @@ export class Xmcb extends Contract {
       arg1: string,
       arg2: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "transferOwnership(address)"(
-      newOwner: string,
-      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     withdraw(

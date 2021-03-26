@@ -22,24 +22,34 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface MinterInterface extends ethers.utils.Interface {
   functions: {
-    "beginTime()": FunctionFragment;
-    "dailySupplyLimit()": FunctionFragment;
+    "DEV_COMMISSION_RATE()": FunctionFragment;
+    "GENESIS_BLOCK()": FunctionFragment;
+    "TOTAL_SUPPLY()": FunctionFragment;
     "devAccount()": FunctionFragment;
-    "devShareRate()": FunctionFragment;
+    "extraMintableAmount()": FunctionFragment;
+    "getMintableAmountToSeriesA()": FunctionFragment;
+    "getMintableAmountToVault()": FunctionFragment;
+    "lastCaptureValue()": FunctionFragment;
     "mcbToken()": FunctionFragment;
-    "mintMCBToken(address,uint256)": FunctionFragment;
-    "mintableMCBToken()": FunctionFragment;
-    "mintableMCBTokenByTime()": FunctionFragment;
-    "mintableMCBTokenByValue()": FunctionFragment;
-    "mintedAmount()": FunctionFragment;
+    "mintToSeriesA(uint256)": FunctionFragment;
+    "mintToVault(uint256)": FunctionFragment;
     "setDevAccount(address)": FunctionFragment;
-    "totalSupplyLimit()": FunctionFragment;
+    "toSeriesA()": FunctionFragment;
+    "toVault()": FunctionFragment;
+    "totalCapturedValue()": FunctionFragment;
     "valueCapture()": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "beginTime", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "dailySupplyLimit",
+    functionFragment: "DEV_COMMISSION_RATE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "GENESIS_BLOCK",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "TOTAL_SUPPLY",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -47,36 +57,38 @@ interface MinterInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "devShareRate",
+    functionFragment: "extraMintableAmount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getMintableAmountToSeriesA",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getMintableAmountToVault",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "lastCaptureValue",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "mcbToken", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "mintMCBToken",
-    values: [string, BigNumberish]
+    functionFragment: "mintToSeriesA",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "mintableMCBToken",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "mintableMCBTokenByTime",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "mintableMCBTokenByValue",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "mintedAmount",
-    values?: undefined
+    functionFragment: "mintToVault",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "setDevAccount",
     values: [string]
   ): string;
+  encodeFunctionData(functionFragment: "toSeriesA", values?: undefined): string;
+  encodeFunctionData(functionFragment: "toVault", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "totalSupplyLimit",
+    functionFragment: "totalCapturedValue",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -84,43 +96,52 @@ interface MinterInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
 
-  decodeFunctionResult(functionFragment: "beginTime", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "dailySupplyLimit",
+    functionFragment: "DEV_COMMISSION_RATE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "GENESIS_BLOCK",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "TOTAL_SUPPLY",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "devAccount", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "devShareRate",
+    functionFragment: "extraMintableAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getMintableAmountToSeriesA",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getMintableAmountToVault",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "lastCaptureValue",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "mcbToken", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "mintMCBToken",
+    functionFragment: "mintToSeriesA",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "mintableMCBToken",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "mintableMCBTokenByTime",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "mintableMCBTokenByValue",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "mintedAmount",
+    functionFragment: "mintToVault",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "setDevAccount",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "toSeriesA", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "toVault", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "totalSupplyLimit",
+    functionFragment: "totalCapturedValue",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -151,25 +172,37 @@ export class Minter extends Contract {
   interface: MinterInterface;
 
   functions: {
-    beginTime(
+    DEV_COMMISSION_RATE(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    "beginTime()"(
+    "DEV_COMMISSION_RATE()"(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    dailySupplyLimit(
+    GENESIS_BLOCK(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    "dailySupplyLimit()"(
+    "GENESIS_BLOCK()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    TOTAL_SUPPLY(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "TOTAL_SUPPLY()"(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
@@ -187,13 +220,41 @@ export class Minter extends Contract {
       0: string;
     }>;
 
-    devShareRate(
+    extraMintableAmount(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    "devShareRate()"(
+    "extraMintableAmount()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    getMintableAmountToSeriesA(
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "getMintableAmountToSeriesA()"(
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    getMintableAmountToVault(
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "getMintableAmountToVault()"(
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    lastCaptureValue(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "lastCaptureValue()"(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
@@ -211,65 +272,25 @@ export class Minter extends Contract {
       0: string;
     }>;
 
-    mintMCBToken(
-      recipient: string,
+    mintToSeriesA(
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "mintMCBToken(address,uint256)"(
-      recipient: string,
+    "mintToSeriesA(uint256)"(
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    mintableMCBToken(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
+    mintToVault(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
-    "mintableMCBToken()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    mintableMCBTokenByTime(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "mintableMCBTokenByTime()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    mintableMCBTokenByValue(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "mintableMCBTokenByValue()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    mintedAmount(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "mintedAmount()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
+    "mintToVault(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     setDevAccount(
       devAccount_: string,
@@ -281,13 +302,81 @@ export class Minter extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    totalSupplyLimit(
+    toSeriesA(
+      overrides?: CallOverrides
+    ): Promise<{
+      recipient: string;
+      releaseRate: BigNumber;
+      mintableAmount: BigNumber;
+      mintedAmount: BigNumber;
+      maxSupply: BigNumber;
+      lastCapturedBlock: BigNumber;
+      0: string;
+      1: BigNumber;
+      2: BigNumber;
+      3: BigNumber;
+      4: BigNumber;
+      5: BigNumber;
+    }>;
+
+    "toSeriesA()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      recipient: string;
+      releaseRate: BigNumber;
+      mintableAmount: BigNumber;
+      mintedAmount: BigNumber;
+      maxSupply: BigNumber;
+      lastCapturedBlock: BigNumber;
+      0: string;
+      1: BigNumber;
+      2: BigNumber;
+      3: BigNumber;
+      4: BigNumber;
+      5: BigNumber;
+    }>;
+
+    toVault(
+      overrides?: CallOverrides
+    ): Promise<{
+      recipient: string;
+      releaseRate: BigNumber;
+      mintableAmount: BigNumber;
+      mintedAmount: BigNumber;
+      maxSupply: BigNumber;
+      lastCapturedBlock: BigNumber;
+      0: string;
+      1: BigNumber;
+      2: BigNumber;
+      3: BigNumber;
+      4: BigNumber;
+      5: BigNumber;
+    }>;
+
+    "toVault()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      recipient: string;
+      releaseRate: BigNumber;
+      mintableAmount: BigNumber;
+      mintedAmount: BigNumber;
+      maxSupply: BigNumber;
+      lastCapturedBlock: BigNumber;
+      0: string;
+      1: BigNumber;
+      2: BigNumber;
+      3: BigNumber;
+      4: BigNumber;
+      5: BigNumber;
+    }>;
+
+    totalCapturedValue(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    "totalSupplyLimit()"(
+    "totalCapturedValue()"(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
@@ -306,53 +395,67 @@ export class Minter extends Contract {
     }>;
   };
 
-  beginTime(overrides?: CallOverrides): Promise<BigNumber>;
+  DEV_COMMISSION_RATE(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "beginTime()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "DEV_COMMISSION_RATE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-  dailySupplyLimit(overrides?: CallOverrides): Promise<BigNumber>;
+  GENESIS_BLOCK(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "dailySupplyLimit()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "GENESIS_BLOCK()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  TOTAL_SUPPLY(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "TOTAL_SUPPLY()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   devAccount(overrides?: CallOverrides): Promise<string>;
 
   "devAccount()"(overrides?: CallOverrides): Promise<string>;
 
-  devShareRate(overrides?: CallOverrides): Promise<BigNumber>;
+  extraMintableAmount(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "devShareRate()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "extraMintableAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getMintableAmountToSeriesA(
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "getMintableAmountToSeriesA()"(
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  getMintableAmountToVault(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "getMintableAmountToVault()"(
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  lastCaptureValue(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "lastCaptureValue()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   mcbToken(overrides?: CallOverrides): Promise<string>;
 
   "mcbToken()"(overrides?: CallOverrides): Promise<string>;
 
-  mintMCBToken(
-    recipient: string,
+  mintToSeriesA(
     amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "mintMCBToken(address,uint256)"(
-    recipient: string,
+  "mintToSeriesA(uint256)"(
     amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  mintableMCBToken(overrides?: CallOverrides): Promise<BigNumber>;
+  mintToVault(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  "mintableMCBToken()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  mintableMCBTokenByTime(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "mintableMCBTokenByTime()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  mintableMCBTokenByValue(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "mintableMCBTokenByValue()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  mintedAmount(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "mintedAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "mintToVault(uint256)"(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   setDevAccount(
     devAccount_: string,
@@ -364,62 +467,137 @@ export class Minter extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  totalSupplyLimit(overrides?: CallOverrides): Promise<BigNumber>;
+  toSeriesA(
+    overrides?: CallOverrides
+  ): Promise<{
+    recipient: string;
+    releaseRate: BigNumber;
+    mintableAmount: BigNumber;
+    mintedAmount: BigNumber;
+    maxSupply: BigNumber;
+    lastCapturedBlock: BigNumber;
+    0: string;
+    1: BigNumber;
+    2: BigNumber;
+    3: BigNumber;
+    4: BigNumber;
+    5: BigNumber;
+  }>;
 
-  "totalSupplyLimit()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "toSeriesA()"(
+    overrides?: CallOverrides
+  ): Promise<{
+    recipient: string;
+    releaseRate: BigNumber;
+    mintableAmount: BigNumber;
+    mintedAmount: BigNumber;
+    maxSupply: BigNumber;
+    lastCapturedBlock: BigNumber;
+    0: string;
+    1: BigNumber;
+    2: BigNumber;
+    3: BigNumber;
+    4: BigNumber;
+    5: BigNumber;
+  }>;
+
+  toVault(
+    overrides?: CallOverrides
+  ): Promise<{
+    recipient: string;
+    releaseRate: BigNumber;
+    mintableAmount: BigNumber;
+    mintedAmount: BigNumber;
+    maxSupply: BigNumber;
+    lastCapturedBlock: BigNumber;
+    0: string;
+    1: BigNumber;
+    2: BigNumber;
+    3: BigNumber;
+    4: BigNumber;
+    5: BigNumber;
+  }>;
+
+  "toVault()"(
+    overrides?: CallOverrides
+  ): Promise<{
+    recipient: string;
+    releaseRate: BigNumber;
+    mintableAmount: BigNumber;
+    mintedAmount: BigNumber;
+    maxSupply: BigNumber;
+    lastCapturedBlock: BigNumber;
+    0: string;
+    1: BigNumber;
+    2: BigNumber;
+    3: BigNumber;
+    4: BigNumber;
+    5: BigNumber;
+  }>;
+
+  totalCapturedValue(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "totalCapturedValue()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   valueCapture(overrides?: CallOverrides): Promise<string>;
 
   "valueCapture()"(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
-    beginTime(overrides?: CallOverrides): Promise<BigNumber>;
+    DEV_COMMISSION_RATE(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "beginTime()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "DEV_COMMISSION_RATE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    dailySupplyLimit(overrides?: CallOverrides): Promise<BigNumber>;
+    GENESIS_BLOCK(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "dailySupplyLimit()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "GENESIS_BLOCK()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    TOTAL_SUPPLY(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "TOTAL_SUPPLY()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     devAccount(overrides?: CallOverrides): Promise<string>;
 
     "devAccount()"(overrides?: CallOverrides): Promise<string>;
 
-    devShareRate(overrides?: CallOverrides): Promise<BigNumber>;
+    extraMintableAmount(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "devShareRate()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "extraMintableAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getMintableAmountToSeriesA(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getMintableAmountToSeriesA()"(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getMintableAmountToVault(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getMintableAmountToVault()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    lastCaptureValue(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "lastCaptureValue()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     mcbToken(overrides?: CallOverrides): Promise<string>;
 
     "mcbToken()"(overrides?: CallOverrides): Promise<string>;
 
-    mintMCBToken(
-      recipient: string,
+    mintToSeriesA(
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "mintMCBToken(address,uint256)"(
-      recipient: string,
+    "mintToSeriesA(uint256)"(
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    mintableMCBToken(overrides?: CallOverrides): Promise<BigNumber>;
+    mintToVault(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    "mintableMCBToken()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    mintableMCBTokenByTime(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "mintableMCBTokenByTime()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    mintableMCBTokenByValue(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "mintableMCBTokenByValue()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    mintedAmount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "mintedAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "mintToVault(uint256)"(
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     setDevAccount(
       devAccount_: string,
@@ -431,9 +609,77 @@ export class Minter extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    totalSupplyLimit(overrides?: CallOverrides): Promise<BigNumber>;
+    toSeriesA(
+      overrides?: CallOverrides
+    ): Promise<{
+      recipient: string;
+      releaseRate: BigNumber;
+      mintableAmount: BigNumber;
+      mintedAmount: BigNumber;
+      maxSupply: BigNumber;
+      lastCapturedBlock: BigNumber;
+      0: string;
+      1: BigNumber;
+      2: BigNumber;
+      3: BigNumber;
+      4: BigNumber;
+      5: BigNumber;
+    }>;
 
-    "totalSupplyLimit()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "toSeriesA()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      recipient: string;
+      releaseRate: BigNumber;
+      mintableAmount: BigNumber;
+      mintedAmount: BigNumber;
+      maxSupply: BigNumber;
+      lastCapturedBlock: BigNumber;
+      0: string;
+      1: BigNumber;
+      2: BigNumber;
+      3: BigNumber;
+      4: BigNumber;
+      5: BigNumber;
+    }>;
+
+    toVault(
+      overrides?: CallOverrides
+    ): Promise<{
+      recipient: string;
+      releaseRate: BigNumber;
+      mintableAmount: BigNumber;
+      mintedAmount: BigNumber;
+      maxSupply: BigNumber;
+      lastCapturedBlock: BigNumber;
+      0: string;
+      1: BigNumber;
+      2: BigNumber;
+      3: BigNumber;
+      4: BigNumber;
+      5: BigNumber;
+    }>;
+
+    "toVault()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      recipient: string;
+      releaseRate: BigNumber;
+      mintableAmount: BigNumber;
+      mintedAmount: BigNumber;
+      maxSupply: BigNumber;
+      lastCapturedBlock: BigNumber;
+      0: string;
+      1: BigNumber;
+      2: BigNumber;
+      3: BigNumber;
+      4: BigNumber;
+      5: BigNumber;
+    }>;
+
+    totalCapturedValue(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "totalCapturedValue()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     valueCapture(overrides?: CallOverrides): Promise<string>;
 
@@ -452,53 +698,61 @@ export class Minter extends Contract {
   };
 
   estimateGas: {
-    beginTime(overrides?: CallOverrides): Promise<BigNumber>;
+    DEV_COMMISSION_RATE(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "beginTime()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "DEV_COMMISSION_RATE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    dailySupplyLimit(overrides?: CallOverrides): Promise<BigNumber>;
+    GENESIS_BLOCK(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "dailySupplyLimit()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "GENESIS_BLOCK()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    TOTAL_SUPPLY(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "TOTAL_SUPPLY()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     devAccount(overrides?: CallOverrides): Promise<BigNumber>;
 
     "devAccount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    devShareRate(overrides?: CallOverrides): Promise<BigNumber>;
+    extraMintableAmount(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "devShareRate()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "extraMintableAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getMintableAmountToSeriesA(overrides?: Overrides): Promise<BigNumber>;
+
+    "getMintableAmountToSeriesA()"(overrides?: Overrides): Promise<BigNumber>;
+
+    getMintableAmountToVault(overrides?: Overrides): Promise<BigNumber>;
+
+    "getMintableAmountToVault()"(overrides?: Overrides): Promise<BigNumber>;
+
+    lastCaptureValue(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "lastCaptureValue()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     mcbToken(overrides?: CallOverrides): Promise<BigNumber>;
 
     "mcbToken()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    mintMCBToken(
-      recipient: string,
+    mintToSeriesA(
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "mintMCBToken(address,uint256)"(
-      recipient: string,
+    "mintToSeriesA(uint256)"(
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    mintableMCBToken(overrides?: CallOverrides): Promise<BigNumber>;
+    mintToVault(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
-    "mintableMCBToken()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    mintableMCBTokenByTime(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "mintableMCBTokenByTime()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    mintableMCBTokenByValue(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "mintableMCBTokenByValue()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    mintedAmount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "mintedAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "mintToVault(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
     setDevAccount(
       devAccount_: string,
@@ -510,9 +764,17 @@ export class Minter extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    totalSupplyLimit(overrides?: CallOverrides): Promise<BigNumber>;
+    toSeriesA(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "totalSupplyLimit()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "toSeriesA()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    toVault(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "toVault()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    totalCapturedValue(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "totalCapturedValue()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     valueCapture(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -520,65 +782,79 @@ export class Minter extends Contract {
   };
 
   populateTransaction: {
-    beginTime(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "beginTime()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    dailySupplyLimit(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "dailySupplyLimit()"(
+    DEV_COMMISSION_RATE(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    "DEV_COMMISSION_RATE()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    GENESIS_BLOCK(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "GENESIS_BLOCK()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    TOTAL_SUPPLY(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "TOTAL_SUPPLY()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     devAccount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "devAccount()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    devShareRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    extraMintableAmount(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    "devShareRate()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "extraMintableAmount()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getMintableAmountToSeriesA(
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "getMintableAmountToSeriesA()"(
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    getMintableAmountToVault(
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "getMintableAmountToVault()"(
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    lastCaptureValue(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "lastCaptureValue()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     mcbToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "mcbToken()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    mintMCBToken(
-      recipient: string,
+    mintToSeriesA(
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "mintMCBToken(address,uint256)"(
-      recipient: string,
+    "mintToSeriesA(uint256)"(
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    mintableMCBToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "mintableMCBToken()"(
-      overrides?: CallOverrides
+    mintToVault(
+      amount: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    mintableMCBTokenByTime(
-      overrides?: CallOverrides
+    "mintToVault(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
-
-    "mintableMCBTokenByTime()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    mintableMCBTokenByValue(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "mintableMCBTokenByValue()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    mintedAmount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "mintedAmount()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     setDevAccount(
       devAccount_: string,
@@ -590,9 +866,19 @@ export class Minter extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    totalSupplyLimit(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    toSeriesA(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "totalSupplyLimit()"(
+    "toSeriesA()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    toVault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "toVault()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    totalCapturedValue(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "totalCapturedValue()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

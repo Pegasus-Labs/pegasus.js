@@ -2,65 +2,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Signer, BigNumberish } from "ethers";
-import { Provider, TransactionRequest } from "@ethersproject/providers";
-import { Contract, ContractFactory, Overrides } from "@ethersproject/contracts";
+import { Contract, Signer } from "ethers";
+import { Provider } from "@ethersproject/providers";
 
 import type { Minter } from "./Minter";
 
-export class MinterFactory extends ContractFactory {
-  constructor(signer?: Signer) {
-    super(_abi, _bytecode, signer);
-  }
-
-  deploy(
-    mcbToken_: string,
-    valueCapture_: string,
-    devAccount_: string,
-    devShareRate_: BigNumberish,
-    totalSupplyLimit_: BigNumberish,
-    beginTime_: BigNumberish,
-    dailySupplyLimit_: BigNumberish,
-    overrides?: Overrides
-  ): Promise<Minter> {
-    return super.deploy(
-      mcbToken_,
-      valueCapture_,
-      devAccount_,
-      devShareRate_,
-      totalSupplyLimit_,
-      beginTime_,
-      dailySupplyLimit_,
-      overrides || {}
-    ) as Promise<Minter>;
-  }
-  getDeployTransaction(
-    mcbToken_: string,
-    valueCapture_: string,
-    devAccount_: string,
-    devShareRate_: BigNumberish,
-    totalSupplyLimit_: BigNumberish,
-    beginTime_: BigNumberish,
-    dailySupplyLimit_: BigNumberish,
-    overrides?: Overrides
-  ): TransactionRequest {
-    return super.getDeployTransaction(
-      mcbToken_,
-      valueCapture_,
-      devAccount_,
-      devShareRate_,
-      totalSupplyLimit_,
-      beginTime_,
-      dailySupplyLimit_,
-      overrides || {}
-    );
-  }
-  attach(address: string): Minter {
-    return super.attach(address) as Minter;
-  }
-  connect(signer: Signer): MinterFactory {
-    return super.connect(signer) as MinterFactory;
-  }
+export class MinterFactory {
   static connect(address: string, signerOrProvider: Signer | Provider): Minter {
     return new Contract(address, _abi, signerOrProvider) as Minter;
   }
@@ -85,24 +32,78 @@ const _abi = [
         type: "address",
       },
       {
-        internalType: "uint256",
-        name: "devShareRate_",
-        type: "uint256",
+        components: [
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "releaseRate",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "mintableAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "mintedAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "maxSupply",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "lastCapturedBlock",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct Minter.Release",
+        name: "toVault_",
+        type: "tuple",
       },
       {
-        internalType: "uint256",
-        name: "totalSupplyLimit_",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "beginTime_",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "dailySupplyLimit_",
-        type: "uint256",
+        components: [
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "releaseRate",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "mintableAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "mintedAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "maxSupply",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "lastCapturedBlock",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct Minter.Release",
+        name: "toSeriesA_",
+        type: "tuple",
       },
     ],
     stateMutability: "nonpayable",
@@ -160,7 +161,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "beginTime",
+    name: "DEV_COMMISSION_RATE",
     outputs: [
       {
         internalType: "uint256",
@@ -173,7 +174,20 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "dailySupplyLimit",
+    name: "GENESIS_BLOCK",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "TOTAL_SUPPLY",
     outputs: [
       {
         internalType: "uint256",
@@ -199,7 +213,46 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "devShareRate",
+    name: "extraMintableAmount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getMintableAmountToSeriesA",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getMintableAmountToVault",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "lastCaptureValue",
     outputs: [
       {
         internalType: "uint256",
@@ -226,71 +279,27 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "recipient",
-        type: "address",
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
       },
+    ],
+    name: "mintToSeriesA",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
       {
         internalType: "uint256",
         name: "amount",
         type: "uint256",
       },
     ],
-    name: "mintMCBToken",
+    name: "mintToVault",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "mintableMCBToken",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "mintableMCBTokenByTime",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "mintableMCBTokenByValue",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "mintedAmount",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {
@@ -308,7 +317,83 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "totalSupplyLimit",
+    name: "toSeriesA",
+    outputs: [
+      {
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "releaseRate",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "mintableAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "mintedAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "maxSupply",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "lastCapturedBlock",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "toVault",
+    outputs: [
+      {
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "releaseRate",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "mintableAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "mintedAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "maxSupply",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "lastCapturedBlock",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "totalCapturedValue",
     outputs: [
       {
         internalType: "uint256",
@@ -324,7 +409,7 @@ const _abi = [
     name: "valueCapture",
     outputs: [
       {
-        internalType: "address",
+        internalType: "contract IValueCapture",
         name: "",
         type: "address",
       },
@@ -333,6 +418,3 @@ const _abi = [
     type: "function",
   },
 ];
-
-const _bytecode =
-  "0x608060405234801561001057600080fd5b506040516109e83803806109e8833981810160405260e081101561003357600080fd5b50805160208083015160408401516060850151608086015160a087015160c09097015195969395929491939092909161007e906001600160a01b038916906106cb610124821b17901c565b6100cf576040805162461bcd60e51b815260206004820152601660248201527f746f6b656e206d75737420626520636f6e747261637400000000000000000000604482015290519081900360640190fd5b600080546001600160a01b03199081166001600160a01b03998a16179091556001805482169789169790971790965560028054909616949096169390931790935560035560069190915560045560055561012a565b3b151590565b6108af806101396000396000f3fe608060405234801561001057600080fd5b50600436106100cf5760003560e01c8063691edfda1161008c578063aecb9ca711610066578063aecb9ca714610170578063bac21a2214610196578063f4ee73181461019e578063f7453b7b146101a6576100cf565b8063691edfda1461013257806386ce57451461013a57806388149fb914610168576100cf565b806304e0b9b4146100d45780630795108b146100ee5780630cb8eea8146100f65780632d380242146100fe57806337f7ae221461010657806360ecce551461010e575b600080fd5b6100dc6101ae565b60408051918252519081900360200190f35b6100dc610225565b6100dc610277565b6100dc6102cb565b6100dc6102d1565b6101166102d7565b604080516001600160a01b039092168252519081900360200190f35b6101166102e6565b6101666004803603604081101561015057600080fd5b506001600160a01b0381351690602001356102f5565b005b6100dc610596565b6101666004803603602081101561018657600080fd5b50356001600160a01b031661059c565b6100dc6106b0565b6100dc6106b6565b6101166106bc565b60015460408051634deac21d60e01b815290516000926001600160a01b031691634deac21d916004808301926020929190829003018186803b1580156101f357600080fd5b505afa158015610207573d6000803e3d6000fd5b505050506040513d602081101561021d57600080fd5b505190505b90565b600080610230610277565b9050600061023c6101ae565b9050600081831161024d578161024f565b825b9050600754811161026157600061026f565b60075461026f9082906106d1565b935050505090565b600080610282610733565b90506004548111610297576000915050610222565b6102c5620151806102bf6005546102b9600454866106d190919063ffffffff16565b90610737565b90610797565b91505090565b60075481565b60035481565b6000546001600160a01b031681565b6002546001600160a01b031681565b60006102ff610225565b90508082111561034f576040805162461bcd60e51b8152602060048201526016602482015275195e18d95959081b5a5b9d18589b1948185b5bdd5b9d60521b604482015290519081900360640190fd5b6006546103d48360008054906101000a90046001600160a01b03166001600160a01b03166318160ddd6040518163ffffffff1660e01b815260040160206040518083038186803b1580156103a257600080fd5b505afa1580156103b6573d6000803e3d6000fd5b505050506040513d60208110156103cc57600080fd5b5051906107fe565b1115610427576040805162461bcd60e51b815260206004820152601a60248201527f6578636565647320746f74616c20737570706c79206c696d6974000000000000604482015290519081900360640190fd5b600061044a670de0b6b3a76400006102bf6003548661073790919063ffffffff16565b9050600061045884836106d1565b60008054600254604080516340c10f1960e01b81526001600160a01b0392831660048201526024810188905290519495509116926340c10f199260448084019391929182900301818387803b1580156104b057600080fd5b505af11580156104c4573d6000803e3d6000fd5b505060008054604080516340c10f1960e01b81526001600160a01b038b811660048301526024820188905291519190921694506340c10f1993506044808301939282900301818387803b15801561051a57600080fd5b505af115801561052e573d6000803e3d6000fd5b505060075461054092509050856107fe565b600755604080518581526020810183905280820184905290516001600160a01b038716917f0dd0fe7c1da75a17e5f14ee802df3105e0cf8431ab476106e21992559598fd68919081900360600190a25050505050565b60045481565b6002546001600160a01b03828116911614156105f5576040805162461bcd60e51b8152602060048201526013602482015272185b1c9958591e4819195d881858d8dbdd5b9d606a1b604482015290519081900360640190fd5b6002546001600160a01b03163314610654576040805162461bcd60e51b815260206004820152601a60248201527f63616c6c6572206d75737420626520646576206163636f756e74000000000000604482015290519081900360640190fd5b6002546040516001600160a01b038084169216907f90b459e2e169782a6a2e7a7722a94ae2272481f3d9344957faac33a75e0895b590600090a3600280546001600160a01b0319166001600160a01b0392909216919091179055565b60065481565b60055481565b6001546001600160a01b031681565b3b151590565b600082821115610728576040805162461bcd60e51b815260206004820152601e60248201527f536166654d6174683a207375627472616374696f6e206f766572666c6f770000604482015290519081900360640190fd5b508082035b92915050565b4290565b6000826107465750600061072d565b8282028284828161075357fe5b04146107905760405162461bcd60e51b81526004018080602001828103825260218152602001806108596021913960400191505060405180910390fd5b9392505050565b60008082116107ed576040805162461bcd60e51b815260206004820152601a60248201527f536166654d6174683a206469766973696f6e206279207a65726f000000000000604482015290519081900360640190fd5b8183816107f657fe5b049392505050565b600082820183811015610790576040805162461bcd60e51b815260206004820152601b60248201527f536166654d6174683a206164646974696f6e206f766572666c6f770000000000604482015290519081900360640190fdfe536166654d6174683a206d756c7469706c69636174696f6e206f766572666c6f77a264697066735822122049cb6eeaa24a3fe4d931691ebff2640011b0ff712ffd2c30501ff04811c2ca3364736f6c63430007040033";
