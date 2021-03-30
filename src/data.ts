@@ -33,6 +33,8 @@ import { Xmcb } from './abi/Xmcb'
 import { XmcbFactory } from './abi/XmcbFactory'
 import { GovernorAlpha } from './abi/GovernorAlpha'
 import { GovernorAlphaFactory } from './abi/GovernorAlphaFactory'
+import { Timelock } from './abi/Timelock'
+import { TimelockFactory } from './abi/TimelockFactory'
 
 export function getLiquidityPoolContract(contractAddress: string, signerOrProvider: SignerOrProvider): LiquidityPool {
   getAddress(contractAddress)
@@ -97,6 +99,11 @@ export function getXmcbContract(contractAddress: string, signerOrProvider: Signe
 export function getDaoGovernorContract(contractAddress: string, signerOrProvider: SignerOrProvider): GovernorAlpha {
   getAddress(contractAddress)
   return GovernorAlphaFactory.connect(contractAddress, signerOrProvider)
+}
+
+export function getTimeLockContract(contractAddress: string, signerOrProvider: SignerOrProvider): Timelock {
+  getAddress(contractAddress)
+  return TimelockFactory.connect(contractAddress, signerOrProvider)
 }
 
 export async function getReaderContract(signerOrProvider: SignerOrProvider, contractAddress?: string): Promise<Reader> {
