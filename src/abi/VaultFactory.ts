@@ -213,7 +213,7 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "to",
+        name: "recipient",
         type: "address",
       },
       {
@@ -241,7 +241,7 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "to",
+        name: "recipient",
         type: "address",
       },
     ],
@@ -254,7 +254,7 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "to",
+        name: "recipient",
         type: "address",
       },
       {

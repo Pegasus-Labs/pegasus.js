@@ -23,7 +23,12 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "valueCapture_",
+        name: "dataExchange_",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "l2SeriesAVesting_",
         type: "address",
       },
       {
@@ -32,82 +37,90 @@ const _abi = [
         type: "address",
       },
       {
-        components: [
-          {
-            internalType: "address",
-            name: "recipient",
-            type: "address",
-          },
-          {
-            internalType: "uint256",
-            name: "releaseRate",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "mintableAmount",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "mintedAmount",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "maxSupply",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "lastCapturedBlock",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct Minter.Release",
-        name: "toVault_",
-        type: "tuple",
+        internalType: "uint256",
+        name: "baseMaxSupply_",
+        type: "uint256",
       },
       {
-        components: [
-          {
-            internalType: "address",
-            name: "recipient",
-            type: "address",
-          },
-          {
-            internalType: "uint256",
-            name: "releaseRate",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "mintableAmount",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "mintedAmount",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "maxSupply",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "lastCapturedBlock",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct Minter.Release",
-        name: "toSeriesA_",
-        type: "tuple",
+        internalType: "uint256",
+        name: "seriesAMaxSupply_",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "baseMinReleaseRate_",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "seriesAMaxReleaseRate_",
+        type: "uint256",
       },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "index",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "enum Minter.ReleaseType",
+        name: "releaseType",
+        type: "uint8",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "ExecuteMintRequest",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "recipientReceivedAmount",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "devAccount",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "devReceivedAmount",
+        type: "uint256",
+      },
+    ],
+    name: "MintMCB",
+    type: "event",
   },
   {
     anonymous: false,
@@ -124,20 +137,58 @@ const _abi = [
         name: "amount",
         type: "uint256",
       },
+    ],
+    name: "MintToL1",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
       {
-        indexed: false,
-        internalType: "uint256",
-        name: "recipientReceivedAmount",
-        type: "uint256",
+        indexed: true,
+        internalType: "address",
+        name: "recipient",
+        type: "address",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "devReceivedAmount",
+        name: "amount",
         type: "uint256",
       },
     ],
-    name: "MintMCB",
+    name: "MintToL2",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "index",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "enum Minter.ReleaseType",
+        name: "releaseType",
+        type: "uint8",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "ReceiveMintRequest",
     type: "event",
   },
   {
@@ -161,7 +212,46 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "DEV_COMMISSION_RATE",
+    name: "MINT_INITIATOR_ADDRESS",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "ROLLUP_ADDRESS",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "TOTAL_CAPTURED_USD_KEY",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "baseMaxSupply",
     outputs: [
       {
         internalType: "uint256",
@@ -174,7 +264,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "GENESIS_BLOCK",
+    name: "baseMinReleaseRate",
     outputs: [
       {
         internalType: "uint256",
@@ -187,12 +277,25 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "TOTAL_SUPPLY",
+    name: "baseMintedAmount",
     outputs: [
       {
         internalType: "uint256",
         name: "",
         type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "dataExchange",
+    outputs: [
+      {
+        internalType: "contract IDataExchange",
+        name: "",
+        type: "address",
       },
     ],
     stateMutability: "view",
@@ -213,6 +316,52 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "devCommissionRate",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "index",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "bridge",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "maxSubmissionCost",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "maxGas",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "gasPriceBid",
+        type: "uint256",
+      },
+    ],
+    name: "executeMintRequest",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "extraMintableAmount",
     outputs: [
       {
@@ -226,7 +375,20 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "getMintableAmountToSeriesA",
+    name: "genesisBlock",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getBaseMintableAmount",
     outputs: [
       {
         internalType: "uint256",
@@ -239,7 +401,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "getMintableAmountToVault",
+    name: "getSeriesAMintableAmount",
     outputs: [
       {
         internalType: "uint256",
@@ -252,7 +414,20 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "lastCaptureValue",
+    name: "l2SeriesAVesting",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "lastValueCapturedBlock",
     outputs: [
       {
         internalType: "uint256",
@@ -277,16 +452,112 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "mcbTotalSupply",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
     inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "mintRequests",
+    outputs: [
+      {
+        internalType: "enum Minter.ReleaseType",
+        name: "releaseType",
+        type: "uint8",
+      },
+      {
+        internalType: "bool",
+        name: "executed",
+        type: "bool",
+      },
+      {
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
       {
         internalType: "uint256",
         name: "amount",
         type: "uint256",
       },
     ],
-    name: "mintToSeriesA",
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint8",
+        name: "releaseType",
+        type: "uint8",
+      },
+      {
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "receiveMintRequestFromL2",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "seriesALastUpdateBlock",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "seriesAMaxReleaseRate",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "seriesAMaxSupply",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -296,10 +567,56 @@ const _abi = [
         name: "amount",
         type: "uint256",
       },
+      {
+        internalType: "address",
+        name: "bridge",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "maxSubmissionCost",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "maxGas",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "gasPriceBid",
+        type: "uint256",
+      },
     ],
-    name: "mintToVault",
+    name: "seriesAMint",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "seriesAMintableAmount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "seriesAMintedAmount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -317,82 +634,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "toSeriesA",
-    outputs: [
-      {
-        internalType: "address",
-        name: "recipient",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "releaseRate",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "mintableAmount",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "mintedAmount",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "maxSupply",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "lastCapturedBlock",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "toVault",
-    outputs: [
-      {
-        internalType: "address",
-        name: "recipient",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "releaseRate",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "mintableAmount",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "mintedAmount",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "maxSupply",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "lastCapturedBlock",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "totalCapturedValue",
     outputs: [
       {
@@ -406,15 +647,16 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "valueCapture",
-    outputs: [
-      {
-        internalType: "contract IValueCapture",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
+    name: "updateMintableAmount",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "updateSeriesAMintableAmount",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ];

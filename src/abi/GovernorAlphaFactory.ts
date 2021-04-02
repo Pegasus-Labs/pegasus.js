@@ -196,6 +196,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "DATA_EXCHANGE_ADDRESS",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "DOMAIN_TYPEHASH",
     outputs: [
       {
@@ -209,12 +222,12 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "MCB_TOKEN_ADDRESS",
+    name: "MCB_TOTAL_SUPPLY",
     outputs: [
       {
-        internalType: "address",
+        internalType: "bytes32",
         name: "",
-        type: "address",
+        type: "bytes32",
       },
     ],
     stateMutability: "view",

@@ -21,12 +21,12 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "owner_",
+        name: "authenticator_",
         type: "address",
       },
       {
         internalType: "address",
-        name: "xMCB_",
+        name: "XMCB_",
         type: "address",
       },
     ],
@@ -133,6 +133,32 @@ const _abi = [
     ],
     name: "RewardRateChanged",
     type: "event",
+  },
+  {
+    inputs: [],
+    name: "REWARD_DISTRIBUTION_ADMIN_ROLE",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "authenticator",
+    outputs: [
+      {
+        internalType: "contract IAuthenticator",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
@@ -420,7 +446,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "xMCB",
+    name: "xmcb",
     outputs: [
       {
         internalType: "contract IXMCB",

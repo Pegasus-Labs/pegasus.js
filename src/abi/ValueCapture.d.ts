@@ -23,15 +23,18 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface ValueCaptureInterface extends ethers.utils.Interface {
   functions: {
     "SYSTEM_DECIMALS()": FunctionFragment;
+    "TOTAL_CAPTURED_USD_KEY()": FunctionFragment;
     "VALUE_CAPTURE_ADMIN_ROLE()": FunctionFragment;
     "addUSDToken(address,uint256)": FunctionFragment;
     "assetEntries(address)": FunctionFragment;
     "authenticator()": FunctionFragment;
-    "forwardAsset(address)": FunctionFragment;
+    "dataExchange()": FunctionFragment;
+    "feedCapturedValueToL1()": FunctionFragment;
+    "forwardAsset(address,uint256)": FunctionFragment;
     "forwardERC20Token(address,uint256)": FunctionFragment;
     "forwardERC721Token(address,uint256)": FunctionFragment;
     "forwardETH(uint256)": FunctionFragment;
-    "initialize(address,address)": FunctionFragment;
+    "initialize(address,address,address)": FunctionFragment;
     "listUSDTokens(uint256,uint256)": FunctionFragment;
     "removeUSDToken(address)": FunctionFragment;
     "setConvertor(address,address,address,uint256)": FunctionFragment;
@@ -41,6 +44,10 @@ interface ValueCaptureInterface extends ethers.utils.Interface {
 
   encodeFunctionData(
     functionFragment: "SYSTEM_DECIMALS",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "TOTAL_CAPTURED_USD_KEY",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -60,8 +67,16 @@ interface ValueCaptureInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "dataExchange",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "feedCapturedValueToL1",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "forwardAsset",
-    values: [string]
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "forwardERC20Token",
@@ -77,7 +92,7 @@ interface ValueCaptureInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [string, string]
+    values: [string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "listUSDTokens",
@@ -102,6 +117,10 @@ interface ValueCaptureInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "TOTAL_CAPTURED_USD_KEY",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "VALUE_CAPTURE_ADMIN_ROLE",
     data: BytesLike
   ): Result;
@@ -115,6 +134,14 @@ interface ValueCaptureInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "authenticator",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "dataExchange",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "feedCapturedValueToL1",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -196,6 +223,18 @@ export class ValueCapture extends Contract {
       0: BigNumber;
     }>;
 
+    TOTAL_CAPTURED_USD_KEY(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "TOTAL_CAPTURED_USD_KEY()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
     VALUE_CAPTURE_ADMIN_ROLE(
       overrides?: CallOverrides
     ): Promise<{
@@ -260,13 +299,33 @@ export class ValueCapture extends Contract {
       0: string;
     }>;
 
-    forwardAsset(
-      token: string,
+    dataExchange(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "dataExchange()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    feedCapturedValueToL1(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "feedCapturedValueToL1()"(
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "forwardAsset(address)"(
+    forwardAsset(
       token: string,
+      amountIn: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "forwardAsset(address,uint256)"(
+      token: string,
+      amountIn: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -306,12 +365,14 @@ export class ValueCapture extends Contract {
 
     initialize(
       authenticator_: string,
+      dataExchange_: string,
       vault_: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "initialize(address,address)"(
+    "initialize(address,address,address)"(
       authenticator_: string,
+      dataExchange_: string,
       vault_: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -389,6 +450,10 @@ export class ValueCapture extends Contract {
 
   "SYSTEM_DECIMALS()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+  TOTAL_CAPTURED_USD_KEY(overrides?: CallOverrides): Promise<string>;
+
+  "TOTAL_CAPTURED_USD_KEY()"(overrides?: CallOverrides): Promise<string>;
+
   VALUE_CAPTURE_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
   "VALUE_CAPTURE_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<string>;
@@ -437,13 +502,25 @@ export class ValueCapture extends Contract {
 
   "authenticator()"(overrides?: CallOverrides): Promise<string>;
 
-  forwardAsset(
-    token: string,
+  dataExchange(overrides?: CallOverrides): Promise<string>;
+
+  "dataExchange()"(overrides?: CallOverrides): Promise<string>;
+
+  feedCapturedValueToL1(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "feedCapturedValueToL1()"(
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "forwardAsset(address)"(
+  forwardAsset(
     token: string,
+    amountIn: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "forwardAsset(address,uint256)"(
+    token: string,
+    amountIn: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -483,12 +560,14 @@ export class ValueCapture extends Contract {
 
   initialize(
     authenticator_: string,
+    dataExchange_: string,
     vault_: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "initialize(address,address)"(
+  "initialize(address,address,address)"(
     authenticator_: string,
+    dataExchange_: string,
     vault_: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -544,6 +623,10 @@ export class ValueCapture extends Contract {
 
     "SYSTEM_DECIMALS()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    TOTAL_CAPTURED_USD_KEY(overrides?: CallOverrides): Promise<string>;
+
+    "TOTAL_CAPTURED_USD_KEY()"(overrides?: CallOverrides): Promise<string>;
+
     VALUE_CAPTURE_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
     "VALUE_CAPTURE_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<string>;
@@ -592,10 +675,23 @@ export class ValueCapture extends Contract {
 
     "authenticator()"(overrides?: CallOverrides): Promise<string>;
 
-    forwardAsset(token: string, overrides?: CallOverrides): Promise<void>;
+    dataExchange(overrides?: CallOverrides): Promise<string>;
 
-    "forwardAsset(address)"(
+    "dataExchange()"(overrides?: CallOverrides): Promise<string>;
+
+    feedCapturedValueToL1(overrides?: CallOverrides): Promise<void>;
+
+    "feedCapturedValueToL1()"(overrides?: CallOverrides): Promise<void>;
+
+    forwardAsset(
       token: string,
+      amountIn: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "forwardAsset(address,uint256)"(
+      token: string,
+      amountIn: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -632,12 +728,14 @@ export class ValueCapture extends Contract {
 
     initialize(
       authenticator_: string,
+      dataExchange_: string,
       vault_: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initialize(address,address)"(
+    "initialize(address,address,address)"(
       authenticator_: string,
+      dataExchange_: string,
       vault_: string,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -721,6 +819,10 @@ export class ValueCapture extends Contract {
 
     "SYSTEM_DECIMALS()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    TOTAL_CAPTURED_USD_KEY(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "TOTAL_CAPTURED_USD_KEY()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     VALUE_CAPTURE_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
     "VALUE_CAPTURE_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -748,10 +850,23 @@ export class ValueCapture extends Contract {
 
     "authenticator()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    forwardAsset(token: string, overrides?: Overrides): Promise<BigNumber>;
+    dataExchange(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "forwardAsset(address)"(
+    "dataExchange()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    feedCapturedValueToL1(overrides?: Overrides): Promise<BigNumber>;
+
+    "feedCapturedValueToL1()"(overrides?: Overrides): Promise<BigNumber>;
+
+    forwardAsset(
       token: string,
+      amountIn: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "forwardAsset(address,uint256)"(
+      token: string,
+      amountIn: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -788,12 +903,14 @@ export class ValueCapture extends Contract {
 
     initialize(
       authenticator_: string,
+      dataExchange_: string,
       vault_: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "initialize(address,address)"(
+    "initialize(address,address,address)"(
       authenticator_: string,
+      dataExchange_: string,
       vault_: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -849,6 +966,14 @@ export class ValueCapture extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    TOTAL_CAPTURED_USD_KEY(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "TOTAL_CAPTURED_USD_KEY()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     VALUE_CAPTURE_ADMIN_ROLE(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -883,13 +1008,25 @@ export class ValueCapture extends Contract {
 
     "authenticator()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    forwardAsset(
-      token: string,
+    dataExchange(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "dataExchange()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    feedCapturedValueToL1(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "feedCapturedValueToL1()"(
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "forwardAsset(address)"(
+    forwardAsset(
       token: string,
+      amountIn: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "forwardAsset(address,uint256)"(
+      token: string,
+      amountIn: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -929,12 +1066,14 @@ export class ValueCapture extends Contract {
 
     initialize(
       authenticator_: string,
+      dataExchange_: string,
       vault_: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "initialize(address,address)"(
+    "initialize(address,address,address)"(
       authenticator_: string,
+      dataExchange_: string,
       vault_: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

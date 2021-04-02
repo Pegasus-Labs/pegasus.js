@@ -22,6 +22,8 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface RewardDistributionInterface extends ethers.utils.Interface {
   functions: {
+    "REWARD_DISTRIBUTION_ADMIN_ROLE()": FunctionFragment;
+    "authenticator()": FunctionFragment;
     "baseToken()": FunctionFragment;
     "beforeBurningToken(address,uint256,uint256)": FunctionFragment;
     "beforeMintingToken(address,uint256,uint256)": FunctionFragment;
@@ -39,9 +41,17 @@ interface RewardDistributionInterface extends ethers.utils.Interface {
     "rewardPerToken(address)": FunctionFragment;
     "setRewardRate(address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "xMCB()": FunctionFragment;
+    "xmcb()": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "REWARD_DISTRIBUTION_ADMIN_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "authenticator",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "baseToken", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "beforeBurningToken",
@@ -98,8 +108,16 @@ interface RewardDistributionInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "xMCB", values?: undefined): string;
+  encodeFunctionData(functionFragment: "xmcb", values?: undefined): string;
 
+  decodeFunctionResult(
+    functionFragment: "REWARD_DISTRIBUTION_ADMIN_ROLE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "authenticator",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "baseToken", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "beforeBurningToken",
@@ -153,7 +171,7 @@ interface RewardDistributionInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "xMCB", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "xmcb", data: BytesLike): Result;
 
   events: {
     "OwnershipTransferred(address,address)": EventFragment;
@@ -184,6 +202,30 @@ export class RewardDistribution extends Contract {
   interface: RewardDistributionInterface;
 
   functions: {
+    REWARD_DISTRIBUTION_ADMIN_ROLE(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "REWARD_DISTRIBUTION_ADMIN_ROLE()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    authenticator(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "authenticator()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
     baseToken(
       overrides?: CallOverrides
     ): Promise<{
@@ -386,18 +428,28 @@ export class RewardDistribution extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    xMCB(
+    xmcb(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    "xMCB()"(
+    "xmcb()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
   };
+
+  REWARD_DISTRIBUTION_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  "REWARD_DISTRIBUTION_ADMIN_ROLE()"(
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  authenticator(overrides?: CallOverrides): Promise<string>;
+
+  "authenticator()"(overrides?: CallOverrides): Promise<string>;
 
   baseToken(overrides?: CallOverrides): Promise<string>;
 
@@ -552,11 +604,21 @@ export class RewardDistribution extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  xMCB(overrides?: CallOverrides): Promise<string>;
+  xmcb(overrides?: CallOverrides): Promise<string>;
 
-  "xMCB()"(overrides?: CallOverrides): Promise<string>;
+  "xmcb()"(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
+    REWARD_DISTRIBUTION_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    "REWARD_DISTRIBUTION_ADMIN_ROLE()"(
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    authenticator(overrides?: CallOverrides): Promise<string>;
+
+    "authenticator()"(overrides?: CallOverrides): Promise<string>;
+
     baseToken(overrides?: CallOverrides): Promise<string>;
 
     "baseToken()"(overrides?: CallOverrides): Promise<string>;
@@ -713,9 +775,9 @@ export class RewardDistribution extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    xMCB(overrides?: CallOverrides): Promise<string>;
+    xmcb(overrides?: CallOverrides): Promise<string>;
 
-    "xMCB()"(overrides?: CallOverrides): Promise<string>;
+    "xmcb()"(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -738,6 +800,18 @@ export class RewardDistribution extends Contract {
   };
 
   estimateGas: {
+    REWARD_DISTRIBUTION_ADMIN_ROLE(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "REWARD_DISTRIBUTION_ADMIN_ROLE()"(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    authenticator(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "authenticator()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     baseToken(overrides?: CallOverrides): Promise<BigNumber>;
 
     "baseToken()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -885,12 +959,24 @@ export class RewardDistribution extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    xMCB(overrides?: CallOverrides): Promise<BigNumber>;
+    xmcb(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "xMCB()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "xmcb()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    REWARD_DISTRIBUTION_ADMIN_ROLE(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "REWARD_DISTRIBUTION_ADMIN_ROLE()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    authenticator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "authenticator()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     baseToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "baseToken()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1049,8 +1135,8 @@ export class RewardDistribution extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    xMCB(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    xmcb(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "xMCB()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "xmcb()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

@@ -41,6 +41,7 @@ interface XmcbInterface extends ethers.utils.Interface {
     "getDelegate(address)": FunctionFragment;
     "getPriorVotes(address,uint256)": FunctionFragment;
     "initialize(address,address,uint256)": FunctionFragment;
+    "isComponent(address)": FunctionFragment;
     "listComponents(uint256,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
@@ -126,6 +127,7 @@ interface XmcbInterface extends ethers.utils.Interface {
     functionFragment: "initialize",
     values: [string, string, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "isComponent", values: [string]): string;
   encodeFunctionData(
     functionFragment: "listComponents",
     values: [BigNumberish, BigNumberish]
@@ -227,6 +229,10 @@ interface XmcbInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "isComponent",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "listComponents",
     data: BytesLike
@@ -568,6 +574,20 @@ export class Xmcb extends Contract {
       withdrawalPenaltyRate_: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    isComponent(
+      component: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "isComponent(address)"(
+      component: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
 
     listComponents(
       begin: BigNumberish,
@@ -943,6 +963,13 @@ export class Xmcb extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  isComponent(component: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "isComponent(address)"(
+    component: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   listComponents(
     begin: BigNumberish,
     end: BigNumberish,
@@ -1224,6 +1251,13 @@ export class Xmcb extends Contract {
       withdrawalPenaltyRate_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    isComponent(component: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "isComponent(address)"(
+      component: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     listComponents(
       begin: BigNumberish,
@@ -1536,6 +1570,16 @@ export class Xmcb extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    isComponent(
+      component: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "isComponent(address)"(
+      component: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     listComponents(
       begin: BigNumberish,
       end: BigNumberish,
@@ -1835,6 +1879,16 @@ export class Xmcb extends Contract {
       rawToken_: string,
       withdrawalPenaltyRate_: BigNumberish,
       overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    isComponent(
+      component: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isComponent(address)"(
+      component: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     listComponents(

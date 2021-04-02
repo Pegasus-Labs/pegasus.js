@@ -182,14 +182,14 @@ export class Vault extends Contract {
 
     transferERC20(
       token: string,
-      to: string,
+      recipient: string,
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "transferERC20(address,address,uint256)"(
       token: string,
-      to: string,
+      recipient: string,
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -197,25 +197,25 @@ export class Vault extends Contract {
     transferERC721(
       token: string,
       tokenID: BigNumberish,
-      to: string,
+      recipient: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "transferERC721(address,uint256,address)"(
       token: string,
       tokenID: BigNumberish,
-      to: string,
+      recipient: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     transferETH(
-      to: string,
+      recipient: string,
       value: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "transferETH(address,uint256)"(
-      to: string,
+      recipient: string,
       value: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -271,14 +271,14 @@ export class Vault extends Contract {
 
   transferERC20(
     token: string,
-    to: string,
+    recipient: string,
     amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "transferERC20(address,address,uint256)"(
     token: string,
-    to: string,
+    recipient: string,
     amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -286,25 +286,25 @@ export class Vault extends Contract {
   transferERC721(
     token: string,
     tokenID: BigNumberish,
-    to: string,
+    recipient: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "transferERC721(address,uint256,address)"(
     token: string,
     tokenID: BigNumberish,
-    to: string,
+    recipient: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   transferETH(
-    to: string,
+    recipient: string,
     value: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "transferETH(address,uint256)"(
-    to: string,
+    recipient: string,
     value: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -360,14 +360,14 @@ export class Vault extends Contract {
 
     transferERC20(
       token: string,
-      to: string,
+      recipient: string,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     "transferERC20(address,address,uint256)"(
       token: string,
-      to: string,
+      recipient: string,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -375,25 +375,25 @@ export class Vault extends Contract {
     transferERC721(
       token: string,
       tokenID: BigNumberish,
-      to: string,
+      recipient: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     "transferERC721(address,uint256,address)"(
       token: string,
       tokenID: BigNumberish,
-      to: string,
+      recipient: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     transferETH(
-      to: string,
+      recipient: string,
       value: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     "transferETH(address,uint256)"(
-      to: string,
+      recipient: string,
       value: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -468,14 +468,14 @@ export class Vault extends Contract {
 
     transferERC20(
       token: string,
-      to: string,
+      recipient: string,
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "transferERC20(address,address,uint256)"(
       token: string,
-      to: string,
+      recipient: string,
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -483,25 +483,25 @@ export class Vault extends Contract {
     transferERC721(
       token: string,
       tokenID: BigNumberish,
-      to: string,
+      recipient: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "transferERC721(address,uint256,address)"(
       token: string,
       tokenID: BigNumberish,
-      to: string,
+      recipient: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     transferETH(
-      to: string,
+      recipient: string,
       value: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "transferETH(address,uint256)"(
-      to: string,
+      recipient: string,
       value: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -560,14 +560,14 @@ export class Vault extends Contract {
 
     transferERC20(
       token: string,
-      to: string,
+      recipient: string,
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "transferERC20(address,address,uint256)"(
       token: string,
-      to: string,
+      recipient: string,
       amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
@@ -575,25 +575,25 @@ export class Vault extends Contract {
     transferERC721(
       token: string,
       tokenID: BigNumberish,
-      to: string,
+      recipient: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "transferERC721(address,uint256,address)"(
       token: string,
       tokenID: BigNumberish,
-      to: string,
+      recipient: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     transferETH(
-      to: string,
+      recipient: string,
       value: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "transferETH(address,uint256)"(
-      to: string,
+      recipient: string,
       value: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

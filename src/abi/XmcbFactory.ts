@@ -561,6 +561,25 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "component",
+        type: "address",
+      },
+    ],
+    name: "isComponent",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "begin",
         type: "uint256",

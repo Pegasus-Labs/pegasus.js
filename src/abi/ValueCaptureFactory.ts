@@ -184,6 +184,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "TOTAL_CAPTURED_USD_KEY",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "VALUE_CAPTURE_ADMIN_ROLE",
     outputs: [
       {
@@ -261,11 +274,36 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "dataExchange",
+    outputs: [
+      {
+        internalType: "contract IDataExchange",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "feedCapturedValueToL1",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
         name: "token",
         type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amountIn",
+        type: "uint256",
       },
     ],
     name: "forwardAsset",
@@ -327,6 +365,11 @@ const _abi = [
       {
         internalType: "address",
         name: "authenticator_",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "dataExchange_",
         type: "address",
       },
       {

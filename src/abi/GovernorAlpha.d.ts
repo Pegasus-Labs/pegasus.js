@@ -24,8 +24,9 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface GovernorAlphaInterface extends ethers.utils.Interface {
   functions: {
     "BALLOT_TYPEHASH()": FunctionFragment;
+    "DATA_EXCHANGE_ADDRESS()": FunctionFragment;
     "DOMAIN_TYPEHASH()": FunctionFragment;
-    "MCB_TOKEN_ADDRESS()": FunctionFragment;
+    "MCB_TOTAL_SUPPLY()": FunctionFragment;
     "__abdicate()": FunctionFragment;
     "__acceptAdmin()": FunctionFragment;
     "__executeSetTimelockPendingAdmin(address,uint256)": FunctionFragment;
@@ -58,11 +59,15 @@ interface GovernorAlphaInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "DATA_EXCHANGE_ADDRESS",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "DOMAIN_TYPEHASH",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "MCB_TOKEN_ADDRESS",
+    functionFragment: "MCB_TOTAL_SUPPLY",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -153,11 +158,15 @@ interface GovernorAlphaInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "DATA_EXCHANGE_ADDRESS",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "DOMAIN_TYPEHASH",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "MCB_TOKEN_ADDRESS",
+    functionFragment: "MCB_TOTAL_SUPPLY",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "__abdicate", data: BytesLike): Result;
@@ -260,6 +269,18 @@ export class GovernorAlpha extends Contract {
       0: string;
     }>;
 
+    DATA_EXCHANGE_ADDRESS(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "DATA_EXCHANGE_ADDRESS()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
     DOMAIN_TYPEHASH(
       overrides?: CallOverrides
     ): Promise<{
@@ -272,13 +293,13 @@ export class GovernorAlpha extends Contract {
       0: string;
     }>;
 
-    MCB_TOKEN_ADDRESS(
+    MCB_TOTAL_SUPPLY(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    "MCB_TOKEN_ADDRESS()"(
+    "MCB_TOTAL_SUPPLY()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -657,13 +678,17 @@ export class GovernorAlpha extends Contract {
 
   "BALLOT_TYPEHASH()"(overrides?: CallOverrides): Promise<string>;
 
+  DATA_EXCHANGE_ADDRESS(overrides?: CallOverrides): Promise<string>;
+
+  "DATA_EXCHANGE_ADDRESS()"(overrides?: CallOverrides): Promise<string>;
+
   DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<string>;
 
   "DOMAIN_TYPEHASH()"(overrides?: CallOverrides): Promise<string>;
 
-  MCB_TOKEN_ADDRESS(overrides?: CallOverrides): Promise<string>;
+  MCB_TOTAL_SUPPLY(overrides?: CallOverrides): Promise<string>;
 
-  "MCB_TOKEN_ADDRESS()"(overrides?: CallOverrides): Promise<string>;
+  "MCB_TOTAL_SUPPLY()"(overrides?: CallOverrides): Promise<string>;
 
   __abdicate(overrides?: Overrides): Promise<ContractTransaction>;
 
@@ -943,13 +968,17 @@ export class GovernorAlpha extends Contract {
 
     "BALLOT_TYPEHASH()"(overrides?: CallOverrides): Promise<string>;
 
+    DATA_EXCHANGE_ADDRESS(overrides?: CallOverrides): Promise<string>;
+
+    "DATA_EXCHANGE_ADDRESS()"(overrides?: CallOverrides): Promise<string>;
+
     DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<string>;
 
     "DOMAIN_TYPEHASH()"(overrides?: CallOverrides): Promise<string>;
 
-    MCB_TOKEN_ADDRESS(overrides?: CallOverrides): Promise<string>;
+    MCB_TOTAL_SUPPLY(overrides?: CallOverrides): Promise<string>;
 
-    "MCB_TOKEN_ADDRESS()"(overrides?: CallOverrides): Promise<string>;
+    "MCB_TOTAL_SUPPLY()"(overrides?: CallOverrides): Promise<string>;
 
     __abdicate(overrides?: CallOverrides): Promise<void>;
 
@@ -1249,13 +1278,17 @@ export class GovernorAlpha extends Contract {
 
     "BALLOT_TYPEHASH()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    DATA_EXCHANGE_ADDRESS(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "DATA_EXCHANGE_ADDRESS()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
 
     "DOMAIN_TYPEHASH()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    MCB_TOKEN_ADDRESS(overrides?: CallOverrides): Promise<BigNumber>;
+    MCB_TOTAL_SUPPLY(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "MCB_TOKEN_ADDRESS()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "MCB_TOTAL_SUPPLY()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     __abdicate(overrides?: Overrides): Promise<BigNumber>;
 
@@ -1461,15 +1494,23 @@ export class GovernorAlpha extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    DATA_EXCHANGE_ADDRESS(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "DATA_EXCHANGE_ADDRESS()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "DOMAIN_TYPEHASH()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    MCB_TOKEN_ADDRESS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    MCB_TOTAL_SUPPLY(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "MCB_TOKEN_ADDRESS()"(
+    "MCB_TOTAL_SUPPLY()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
