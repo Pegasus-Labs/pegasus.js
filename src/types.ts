@@ -69,7 +69,8 @@ export interface LiquidityPoolStorage {
   isSynced: boolean // rue if the funding state is synced to real-time data. False if error happens (oracle error, zero price etc.). In this case, trading, withdraw (if position != 0), addLiquidity, removeLiquidity will fail
   isRunning: boolean // True if the liquidity pool is running
   isFastCreationEnabled: boolean // True if the operator of the liquidity pool is allowed to create new perpetual when the liquidity pool is running
-  
+  insuranceFundCap: BigNumber
+
   creator: string
   operator: string
   transferringOperator: string
@@ -77,13 +78,14 @@ export interface LiquidityPoolStorage {
   shareToken: string
   collateral: string
   vault: string
-
   vaultFeeRate: BigNumber
-  poolCashBalance: BigNumber
-  
   collateralDecimals: number
+
+  poolCashBalance: BigNumber
   fundingTime: number
   operatorExpiration: number
+  insuranceFund: BigNumber
+  donatedInsuranceFund: BigNumber
 
   perpetuals: Map<number, PerpetualStorage>
 }
@@ -106,9 +108,6 @@ export interface PerpetualStorage {
   liquidationPenaltyRate: BigNumber
   keeperGasReward: BigNumber
   insuranceFundRate: BigNumber
-  insuranceFundCap: BigNumber
-  insuranceFund: BigNumber
-  donatedInsuranceFund: BigNumber
   openInterest: BigNumber
   maxOpenInterestRate: BigNumber // openInterest <= poolMargin * maxOpenInterestRate / indexPrice
 

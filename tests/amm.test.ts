@@ -24,6 +24,8 @@ const defaultPool: LiquidityPoolStorage = {
   isSynced: true,
   isRunning: true,
   isFastCreationEnabled: false,
+  insuranceFundCap: new BigNumber(10000),
+
   collateralDecimals: 18,
   creator: '0x0',
   transferringOperator: '0x0',
@@ -37,6 +39,8 @@ const defaultPool: LiquidityPoolStorage = {
   poolCashBalance: _0, // set me later
   fundingTime: 1579601290,
   operatorExpiration: 1579601290,
+  insuranceFund: _0,
+  donatedInsuranceFund: _0,
 
   perpetuals: new Map() // set me later
 }
@@ -62,9 +66,6 @@ const perpetual1: PerpetualStorage = {
   liquidationPenaltyRate: new BigNumber(0.005),
   keeperGasReward: new BigNumber(2),
   insuranceFundRate: new BigNumber(0.0001),
-  insuranceFundCap: new BigNumber(10000),
-  insuranceFund: _0,
-  donatedInsuranceFund: _0,
   openInterest: new BigNumber('10'),
   maxOpenInterestRate: new BigNumber('100'),
 

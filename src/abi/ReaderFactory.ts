@@ -184,18 +184,13 @@ const _abi = [
             type: "address[7]",
           },
           {
-            internalType: "int256",
-            name: "vaultFeeRate",
-            type: "int256",
-          },
-          {
-            internalType: "int256",
-            name: "poolCash",
-            type: "int256",
+            internalType: "int256[5]",
+            name: "intNums",
+            type: "int256[5]",
           },
           {
             internalType: "uint256[4]",
-            name: "nums",
+            name: "uintNums",
             type: "uint256[4]",
           },
           {
@@ -211,9 +206,9 @@ const _abi = [
                 type: "address",
               },
               {
-                internalType: "int256[39]",
+                internalType: "int256[36]",
                 name: "nums",
-                type: "int256[39]",
+                type: "int256[36]",
               },
               {
                 internalType: "uint256",
@@ -278,6 +273,84 @@ const _abi = [
         internalType: "bool",
         name: "isSafe",
         type: "bool",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "liquidityPool",
+        type: "address",
+      },
+      {
+        internalType: "int256",
+        name: "cashToAdd",
+        type: "int256",
+      },
+      {
+        internalType: "int256",
+        name: "shareToMint",
+        type: "int256",
+      },
+    ],
+    name: "queryAddLiquidity",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "isSynced",
+        type: "bool",
+      },
+      {
+        internalType: "int256",
+        name: "cashToAddResult",
+        type: "int256",
+      },
+      {
+        internalType: "int256",
+        name: "shareToMintResult",
+        type: "int256",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "liquidityPool",
+        type: "address",
+      },
+      {
+        internalType: "int256",
+        name: "shareToRemove",
+        type: "int256",
+      },
+      {
+        internalType: "int256",
+        name: "cashToReturn",
+        type: "int256",
+      },
+    ],
+    name: "queryRemoveLiquidity",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "isSynced",
+        type: "bool",
+      },
+      {
+        internalType: "int256",
+        name: "shareToRemoveResult",
+        type: "int256",
+      },
+      {
+        internalType: "int256",
+        name: "cashToReturnResult",
+        type: "int256",
       },
     ],
     stateMutability: "nonpayable",

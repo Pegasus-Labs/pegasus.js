@@ -26,6 +26,8 @@ interface ReaderInterface extends ethers.utils.Interface {
     "getAccountsInfo(address,uint256,uint256,uint256)": FunctionFragment;
     "getLiquidityPoolStorage(address)": FunctionFragment;
     "getPoolMargin(address)": FunctionFragment;
+    "queryAddLiquidity(address,int256,int256)": FunctionFragment;
+    "queryRemoveLiquidity(address,int256,int256)": FunctionFragment;
     "queryTradeWithAMM(address,uint256,int256)": FunctionFragment;
   };
 
@@ -46,6 +48,14 @@ interface ReaderInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
+    functionFragment: "queryAddLiquidity",
+    values: [string, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "queryRemoveLiquidity",
+    values: [string, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "queryTradeWithAMM",
     values: [string, BigNumberish, BigNumberish]
   ): string;
@@ -64,6 +74,14 @@ interface ReaderInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getPoolMargin",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "queryAddLiquidity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "queryRemoveLiquidity",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -138,6 +156,34 @@ export class Reader extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    queryAddLiquidity(
+      liquidityPool: string,
+      cashToAdd: BigNumberish,
+      shareToMint: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "queryAddLiquidity(address,int256,int256)"(
+      liquidityPool: string,
+      cashToAdd: BigNumberish,
+      shareToMint: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    queryRemoveLiquidity(
+      liquidityPool: string,
+      shareToRemove: BigNumberish,
+      cashToReturn: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "queryRemoveLiquidity(address,int256,int256)"(
+      liquidityPool: string,
+      shareToRemove: BigNumberish,
+      cashToReturn: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     queryTradeWithAMM(
       liquidityPool: string,
       perpetualIndex: BigNumberish,
@@ -200,6 +246,34 @@ export class Reader extends Contract {
 
   "getPoolMargin(address)"(
     liquidityPool: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  queryAddLiquidity(
+    liquidityPool: string,
+    cashToAdd: BigNumberish,
+    shareToMint: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "queryAddLiquidity(address,int256,int256)"(
+    liquidityPool: string,
+    cashToAdd: BigNumberish,
+    shareToMint: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  queryRemoveLiquidity(
+    liquidityPool: string,
+    shareToRemove: BigNumberish,
+    cashToReturn: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "queryRemoveLiquidity(address,int256,int256)"(
+    liquidityPool: string,
+    shareToRemove: BigNumberish,
+    cashToReturn: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -381,16 +455,12 @@ export class Reader extends Contract {
         isRunning: boolean;
         isFastCreationEnabled: boolean;
         addresses: [string, string, string, string, string, string, string];
-        vaultFeeRate: BigNumber;
-        poolCash: BigNumber;
-        nums: [BigNumber, BigNumber, BigNumber, BigNumber];
+        intNums: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
+        uintNums: [BigNumber, BigNumber, BigNumber, BigNumber];
         perpetuals: {
           state: number;
           oracle: string;
           nums: [
-            BigNumber,
-            BigNumber,
-            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -436,9 +506,6 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
-            BigNumber,
-            BigNumber,
-            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -485,16 +552,12 @@ export class Reader extends Contract {
         0: boolean;
         1: boolean;
         2: [string, string, string, string, string, string, string];
-        3: BigNumber;
-        4: BigNumber;
-        5: [BigNumber, BigNumber, BigNumber, BigNumber];
-        6: {
+        3: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
+        4: [BigNumber, BigNumber, BigNumber, BigNumber];
+        5: {
           state: number;
           oracle: string;
           nums: [
-            BigNumber,
-            BigNumber,
-            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -540,9 +603,6 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
-            BigNumber,
-            BigNumber,
-            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -592,16 +652,12 @@ export class Reader extends Contract {
         isRunning: boolean;
         isFastCreationEnabled: boolean;
         addresses: [string, string, string, string, string, string, string];
-        vaultFeeRate: BigNumber;
-        poolCash: BigNumber;
-        nums: [BigNumber, BigNumber, BigNumber, BigNumber];
+        intNums: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
+        uintNums: [BigNumber, BigNumber, BigNumber, BigNumber];
         perpetuals: {
           state: number;
           oracle: string;
           nums: [
-            BigNumber,
-            BigNumber,
-            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -647,9 +703,6 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
-            BigNumber,
-            BigNumber,
-            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -696,16 +749,12 @@ export class Reader extends Contract {
         0: boolean;
         1: boolean;
         2: [string, string, string, string, string, string, string];
-        3: BigNumber;
-        4: BigNumber;
-        5: [BigNumber, BigNumber, BigNumber, BigNumber];
-        6: {
+        3: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
+        4: [BigNumber, BigNumber, BigNumber, BigNumber];
+        5: {
           state: number;
           oracle: string;
           nums: [
-            BigNumber,
-            BigNumber,
-            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -751,9 +800,6 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
-            BigNumber,
-            BigNumber,
-            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -809,16 +855,12 @@ export class Reader extends Contract {
         isRunning: boolean;
         isFastCreationEnabled: boolean;
         addresses: [string, string, string, string, string, string, string];
-        vaultFeeRate: BigNumber;
-        poolCash: BigNumber;
-        nums: [BigNumber, BigNumber, BigNumber, BigNumber];
+        intNums: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
+        uintNums: [BigNumber, BigNumber, BigNumber, BigNumber];
         perpetuals: {
           state: number;
           oracle: string;
           nums: [
-            BigNumber,
-            BigNumber,
-            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -864,9 +906,6 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
-            BigNumber,
-            BigNumber,
-            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -913,16 +952,12 @@ export class Reader extends Contract {
         0: boolean;
         1: boolean;
         2: [string, string, string, string, string, string, string];
-        3: BigNumber;
-        4: BigNumber;
-        5: [BigNumber, BigNumber, BigNumber, BigNumber];
-        6: {
+        3: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
+        4: [BigNumber, BigNumber, BigNumber, BigNumber];
+        5: {
           state: number;
           oracle: string;
           nums: [
-            BigNumber,
-            BigNumber,
-            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -968,9 +1003,6 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
-            BigNumber,
-            BigNumber,
-            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -1020,16 +1052,12 @@ export class Reader extends Contract {
         isRunning: boolean;
         isFastCreationEnabled: boolean;
         addresses: [string, string, string, string, string, string, string];
-        vaultFeeRate: BigNumber;
-        poolCash: BigNumber;
-        nums: [BigNumber, BigNumber, BigNumber, BigNumber];
+        intNums: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
+        uintNums: [BigNumber, BigNumber, BigNumber, BigNumber];
         perpetuals: {
           state: number;
           oracle: string;
           nums: [
-            BigNumber,
-            BigNumber,
-            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -1075,9 +1103,6 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
-            BigNumber,
-            BigNumber,
-            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -1124,16 +1149,12 @@ export class Reader extends Contract {
         0: boolean;
         1: boolean;
         2: [string, string, string, string, string, string, string];
-        3: BigNumber;
-        4: BigNumber;
-        5: [BigNumber, BigNumber, BigNumber, BigNumber];
-        6: {
+        3: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
+        4: [BigNumber, BigNumber, BigNumber, BigNumber];
+        5: {
           state: number;
           oracle: string;
           nums: [
-            BigNumber,
-            BigNumber,
-            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -1179,9 +1200,6 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
-            BigNumber,
-            BigNumber,
-            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -1250,6 +1268,62 @@ export class Reader extends Contract {
       0: boolean;
       1: BigNumber;
       2: boolean;
+    }>;
+
+    queryAddLiquidity(
+      liquidityPool: string,
+      cashToAdd: BigNumberish,
+      shareToMint: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      isSynced: boolean;
+      cashToAddResult: BigNumber;
+      shareToMintResult: BigNumber;
+      0: boolean;
+      1: BigNumber;
+      2: BigNumber;
+    }>;
+
+    "queryAddLiquidity(address,int256,int256)"(
+      liquidityPool: string,
+      cashToAdd: BigNumberish,
+      shareToMint: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      isSynced: boolean;
+      cashToAddResult: BigNumber;
+      shareToMintResult: BigNumber;
+      0: boolean;
+      1: BigNumber;
+      2: BigNumber;
+    }>;
+
+    queryRemoveLiquidity(
+      liquidityPool: string,
+      shareToRemove: BigNumberish,
+      cashToReturn: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      isSynced: boolean;
+      shareToRemoveResult: BigNumber;
+      cashToReturnResult: BigNumber;
+      0: boolean;
+      1: BigNumber;
+      2: BigNumber;
+    }>;
+
+    "queryRemoveLiquidity(address,int256,int256)"(
+      liquidityPool: string,
+      shareToRemove: BigNumberish,
+      cashToReturn: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      isSynced: boolean;
+      shareToRemoveResult: BigNumber;
+      cashToReturnResult: BigNumber;
+      0: boolean;
+      1: BigNumber;
+      2: BigNumber;
     }>;
 
     queryTradeWithAMM(
@@ -1334,6 +1408,34 @@ export class Reader extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    queryAddLiquidity(
+      liquidityPool: string,
+      cashToAdd: BigNumberish,
+      shareToMint: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "queryAddLiquidity(address,int256,int256)"(
+      liquidityPool: string,
+      cashToAdd: BigNumberish,
+      shareToMint: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    queryRemoveLiquidity(
+      liquidityPool: string,
+      shareToRemove: BigNumberish,
+      cashToReturn: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "queryRemoveLiquidity(address,int256,int256)"(
+      liquidityPool: string,
+      shareToRemove: BigNumberish,
+      cashToReturn: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     queryTradeWithAMM(
       liquidityPool: string,
       perpetualIndex: BigNumberish,
@@ -1397,6 +1499,34 @@ export class Reader extends Contract {
 
     "getPoolMargin(address)"(
       liquidityPool: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    queryAddLiquidity(
+      liquidityPool: string,
+      cashToAdd: BigNumberish,
+      shareToMint: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "queryAddLiquidity(address,int256,int256)"(
+      liquidityPool: string,
+      cashToAdd: BigNumberish,
+      shareToMint: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    queryRemoveLiquidity(
+      liquidityPool: string,
+      shareToRemove: BigNumberish,
+      cashToReturn: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "queryRemoveLiquidity(address,int256,int256)"(
+      liquidityPool: string,
+      shareToRemove: BigNumberish,
+      cashToReturn: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

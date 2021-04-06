@@ -178,12 +178,6 @@ const _abi = [
     inputs: [
       {
         indexed: false,
-        internalType: "uint256",
-        name: "perpetualIndex",
-        type: "uint256",
-      },
-      {
-        indexed: false,
         internalType: "int256",
         name: "amount",
         type: "int256",
@@ -384,15 +378,9 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: "bytes32",
-        name: "key",
-        type: "bytes32",
-      },
-      {
-        indexed: false,
-        internalType: "int256",
-        name: "value",
-        type: "int256",
+        internalType: "int256[9]",
+        name: "baseParams",
+        type: "int256[9]",
       },
     ],
     name: "SetPerpetualBaseParameter",
@@ -409,27 +397,21 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: "bytes32",
-        name: "key",
-        type: "bytes32",
+        internalType: "int256[7]",
+        name: "riskParams",
+        type: "int256[7]",
       },
       {
         indexed: false,
-        internalType: "int256",
-        name: "value",
-        type: "int256",
+        internalType: "int256[7]",
+        name: "minRiskParamValues",
+        type: "int256[7]",
       },
       {
         indexed: false,
-        internalType: "int256",
-        name: "minValue",
-        type: "int256",
-      },
-      {
-        indexed: false,
-        internalType: "int256",
-        name: "maxValue",
-        type: "int256",
+        internalType: "int256[7]",
+        name: "maxRiskParamValues",
+        type: "int256[7]",
       },
     ],
     name: "SetPerpetualRiskParameter",
@@ -546,15 +528,9 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: "bytes32",
-        name: "key",
-        type: "bytes32",
-      },
-      {
-        indexed: false,
-        internalType: "int256",
-        name: "value",
-        type: "int256",
+        internalType: "int256[7]",
+        name: "riskParams",
+        type: "int256[7]",
       },
     ],
     name: "UpdatePerpetualRiskParameter",
@@ -620,12 +596,6 @@ const _abi = [
   {
     anonymous: false,
     inputs: [
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "perpetualIndex",
-        type: "uint256",
-      },
       {
         indexed: false,
         internalType: "int256",
@@ -708,9 +678,9 @@ const _abi = [
         type: "address",
       },
       {
-        internalType: "int256[10]",
+        internalType: "int256[9]",
         name: "baseParams",
-        type: "int256[10]",
+        type: "int256[9]",
       },
       {
         internalType: "int256[7]",
@@ -758,11 +728,6 @@ const _abi = [
   },
   {
     inputs: [
-      {
-        internalType: "uint256",
-        name: "perpetualIndex",
-        type: "uint256",
-      },
       {
         internalType: "int256",
         name: "amount",
@@ -875,18 +840,13 @@ const _abi = [
         type: "address[7]",
       },
       {
-        internalType: "int256",
-        name: "vaultFeeRate",
-        type: "int256",
-      },
-      {
-        internalType: "int256",
-        name: "poolCash",
-        type: "int256",
+        internalType: "int256[5]",
+        name: "intNums",
+        type: "int256[5]",
       },
       {
         internalType: "uint256[4]",
-        name: "nums",
+        name: "uintNums",
         type: "uint256[4]",
       },
     ],
@@ -920,7 +880,7 @@ const _abi = [
       },
       {
         internalType: "int256",
-        name: "availableCash",
+        name: "availableMargin",
         type: "int256",
       },
       {
@@ -973,9 +933,9 @@ const _abi = [
         type: "address",
       },
       {
-        internalType: "int256[39]",
+        internalType: "int256[36]",
         name: "nums",
-        type: "int256[39]",
+        type: "int256[36]",
       },
     ],
     stateMutability: "view",
@@ -1030,6 +990,11 @@ const _abi = [
         internalType: "bool",
         name: "isFastCreationEnabled",
         type: "bool",
+      },
+      {
+        internalType: "int256",
+        name: "insuranceFundCap",
+        type: "int256",
       },
     ],
     name: "initialize",
@@ -1132,6 +1097,64 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "int256",
+        name: "cashToAdd",
+        type: "int256",
+      },
+      {
+        internalType: "int256",
+        name: "shareToMint",
+        type: "int256",
+      },
+    ],
+    name: "queryAddLiquidity",
+    outputs: [
+      {
+        internalType: "int256",
+        name: "cashToAddResult",
+        type: "int256",
+      },
+      {
+        internalType: "int256",
+        name: "shareToMintResult",
+        type: "int256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "int256",
+        name: "shareToRemove",
+        type: "int256",
+      },
+      {
+        internalType: "int256",
+        name: "cashToReturn",
+        type: "int256",
+      },
+    ],
+    name: "queryRemoveLiquidity",
+    outputs: [
+      {
+        internalType: "int256",
+        name: "shareToRemoveResult",
+        type: "int256",
+      },
+      {
+        internalType: "int256",
+        name: "cashToReturnResult",
+        type: "int256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "perpetualIndex",
         type: "uint256",
@@ -1163,6 +1186,11 @@ const _abi = [
       {
         internalType: "int256",
         name: "shareToRemove",
+        type: "int256",
+      },
+      {
+        internalType: "int256",
+        name: "cashToReturn",
         type: "int256",
       },
     ],
@@ -1201,9 +1229,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "int256[1]",
+        internalType: "int256[2]",
         name: "params",
-        type: "int256[1]",
+        type: "int256[2]",
       },
     ],
     name: "setLiquidityPoolParameter",
@@ -1237,9 +1265,9 @@ const _abi = [
         type: "uint256",
       },
       {
-        internalType: "int256[10]",
+        internalType: "int256[9]",
         name: "baseParams",
-        type: "int256[10]",
+        type: "int256[9]",
       },
     ],
     name: "setPerpetualBaseParameter",

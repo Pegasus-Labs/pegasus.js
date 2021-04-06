@@ -139,11 +139,14 @@ export async function getLiquidityPool(reader: Reader, liquidityPoolAddress: str
     shareToken: pool.addresses[4],
     collateral: pool.addresses[5],
     vault: pool.addresses[6],
-    vaultFeeRate: normalizeBigNumberish(pool.vaultFeeRate).shiftedBy(-DECIMALS),
-    poolCashBalance: normalizeBigNumberish(pool.poolCash).shiftedBy(-DECIMALS),
-    collateralDecimals: pool.nums[0].toNumber(),
-    fundingTime: pool.nums[2].toNumber(),
-    operatorExpiration: pool.nums[3].toNumber(),
+    vaultFeeRate: normalizeBigNumberish(pool.intNums[0]).shiftedBy(-DECIMALS),
+    poolCashBalance: normalizeBigNumberish(pool.intNums[1]).shiftedBy(-DECIMALS),
+    insuranceFundCap: normalizeBigNumberish(pool.intNums[2]).shiftedBy(-DECIMALS),
+    insuranceFund: normalizeBigNumberish(pool.intNums[3]).shiftedBy(-DECIMALS),
+    donatedInsuranceFund: normalizeBigNumberish(pool.intNums[4]).shiftedBy(-DECIMALS),
+    collateralDecimals: pool.uintNums[0].toNumber(),
+    fundingTime: pool.uintNums[2].toNumber(),
+    operatorExpiration: pool.uintNums[3].toNumber(),
     perpetuals: new Map()
   }
   pool.perpetuals.forEach((m, i) => {
@@ -171,46 +174,43 @@ export async function getLiquidityPool(reader: Reader, liquidityPoolAddress: str
       liquidationPenaltyRate: parsePerpNums(10),
       keeperGasReward: parsePerpNums(11),
       insuranceFundRate: parsePerpNums(12),
-      insuranceFundCap: parsePerpNums(13),
-      insuranceFund: parsePerpNums(14),
-      donatedInsuranceFund: parsePerpNums(15),
-
+      
       halfSpread: {
+        value: parsePerpNums(13),
+        minValue: parsePerpNums(14),
+        maxValue: parsePerpNums(15)
+      },
+      openSlippageFactor: {
         value: parsePerpNums(16),
         minValue: parsePerpNums(17),
         maxValue: parsePerpNums(18)
       },
-      openSlippageFactor: {
+      closeSlippageFactor: {
         value: parsePerpNums(19),
         minValue: parsePerpNums(20),
         maxValue: parsePerpNums(21)
       },
-      closeSlippageFactor: {
+      fundingRateLimit: {
         value: parsePerpNums(22),
         minValue: parsePerpNums(23),
         maxValue: parsePerpNums(24)
       },
-      fundingRateLimit: {
+      ammMaxLeverage: {
         value: parsePerpNums(25),
         minValue: parsePerpNums(26),
         maxValue: parsePerpNums(27)
       },
-      ammMaxLeverage: {
+      maxClosePriceDiscount: {
         value: parsePerpNums(28),
         minValue: parsePerpNums(29),
         maxValue: parsePerpNums(30)
       },
-      maxClosePriceDiscount: {
-        value: parsePerpNums(31),
-        minValue: parsePerpNums(32),
-        maxValue: parsePerpNums(33)
-      },
-      openInterest: parsePerpNums(34),
-      maxOpenInterestRate: parsePerpNums(35),
+      openInterest: parsePerpNums(31),
+      maxOpenInterestRate: parsePerpNums(32),
       fundingRateFactor: {
-        value: parsePerpNums(36),
-        minValue: parsePerpNums(37),
-        maxValue: parsePerpNums(38)
+        value: parsePerpNums(33),
+        minValue: parsePerpNums(34),
+        maxValue: parsePerpNums(35)
       },
       symbol: m.symbol.toNumber(),
       underlyingSymbol: m.underlyingAsset,

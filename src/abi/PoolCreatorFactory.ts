@@ -111,6 +111,12 @@ const _abi = [
         name: "isFastCreationEnabled",
         type: "bool",
       },
+      {
+        indexed: false,
+        internalType: "int256",
+        name: "insuranceFundCap",
+        type: "int256",
+      },
     ],
     name: "CreateLiquidityPool",
     type: "event",
@@ -272,6 +278,11 @@ const _abi = [
         name: "nonce",
         type: "int256",
       },
+      {
+        internalType: "int256",
+        name: "insuranceFundCap",
+        type: "int256",
+      },
     ],
     name: "createLiquidityPool",
     outputs: [
@@ -309,6 +320,11 @@ const _abi = [
       {
         internalType: "int256",
         name: "nonce",
+        type: "int256",
+      },
+      {
+        internalType: "int256",
+        name: "insuranceFundCap",
         type: "int256",
       },
     ],
