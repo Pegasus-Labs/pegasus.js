@@ -26,6 +26,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     "SIGNATURE_PERPETUAL_SETTLE()": FunctionFragment;
     "SIGNATURE_PERPETUAL_TRANSFER_OPERATOR()": FunctionFragment;
     "SIGNATURE_PERPETUAL_UPGRADE()": FunctionFragment;
+    "SIGNATURE_PERPETUAL_UPGRADE_AND_CALL()": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
@@ -39,10 +40,12 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     "execute(uint256)": FunctionFragment;
     "executionDelay()": FunctionFragment;
     "getActions(uint256)": FunctionFragment;
+    "getMinter()": FunctionFragment;
     "getProposalThreshold()": FunctionFragment;
     "getQuorumVotes(uint256)": FunctionFragment;
     "getReceipt(uint256,address)": FunctionFragment;
     "getReward()": FunctionFragment;
+    "getTarget()": FunctionFragment;
     "getUnlockBlock(address)": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
     "initialize(string,string,address,address,address,address)": FunctionFragment;
@@ -61,6 +64,8 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     "proposalThresholdRate()": FunctionFragment;
     "proposals(uint256)": FunctionFragment;
     "propose(string[],bytes[],string)": FunctionFragment;
+    "proposeToUpgrade(bytes32,string)": FunctionFragment;
+    "proposeToUpgradeAndCall(bytes32,bytes,bytes,string)": FunctionFragment;
     "quorumRate()": FunctionFragment;
     "rewardDistribution()": FunctionFragment;
     "rewardPerToken()": FunctionFragment;
@@ -90,6 +95,10 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "SIGNATURE_PERPETUAL_UPGRADE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "SIGNATURE_PERPETUAL_UPGRADE_AND_CALL",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -143,6 +152,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     functionFragment: "getActions",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "getMinter", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getProposalThreshold",
     values?: undefined
@@ -156,6 +166,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     values: [BigNumberish, string]
   ): string;
   encodeFunctionData(functionFragment: "getReward", values?: undefined): string;
+  encodeFunctionData(functionFragment: "getTarget", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getUnlockBlock",
     values: [string]
@@ -221,6 +232,14 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "propose",
     values: [string[], BytesLike[], string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "proposeToUpgrade",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "proposeToUpgradeAndCall",
+    values: [BytesLike, BytesLike, BytesLike, string]
   ): string;
   encodeFunctionData(
     functionFragment: "quorumRate",
@@ -294,6 +313,10 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     functionFragment: "SIGNATURE_PERPETUAL_UPGRADE",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "SIGNATURE_PERPETUAL_UPGRADE_AND_CALL",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
@@ -319,6 +342,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getActions", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getMinter", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getProposalThreshold",
     data: BytesLike
@@ -329,6 +353,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "getReceipt", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getReward", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getTarget", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getUnlockBlock",
     data: BytesLike
@@ -383,6 +408,14 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "proposals", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "propose", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "proposeToUpgrade",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "proposeToUpgradeAndCall",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "quorumRate", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "rewardDistribution",
@@ -437,7 +470,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ExecuteTransaction(bytes32,address,string,bytes,uint256)": EventFragment;
-    "ProposalCreated(uint256,address,string[],bytes[],uint256,uint256,uint256,string)": EventFragment;
+    "ProposalCreated(uint256,address,address,string[],bytes[],uint256,uint256,uint256,string)": EventFragment;
     "ProposalExecuted(uint256)": EventFragment;
     "RewardAdded(uint256,uint256)": EventFragment;
     "RewardPaid(address,uint256)": EventFragment;
@@ -502,6 +535,18 @@ export class LpGovernor extends Contract {
     }>;
 
     "SIGNATURE_PERPETUAL_UPGRADE()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    SIGNATURE_PERPETUAL_UPGRADE_AND_CALL(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "SIGNATURE_PERPETUAL_UPGRADE_AND_CALL()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -687,6 +732,18 @@ export class LpGovernor extends Contract {
       1: string[];
     }>;
 
+    getMinter(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "getMinter()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
     getProposalThreshold(
       overrides?: CallOverrides
     ): Promise<{
@@ -746,6 +803,18 @@ export class LpGovernor extends Contract {
     getReward(overrides?: Overrides): Promise<ContractTransaction>;
 
     "getReward()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+    getTarget(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "getTarget()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
 
     getUnlockBlock(
       account: string,
@@ -952,6 +1021,7 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       id: BigNumber;
+      target: string;
       proposer: string;
       startBlock: BigNumber;
       endBlock: BigNumber;
@@ -961,12 +1031,13 @@ export class LpGovernor extends Contract {
       executed: boolean;
       0: BigNumber;
       1: string;
-      2: BigNumber;
+      2: string;
       3: BigNumber;
       4: BigNumber;
       5: BigNumber;
       6: BigNumber;
-      7: boolean;
+      7: BigNumber;
+      8: boolean;
     }>;
 
     "proposals(uint256)"(
@@ -974,6 +1045,7 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       id: BigNumber;
+      target: string;
       proposer: string;
       startBlock: BigNumber;
       endBlock: BigNumber;
@@ -983,12 +1055,13 @@ export class LpGovernor extends Contract {
       executed: boolean;
       0: BigNumber;
       1: string;
-      2: BigNumber;
+      2: string;
       3: BigNumber;
       4: BigNumber;
       5: BigNumber;
       6: BigNumber;
-      7: boolean;
+      7: BigNumber;
+      8: boolean;
     }>;
 
     propose(
@@ -1001,6 +1074,34 @@ export class LpGovernor extends Contract {
     "propose(string[],bytes[],string)"(
       signatures: string[],
       calldatas: BytesLike[],
+      description: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    proposeToUpgrade(
+      targetVersionKey: BytesLike,
+      description: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "proposeToUpgrade(bytes32,string)"(
+      targetVersionKey: BytesLike,
+      description: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    proposeToUpgradeAndCall(
+      targetVersionKey: BytesLike,
+      dataForLiquidityPool: BytesLike,
+      dataForGovernor: BytesLike,
+      description: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "proposeToUpgradeAndCall(bytes32,bytes,bytes,string)"(
+      targetVersionKey: BytesLike,
+      dataForLiquidityPool: BytesLike,
+      dataForGovernor: BytesLike,
       description: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -1232,6 +1333,14 @@ export class LpGovernor extends Contract {
 
   "SIGNATURE_PERPETUAL_UPGRADE()"(overrides?: CallOverrides): Promise<string>;
 
+  SIGNATURE_PERPETUAL_UPGRADE_AND_CALL(
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "SIGNATURE_PERPETUAL_UPGRADE_AND_CALL()"(
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   allowance(
     owner: string,
     spender: string,
@@ -1370,6 +1479,10 @@ export class LpGovernor extends Contract {
     1: string[];
   }>;
 
+  getMinter(overrides?: CallOverrides): Promise<string>;
+
+  "getMinter()"(overrides?: CallOverrides): Promise<string>;
+
   getProposalThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
   "getProposalThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1413,6 +1526,10 @@ export class LpGovernor extends Contract {
   getReward(overrides?: Overrides): Promise<ContractTransaction>;
 
   "getReward()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+  getTarget(overrides?: CallOverrides): Promise<string>;
+
+  "getTarget()"(overrides?: CallOverrides): Promise<string>;
 
   getUnlockBlock(
     account: string,
@@ -1551,6 +1668,7 @@ export class LpGovernor extends Contract {
     overrides?: CallOverrides
   ): Promise<{
     id: BigNumber;
+    target: string;
     proposer: string;
     startBlock: BigNumber;
     endBlock: BigNumber;
@@ -1560,12 +1678,13 @@ export class LpGovernor extends Contract {
     executed: boolean;
     0: BigNumber;
     1: string;
-    2: BigNumber;
+    2: string;
     3: BigNumber;
     4: BigNumber;
     5: BigNumber;
     6: BigNumber;
-    7: boolean;
+    7: BigNumber;
+    8: boolean;
   }>;
 
   "proposals(uint256)"(
@@ -1573,6 +1692,7 @@ export class LpGovernor extends Contract {
     overrides?: CallOverrides
   ): Promise<{
     id: BigNumber;
+    target: string;
     proposer: string;
     startBlock: BigNumber;
     endBlock: BigNumber;
@@ -1582,12 +1702,13 @@ export class LpGovernor extends Contract {
     executed: boolean;
     0: BigNumber;
     1: string;
-    2: BigNumber;
+    2: string;
     3: BigNumber;
     4: BigNumber;
     5: BigNumber;
     6: BigNumber;
-    7: boolean;
+    7: BigNumber;
+    8: boolean;
   }>;
 
   propose(
@@ -1600,6 +1721,34 @@ export class LpGovernor extends Contract {
   "propose(string[],bytes[],string)"(
     signatures: string[],
     calldatas: BytesLike[],
+    description: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  proposeToUpgrade(
+    targetVersionKey: BytesLike,
+    description: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "proposeToUpgrade(bytes32,string)"(
+    targetVersionKey: BytesLike,
+    description: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  proposeToUpgradeAndCall(
+    targetVersionKey: BytesLike,
+    dataForLiquidityPool: BytesLike,
+    dataForGovernor: BytesLike,
+    description: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "proposeToUpgradeAndCall(bytes32,bytes,bytes,string)"(
+    targetVersionKey: BytesLike,
+    dataForLiquidityPool: BytesLike,
+    dataForGovernor: BytesLike,
     description: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -1724,6 +1873,14 @@ export class LpGovernor extends Contract {
     SIGNATURE_PERPETUAL_UPGRADE(overrides?: CallOverrides): Promise<string>;
 
     "SIGNATURE_PERPETUAL_UPGRADE()"(overrides?: CallOverrides): Promise<string>;
+
+    SIGNATURE_PERPETUAL_UPGRADE_AND_CALL(
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "SIGNATURE_PERPETUAL_UPGRADE_AND_CALL()"(
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     allowance(
       owner: string,
@@ -1860,6 +2017,10 @@ export class LpGovernor extends Contract {
       1: string[];
     }>;
 
+    getMinter(overrides?: CallOverrides): Promise<string>;
+
+    "getMinter()"(overrides?: CallOverrides): Promise<string>;
+
     getProposalThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getProposalThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1903,6 +2064,10 @@ export class LpGovernor extends Contract {
     getReward(overrides?: CallOverrides): Promise<void>;
 
     "getReward()"(overrides?: CallOverrides): Promise<void>;
+
+    getTarget(overrides?: CallOverrides): Promise<string>;
+
+    "getTarget()"(overrides?: CallOverrides): Promise<string>;
 
     getUnlockBlock(
       account: string,
@@ -2038,6 +2203,7 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       id: BigNumber;
+      target: string;
       proposer: string;
       startBlock: BigNumber;
       endBlock: BigNumber;
@@ -2047,12 +2213,13 @@ export class LpGovernor extends Contract {
       executed: boolean;
       0: BigNumber;
       1: string;
-      2: BigNumber;
+      2: string;
       3: BigNumber;
       4: BigNumber;
       5: BigNumber;
       6: BigNumber;
-      7: boolean;
+      7: BigNumber;
+      8: boolean;
     }>;
 
     "proposals(uint256)"(
@@ -2060,6 +2227,7 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       id: BigNumber;
+      target: string;
       proposer: string;
       startBlock: BigNumber;
       endBlock: BigNumber;
@@ -2069,12 +2237,13 @@ export class LpGovernor extends Contract {
       executed: boolean;
       0: BigNumber;
       1: string;
-      2: BigNumber;
+      2: string;
       3: BigNumber;
       4: BigNumber;
       5: BigNumber;
       6: BigNumber;
-      7: boolean;
+      7: BigNumber;
+      8: boolean;
     }>;
 
     propose(
@@ -2087,6 +2256,34 @@ export class LpGovernor extends Contract {
     "propose(string[],bytes[],string)"(
       signatures: string[],
       calldatas: BytesLike[],
+      description: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    proposeToUpgrade(
+      targetVersionKey: BytesLike,
+      description: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "proposeToUpgrade(bytes32,string)"(
+      targetVersionKey: BytesLike,
+      description: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    proposeToUpgradeAndCall(
+      targetVersionKey: BytesLike,
+      dataForLiquidityPool: BytesLike,
+      dataForGovernor: BytesLike,
+      description: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "proposeToUpgradeAndCall(bytes32,bytes,bytes,string)"(
+      targetVersionKey: BytesLike,
+      dataForLiquidityPool: BytesLike,
+      dataForGovernor: BytesLike,
       description: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -2214,6 +2411,7 @@ export class LpGovernor extends Contract {
     ProposalCreated(
       id: null,
       proposer: null,
+      target: null,
       signatures: null,
       calldatas: null,
       startBlock: null,
@@ -2262,6 +2460,14 @@ export class LpGovernor extends Contract {
     SIGNATURE_PERPETUAL_UPGRADE(overrides?: CallOverrides): Promise<BigNumber>;
 
     "SIGNATURE_PERPETUAL_UPGRADE()"(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    SIGNATURE_PERPETUAL_UPGRADE_AND_CALL(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "SIGNATURE_PERPETUAL_UPGRADE_AND_CALL()"(
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2393,6 +2599,10 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getMinter(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getMinter()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getProposalThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getProposalThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2422,6 +2632,10 @@ export class LpGovernor extends Contract {
     getReward(overrides?: Overrides): Promise<BigNumber>;
 
     "getReward()"(overrides?: Overrides): Promise<BigNumber>;
+
+    getTarget(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getTarget()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getUnlockBlock(
       account: string,
@@ -2576,6 +2790,34 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    proposeToUpgrade(
+      targetVersionKey: BytesLike,
+      description: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "proposeToUpgrade(bytes32,string)"(
+      targetVersionKey: BytesLike,
+      description: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    proposeToUpgradeAndCall(
+      targetVersionKey: BytesLike,
+      dataForLiquidityPool: BytesLike,
+      dataForGovernor: BytesLike,
+      description: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "proposeToUpgradeAndCall(bytes32,bytes,bytes,string)"(
+      targetVersionKey: BytesLike,
+      dataForLiquidityPool: BytesLike,
+      dataForGovernor: BytesLike,
+      description: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     quorumRate(overrides?: CallOverrides): Promise<BigNumber>;
 
     "quorumRate()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2706,6 +2948,14 @@ export class LpGovernor extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "SIGNATURE_PERPETUAL_UPGRADE()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    SIGNATURE_PERPETUAL_UPGRADE_AND_CALL(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "SIGNATURE_PERPETUAL_UPGRADE_AND_CALL()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2849,6 +3099,10 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getMinter(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getMinter()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getProposalThreshold(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -2882,6 +3136,10 @@ export class LpGovernor extends Contract {
     getReward(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "getReward()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    getTarget(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getTarget()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getUnlockBlock(
       account: string,
@@ -3049,6 +3307,34 @@ export class LpGovernor extends Contract {
     "propose(string[],bytes[],string)"(
       signatures: string[],
       calldatas: BytesLike[],
+      description: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    proposeToUpgrade(
+      targetVersionKey: BytesLike,
+      description: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "proposeToUpgrade(bytes32,string)"(
+      targetVersionKey: BytesLike,
+      description: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    proposeToUpgradeAndCall(
+      targetVersionKey: BytesLike,
+      dataForLiquidityPool: BytesLike,
+      dataForGovernor: BytesLike,
+      description: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "proposeToUpgradeAndCall(bytes32,bytes,bytes,string)"(
+      targetVersionKey: BytesLike,
+      dataForLiquidityPool: BytesLike,
+      dataForGovernor: BytesLike,
       description: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

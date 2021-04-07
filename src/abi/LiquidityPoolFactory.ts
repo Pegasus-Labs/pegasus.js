@@ -256,7 +256,14 @@ const _abi = [
   },
   {
     anonymous: false,
-    inputs: [],
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "operator",
+        type: "address",
+      },
+    ],
     name: "OperatorCheckIn",
     type: "event",
   },
@@ -982,19 +989,9 @@ const _abi = [
         type: "address",
       },
       {
-        internalType: "address",
-        name: "shareToken",
-        type: "address",
-      },
-      {
-        internalType: "bool",
-        name: "isFastCreationEnabled",
-        type: "bool",
-      },
-      {
-        internalType: "int256",
-        name: "insuranceFundCap",
-        type: "int256",
+        internalType: "bytes",
+        name: "initData",
+        type: "bytes",
       },
     ],
     name: "initialize",
@@ -1423,9 +1420,5 @@ const _abi = [
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
-  },
-  {
-    stateMutability: "payable",
-    type: "receive",
   },
 ];

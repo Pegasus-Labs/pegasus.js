@@ -40,7 +40,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "getMarginAccount(uint256,address)": FunctionFragment;
     "getPerpetualInfo(uint256)": FunctionFragment;
     "getPoolMargin()": FunctionFragment;
-    "initialize(address,address,uint256,address,address,bool,int256)": FunctionFragment;
+    "initialize(address,address,uint256,address,bytes)": FunctionFragment;
     "liquidateByAMM(uint256,address)": FunctionFragment;
     "liquidateByTrader(uint256,address,int256,int256,uint256)": FunctionFragment;
     "listActiveAccounts(uint256,uint256,uint256)": FunctionFragment;
@@ -166,15 +166,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [
-      string,
-      string,
-      BigNumberish,
-      string,
-      string,
-      boolean,
-      BigNumberish
-    ]
+    values: [string, string, BigNumberish, string, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "liquidateByAMM",
@@ -449,7 +441,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "DonateInsuranceFund(int256)": EventFragment;
     "IncreaseFee(address,int256)": EventFragment;
     "Liquidate(uint256,address,address,int256,int256,int256,int256)": EventFragment;
-    "OperatorCheckIn()": EventFragment;
+    "OperatorCheckIn(address)": EventFragment;
     "RemoveLiquidity(address,int256,int256)": EventFragment;
     "RevokeOperator()": EventFragment;
     "RunLiquidityPool()": EventFragment;
@@ -1003,20 +995,16 @@ export class LiquidityPool extends Contract {
       collateral: string,
       collateralDecimals: BigNumberish,
       governor: string,
-      shareToken: string,
-      isFastCreationEnabled: boolean,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "initialize(address,address,uint256,address,address,bool,int256)"(
+    "initialize(address,address,uint256,address,bytes)"(
       operator: string,
       collateral: string,
       collateralDecimals: BigNumberish,
       governor: string,
-      shareToken: string,
-      isFastCreationEnabled: boolean,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1848,20 +1836,16 @@ export class LiquidityPool extends Contract {
     collateral: string,
     collateralDecimals: BigNumberish,
     governor: string,
-    shareToken: string,
-    isFastCreationEnabled: boolean,
-    insuranceFundCap: BigNumberish,
+    initData: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "initialize(address,address,uint256,address,address,bool,int256)"(
+  "initialize(address,address,uint256,address,bytes)"(
     operator: string,
     collateral: string,
     collateralDecimals: BigNumberish,
     governor: string,
-    shareToken: string,
-    isFastCreationEnabled: boolean,
-    insuranceFundCap: BigNumberish,
+    initData: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -2687,20 +2671,16 @@ export class LiquidityPool extends Contract {
       collateral: string,
       collateralDecimals: BigNumberish,
       governor: string,
-      shareToken: string,
-      isFastCreationEnabled: boolean,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initialize(address,address,uint256,address,address,bool,int256)"(
+    "initialize(address,address,uint256,address,bytes)"(
       operator: string,
       collateral: string,
       collateralDecimals: BigNumberish,
       governor: string,
-      shareToken: string,
-      isFastCreationEnabled: boolean,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -3093,7 +3073,7 @@ export class LiquidityPool extends Contract {
       penaltyToLP: null
     ): EventFilter;
 
-    OperatorCheckIn(): EventFilter;
+    OperatorCheckIn(operator: string | null): EventFilter;
 
     RemoveLiquidity(
       trader: string | null,
@@ -3404,20 +3384,16 @@ export class LiquidityPool extends Contract {
       collateral: string,
       collateralDecimals: BigNumberish,
       governor: string,
-      shareToken: string,
-      isFastCreationEnabled: boolean,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "initialize(address,address,uint256,address,address,bool,int256)"(
+    "initialize(address,address,uint256,address,bytes)"(
       operator: string,
       collateral: string,
       collateralDecimals: BigNumberish,
       governor: string,
-      shareToken: string,
-      isFastCreationEnabled: boolean,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -3972,20 +3948,16 @@ export class LiquidityPool extends Contract {
       collateral: string,
       collateralDecimals: BigNumberish,
       governor: string,
-      shareToken: string,
-      isFastCreationEnabled: boolean,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "initialize(address,address,uint256,address,address,bool,int256)"(
+    "initialize(address,address,uint256,address,bytes)"(
       operator: string,
       collateral: string,
       collateralDecimals: BigNumberish,
       governor: string,
-      shareToken: string,
-      isFastCreationEnabled: boolean,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

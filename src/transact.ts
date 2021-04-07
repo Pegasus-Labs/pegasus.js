@@ -143,30 +143,32 @@ export async function addLiquidityEth(
 
 export async function removeLiquidity(
   liquidityPool: LiquidityPool,
-  collateralAmount: BigNumberish, // should be a decimal number (ie: 1.234)
+  shareToRemove: BigNumberish, // should be a decimal number (ie: 1.234)
+  cashToReturn: BigNumberish, // should be a decimal number (ie: 1.234)
   overrides: Overrides = {},
 ): Promise<ethers.providers.TransactionResponse> {
-  const largeAmount = normalizeBigNumberish(collateralAmount)
+  const largeShareToRemove = normalizeBigNumberish(shareToRemove)
     .shiftedBy(DECIMALS)
     .dp(0, BigNumber.ROUND_DOWN)
-  return await liquidityPool.removeLiquidity(largeAmount.toFixed(), overrides)
+  const largeCashToReturn = normalizeBigNumberish(cashToReturn)
+    .shiftedBy(DECIMALS)
+    .dp(0, BigNumber.ROUND_DOWN)
+  return await liquidityPool.removeLiquidity(largeShareToRemove.toFixed(), largeCashToReturn.toFixed(), overrides)
 }
 
 export async function donateInsuranceFund(
   liquidityPool: LiquidityPool,
-  perpetualIndex: number,
   collateralAmount: BigNumberish, // should be a decimal number (ie: 1.234)
   overrides: Overrides = {},
 ): Promise<ethers.providers.TransactionResponse> {
   const largeAmount = normalizeBigNumberish(collateralAmount)
     .shiftedBy(DECIMALS)
     .dp(0, BigNumber.ROUND_DOWN)
-  return await liquidityPool.donateInsuranceFund(perpetualIndex, largeAmount.toFixed(), overrides)
+  return await liquidityPool.donateInsuranceFund(largeAmount.toFixed(), overrides)
 }
 
 export async function donateInsuranceFundEth(
   liquidityPool: LiquidityPool,
-  perpetualIndex: number,
   collateralAmount: BigNumberish, // should be a decimal number (ie: 1.234)
   overrides: PayableOverrides = {},
 ): Promise<ethers.providers.TransactionResponse> {
@@ -174,7 +176,7 @@ export async function donateInsuranceFundEth(
     .shiftedBy(DECIMALS)
     .dp(0, BigNumber.ROUND_DOWN)
   overrides.value = largeAmount.toFixed()
-  return await liquidityPool.donateInsuranceFund(perpetualIndex, '0', overrides)
+  return await liquidityPool.donateInsuranceFund('0', overrides)
 }
 
 export async function takerOverOperator(

@@ -23,27 +23,31 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface PoolCreatorInterface extends ethers.utils.Interface {
   functions: {
     "activatePerpetualFor(address,uint256)": FunctionFragment;
-    "addVersion(address,uint256,string)": FunctionFragment;
-    "createLiquidityPool(address,uint256,bool,int256,int256)": FunctionFragment;
-    "createLiquidityPoolWith(address,address,uint256,bool,int256,int256)": FunctionFragment;
+    "addVersion(address,address,uint256,string)": FunctionFragment;
+    "createLiquidityPool(address,uint256,int256,bytes)": FunctionFragment;
+    "createLiquidityPoolWith(bytes32,address,uint256,int256,bytes)": FunctionFragment;
     "deactivatePerpetualFor(address,uint256)": FunctionFragment;
     "getAccessController()": FunctionFragment;
     "getActiveLiquidityPoolCountOf(address)": FunctionFragment;
-    "getDescription(address)": FunctionFragment;
+    "getAppliedVersionKey(address,address)": FunctionFragment;
     "getLatestVersion()": FunctionFragment;
     "getLiquidityPoolCount()": FunctionFragment;
     "getMCBToken()": FunctionFragment;
     "getOwnedLiquidityPoolsCountOf(address)": FunctionFragment;
+    "getRealImplementations(address,address)": FunctionFragment;
     "getSymbolService()": FunctionFragment;
+    "getTimelock()": FunctionFragment;
     "getVault()": FunctionFragment;
     "getVaultFeeRate()": FunctionFragment;
+    "getVersion(bytes32)": FunctionFragment;
     "getWeth()": FunctionFragment;
     "grantPrivilege(address,uint256)": FunctionFragment;
+    "initialize(address,address,address,int256)": FunctionFragment;
     "isActiveLiquidityPoolOf(address,address,uint256)": FunctionFragment;
     "isGranted(address,address,uint256)": FunctionFragment;
     "isLiquidityPool(address)": FunctionFragment;
-    "isVersionCompatible(address,address)": FunctionFragment;
-    "isVersionValid(address)": FunctionFragment;
+    "isVersionCompatible(bytes32,bytes32)": FunctionFragment;
+    "isVersionKeyValid(bytes32)": FunctionFragment;
     "listActiveLiquidityPoolsOf(address,uint256,uint256)": FunctionFragment;
     "listAvailableVersions(uint256,uint256)": FunctionFragment;
     "listLiquidityPoolOwnedBy(address,uint256,uint256)": FunctionFragment;
@@ -54,6 +58,9 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "setLiquidityPoolOwnership(address,address)": FunctionFragment;
     "setVaultFeeRate(int256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "updateTo(bytes32)": FunctionFragment;
+    "updateToAndCall(bytes32,bytes,bytes)": FunctionFragment;
+    "upgradeAdmin()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -62,15 +69,15 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "addVersion",
-    values: [string, BigNumberish, string]
+    values: [string, string, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "createLiquidityPool",
-    values: [string, BigNumberish, boolean, BigNumberish, BigNumberish]
+    values: [string, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "createLiquidityPoolWith",
-    values: [string, string, BigNumberish, boolean, BigNumberish, BigNumberish]
+    values: [BytesLike, string, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "deactivatePerpetualFor",
@@ -85,8 +92,8 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "getDescription",
-    values: [string]
+    functionFragment: "getAppliedVersionKey",
+    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "getLatestVersion",
@@ -105,7 +112,15 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
+    functionFragment: "getRealImplementations",
+    values: [string, string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getSymbolService",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTimelock",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "getVault", values?: undefined): string;
@@ -113,10 +128,18 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     functionFragment: "getVaultFeeRate",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "getVersion",
+    values: [BytesLike]
+  ): string;
   encodeFunctionData(functionFragment: "getWeth", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "grantPrivilege",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initialize",
+    values: [string, string, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "isActiveLiquidityPoolOf",
@@ -132,11 +155,11 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "isVersionCompatible",
-    values: [string, string]
+    values: [BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "isVersionValid",
-    values: [string]
+    functionFragment: "isVersionKeyValid",
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "listActiveLiquidityPoolsOf",
@@ -175,6 +198,15 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
+  encodeFunctionData(functionFragment: "updateTo", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "updateToAndCall",
+    values: [BytesLike, BytesLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "upgradeAdmin",
+    values?: undefined
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "activatePerpetualFor",
@@ -202,7 +234,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getDescription",
+    functionFragment: "getAppliedVersionKey",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -222,7 +254,15 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getRealImplementations",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getSymbolService",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTimelock",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getVault", data: BytesLike): Result;
@@ -230,11 +270,13 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     functionFragment: "getVaultFeeRate",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getVersion", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getWeth", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "grantPrivilege",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isActiveLiquidityPoolOf",
     data: BytesLike
@@ -249,7 +291,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "isVersionValid",
+    functionFragment: "isVersionKeyValid",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -289,14 +331,24 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "updateTo", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "updateToAndCall",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "upgradeAdmin",
+    data: BytesLike
+  ): Result;
 
   events: {
-    "AddVersion(address)": EventFragment;
-    "CreateLiquidityPool(address,address,address,address,address,uint256,bool,int256)": EventFragment;
+    "AddVersion(bytes32,address,address,address,uint256,string)": EventFragment;
+    "CreateLiquidityPool(bytes32,address,address,address,address,uint256,bytes)": EventFragment;
     "GrantPrivilege(address,address,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "RevokePrivilege(address,address,uint256)": EventFragment;
     "SetVaultFeeRate(int256,int256)": EventFragment;
+    "UpgradeLiquidityPool(bytes32,address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "AddVersion"): EventFragment;
@@ -305,6 +357,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RevokePrivilege"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetVaultFeeRate"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UpgradeLiquidityPool"): EventFragment;
 }
 
 export class PoolCreator extends Contract {
@@ -334,14 +387,16 @@ export class PoolCreator extends Contract {
     ): Promise<ContractTransaction>;
 
     addVersion(
-      implementation: string,
+      liquidityPoolTemplate: string,
+      governorTemplate: string,
       compatibility: BigNumberish,
       note: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "addVersion(address,uint256,string)"(
-      implementation: string,
+    "addVersion(address,address,uint256,string)"(
+      liquidityPoolTemplate: string,
+      governorTemplate: string,
       compatibility: BigNumberish,
       note: string,
       overrides?: Overrides
@@ -350,38 +405,34 @@ export class PoolCreator extends Contract {
     createLiquidityPool(
       collateral: string,
       collateralDecimals: BigNumberish,
-      isFastCreationEnabled: boolean,
       nonce: BigNumberish,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "createLiquidityPool(address,uint256,bool,int256,int256)"(
+    "createLiquidityPool(address,uint256,int256,bytes)"(
       collateral: string,
       collateralDecimals: BigNumberish,
-      isFastCreationEnabled: boolean,
       nonce: BigNumberish,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     createLiquidityPoolWith(
-      implementation: string,
+      versionKey: BytesLike,
       collateral: string,
       collateralDecimals: BigNumberish,
-      isFastCreationEnabled: boolean,
       nonce: BigNumberish,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "createLiquidityPoolWith(address,address,uint256,bool,int256,int256)"(
-      implementation: string,
+    "createLiquidityPoolWith(bytes32,address,uint256,int256,bytes)"(
+      versionKey: BytesLike,
       collateral: string,
       collateralDecimals: BigNumberish,
-      isFastCreationEnabled: boolean,
       nonce: BigNumberish,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -423,43 +474,35 @@ export class PoolCreator extends Contract {
       0: BigNumber;
     }>;
 
-    getDescription(
-      implementation: string,
+    getAppliedVersionKey(
+      liquidityPool: string,
+      governor: string,
       overrides?: CallOverrides
     ): Promise<{
-      creator: string;
-      creationTime: BigNumber;
-      compatibility: BigNumber;
-      note: string;
+      appliedVersionKey: string;
       0: string;
-      1: BigNumber;
-      2: BigNumber;
-      3: string;
     }>;
 
-    "getDescription(address)"(
-      implementation: string,
+    "getAppliedVersionKey(address,address)"(
+      liquidityPool: string,
+      governor: string,
       overrides?: CallOverrides
     ): Promise<{
-      creator: string;
-      creationTime: BigNumber;
-      compatibility: BigNumber;
-      note: string;
+      appliedVersionKey: string;
       0: string;
-      1: BigNumber;
-      2: BigNumber;
-      3: string;
     }>;
 
     getLatestVersion(
       overrides?: CallOverrides
     ): Promise<{
+      latestVersionKey: string;
       0: string;
     }>;
 
     "getLatestVersion()"(
       overrides?: CallOverrides
     ): Promise<{
+      latestVersionKey: string;
       0: string;
     }>;
 
@@ -501,6 +544,28 @@ export class PoolCreator extends Contract {
       0: BigNumber;
     }>;
 
+    getRealImplementations(
+      liquidityPool: string,
+      governor: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      liquidityPoolTemplate: string;
+      governorTemplate: string;
+      0: string;
+      1: string;
+    }>;
+
+    "getRealImplementations(address,address)"(
+      liquidityPool: string,
+      governor: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      liquidityPoolTemplate: string;
+      governorTemplate: string;
+      0: string;
+      1: string;
+    }>;
+
     getSymbolService(
       overrides?: CallOverrides
     ): Promise<{
@@ -508,6 +573,18 @@ export class PoolCreator extends Contract {
     }>;
 
     "getSymbolService()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    getTimelock(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "getTimelock()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -537,6 +614,30 @@ export class PoolCreator extends Contract {
       0: BigNumber;
     }>;
 
+    getVersion(
+      versionKey: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      liquidityPoolTemplate: string;
+      governorTemplate: string;
+      compatibility: BigNumber;
+      0: string;
+      1: string;
+      2: BigNumber;
+    }>;
+
+    "getVersion(bytes32)"(
+      versionKey: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      liquidityPoolTemplate: string;
+      governorTemplate: string;
+      compatibility: BigNumber;
+      0: string;
+      1: string;
+      2: BigNumber;
+    }>;
+
     getWeth(
       overrides?: CallOverrides
     ): Promise<{
@@ -558,6 +659,22 @@ export class PoolCreator extends Contract {
     "grantPrivilege(address,uint256)"(
       grantee: string,
       privilege: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    initialize(
+      wethToken: string,
+      symbolService: string,
+      globalVault: string,
+      globalVaultFeeRate: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "initialize(address,address,address,int256)"(
+      wethToken: string,
+      symbolService: string,
+      globalVault: string,
+      globalVaultFeeRate: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -612,32 +729,36 @@ export class PoolCreator extends Contract {
     }>;
 
     isVersionCompatible(
-      target: string,
-      base: string,
+      targetVersionKey: BytesLike,
+      baseVersionKey: BytesLike,
       overrides?: CallOverrides
     ): Promise<{
+      isCompatible: boolean;
       0: boolean;
     }>;
 
-    "isVersionCompatible(address,address)"(
-      target: string,
-      base: string,
+    "isVersionCompatible(bytes32,bytes32)"(
+      targetVersionKey: BytesLike,
+      baseVersionKey: BytesLike,
       overrides?: CallOverrides
     ): Promise<{
+      isCompatible: boolean;
       0: boolean;
     }>;
 
-    isVersionValid(
-      implementation: string,
+    isVersionKeyValid(
+      versionKey: BytesLike,
       overrides?: CallOverrides
     ): Promise<{
+      isValid: boolean;
       0: boolean;
     }>;
 
-    "isVersionValid(address)"(
-      implementation: string,
+    "isVersionKeyValid(bytes32)"(
+      versionKey: BytesLike,
       overrides?: CallOverrides
     ): Promise<{
+      isValid: boolean;
       0: boolean;
     }>;
 
@@ -686,7 +807,7 @@ export class PoolCreator extends Contract {
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      result: string[];
+      versionKeys: string[];
       0: string[];
     }>;
 
@@ -695,7 +816,7 @@ export class PoolCreator extends Contract {
       end: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      result: string[];
+      versionKeys: string[];
       0: string[];
     }>;
 
@@ -796,6 +917,42 @@ export class PoolCreator extends Contract {
       newOwner: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    updateTo(
+      targetVersionKey: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "updateTo(bytes32)"(
+      targetVersionKey: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    updateToAndCall(
+      targetVersionKey: BytesLike,
+      dataForLiquidityPool: BytesLike,
+      dataForGovernor: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "updateToAndCall(bytes32,bytes,bytes)"(
+      targetVersionKey: BytesLike,
+      dataForLiquidityPool: BytesLike,
+      dataForGovernor: BytesLike,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    upgradeAdmin(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "upgradeAdmin()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
   };
 
   activatePerpetualFor(
@@ -811,14 +968,16 @@ export class PoolCreator extends Contract {
   ): Promise<ContractTransaction>;
 
   addVersion(
-    implementation: string,
+    liquidityPoolTemplate: string,
+    governorTemplate: string,
     compatibility: BigNumberish,
     note: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "addVersion(address,uint256,string)"(
-    implementation: string,
+  "addVersion(address,address,uint256,string)"(
+    liquidityPoolTemplate: string,
+    governorTemplate: string,
     compatibility: BigNumberish,
     note: string,
     overrides?: Overrides
@@ -827,38 +986,34 @@ export class PoolCreator extends Contract {
   createLiquidityPool(
     collateral: string,
     collateralDecimals: BigNumberish,
-    isFastCreationEnabled: boolean,
     nonce: BigNumberish,
-    insuranceFundCap: BigNumberish,
+    initData: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "createLiquidityPool(address,uint256,bool,int256,int256)"(
+  "createLiquidityPool(address,uint256,int256,bytes)"(
     collateral: string,
     collateralDecimals: BigNumberish,
-    isFastCreationEnabled: boolean,
     nonce: BigNumberish,
-    insuranceFundCap: BigNumberish,
+    initData: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   createLiquidityPoolWith(
-    implementation: string,
+    versionKey: BytesLike,
     collateral: string,
     collateralDecimals: BigNumberish,
-    isFastCreationEnabled: boolean,
     nonce: BigNumberish,
-    insuranceFundCap: BigNumberish,
+    initData: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "createLiquidityPoolWith(address,address,uint256,bool,int256,int256)"(
-    implementation: string,
+  "createLiquidityPoolWith(bytes32,address,uint256,int256,bytes)"(
+    versionKey: BytesLike,
     collateral: string,
     collateralDecimals: BigNumberish,
-    isFastCreationEnabled: boolean,
     nonce: BigNumberish,
-    insuranceFundCap: BigNumberish,
+    initData: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -888,33 +1043,17 @@ export class PoolCreator extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  getDescription(
-    implementation: string,
+  getAppliedVersionKey(
+    liquidityPool: string,
+    governor: string,
     overrides?: CallOverrides
-  ): Promise<{
-    creator: string;
-    creationTime: BigNumber;
-    compatibility: BigNumber;
-    note: string;
-    0: string;
-    1: BigNumber;
-    2: BigNumber;
-    3: string;
-  }>;
+  ): Promise<string>;
 
-  "getDescription(address)"(
-    implementation: string,
+  "getAppliedVersionKey(address,address)"(
+    liquidityPool: string,
+    governor: string,
     overrides?: CallOverrides
-  ): Promise<{
-    creator: string;
-    creationTime: BigNumber;
-    compatibility: BigNumber;
-    note: string;
-    0: string;
-    1: BigNumber;
-    2: BigNumber;
-    3: string;
-  }>;
+  ): Promise<string>;
 
   getLatestVersion(overrides?: CallOverrides): Promise<string>;
 
@@ -938,9 +1077,35 @@ export class PoolCreator extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  getRealImplementations(
+    liquidityPool: string,
+    governor: string,
+    overrides?: CallOverrides
+  ): Promise<{
+    liquidityPoolTemplate: string;
+    governorTemplate: string;
+    0: string;
+    1: string;
+  }>;
+
+  "getRealImplementations(address,address)"(
+    liquidityPool: string,
+    governor: string,
+    overrides?: CallOverrides
+  ): Promise<{
+    liquidityPoolTemplate: string;
+    governorTemplate: string;
+    0: string;
+    1: string;
+  }>;
+
   getSymbolService(overrides?: CallOverrides): Promise<string>;
 
   "getSymbolService()"(overrides?: CallOverrides): Promise<string>;
+
+  getTimelock(overrides?: CallOverrides): Promise<string>;
+
+  "getTimelock()"(overrides?: CallOverrides): Promise<string>;
 
   getVault(overrides?: CallOverrides): Promise<string>;
 
@@ -949,6 +1114,30 @@ export class PoolCreator extends Contract {
   getVaultFeeRate(overrides?: CallOverrides): Promise<BigNumber>;
 
   "getVaultFeeRate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getVersion(
+    versionKey: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<{
+    liquidityPoolTemplate: string;
+    governorTemplate: string;
+    compatibility: BigNumber;
+    0: string;
+    1: string;
+    2: BigNumber;
+  }>;
+
+  "getVersion(bytes32)"(
+    versionKey: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<{
+    liquidityPoolTemplate: string;
+    governorTemplate: string;
+    compatibility: BigNumber;
+    0: string;
+    1: string;
+    2: BigNumber;
+  }>;
 
   getWeth(overrides?: CallOverrides): Promise<string>;
 
@@ -963,6 +1152,22 @@ export class PoolCreator extends Contract {
   "grantPrivilege(address,uint256)"(
     grantee: string,
     privilege: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  initialize(
+    wethToken: string,
+    symbolService: string,
+    globalVault: string,
+    globalVaultFeeRate: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "initialize(address,address,address,int256)"(
+    wethToken: string,
+    symbolService: string,
+    globalVault: string,
+    globalVaultFeeRate: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1005,24 +1210,24 @@ export class PoolCreator extends Contract {
   ): Promise<boolean>;
 
   isVersionCompatible(
-    target: string,
-    base: string,
+    targetVersionKey: BytesLike,
+    baseVersionKey: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  "isVersionCompatible(address,address)"(
-    target: string,
-    base: string,
+  "isVersionCompatible(bytes32,bytes32)"(
+    targetVersionKey: BytesLike,
+    baseVersionKey: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  isVersionValid(
-    implementation: string,
+  isVersionKeyValid(
+    versionKey: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  "isVersionValid(address)"(
-    implementation: string,
+  "isVersionKeyValid(bytes32)"(
+    versionKey: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -1144,6 +1349,34 @@ export class PoolCreator extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  updateTo(
+    targetVersionKey: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "updateTo(bytes32)"(
+    targetVersionKey: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  updateToAndCall(
+    targetVersionKey: BytesLike,
+    dataForLiquidityPool: BytesLike,
+    dataForGovernor: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "updateToAndCall(bytes32,bytes,bytes)"(
+    targetVersionKey: BytesLike,
+    dataForLiquidityPool: BytesLike,
+    dataForGovernor: BytesLike,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  upgradeAdmin(overrides?: CallOverrides): Promise<string>;
+
+  "upgradeAdmin()"(overrides?: CallOverrides): Promise<string>;
+
   callStatic: {
     activatePerpetualFor(
       trader: string,
@@ -1158,56 +1391,74 @@ export class PoolCreator extends Contract {
     ): Promise<boolean>;
 
     addVersion(
-      implementation: string,
+      liquidityPoolTemplate: string,
+      governorTemplate: string,
       compatibility: BigNumberish,
       note: string,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<string>;
 
-    "addVersion(address,uint256,string)"(
-      implementation: string,
+    "addVersion(address,address,uint256,string)"(
+      liquidityPoolTemplate: string,
+      governorTemplate: string,
       compatibility: BigNumberish,
       note: string,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<string>;
 
     createLiquidityPool(
       collateral: string,
       collateralDecimals: BigNumberish,
-      isFastCreationEnabled: boolean,
       nonce: BigNumberish,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: CallOverrides
-    ): Promise<string>;
+    ): Promise<{
+      liquidityPool: string;
+      governor: string;
+      0: string;
+      1: string;
+    }>;
 
-    "createLiquidityPool(address,uint256,bool,int256,int256)"(
+    "createLiquidityPool(address,uint256,int256,bytes)"(
       collateral: string,
       collateralDecimals: BigNumberish,
-      isFastCreationEnabled: boolean,
       nonce: BigNumberish,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: CallOverrides
-    ): Promise<string>;
+    ): Promise<{
+      liquidityPool: string;
+      governor: string;
+      0: string;
+      1: string;
+    }>;
 
     createLiquidityPoolWith(
-      implementation: string,
+      versionKey: BytesLike,
       collateral: string,
       collateralDecimals: BigNumberish,
-      isFastCreationEnabled: boolean,
       nonce: BigNumberish,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: CallOverrides
-    ): Promise<string>;
+    ): Promise<{
+      liquidityPool: string;
+      governor: string;
+      0: string;
+      1: string;
+    }>;
 
-    "createLiquidityPoolWith(address,address,uint256,bool,int256,int256)"(
-      implementation: string,
+    "createLiquidityPoolWith(bytes32,address,uint256,int256,bytes)"(
+      versionKey: BytesLike,
       collateral: string,
       collateralDecimals: BigNumberish,
-      isFastCreationEnabled: boolean,
       nonce: BigNumberish,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: CallOverrides
-    ): Promise<string>;
+    ): Promise<{
+      liquidityPool: string;
+      governor: string;
+      0: string;
+      1: string;
+    }>;
 
     deactivatePerpetualFor(
       trader: string,
@@ -1235,33 +1486,17 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getDescription(
-      implementation: string,
+    getAppliedVersionKey(
+      liquidityPool: string,
+      governor: string,
       overrides?: CallOverrides
-    ): Promise<{
-      creator: string;
-      creationTime: BigNumber;
-      compatibility: BigNumber;
-      note: string;
-      0: string;
-      1: BigNumber;
-      2: BigNumber;
-      3: string;
-    }>;
+    ): Promise<string>;
 
-    "getDescription(address)"(
-      implementation: string,
+    "getAppliedVersionKey(address,address)"(
+      liquidityPool: string,
+      governor: string,
       overrides?: CallOverrides
-    ): Promise<{
-      creator: string;
-      creationTime: BigNumber;
-      compatibility: BigNumber;
-      note: string;
-      0: string;
-      1: BigNumber;
-      2: BigNumber;
-      3: string;
-    }>;
+    ): Promise<string>;
 
     getLatestVersion(overrides?: CallOverrides): Promise<string>;
 
@@ -1285,9 +1520,35 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getRealImplementations(
+      liquidityPool: string,
+      governor: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      liquidityPoolTemplate: string;
+      governorTemplate: string;
+      0: string;
+      1: string;
+    }>;
+
+    "getRealImplementations(address,address)"(
+      liquidityPool: string,
+      governor: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      liquidityPoolTemplate: string;
+      governorTemplate: string;
+      0: string;
+      1: string;
+    }>;
+
     getSymbolService(overrides?: CallOverrides): Promise<string>;
 
     "getSymbolService()"(overrides?: CallOverrides): Promise<string>;
+
+    getTimelock(overrides?: CallOverrides): Promise<string>;
+
+    "getTimelock()"(overrides?: CallOverrides): Promise<string>;
 
     getVault(overrides?: CallOverrides): Promise<string>;
 
@@ -1296,6 +1557,30 @@ export class PoolCreator extends Contract {
     getVaultFeeRate(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getVaultFeeRate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getVersion(
+      versionKey: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      liquidityPoolTemplate: string;
+      governorTemplate: string;
+      compatibility: BigNumber;
+      0: string;
+      1: string;
+      2: BigNumber;
+    }>;
+
+    "getVersion(bytes32)"(
+      versionKey: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<{
+      liquidityPoolTemplate: string;
+      governorTemplate: string;
+      compatibility: BigNumber;
+      0: string;
+      1: string;
+      2: BigNumber;
+    }>;
 
     getWeth(overrides?: CallOverrides): Promise<string>;
 
@@ -1310,6 +1595,22 @@ export class PoolCreator extends Contract {
     "grantPrivilege(address,uint256)"(
       grantee: string,
       privilege: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    initialize(
+      wethToken: string,
+      symbolService: string,
+      globalVault: string,
+      globalVaultFeeRate: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "initialize(address,address,address,int256)"(
+      wethToken: string,
+      symbolService: string,
+      globalVault: string,
+      globalVaultFeeRate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1352,24 +1653,24 @@ export class PoolCreator extends Contract {
     ): Promise<boolean>;
 
     isVersionCompatible(
-      target: string,
-      base: string,
+      targetVersionKey: BytesLike,
+      baseVersionKey: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    "isVersionCompatible(address,address)"(
-      target: string,
-      base: string,
+    "isVersionCompatible(bytes32,bytes32)"(
+      targetVersionKey: BytesLike,
+      baseVersionKey: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    isVersionValid(
-      implementation: string,
+    isVersionKeyValid(
+      versionKey: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    "isVersionValid(address)"(
-      implementation: string,
+    "isVersionKeyValid(bytes32)"(
+      versionKey: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -1490,20 +1791,54 @@ export class PoolCreator extends Contract {
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    updateTo(
+      targetVersionKey: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "updateTo(bytes32)"(
+      targetVersionKey: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    updateToAndCall(
+      targetVersionKey: BytesLike,
+      dataForLiquidityPool: BytesLike,
+      dataForGovernor: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "updateToAndCall(bytes32,bytes,bytes)"(
+      targetVersionKey: BytesLike,
+      dataForLiquidityPool: BytesLike,
+      dataForGovernor: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    upgradeAdmin(overrides?: CallOverrides): Promise<string>;
+
+    "upgradeAdmin()"(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
-    AddVersion(implementation: null): EventFilter;
+    AddVersion(
+      versionKey: null,
+      liquidityPoolTemplate: string | null,
+      governorTemplate: string | null,
+      creator: string | null,
+      compatibility: null,
+      note: null
+    ): EventFilter;
 
     CreateLiquidityPool(
-      liquidityPool: null,
-      governor: null,
-      shareToken: null,
-      operator: null,
+      versionKey: null,
+      liquidityPool: string | null,
+      governor: string | null,
+      operator: string | null,
       collateral: null,
       collateralDecimals: null,
-      isFastCreationEnabled: null,
-      insuranceFundCap: null
+      initData: null
     ): EventFilter;
 
     GrantPrivilege(
@@ -1524,6 +1859,12 @@ export class PoolCreator extends Contract {
     ): EventFilter;
 
     SetVaultFeeRate(prevFeeRate: null, newFeeRate: null): EventFilter;
+
+    UpgradeLiquidityPool(
+      vaersionKey: null,
+      liquidityPool: string | null,
+      governor: string | null
+    ): EventFilter;
   };
 
   estimateGas: {
@@ -1540,14 +1881,16 @@ export class PoolCreator extends Contract {
     ): Promise<BigNumber>;
 
     addVersion(
-      implementation: string,
+      liquidityPoolTemplate: string,
+      governorTemplate: string,
       compatibility: BigNumberish,
       note: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "addVersion(address,uint256,string)"(
-      implementation: string,
+    "addVersion(address,address,uint256,string)"(
+      liquidityPoolTemplate: string,
+      governorTemplate: string,
       compatibility: BigNumberish,
       note: string,
       overrides?: Overrides
@@ -1556,38 +1899,34 @@ export class PoolCreator extends Contract {
     createLiquidityPool(
       collateral: string,
       collateralDecimals: BigNumberish,
-      isFastCreationEnabled: boolean,
       nonce: BigNumberish,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "createLiquidityPool(address,uint256,bool,int256,int256)"(
+    "createLiquidityPool(address,uint256,int256,bytes)"(
       collateral: string,
       collateralDecimals: BigNumberish,
-      isFastCreationEnabled: boolean,
       nonce: BigNumberish,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     createLiquidityPoolWith(
-      implementation: string,
+      versionKey: BytesLike,
       collateral: string,
       collateralDecimals: BigNumberish,
-      isFastCreationEnabled: boolean,
       nonce: BigNumberish,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "createLiquidityPoolWith(address,address,uint256,bool,int256,int256)"(
-      implementation: string,
+    "createLiquidityPoolWith(bytes32,address,uint256,int256,bytes)"(
+      versionKey: BytesLike,
       collateral: string,
       collateralDecimals: BigNumberish,
-      isFastCreationEnabled: boolean,
       nonce: BigNumberish,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1617,13 +1956,15 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getDescription(
-      implementation: string,
+    getAppliedVersionKey(
+      liquidityPool: string,
+      governor: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "getDescription(address)"(
-      implementation: string,
+    "getAppliedVersionKey(address,address)"(
+      liquidityPool: string,
+      governor: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1649,9 +1990,25 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getRealImplementations(
+      liquidityPool: string,
+      governor: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getRealImplementations(address,address)"(
+      liquidityPool: string,
+      governor: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getSymbolService(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getSymbolService()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getTimelock(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getTimelock()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getVault(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1660,6 +2017,16 @@ export class PoolCreator extends Contract {
     getVaultFeeRate(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getVaultFeeRate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getVersion(
+      versionKey: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getVersion(bytes32)"(
+      versionKey: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getWeth(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1674,6 +2041,22 @@ export class PoolCreator extends Contract {
     "grantPrivilege(address,uint256)"(
       grantee: string,
       privilege: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    initialize(
+      wethToken: string,
+      symbolService: string,
+      globalVault: string,
+      globalVaultFeeRate: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "initialize(address,address,address,int256)"(
+      wethToken: string,
+      symbolService: string,
+      globalVault: string,
+      globalVaultFeeRate: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1716,24 +2099,24 @@ export class PoolCreator extends Contract {
     ): Promise<BigNumber>;
 
     isVersionCompatible(
-      target: string,
-      base: string,
+      targetVersionKey: BytesLike,
+      baseVersionKey: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "isVersionCompatible(address,address)"(
-      target: string,
-      base: string,
+    "isVersionCompatible(bytes32,bytes32)"(
+      targetVersionKey: BytesLike,
+      baseVersionKey: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    isVersionValid(
-      implementation: string,
+    isVersionKeyValid(
+      versionKey: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "isVersionValid(address)"(
-      implementation: string,
+    "isVersionKeyValid(bytes32)"(
+      versionKey: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1840,6 +2223,34 @@ export class PoolCreator extends Contract {
       newOwner: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    updateTo(
+      targetVersionKey: BytesLike,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "updateTo(bytes32)"(
+      targetVersionKey: BytesLike,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    updateToAndCall(
+      targetVersionKey: BytesLike,
+      dataForLiquidityPool: BytesLike,
+      dataForGovernor: BytesLike,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "updateToAndCall(bytes32,bytes,bytes)"(
+      targetVersionKey: BytesLike,
+      dataForLiquidityPool: BytesLike,
+      dataForGovernor: BytesLike,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    upgradeAdmin(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "upgradeAdmin()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -1856,14 +2267,16 @@ export class PoolCreator extends Contract {
     ): Promise<PopulatedTransaction>;
 
     addVersion(
-      implementation: string,
+      liquidityPoolTemplate: string,
+      governorTemplate: string,
       compatibility: BigNumberish,
       note: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "addVersion(address,uint256,string)"(
-      implementation: string,
+    "addVersion(address,address,uint256,string)"(
+      liquidityPoolTemplate: string,
+      governorTemplate: string,
       compatibility: BigNumberish,
       note: string,
       overrides?: Overrides
@@ -1872,38 +2285,34 @@ export class PoolCreator extends Contract {
     createLiquidityPool(
       collateral: string,
       collateralDecimals: BigNumberish,
-      isFastCreationEnabled: boolean,
       nonce: BigNumberish,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "createLiquidityPool(address,uint256,bool,int256,int256)"(
+    "createLiquidityPool(address,uint256,int256,bytes)"(
       collateral: string,
       collateralDecimals: BigNumberish,
-      isFastCreationEnabled: boolean,
       nonce: BigNumberish,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     createLiquidityPoolWith(
-      implementation: string,
+      versionKey: BytesLike,
       collateral: string,
       collateralDecimals: BigNumberish,
-      isFastCreationEnabled: boolean,
       nonce: BigNumberish,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "createLiquidityPoolWith(address,address,uint256,bool,int256,int256)"(
-      implementation: string,
+    "createLiquidityPoolWith(bytes32,address,uint256,int256,bytes)"(
+      versionKey: BytesLike,
       collateral: string,
       collateralDecimals: BigNumberish,
-      isFastCreationEnabled: boolean,
       nonce: BigNumberish,
-      insuranceFundCap: BigNumberish,
+      initData: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -1937,13 +2346,15 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getDescription(
-      implementation: string,
+    getAppliedVersionKey(
+      liquidityPool: string,
+      governor: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "getDescription(address)"(
-      implementation: string,
+    "getAppliedVersionKey(address,address)"(
+      liquidityPool: string,
+      governor: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1975,11 +2386,27 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getRealImplementations(
+      liquidityPool: string,
+      governor: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getRealImplementations(address,address)"(
+      liquidityPool: string,
+      governor: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getSymbolService(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getSymbolService()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    getTimelock(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getTimelock()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getVault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1988,6 +2415,16 @@ export class PoolCreator extends Contract {
     getVaultFeeRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getVaultFeeRate()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getVersion(
+      versionKey: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getVersion(bytes32)"(
+      versionKey: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2004,6 +2441,22 @@ export class PoolCreator extends Contract {
     "grantPrivilege(address,uint256)"(
       grantee: string,
       privilege: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      wethToken: string,
+      symbolService: string,
+      globalVault: string,
+      globalVaultFeeRate: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "initialize(address,address,address,int256)"(
+      wethToken: string,
+      symbolService: string,
+      globalVault: string,
+      globalVaultFeeRate: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -2046,24 +2499,24 @@ export class PoolCreator extends Contract {
     ): Promise<PopulatedTransaction>;
 
     isVersionCompatible(
-      target: string,
-      base: string,
+      targetVersionKey: BytesLike,
+      baseVersionKey: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "isVersionCompatible(address,address)"(
-      target: string,
-      base: string,
+    "isVersionCompatible(bytes32,bytes32)"(
+      targetVersionKey: BytesLike,
+      baseVersionKey: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    isVersionValid(
-      implementation: string,
+    isVersionKeyValid(
+      versionKey: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "isVersionValid(address)"(
-      implementation: string,
+    "isVersionKeyValid(bytes32)"(
+      versionKey: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2170,5 +2623,33 @@ export class PoolCreator extends Contract {
       newOwner: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
+
+    updateTo(
+      targetVersionKey: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "updateTo(bytes32)"(
+      targetVersionKey: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    updateToAndCall(
+      targetVersionKey: BytesLike,
+      dataForLiquidityPool: BytesLike,
+      dataForGovernor: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "updateToAndCall(bytes32,bytes,bytes)"(
+      targetVersionKey: BytesLike,
+      dataForLiquidityPool: BytesLike,
+      dataForGovernor: BytesLike,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    upgradeAdmin(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "upgradeAdmin()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

@@ -18,49 +18,43 @@ export class PoolCreatorFactory {
 
 const _abi = [
   {
+    anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "bytes32",
+        name: "versionKey",
+        type: "bytes32",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "liquidityPoolTemplate",
+        type: "address",
+      },
+      {
+        indexed: true,
         internalType: "address",
         name: "governorTemplate",
         type: "address",
       },
       {
+        indexed: true,
         internalType: "address",
-        name: "shareTokenTemplate",
+        name: "creator",
         type: "address",
       },
-      {
-        internalType: "address",
-        name: "wethToken",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "symbolService",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "globalVault",
-        type: "address",
-      },
-      {
-        internalType: "int256",
-        name: "globalVaultFeeRate",
-        type: "int256",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "constructor",
-  },
-  {
-    anonymous: false,
-    inputs: [
       {
         indexed: false,
-        internalType: "address",
-        name: "implementation",
-        type: "address",
+        internalType: "uint256",
+        name: "compatibility",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "note",
+        type: "string",
       },
     ],
     name: "AddVersion",
@@ -71,24 +65,24 @@ const _abi = [
     inputs: [
       {
         indexed: false,
+        internalType: "bytes32",
+        name: "versionKey",
+        type: "bytes32",
+      },
+      {
+        indexed: true,
         internalType: "address",
         name: "liquidityPool",
         type: "address",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "governor",
         type: "address",
       },
       {
-        indexed: false,
-        internalType: "address",
-        name: "shareToken",
-        type: "address",
-      },
-      {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "operator",
         type: "address",
@@ -107,15 +101,9 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: "bool",
-        name: "isFastCreationEnabled",
-        type: "bool",
-      },
-      {
-        indexed: false,
-        internalType: "int256",
-        name: "insuranceFundCap",
-        type: "int256",
+        internalType: "bytes",
+        name: "initData",
+        type: "bytes",
       },
     ],
     name: "CreateLiquidityPool",
@@ -210,6 +198,31 @@ const _abi = [
     type: "event",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "vaersionKey",
+        type: "bytes32",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "liquidityPool",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "governor",
+        type: "address",
+      },
+    ],
+    name: "UpgradeLiquidityPool",
+    type: "event",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -237,7 +250,12 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "implementation",
+        name: "liquidityPoolTemplate",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "governorTemplate",
         type: "address",
       },
       {
@@ -252,7 +270,13 @@ const _abi = [
       },
     ],
     name: "addVersion",
-    outputs: [],
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "versionKey",
+        type: "bytes32",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -269,19 +293,14 @@ const _abi = [
         type: "uint256",
       },
       {
-        internalType: "bool",
-        name: "isFastCreationEnabled",
-        type: "bool",
-      },
-      {
         internalType: "int256",
         name: "nonce",
         type: "int256",
       },
       {
-        internalType: "int256",
-        name: "insuranceFundCap",
-        type: "int256",
+        internalType: "bytes",
+        name: "initData",
+        type: "bytes",
       },
     ],
     name: "createLiquidityPool",
@@ -291,6 +310,11 @@ const _abi = [
         name: "liquidityPool",
         type: "address",
       },
+      {
+        internalType: "address",
+        name: "governor",
+        type: "address",
+      },
     ],
     stateMutability: "nonpayable",
     type: "function",
@@ -298,9 +322,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "implementation",
-        type: "address",
+        internalType: "bytes32",
+        name: "versionKey",
+        type: "bytes32",
       },
       {
         internalType: "address",
@@ -313,19 +337,14 @@ const _abi = [
         type: "uint256",
       },
       {
-        internalType: "bool",
-        name: "isFastCreationEnabled",
-        type: "bool",
-      },
-      {
         internalType: "int256",
         name: "nonce",
         type: "int256",
       },
       {
-        internalType: "int256",
-        name: "insuranceFundCap",
-        type: "int256",
+        internalType: "bytes",
+        name: "initData",
+        type: "bytes",
       },
     ],
     name: "createLiquidityPoolWith",
@@ -333,6 +352,11 @@ const _abi = [
       {
         internalType: "address",
         name: "liquidityPool",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "governor",
         type: "address",
       },
     ],
@@ -399,31 +423,21 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "implementation",
+        name: "liquidityPool",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "governor",
         type: "address",
       },
     ],
-    name: "getDescription",
+    name: "getAppliedVersionKey",
     outputs: [
       {
-        internalType: "address",
-        name: "creator",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "creationTime",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "compatibility",
-        type: "uint256",
-      },
-      {
-        internalType: "string",
-        name: "note",
-        type: "string",
+        internalType: "bytes32",
+        name: "appliedVersionKey",
+        type: "bytes32",
       },
     ],
     stateMutability: "view",
@@ -434,9 +448,9 @@ const _abi = [
     name: "getLatestVersion",
     outputs: [
       {
-        internalType: "address",
-        name: "",
-        type: "address",
+        internalType: "bytes32",
+        name: "latestVersionKey",
+        type: "bytes32",
       },
     ],
     stateMutability: "view",
@@ -488,6 +502,35 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "address",
+        name: "liquidityPool",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "governor",
+        type: "address",
+      },
+    ],
+    name: "getRealImplementations",
+    outputs: [
+      {
+        internalType: "address",
+        name: "liquidityPoolTemplate",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "governorTemplate",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "getSymbolService",
     outputs: [
@@ -498,6 +541,19 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getTimelock",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "pure",
     type: "function",
   },
   {
@@ -521,6 +577,35 @@ const _abi = [
         internalType: "int256",
         name: "",
         type: "int256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "versionKey",
+        type: "bytes32",
+      },
+    ],
+    name: "getVersion",
+    outputs: [
+      {
+        internalType: "address",
+        name: "liquidityPoolTemplate",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "governorTemplate",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "compatibility",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -553,6 +638,34 @@ const _abi = [
       },
     ],
     name: "grantPrivilege",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "wethToken",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "symbolService",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "globalVault",
+        type: "address",
+      },
+      {
+        internalType: "int256",
+        name: "globalVaultFeeRate",
+        type: "int256",
+      },
+    ],
+    name: "initialize",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -637,21 +750,21 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "target",
-        type: "address",
+        internalType: "bytes32",
+        name: "targetVersionKey",
+        type: "bytes32",
       },
       {
-        internalType: "address",
-        name: "base",
-        type: "address",
+        internalType: "bytes32",
+        name: "baseVersionKey",
+        type: "bytes32",
       },
     ],
     name: "isVersionCompatible",
     outputs: [
       {
         internalType: "bool",
-        name: "",
+        name: "isCompatible",
         type: "bool",
       },
     ],
@@ -661,16 +774,16 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "implementation",
-        type: "address",
+        internalType: "bytes32",
+        name: "versionKey",
+        type: "bytes32",
       },
     ],
-    name: "isVersionValid",
+    name: "isVersionKeyValid",
     outputs: [
       {
         internalType: "bool",
-        name: "",
+        name: "isValid",
         type: "bool",
       },
     ],
@@ -734,9 +847,9 @@ const _abi = [
     name: "listAvailableVersions",
     outputs: [
       {
-        internalType: "address[]",
-        name: "result",
-        type: "address[]",
+        internalType: "bytes32[]",
+        name: "versionKeys",
+        type: "bytes32[]",
       },
     ],
     stateMutability: "view",
@@ -875,6 +988,55 @@ const _abi = [
     name: "transferOwnership",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "targetVersionKey",
+        type: "bytes32",
+      },
+    ],
+    name: "updateTo",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "targetVersionKey",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes",
+        name: "dataForLiquidityPool",
+        type: "bytes",
+      },
+      {
+        internalType: "bytes",
+        name: "dataForGovernor",
+        type: "bytes",
+      },
+    ],
+    name: "updateToAndCall",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "upgradeAdmin",
+    outputs: [
+      {
+        internalType: "contract IProxyAdmin",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
 ];

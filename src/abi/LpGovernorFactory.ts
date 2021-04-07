@@ -96,6 +96,12 @@ const _abi = [
       },
       {
         indexed: false,
+        internalType: "address",
+        name: "target",
+        type: "address",
+      },
+      {
+        indexed: false,
         internalType: "string[]",
         name: "signatures",
         type: "string[]",
@@ -295,6 +301,19 @@ const _abi = [
   {
     inputs: [],
     name: "SIGNATURE_PERPETUAL_UPGRADE",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "SIGNATURE_PERPETUAL_UPGRADE_AND_CALL",
     outputs: [
       {
         internalType: "bytes32",
@@ -572,6 +591,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "getMinter",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "getProposalThreshold",
     outputs: [
       {
@@ -648,6 +680,19 @@ const _abi = [
     name: "getReward",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getTarget",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -946,6 +991,11 @@ const _abi = [
       },
       {
         internalType: "address",
+        name: "target",
+        type: "address",
+      },
+      {
+        internalType: "address",
         name: "proposer",
         type: "address",
       },
@@ -1002,6 +1052,64 @@ const _abi = [
       },
     ],
     name: "propose",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "targetVersionKey",
+        type: "bytes32",
+      },
+      {
+        internalType: "string",
+        name: "description",
+        type: "string",
+      },
+    ],
+    name: "proposeToUpgrade",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "targetVersionKey",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes",
+        name: "dataForLiquidityPool",
+        type: "bytes",
+      },
+      {
+        internalType: "bytes",
+        name: "dataForGovernor",
+        type: "bytes",
+      },
+      {
+        internalType: "string",
+        name: "description",
+        type: "string",
+      },
+    ],
+    name: "proposeToUpgradeAndCall",
     outputs: [
       {
         internalType: "uint256",
