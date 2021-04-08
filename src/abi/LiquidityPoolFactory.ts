@@ -48,25 +48,6 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "claimer",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "int256",
-        name: "amount",
-        type: "int256",
-      },
-    ],
-    name: "ClaimFee",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
         name: "newOperator",
         type: "address",
       },
@@ -134,9 +115,9 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: "int256[10]",
+        internalType: "int256[9]",
         name: "baseParams",
-        type: "int256[10]",
+        type: "int256[9]",
       },
       {
         indexed: false,
@@ -184,25 +165,6 @@ const _abi = [
       },
     ],
     name: "DonateInsuranceFund",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "recipient",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "int256",
-        name: "amount",
-        type: "int256",
-      },
-    ],
-    name: "IncreaseFee",
     type: "event",
   },
   {
@@ -347,15 +309,9 @@ const _abi = [
     inputs: [
       {
         indexed: false,
-        internalType: "bytes32",
-        name: "key",
-        type: "bytes32",
-      },
-      {
-        indexed: false,
-        internalType: "int256",
+        internalType: "int256[2]",
         name: "value",
-        type: "int256",
+        type: "int256[2]",
       },
     ],
     name: "SetLiquidityPoolParameter",
@@ -372,6 +328,25 @@ const _abi = [
       },
     ],
     name: "SetNormalState",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "oldOralce",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newOracle",
+        type: "address",
+      },
+    ],
+    name: "SetOracle",
     type: "event",
   },
   {
@@ -496,6 +471,19 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "int256",
+        name: "amount",
+        type: "int256",
+      },
+    ],
+    name: "TransferExcessInsuranceFundToLP",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: "address",
         name: "operator",
@@ -598,19 +586,6 @@ const _abi = [
       },
     ],
     name: "Withdraw",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "int256",
-        name: "amount",
-        type: "int256",
-      },
-    ],
-    name: "transferExcessInsuranceFundToLP",
     type: "event",
   },
   {

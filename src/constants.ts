@@ -12,7 +12,7 @@ export const CHAIN_ID_TO_READER_ADDRESS: { [chainID: number]: string } = {
   // kovan
   42: '0x50DD9E7d582F13637137F8bDD8357E0b6b5f6B5B',
   // s10poa
-  1337: '0x7Ef622CaA0516bEC19447625A9dC248ad156f034',
+  1337: '0x69dFa4358d596446158d664478DD2fb8FF2B37CC',
   // bsc
   // 56: '',
   // bsc testnet
@@ -21,7 +21,7 @@ export const CHAIN_ID_TO_READER_ADDRESS: { [chainID: number]: string } = {
 
 export const CHAIN_ID_TO_POOL_CREATOR_ADDRESS: { [chainID: number]: string } = {
   42: '0xF55cF7BbaF548115DCea6DF10c57DF7c7eD88b9b',
-  1337: '0xA800Bcb48c188508167FAa1d12e8A023a3a3D044',
+  1337: '0xe78Ed5aa668D03DEbAa4423f6078b8232947df84',
   // 56: '',
   97: '0x52e09568f4a3987FD8510711f31D37C5aD36cF63',
 }
@@ -42,7 +42,7 @@ export const CHAIN_ID_TO_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: number]: str
 
 export const CHAIN_ID_SYMBOL_SERVICE_ADDRESS: { [chainID: number]: string } = {
   42: '0x0A701c621210859eAbE2F47BE37456BEc2427462',
-  1337: '0x64469dFE912274474aedb74cd991932cd4CDE7f0',
+  1337: '0x6f256eBDa70dB46C2a5e98011B332d4D5D0C5F07',
   // 56: '',
   97: '0x382746fed08817E98eA3923e9C3F1969E87d3e16',
 }

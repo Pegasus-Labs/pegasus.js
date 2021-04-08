@@ -18,6 +18,17 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "_poolCreator",
+        type: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "liquidityPool",
         type: "address",
       },
@@ -155,6 +166,25 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "proxy",
+        type: "address",
+      },
+    ],
+    name: "getImplementation",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "liquidityPool",
         type: "address",
       },
@@ -276,6 +306,19 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "poolCreator",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {

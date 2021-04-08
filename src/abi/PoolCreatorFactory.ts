@@ -90,6 +90,12 @@ const _abi = [
       {
         indexed: false,
         internalType: "address",
+        name: "shareToken",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address",
         name: "collateral",
         type: "address",
       },
@@ -496,35 +502,6 @@ const _abi = [
         internalType: "uint256",
         name: "",
         type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "liquidityPool",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "governor",
-        type: "address",
-      },
-    ],
-    name: "getRealImplementations",
-    outputs: [
-      {
-        internalType: "address",
-        name: "liquidityPoolTemplate",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "governorTemplate",
-        type: "address",
       },
     ],
     stateMutability: "view",
@@ -991,16 +968,16 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
+    inputs: [],
+    name: "upgradeAdmin",
+    outputs: [
       {
-        internalType: "bytes32",
-        name: "targetVersionKey",
-        type: "bytes32",
+        internalType: "contract IProxyAdmin",
+        name: "",
+        type: "address",
       },
     ],
-    name: "updateTo",
-    outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -1021,22 +998,9 @@ const _abi = [
         type: "bytes",
       },
     ],
-    name: "updateToAndCall",
+    name: "upgradeToAndCall",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "upgradeAdmin",
-    outputs: [
-      {
-        internalType: "contract IProxyAdmin",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
 ];

@@ -25,7 +25,6 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   functions: {
     "SIGNATURE_PERPETUAL_SETTLE()": FunctionFragment;
     "SIGNATURE_PERPETUAL_TRANSFER_OPERATOR()": FunctionFragment;
-    "SIGNATURE_PERPETUAL_UPGRADE()": FunctionFragment;
     "SIGNATURE_PERPETUAL_UPGRADE_AND_CALL()": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
@@ -64,7 +63,6 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     "proposalThresholdRate()": FunctionFragment;
     "proposals(uint256)": FunctionFragment;
     "propose(string[],bytes[],string)": FunctionFragment;
-    "proposeToUpgrade(bytes32,string)": FunctionFragment;
     "proposeToUpgradeAndCall(bytes32,bytes,bytes,string)": FunctionFragment;
     "quorumRate()": FunctionFragment;
     "rewardDistribution()": FunctionFragment;
@@ -91,10 +89,6 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "SIGNATURE_PERPETUAL_TRANSFER_OPERATOR",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "SIGNATURE_PERPETUAL_UPGRADE",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -234,10 +228,6 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     values: [string[], BytesLike[], string]
   ): string;
   encodeFunctionData(
-    functionFragment: "proposeToUpgrade",
-    values: [BytesLike, string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "proposeToUpgradeAndCall",
     values: [BytesLike, BytesLike, BytesLike, string]
   ): string;
@@ -307,10 +297,6 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "SIGNATURE_PERPETUAL_TRANSFER_OPERATOR",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "SIGNATURE_PERPETUAL_UPGRADE",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -408,10 +394,6 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "proposals", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "propose", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "proposeToUpgrade",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "proposeToUpgradeAndCall",
     data: BytesLike
@@ -523,18 +505,6 @@ export class LpGovernor extends Contract {
     }>;
 
     "SIGNATURE_PERPETUAL_TRANSFER_OPERATOR()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    SIGNATURE_PERPETUAL_UPGRADE(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "SIGNATURE_PERPETUAL_UPGRADE()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -1078,18 +1048,6 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    proposeToUpgrade(
-      targetVersionKey: BytesLike,
-      description: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "proposeToUpgrade(bytes32,string)"(
-      targetVersionKey: BytesLike,
-      description: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     proposeToUpgradeAndCall(
       targetVersionKey: BytesLike,
       dataForLiquidityPool: BytesLike,
@@ -1328,10 +1286,6 @@ export class LpGovernor extends Contract {
   "SIGNATURE_PERPETUAL_TRANSFER_OPERATOR()"(
     overrides?: CallOverrides
   ): Promise<string>;
-
-  SIGNATURE_PERPETUAL_UPGRADE(overrides?: CallOverrides): Promise<string>;
-
-  "SIGNATURE_PERPETUAL_UPGRADE()"(overrides?: CallOverrides): Promise<string>;
 
   SIGNATURE_PERPETUAL_UPGRADE_AND_CALL(
     overrides?: CallOverrides
@@ -1725,18 +1679,6 @@ export class LpGovernor extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  proposeToUpgrade(
-    targetVersionKey: BytesLike,
-    description: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "proposeToUpgrade(bytes32,string)"(
-    targetVersionKey: BytesLike,
-    description: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   proposeToUpgradeAndCall(
     targetVersionKey: BytesLike,
     dataForLiquidityPool: BytesLike,
@@ -1869,10 +1811,6 @@ export class LpGovernor extends Contract {
     "SIGNATURE_PERPETUAL_TRANSFER_OPERATOR()"(
       overrides?: CallOverrides
     ): Promise<string>;
-
-    SIGNATURE_PERPETUAL_UPGRADE(overrides?: CallOverrides): Promise<string>;
-
-    "SIGNATURE_PERPETUAL_UPGRADE()"(overrides?: CallOverrides): Promise<string>;
 
     SIGNATURE_PERPETUAL_UPGRADE_AND_CALL(
       overrides?: CallOverrides
@@ -2260,18 +2198,6 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    proposeToUpgrade(
-      targetVersionKey: BytesLike,
-      description: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "proposeToUpgrade(bytes32,string)"(
-      targetVersionKey: BytesLike,
-      description: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     proposeToUpgradeAndCall(
       targetVersionKey: BytesLike,
       dataForLiquidityPool: BytesLike,
@@ -2454,12 +2380,6 @@ export class LpGovernor extends Contract {
     ): Promise<BigNumber>;
 
     "SIGNATURE_PERPETUAL_TRANSFER_OPERATOR()"(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    SIGNATURE_PERPETUAL_UPGRADE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "SIGNATURE_PERPETUAL_UPGRADE()"(
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2790,18 +2710,6 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    proposeToUpgrade(
-      targetVersionKey: BytesLike,
-      description: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "proposeToUpgrade(bytes32,string)"(
-      targetVersionKey: BytesLike,
-      description: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     proposeToUpgradeAndCall(
       targetVersionKey: BytesLike,
       dataForLiquidityPool: BytesLike,
@@ -2940,14 +2848,6 @@ export class LpGovernor extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "SIGNATURE_PERPETUAL_TRANSFER_OPERATOR()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    SIGNATURE_PERPETUAL_UPGRADE(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "SIGNATURE_PERPETUAL_UPGRADE()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -3307,18 +3207,6 @@ export class LpGovernor extends Contract {
     "propose(string[],bytes[],string)"(
       signatures: string[],
       calldatas: BytesLike[],
-      description: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    proposeToUpgrade(
-      targetVersionKey: BytesLike,
-      description: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "proposeToUpgrade(bytes32,string)"(
-      targetVersionKey: BytesLike,
       description: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

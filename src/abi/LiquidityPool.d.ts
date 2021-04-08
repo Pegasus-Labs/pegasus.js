@@ -433,13 +433,11 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
 
   events: {
     "AddLiquidity(address,int256,int256)": EventFragment;
-    "ClaimFee(address,int256)": EventFragment;
     "ClaimOperator(address)": EventFragment;
     "Clear(uint256,address)": EventFragment;
-    "CreatePerpetual(uint256,address,address,address,address,address,int256[10],int256[7])": EventFragment;
+    "CreatePerpetual(uint256,address,address,address,address,address,int256[9],int256[7])": EventFragment;
     "Deposit(uint256,address,int256)": EventFragment;
     "DonateInsuranceFund(int256)": EventFragment;
-    "IncreaseFee(address,int256)": EventFragment;
     "Liquidate(uint256,address,address,int256,int256,int256,int256)": EventFragment;
     "OperatorCheckIn(address)": EventFragment;
     "RemoveLiquidity(address,int256,int256)": EventFragment;
@@ -447,29 +445,28 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "RunLiquidityPool()": EventFragment;
     "SetClearedState(uint256)": EventFragment;
     "SetEmergencyState(uint256,int256,uint256)": EventFragment;
-    "SetLiquidityPoolParameter(bytes32,int256)": EventFragment;
+    "SetLiquidityPoolParameter(int256[2])": EventFragment;
     "SetNormalState(uint256)": EventFragment;
+    "SetOracle(address,address)": EventFragment;
     "SetPerpetualBaseParameter(uint256,int256[9])": EventFragment;
     "SetPerpetualRiskParameter(uint256,int256[7],int256[7],int256[7])": EventFragment;
     "Settle(uint256,address,int256)": EventFragment;
     "Trade(uint256,address,int256,int256,int256,int256)": EventFragment;
+    "TransferExcessInsuranceFundToLP(int256)": EventFragment;
     "TransferFeeToOperator(address,int256)": EventFragment;
     "TransferOperatorTo(address)": EventFragment;
     "UpdatePerpetualRiskParameter(uint256,int256[7])": EventFragment;
     "UpdatePoolMargin(int256)": EventFragment;
     "UpdateUnitAccumulativeFunding(uint256,int256)": EventFragment;
     "Withdraw(uint256,address,int256)": EventFragment;
-    "transferExcessInsuranceFundToLP(int256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "AddLiquidity"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "ClaimFee"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ClaimOperator"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Clear"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "CreatePerpetual"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "DonateInsuranceFund"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "IncreaseFee"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Liquidate"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OperatorCheckIn"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveLiquidity"): EventFragment;
@@ -479,10 +476,14 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "SetEmergencyState"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetLiquidityPoolParameter"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetNormalState"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetOracle"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetPerpetualBaseParameter"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetPerpetualRiskParameter"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Settle"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Trade"): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: "TransferExcessInsuranceFundToLP"
+  ): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferFeeToOperator"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferOperatorTo"): EventFragment;
   getEvent(
@@ -493,9 +494,6 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     nameOrSignatureOrTopic: "UpdateUnitAccumulativeFunding"
   ): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Withdraw"): EventFragment;
-  getEvent(
-    nameOrSignatureOrTopic: "transferExcessInsuranceFundToLP"
-  ): EventFragment;
 }
 
 export class LiquidityPool extends Contract {
@@ -3036,8 +3034,6 @@ export class LiquidityPool extends Contract {
       mintedShare: null
     ): EventFilter;
 
-    ClaimFee(claimer: string | null, amount: null): EventFilter;
-
     ClaimOperator(newOperator: string | null): EventFilter;
 
     Clear(perpetualIndex: null, trader: string | null): EventFilter;
@@ -3060,8 +3056,6 @@ export class LiquidityPool extends Contract {
     ): EventFilter;
 
     DonateInsuranceFund(amount: null): EventFilter;
-
-    IncreaseFee(recipient: string | null, amount: null): EventFilter;
 
     Liquidate(
       perpetualIndex: null,
@@ -3093,9 +3087,11 @@ export class LiquidityPool extends Contract {
       settlementTime: null
     ): EventFilter;
 
-    SetLiquidityPoolParameter(key: null, value: null): EventFilter;
+    SetLiquidityPoolParameter(value: null): EventFilter;
 
     SetNormalState(perpetualIndex: null): EventFilter;
+
+    SetOracle(oldOralce: string | null, newOracle: string | null): EventFilter;
 
     SetPerpetualBaseParameter(
       perpetualIndex: null,
@@ -3124,6 +3120,8 @@ export class LiquidityPool extends Contract {
       lpFee: null
     ): EventFilter;
 
+    TransferExcessInsuranceFundToLP(amount: null): EventFilter;
+
     TransferFeeToOperator(
       operator: string | null,
       operatorFee: null
@@ -3148,8 +3146,6 @@ export class LiquidityPool extends Contract {
       trader: string | null,
       amount: null
     ): EventFilter;
-
-    transferExcessInsuranceFundToLP(amount: null): EventFilter;
   };
 
   estimateGas: {

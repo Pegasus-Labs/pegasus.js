@@ -24,8 +24,10 @@ interface ReaderInterface extends ethers.utils.Interface {
   functions: {
     "getAccountStorage(address,uint256,address)": FunctionFragment;
     "getAccountsInfo(address,uint256,uint256,uint256)": FunctionFragment;
+    "getImplementation(address)": FunctionFragment;
     "getLiquidityPoolStorage(address)": FunctionFragment;
     "getPoolMargin(address)": FunctionFragment;
+    "poolCreator()": FunctionFragment;
     "queryAddLiquidity(address,int256,int256)": FunctionFragment;
     "queryRemoveLiquidity(address,int256,int256)": FunctionFragment;
     "queryTradeWithAMM(address,uint256,int256)": FunctionFragment;
@@ -40,12 +42,20 @@ interface ReaderInterface extends ethers.utils.Interface {
     values: [string, BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getImplementation",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getLiquidityPoolStorage",
     values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "getPoolMargin",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "poolCreator",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "queryAddLiquidity",
@@ -69,11 +79,19 @@ interface ReaderInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getImplementation",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getLiquidityPoolStorage",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "getPoolMargin",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "poolCreator",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -136,6 +154,20 @@ export class Reader extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    getImplementation(
+      proxy: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "getImplementation(address)"(
+      proxy: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
     getLiquidityPoolStorage(
       liquidityPool: string,
       overrides?: Overrides
@@ -155,6 +187,18 @@ export class Reader extends Contract {
       liquidityPool: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    poolCreator(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "poolCreator()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
 
     queryAddLiquidity(
       liquidityPool: string,
@@ -229,6 +273,13 @@ export class Reader extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  getImplementation(proxy: string, overrides?: CallOverrides): Promise<string>;
+
+  "getImplementation(address)"(
+    proxy: string,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   getLiquidityPoolStorage(
     liquidityPool: string,
     overrides?: Overrides
@@ -248,6 +299,10 @@ export class Reader extends Contract {
     liquidityPool: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  poolCreator(overrides?: CallOverrides): Promise<string>;
+
+  "poolCreator()"(overrides?: CallOverrides): Promise<string>;
 
   queryAddLiquidity(
     liquidityPool: string,
@@ -446,6 +501,16 @@ export class Reader extends Contract {
       }[];
     }>;
 
+    getImplementation(
+      proxy: string,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "getImplementation(address)"(
+      proxy: string,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     getLiquidityPoolStorage(
       liquidityPool: string,
       overrides?: CallOverrides
@@ -1269,6 +1334,10 @@ export class Reader extends Contract {
       1: BigNumber;
       2: boolean;
     }>;
+
+    poolCreator(overrides?: CallOverrides): Promise<string>;
+
+    "poolCreator()"(overrides?: CallOverrides): Promise<string>;
 
     queryAddLiquidity(
       liquidityPool: string,
@@ -1388,6 +1457,16 @@ export class Reader extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    getImplementation(
+      proxy: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getImplementation(address)"(
+      proxy: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getLiquidityPoolStorage(
       liquidityPool: string,
       overrides?: Overrides
@@ -1407,6 +1486,10 @@ export class Reader extends Contract {
       liquidityPool: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    poolCreator(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "poolCreator()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     queryAddLiquidity(
       liquidityPool: string,
@@ -1482,6 +1565,16 @@ export class Reader extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    getImplementation(
+      proxy: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getImplementation(address)"(
+      proxy: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getLiquidityPoolStorage(
       liquidityPool: string,
       overrides?: Overrides
@@ -1501,6 +1594,10 @@ export class Reader extends Contract {
       liquidityPool: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
+
+    poolCreator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "poolCreator()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     queryAddLiquidity(
       liquidityPool: string,
