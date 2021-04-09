@@ -16,21 +16,21 @@ export const CHAIN_ID_TO_READER_ADDRESS: { [chainID: number]: string } = {
   // bsc
   // 56: '',
   // bsc testnet
-  97: '0x207eD1742cc0BeBD03E50e855d3a14E41f93A461',
+  97: '0x5c32d02948165c75F682A59aF1a9f654F3Ece214',
 }
 
 export const CHAIN_ID_TO_POOL_CREATOR_ADDRESS: { [chainID: number]: string } = {
   42: '0x0956a627788199bE312c9a1f2d8cBA70ec30fCb5',
   1337: '0x94559e90eaac02719BA4277056E431871ED40F6a',
   // 56: '',
-  97: '0x52e09568f4a3987FD8510711f31D37C5aD36cF63',
+  97: '0x6cadfF06B18d9AeF58A974C7073F37B622D660B0',
 }
 
 export const CHAIN_ID_TO_BROKER_ADDRESS: { [chainID: number]: string } = {
   42: '0xE852039e483F6E9aDbb0408a7d970d4cf5Ec879b',
   1337: '0xDaeD36C38b0C4BE607E07458a159203bEC54ad0d',
   // 56: '',
-  97: '0xebd233F44D57915d1F23c69E4b296F05EfB1FB85',
+  97: '0xde3093172Fe85691766391547169f903812d6450',
 }
 
 export const CHAIN_ID_TO_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: number]: string } = {
@@ -44,7 +44,7 @@ export const CHAIN_ID_SYMBOL_SERVICE_ADDRESS: { [chainID: number]: string } = {
   42: '0x0A701c621210859eAbE2F47BE37456BEc2427462',
   1337: '0x1E191A99Cb0C196E7A6476C4Bd9785DB641f960B',
   // 56: '',
-  97: '0x382746fed08817E98eA3923e9C3F1969E87d3e16',
+  97: '0x63372427A3Bcc8A7d7F04f3A4581A37Cd41f89c4',
 }
 
 // leave 1% when calculating withdrawal penalty if position != 0
