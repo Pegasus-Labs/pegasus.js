@@ -35,6 +35,8 @@ import { GovernorAlpha } from './abi/GovernorAlpha'
 import { GovernorAlphaFactory } from './abi/GovernorAlphaFactory'
 import { Timelock } from './abi/Timelock'
 import { TimelockFactory } from './abi/TimelockFactory'
+import { RemarginHelper } from './abi/RemarginHelper'
+import { RemarginHelperFactory } from './abi/RemarginHelperFactory'
 
 export function getLiquidityPoolContract(contractAddress: string, signerOrProvider: SignerOrProvider): LiquidityPool {
   getAddress(contractAddress)
@@ -104,6 +106,11 @@ export function getDaoGovernorContract(contractAddress: string, signerOrProvider
 export function getTimeLockContract(contractAddress: string, signerOrProvider: SignerOrProvider): Timelock {
   getAddress(contractAddress)
   return TimelockFactory.connect(contractAddress, signerOrProvider)
+}
+
+export function getReMarginContract(contractAddress: string, signerOrProvider: SignerOrProvider): RemarginHelper {
+  getAddress(contractAddress)
+  return RemarginHelperFactory.connect(contractAddress, signerOrProvider)
 }
 
 export async function getReaderContract(signerOrProvider: SignerOrProvider, contractAddress?: string): Promise<Reader> {

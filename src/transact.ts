@@ -9,6 +9,7 @@ import { Overrides, PayableOverrides } from '@ethersproject/contracts'
 import { getAddress } from '@ethersproject/address'
 import { LpGovernor } from './abi/LpGovernor'
 import { Xmcb } from './abi/Xmcb'
+import { RemarginHelper } from './abi/RemarginHelper'
 
 export async function perpetualTrade(
   liquidityPool: LiquidityPool,
@@ -222,4 +223,26 @@ export async function unstakeMCB(
     .shiftedBy(DECIMALS)
     .dp(0, BigNumber.ROUND_DOWN)
   return await xmcb.withdraw(largeAmount.toFixed(), overrides)
+}
+
+export async function perpetualReMargin(
+  reMarginContract: RemarginHelper,
+  fromPoolAddress: string,
+  fromPerpIndex: number,
+  toPoolAddress: string,
+  toPerpIndex: number, 
+  amount: BigNumberish,
+  overrides: Overrides = {},
+): Promise<ethers.providers.TransactionResponse> {
+  const largeAmount = normalizeBigNumberish(amount)
+    .shiftedBy(DECIMALS)
+    .dp(0, BigNumber.ROUND_DOWN)
+  return await reMarginContract.remargin(
+    fromPoolAddress,
+    fromPerpIndex,
+    toPoolAddress,
+    toPerpIndex,
+    largeAmount.toFixed(),
+    overrides
+  )
 }
