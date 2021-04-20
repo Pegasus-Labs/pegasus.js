@@ -3,7 +3,7 @@
 
   If you don't need these tools, you can remove this file to reduce the package size.
 */
-import { computeAccount, computeAMMTrade, computeAMMPrice } from './computation'
+import { computeAccount, computeTradeWithPrice, computeAMMTrade, computeAMMPrice } from './computation'
 import { BigNumberish, InvalidArgumentError, AccountStorage, LiquidityPoolStorage, AMMTradingContext } from './types'
 import {
   initAMMTradingContext,
@@ -24,11 +24,12 @@ const minimize = require('minimize-golden-section-1d')
 
 // max amount when using limit-order
 // the returned amount is the trader's perspective
-export function computeLimitOrderMaxTradeAmount(
+export function computeMaxTradeAmountWithPrice(
   p: LiquidityPoolStorage,
   perpetualIndex: number,
   s: AccountStorage,
   traderMaxLeverage: BigNumberish,
+  feeRate: BigNumberish,
   isTraderBuy: boolean
 ) {
   const perpetual = p.perpetuals.get(perpetualIndex)
@@ -36,18 +37,30 @@ export function computeLimitOrderMaxTradeAmount(
     throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
   }
   const normalizedMaxLeverage = normalizeBigNumberish(traderMaxLeverage)
+  const normalizedFeeRate = normalizeBigNumberish(feeRate)
   if (normalizedMaxLeverage.lte(_0)) {
     throw Error(`bad traderMaxLeverage ${normalizedMaxLeverage.toFixed()}`)
   }
 
-  //          mark | newPos |
-  // 0 <= ---------------------- <= lev
-  //       currentMarginBalance
-  const marginBalance = computeAccount(p, perpetualIndex, s).accountComputed.marginBalance
-  let absNewPos = normalizedMaxLeverage.times(marginBalance).div(perpetual.markPrice)
-  absNewPos = BigNumber.maximum(absNewPos, _0)
-  
-  const newPos = isTraderBuy ? absNewPos : absNewPos.negated()
+  // close all existing positions to make the method simpler. 
+  // this step consumes fees, so that the final amount will be smaller than safe amount.
+  let newDetails = computeAccount(p, perpetualIndex, s)
+  let closeAmount = s.positionAmount.negated()
+  if (!closeAmount.isZero()) {
+    const closeResult = computeTradeWithPrice(p, perpetualIndex, s, perpetual.markPrice, closeAmount, normalizedFeeRate)
+    newDetails = closeResult.afterTrade
+  }
+
+  // open again
+  //                 mark | x |                              marginBalance       lev
+  // 0 <= --------------------------------- <= lev, | x | = --------------- -------------
+  //       marginBalance - mark | x | fee)                       mark        1 + fee lev
+  let absX = newDetails.accountComputed.marginBalance.div(perpetual.markPrice)
+  absX = absX.times(normalizedMaxLeverage)
+  absX = absX.div(normalizedFeeRate.times(normalizedMaxLeverage).plus(_1))
+  absX = BigNumber.maximum(_0, absX)
+
+  const newPos = isTraderBuy ? absX : absX.negated()
   let result = newPos.minus(s.positionAmount)
   if (isTraderBuy) {
     result = BigNumber.maximum(result, _0)

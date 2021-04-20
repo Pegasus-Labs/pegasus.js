@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { computeTradeWithPrice, computeAMMTrade, computeAMMPrice } from '../src/computation'
 import {
-  computeLimitOrderMaxTradeAmount,
+  computeMaxTradeAmountWithPrice,
   computeAMMMaxTradeAmount,
   computeAMMTradeAmountByMargin,
   computeAMMAmountWithPrice,
@@ -132,60 +132,66 @@ const accountStorage3: AccountStorage = {
   entryFunding: null
 }
 
-describe('computeLimitOrderMaxTradeAmount', function() {
+describe('computeMaxTradeAmountWithPrice', function() {
+  const price = perpetual1.markPrice // let trading price = mark price, because this function is designed for a stop order
   const lev = 5
+  const fee = '0.001'
 
   it('safe account buy', function() {
-    const amount = computeLimitOrderMaxTradeAmount(
+    const amount = computeMaxTradeAmountWithPrice(
       poolStorage1,
       TEST_MARKET_INDEX0,
       accountStorage1,
       lev,
+      fee,
       true
     )
     expect(amount.gt(_0)).toBeTruthy()
-    const res = computeTradeWithPrice(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, perpetual1.markPrice, amount, _0)
+    const res = computeTradeWithPrice(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, price, amount, fee)
     expect(res.tradeIsSafe).toBeTruthy()
     expect(res.afterTrade.accountComputed.leverage.gt('4.9')).toBeTruthy()
     expect(res.afterTrade.accountComputed.leverage.lte('5')).toBeTruthy()
   })
 
   it('safe account sell', function() {
-    const amount = computeLimitOrderMaxTradeAmount(
+    const amount = computeMaxTradeAmountWithPrice(
       poolStorage1,
       TEST_MARKET_INDEX0,
       accountStorage1,
       lev,
+      fee,
       false
     )
     expect(amount.lt(_0)).toBeTruthy()
-    const res = computeTradeWithPrice(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, perpetual1.markPrice, amount, _0)
+    const res = computeTradeWithPrice(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, price, amount, fee)
     expect(res.tradeIsSafe).toBeTruthy()
     expect(res.afterTrade.accountComputed.leverage.gt('4.9')).toBeTruthy()
     expect(res.afterTrade.accountComputed.leverage.lte('5.1')).toBeTruthy()
   })
 
   it('unsafe account buy', function() {
-    const amount = computeLimitOrderMaxTradeAmount(
+    const amount = computeMaxTradeAmountWithPrice(
       poolStorage1,
       TEST_MARKET_INDEX0,
       accountStorage3,
       lev,
+      fee,
       true
     )
     expect(amount.gt(_0)).toBeTruthy()
-    const res = computeTradeWithPrice(poolStorage1, TEST_MARKET_INDEX0, accountStorage3, perpetual1.markPrice, amount, _0)
+    const res = computeTradeWithPrice(poolStorage1, TEST_MARKET_INDEX0, accountStorage3, price, amount, fee)
     expect(res.tradeIsSafe).toBeTruthy()
     expect(res.afterTrade.accountComputed.leverage.gt('4.9')).toBeTruthy()
     expect(res.afterTrade.accountComputed.leverage.lte('5.1')).toBeTruthy()
   })
 
   it('unsafe account sell', function() {
-    const amount = computeLimitOrderMaxTradeAmount(
+    const amount = computeMaxTradeAmountWithPrice(
       poolStorage1,
       TEST_MARKET_INDEX0,
       accountStorage3,
       lev,
+      fee,
       false
     )
     expect(amount.isZero()).toBeTruthy()
