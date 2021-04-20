@@ -24,7 +24,7 @@ const minimize = require('minimize-golden-section-1d')
 
 // max amount when using limit-order
 // the returned amount is the trader's perspective
-export function computeMaxTradeAmountWithPrice(
+export function computeLimitOrderMaxTradeAmount(
   p: LiquidityPoolStorage,
   perpetualIndex: number,
   s: AccountStorage,
