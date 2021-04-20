@@ -3,7 +3,7 @@
 
   If you don't need these tools, you can remove this file to reduce the package size.
 */
-import { computeAccount, computeTradeWithPrice, computeAMMTrade, computeAMMPrice } from './computation'
+import { computeAccount, computeAMMTrade, computeAMMPrice } from './computation'
 import { BigNumberish, InvalidArgumentError, AccountStorage, LiquidityPoolStorage, AMMTradingContext } from './types'
 import {
   initAMMTradingContext,
@@ -22,70 +22,42 @@ import { sqrt, normalizeBigNumberish } from './utils'
 import BigNumber from 'bignumber.js'
 const minimize = require('minimize-golden-section-1d')
 
+// max amount when using limit-order
 // the returned amount is the trader's perspective
-export function computeMaxTradeAmountWithPrice(
+export function computeLimitOrderMaxTradeAmount(
   p: LiquidityPoolStorage,
   perpetualIndex: number,
   s: AccountStorage,
-  price: BigNumberish,
   traderMaxLeverage: BigNumberish,
-  feeRate: BigNumberish,
   isTraderBuy: boolean
 ) {
   const perpetual = p.perpetuals.get(perpetualIndex)
   if (!perpetual) {
     throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
   }
-  const normalizedPrice = normalizeBigNumberish(price)
   const normalizedMaxLeverage = normalizeBigNumberish(traderMaxLeverage)
-  const normalizedFeeRate = normalizeBigNumberish(feeRate)
-  if (normalizedPrice.lte(_0) || normalizedMaxLeverage.lte(_0)) {
-    throw Error(`bad price ${normalizedPrice.toFixed()} or ammMaxLeverage ${normalizedMaxLeverage.toFixed()}`)
+  if (normalizedMaxLeverage.lte(_0)) {
+    throw Error(`bad traderMaxLeverage ${normalizedMaxLeverage.toFixed()}`)
   }
 
-  // close all existing positions to make the method simpler. 
-  // this step consumes fees, so that the final amount will be smaller than safe amount.
-  let newDetails = computeAccount(p, perpetualIndex, s)
-  let closeAmount = s.positionAmount.negated()
-  if (!closeAmount.isZero()) {
-    const closeResult = computeTradeWithPrice(p, perpetualIndex, s, normalizedPrice, closeAmount, normalizedFeeRate)
-    newDetails = closeResult.afterTrade
-  }
-
-  // open again
-  //                        mark | x |
-  // lev = ---------------------------------------------
-  //        (cash - price x - price | x | fee) + mark x
-  //                       cash lev                                        - cash lev
-  // => x = -------------------------------------- if x > 0, -------------------------------------- if x < 0,
-  //         mark (1 - lev) + price lev (fee + 1)             mark (1 + lev) + price lev (fee - 1)
-  const cash = newDetails.accountComputed.availableCashBalance
-  let denominator = perpetual.markPrice
+  //          mark | newPos |
+  // 0 <= ---------------------- <= lev
+  //       currentMarginBalance
+  const marginBalance = computeAccount(p, perpetualIndex, s).accountComputed.marginBalance
+  let absNewPos = normalizedMaxLeverage.times(marginBalance).div(perpetual.markPrice)
+  absNewPos = BigNumber.maximum(absNewPos, _0)
+  
+  const newPos = isTraderBuy ? absNewPos : absNewPos.negated()
+  let result = newPos.minus(s.positionAmount)
   if (isTraderBuy) {
-    denominator = denominator.times(_1.minus(normalizedMaxLeverage))
-    denominator = denominator.plus(normalizedPrice.times(normalizedMaxLeverage).times(normalizedFeeRate.plus(_1)))
+    result = BigNumber.maximum(result, _0)
   } else {
-    denominator = denominator.times(_1.plus(normalizedMaxLeverage))
-    denominator = denominator.plus(normalizedPrice.times(normalizedMaxLeverage).times(normalizedFeeRate.minus(_1)))
-    denominator = denominator.negated()
+    result = BigNumber.minimum(result, _0)
   }
-  if (denominator.isZero()) {
-    // no solution
-    return _0
-  }
-  let openAmount = cash.times(normalizedMaxLeverage).div(denominator)
-  const result = closeAmount.plus(openAmount)
-
-  // check the direction
-  if (isTraderBuy && result.lt(_0)) {
-    return _0
-  } else if (!isTraderBuy && result.gt(_0)) {
-    return _0
-  }
-
   return result
 }
 
+// max amount when using market-order
 // the returned amount is the trader's perspective
 export function computeAMMMaxTradeAmount(
   p: LiquidityPoolStorage,
@@ -142,6 +114,7 @@ export function computeAMMMaxTradeAmount(
   return result
 }
 
+// get amount according to a given (price(amount) * amount) when using market-order
 // the returned amount is the trader's perspective
 export function computeAMMTradeAmountByMargin(
   p: LiquidityPoolStorage,
