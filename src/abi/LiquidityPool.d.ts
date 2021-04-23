@@ -47,7 +47,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "queryAddLiquidity(int256,int256)": FunctionFragment;
     "queryRemoveLiquidity(int256,int256)": FunctionFragment;
     "queryTradeWithAMM(uint256,int256)": FunctionFragment;
-    "removeLiquidity(int256,int256)": FunctionFragment;
+    "removeLiquidity(int256,int256,bool)": FunctionFragment;
     "revokeOperator()": FunctionFragment;
     "runLiquidityPool()": FunctionFragment;
     "setEmergencyState(uint256)": FunctionFragment;
@@ -55,11 +55,11 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "setOracle(uint256,address)": FunctionFragment;
     "setPerpetualBaseParameter(uint256,int256[9])": FunctionFragment;
     "setPerpetualRiskParameter(uint256,int256[7],int256[7],int256[7])": FunctionFragment;
-    "settle(uint256,address)": FunctionFragment;
+    "settle(uint256,address,bool)": FunctionFragment;
     "trade(uint256,address,int256,int256,uint256,address,uint32)": FunctionFragment;
     "transferOperator(address)": FunctionFragment;
     "updatePerpetualRiskParameter(uint256,int256[7])": FunctionFragment;
-    "withdraw(uint256,address,int256)": FunctionFragment;
+    "withdraw(uint256,address,int256,bool)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -194,7 +194,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "removeLiquidity",
-    values: [BigNumberish, BigNumberish]
+    values: [BigNumberish, BigNumberish, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "revokeOperator",
@@ -268,7 +268,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "settle",
-    values: [BigNumberish, string]
+    values: [BigNumberish, string, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "trade",
@@ -303,7 +303,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "withdraw",
-    values: [BigNumberish, string, BigNumberish]
+    values: [BigNumberish, string, BigNumberish, boolean]
   ): string;
 
   decodeFunctionResult(
@@ -454,6 +454,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "Trade(uint256,address,int256,int256,int256,int256)": EventFragment;
     "TransferExcessInsuranceFundToLP(int256)": EventFragment;
     "TransferFeeToOperator(address,int256)": EventFragment;
+    "TransferFeeToReferrer(uint256,address,address,int256)": EventFragment;
     "TransferOperatorTo(address)": EventFragment;
     "UpdatePerpetualRiskParameter(uint256,int256[7])": EventFragment;
     "UpdatePoolMargin(int256)": EventFragment;
@@ -485,6 +486,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     nameOrSignatureOrTopic: "TransferExcessInsuranceFundToLP"
   ): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferFeeToOperator"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TransferFeeToReferrer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferOperatorTo"): EventFragment;
   getEvent(
     nameOrSignatureOrTopic: "UpdatePerpetualRiskParameter"
@@ -1125,12 +1127,14 @@ export class LiquidityPool extends Contract {
     removeLiquidity(
       shareToRemove: BigNumberish,
       cashToReturn: BigNumberish,
+      needUnwrap: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "removeLiquidity(int256,int256)"(
+    "removeLiquidity(int256,int256,bool)"(
       shareToRemove: BigNumberish,
       cashToReturn: BigNumberish,
+      needUnwrap: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1273,12 +1277,14 @@ export class LiquidityPool extends Contract {
     settle(
       perpetualIndex: BigNumberish,
       trader: string,
+      needUnwrap: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "settle(uint256,address)"(
+    "settle(uint256,address,bool)"(
       perpetualIndex: BigNumberish,
       trader: string,
+      needUnwrap: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1346,13 +1352,15 @@ export class LiquidityPool extends Contract {
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
+      needUnwrap: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "withdraw(uint256,address,int256)"(
+    "withdraw(uint256,address,int256,bool)"(
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
+      needUnwrap: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
   };
@@ -1960,12 +1968,14 @@ export class LiquidityPool extends Contract {
   removeLiquidity(
     shareToRemove: BigNumberish,
     cashToReturn: BigNumberish,
+    needUnwrap: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "removeLiquidity(int256,int256)"(
+  "removeLiquidity(int256,int256,bool)"(
     shareToRemove: BigNumberish,
     cashToReturn: BigNumberish,
+    needUnwrap: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -2108,12 +2118,14 @@ export class LiquidityPool extends Contract {
   settle(
     perpetualIndex: BigNumberish,
     trader: string,
+    needUnwrap: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "settle(uint256,address)"(
+  "settle(uint256,address,bool)"(
     perpetualIndex: BigNumberish,
     trader: string,
+    needUnwrap: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -2181,13 +2193,15 @@ export class LiquidityPool extends Contract {
     perpetualIndex: BigNumberish,
     trader: string,
     amount: BigNumberish,
+    needUnwrap: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "withdraw(uint256,address,int256)"(
+  "withdraw(uint256,address,int256,bool)"(
     perpetualIndex: BigNumberish,
     trader: string,
     amount: BigNumberish,
+    needUnwrap: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -2795,12 +2809,14 @@ export class LiquidityPool extends Contract {
     removeLiquidity(
       shareToRemove: BigNumberish,
       cashToReturn: BigNumberish,
+      needUnwrap: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "removeLiquidity(int256,int256)"(
+    "removeLiquidity(int256,int256,bool)"(
       shareToRemove: BigNumberish,
       cashToReturn: BigNumberish,
+      needUnwrap: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2943,12 +2959,14 @@ export class LiquidityPool extends Contract {
     settle(
       perpetualIndex: BigNumberish,
       trader: string,
+      needUnwrap: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "settle(uint256,address)"(
+    "settle(uint256,address,bool)"(
       perpetualIndex: BigNumberish,
       trader: string,
+      needUnwrap: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -3016,13 +3034,15 @@ export class LiquidityPool extends Contract {
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
+      needUnwrap: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "withdraw(uint256,address,int256)"(
+    "withdraw(uint256,address,int256,bool)"(
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
+      needUnwrap: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -3125,6 +3145,13 @@ export class LiquidityPool extends Contract {
     TransferFeeToOperator(
       operator: string | null,
       operatorFee: null
+    ): EventFilter;
+
+    TransferFeeToReferrer(
+      perpetualIndex: null,
+      trader: string | null,
+      referrer: string | null,
+      referralRebate: null
     ): EventFilter;
 
     TransferOperatorTo(newOperator: string | null): EventFilter;
@@ -3476,12 +3503,14 @@ export class LiquidityPool extends Contract {
     removeLiquidity(
       shareToRemove: BigNumberish,
       cashToReturn: BigNumberish,
+      needUnwrap: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "removeLiquidity(int256,int256)"(
+    "removeLiquidity(int256,int256,bool)"(
       shareToRemove: BigNumberish,
       cashToReturn: BigNumberish,
+      needUnwrap: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -3624,12 +3653,14 @@ export class LiquidityPool extends Contract {
     settle(
       perpetualIndex: BigNumberish,
       trader: string,
+      needUnwrap: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "settle(uint256,address)"(
+    "settle(uint256,address,bool)"(
       perpetualIndex: BigNumberish,
       trader: string,
+      needUnwrap: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -3697,13 +3728,15 @@ export class LiquidityPool extends Contract {
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
+      needUnwrap: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "withdraw(uint256,address,int256)"(
+    "withdraw(uint256,address,int256,bool)"(
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
+      needUnwrap: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
   };
@@ -4040,12 +4073,14 @@ export class LiquidityPool extends Contract {
     removeLiquidity(
       shareToRemove: BigNumberish,
       cashToReturn: BigNumberish,
+      needUnwrap: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "removeLiquidity(int256,int256)"(
+    "removeLiquidity(int256,int256,bool)"(
       shareToRemove: BigNumberish,
       cashToReturn: BigNumberish,
+      needUnwrap: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -4188,12 +4223,14 @@ export class LiquidityPool extends Contract {
     settle(
       perpetualIndex: BigNumberish,
       trader: string,
+      needUnwrap: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "settle(uint256,address)"(
+    "settle(uint256,address,bool)"(
       perpetualIndex: BigNumberish,
       trader: string,
+      needUnwrap: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -4261,13 +4298,15 @@ export class LiquidityPool extends Contract {
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
+      needUnwrap: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "withdraw(uint256,address,int256)"(
+    "withdraw(uint256,address,int256,bool)"(
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
+      needUnwrap: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
   };

@@ -70,12 +70,13 @@ export async function perpetualWithdraw(
   perpetualIndex: number,
   trader: string,
   collateralAmount: BigNumberish, // should be a decimal number (ie: 1.234)
+  needUnwrapEth = true,
   overrides: Overrides = {},
 ): Promise<ethers.providers.TransactionResponse> {
   const largeAmount = normalizeBigNumberish(collateralAmount)
     .shiftedBy(DECIMALS)
     .dp(0, BigNumber.ROUND_DOWN)
-  return await liquidityPool.withdraw(perpetualIndex, trader, largeAmount.toFixed(), overrides)
+  return await liquidityPool.withdraw(perpetualIndex, trader, largeAmount.toFixed(), needUnwrapEth, overrides)
 }
 
 export async function brokerDeposit(
@@ -109,14 +110,15 @@ export async function perpetualClear(
   return await liquidityPool.clear(perpetualIndex, overrides)
 }
 
-export async function perpetualSettleWithDraw(
+export async function perpetualSettle(
   liquidityPool: LiquidityPool,
   perpetualIndex: number,
   trader: string,
+  needUnwrapEth = true,
   overrides: Overrides = {},
 ): Promise<ethers.providers.TransactionResponse> {
   getAddress(trader)
-  return await liquidityPool.settle(perpetualIndex, trader, overrides)
+  return await liquidityPool.settle(perpetualIndex, trader, needUnwrapEth, overrides)
 }
 
 export async function addLiquidity(
@@ -146,6 +148,7 @@ export async function removeLiquidity(
   liquidityPool: LiquidityPool,
   shareToRemove: BigNumberish, // should be a decimal number (ie: 1.234)
   cashToReturn: BigNumberish, // should be a decimal number (ie: 1.234)
+  needUnwrapEth = true,
   overrides: Overrides = {},
 ): Promise<ethers.providers.TransactionResponse> {
   const largeShareToRemove = normalizeBigNumberish(shareToRemove)
@@ -154,7 +157,7 @@ export async function removeLiquidity(
   const largeCashToReturn = normalizeBigNumberish(cashToReturn)
     .shiftedBy(DECIMALS)
     .dp(0, BigNumber.ROUND_DOWN)
-  return await liquidityPool.removeLiquidity(largeShareToRemove.toFixed(), largeCashToReturn.toFixed(), overrides)
+  return await liquidityPool.removeLiquidity(largeShareToRemove.toFixed(), largeCashToReturn.toFixed(), needUnwrapEth, overrides)
 }
 
 export async function donateInsuranceFund(

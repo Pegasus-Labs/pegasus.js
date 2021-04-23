@@ -25,10 +25,8 @@ interface BrokerInterface extends ethers.utils.Interface {
   functions: {
     "balanceOf(address)": FunctionFragment;
     "batchTrade(bytes[],int256[],uint256[])": FunctionFragment;
-    "callFunction(bytes32,bytes32,string,bytes,bytes)": FunctionFragment;
     "cancelOrder(tuple)": FunctionFragment;
     "deposit()": FunctionFragment;
-    "getNonce(address)": FunctionFragment;
     "getOrderFilledAmount(tuple)": FunctionFragment;
     "isOrderCanceled(tuple)": FunctionFragment;
     "withdraw(uint256)": FunctionFragment;
@@ -38,10 +36,6 @@ interface BrokerInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "batchTrade",
     values: [BytesLike[], BigNumberish[], BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "callFunction",
-    values: [BytesLike, BytesLike, string, BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "cancelOrder",
@@ -66,7 +60,6 @@ interface BrokerInterface extends ethers.utils.Interface {
     ]
   ): string;
   encodeFunctionData(functionFragment: "deposit", values?: undefined): string;
-  encodeFunctionData(functionFragment: "getNonce", values: [string]): string;
   encodeFunctionData(
     functionFragment: "getOrderFilledAmount",
     values: [
@@ -119,15 +112,10 @@ interface BrokerInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "batchTrade", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "callFunction",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "cancelOrder",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getNonce", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getOrderFilledAmount",
     data: BytesLike
@@ -201,24 +189,6 @@ export class Broker extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    callFunction(
-      userData1: BytesLike,
-      userData2: BytesLike,
-      method: string,
-      callData: BytesLike,
-      signature: BytesLike,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "callFunction(bytes32,bytes32,string,bytes,bytes)"(
-      userData1: BytesLike,
-      userData2: BytesLike,
-      method: string,
-      callData: BytesLike,
-      signature: BytesLike,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     cancelOrder(
       order: {
         trader: string;
@@ -264,22 +234,6 @@ export class Broker extends Contract {
     deposit(overrides?: PayableOverrides): Promise<ContractTransaction>;
 
     "deposit()"(overrides?: PayableOverrides): Promise<ContractTransaction>;
-
-    getNonce(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      nonce: number;
-      0: number;
-    }>;
-
-    "getNonce(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      nonce: number;
-      0: number;
-    }>;
 
     getOrderFilledAmount(
       order: {
@@ -407,24 +361,6 @@ export class Broker extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  callFunction(
-    userData1: BytesLike,
-    userData2: BytesLike,
-    method: string,
-    callData: BytesLike,
-    signature: BytesLike,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "callFunction(bytes32,bytes32,string,bytes,bytes)"(
-    userData1: BytesLike,
-    userData2: BytesLike,
-    method: string,
-    callData: BytesLike,
-    signature: BytesLike,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   cancelOrder(
     order: {
       trader: string;
@@ -470,13 +406,6 @@ export class Broker extends Contract {
   deposit(overrides?: PayableOverrides): Promise<ContractTransaction>;
 
   "deposit()"(overrides?: PayableOverrides): Promise<ContractTransaction>;
-
-  getNonce(account: string, overrides?: CallOverrides): Promise<number>;
-
-  "getNonce(address)"(
-    account: string,
-    overrides?: CallOverrides
-  ): Promise<number>;
 
   getOrderFilledAmount(
     order: {
@@ -594,24 +523,6 @@ export class Broker extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    callFunction(
-      userData1: BytesLike,
-      userData2: BytesLike,
-      method: string,
-      callData: BytesLike,
-      signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "callFunction(bytes32,bytes32,string,bytes,bytes)"(
-      userData1: BytesLike,
-      userData2: BytesLike,
-      method: string,
-      callData: BytesLike,
-      signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     cancelOrder(
       order: {
         trader: string;
@@ -657,13 +568,6 @@ export class Broker extends Contract {
     deposit(overrides?: CallOverrides): Promise<void>;
 
     "deposit()"(overrides?: CallOverrides): Promise<void>;
-
-    getNonce(account: string, overrides?: CallOverrides): Promise<number>;
-
-    "getNonce(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<number>;
 
     getOrderFilledAmount(
       order: {
@@ -817,24 +721,6 @@ export class Broker extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    callFunction(
-      userData1: BytesLike,
-      userData2: BytesLike,
-      method: string,
-      callData: BytesLike,
-      signature: BytesLike,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "callFunction(bytes32,bytes32,string,bytes,bytes)"(
-      userData1: BytesLike,
-      userData2: BytesLike,
-      method: string,
-      callData: BytesLike,
-      signature: BytesLike,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     cancelOrder(
       order: {
         trader: string;
@@ -880,13 +766,6 @@ export class Broker extends Contract {
     deposit(overrides?: PayableOverrides): Promise<BigNumber>;
 
     "deposit()"(overrides?: PayableOverrides): Promise<BigNumber>;
-
-    getNonce(account: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getNonce(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     getOrderFilledAmount(
       order: {
@@ -1005,24 +884,6 @@ export class Broker extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    callFunction(
-      userData1: BytesLike,
-      userData2: BytesLike,
-      method: string,
-      callData: BytesLike,
-      signature: BytesLike,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "callFunction(bytes32,bytes32,string,bytes,bytes)"(
-      userData1: BytesLike,
-      userData2: BytesLike,
-      method: string,
-      callData: BytesLike,
-      signature: BytesLike,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
     cancelOrder(
       order: {
         trader: string;
@@ -1068,16 +929,6 @@ export class Broker extends Contract {
     deposit(overrides?: PayableOverrides): Promise<PopulatedTransaction>;
 
     "deposit()"(overrides?: PayableOverrides): Promise<PopulatedTransaction>;
-
-    getNonce(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getNonce(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     getOrderFilledAmount(
       order: {

@@ -35,13 +35,12 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "getMCBToken()": FunctionFragment;
     "getOwnedLiquidityPoolsCountOf(address)": FunctionFragment;
     "getSymbolService()": FunctionFragment;
-    "getTimelock()": FunctionFragment;
     "getVault()": FunctionFragment;
     "getVaultFeeRate()": FunctionFragment;
     "getVersion(bytes32)": FunctionFragment;
     "getWeth()": FunctionFragment;
     "grantPrivilege(address,uint256)": FunctionFragment;
-    "initialize(address,address,address,int256)": FunctionFragment;
+    "initialize(address,address,address,int256,address)": FunctionFragment;
     "isActiveLiquidityPoolOf(address,address,uint256)": FunctionFragment;
     "isGranted(address,address,uint256)": FunctionFragment;
     "isLiquidityPool(address)": FunctionFragment;
@@ -52,9 +51,12 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "listLiquidityPoolOwnedBy(address,uint256,uint256)": FunctionFragment;
     "listLiquidityPools(uint256,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
+    "registerOperatorOfLiquidityPool(address,address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "revokePrivilege(address,uint256)": FunctionFragment;
-    "setLiquidityPoolOwnership(address,address)": FunctionFragment;
+    "rewardDistributor()": FunctionFragment;
+    "setRewardDistributor(address)": FunctionFragment;
+    "setVault(address)": FunctionFragment;
     "setVaultFeeRate(int256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "upgradeAdmin()": FunctionFragment;
@@ -113,10 +115,6 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     functionFragment: "getSymbolService",
     values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: "getTimelock",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "getVault", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getVaultFeeRate",
@@ -133,7 +131,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [string, string, string, BigNumberish]
+    values: [string, string, string, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "isActiveLiquidityPoolOf",
@@ -173,6 +171,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "registerOperatorOfLiquidityPool",
+    values: [string, string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
@@ -181,9 +183,14 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "setLiquidityPoolOwnership",
-    values: [string, string]
+    functionFragment: "rewardDistributor",
+    values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "setRewardDistributor",
+    values: [string]
+  ): string;
+  encodeFunctionData(functionFragment: "setVault", values: [string]): string;
   encodeFunctionData(
     functionFragment: "setVaultFeeRate",
     values: [BigNumberish]
@@ -250,10 +257,6 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     functionFragment: "getSymbolService",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "getTimelock",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "getVault", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getVaultFeeRate",
@@ -301,6 +304,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "registerOperatorOfLiquidityPool",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
@@ -309,9 +316,14 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setLiquidityPoolOwnership",
+    functionFragment: "rewardDistributor",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "setRewardDistributor",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "setVault", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setVaultFeeRate",
     data: BytesLike
@@ -335,6 +347,8 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "GrantPrivilege(address,address,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "RevokePrivilege(address,address,uint256)": EventFragment;
+    "SetRewardDistributor(address,address)": EventFragment;
+    "SetVault(address,address)": EventFragment;
     "SetVaultFeeRate(int256,int256)": EventFragment;
     "UpgradeLiquidityPool(bytes32,address,address)": EventFragment;
   };
@@ -344,6 +358,8 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "GrantPrivilege"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RevokePrivilege"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetRewardDistributor"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetVault"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetVaultFeeRate"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UpgradeLiquidityPool"): EventFragment;
 }
@@ -544,18 +560,6 @@ export class PoolCreator extends Contract {
       0: string;
     }>;
 
-    getTimelock(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "getTimelock()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
     getVault(
       overrides?: CallOverrides
     ): Promise<{
@@ -633,14 +637,16 @@ export class PoolCreator extends Contract {
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
+      distributor: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "initialize(address,address,address,int256)"(
+    "initialize(address,address,address,int256,address)"(
       wethToken: string,
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
+      distributor: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -836,6 +842,18 @@ export class PoolCreator extends Contract {
       0: string;
     }>;
 
+    registerOperatorOfLiquidityPool(
+      liquidityPool: string,
+      operator: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "registerOperatorOfLiquidityPool(address,address)"(
+      liquidityPool: string,
+      operator: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
 
     "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
@@ -852,15 +870,35 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    setLiquidityPoolOwnership(
-      liquidityPool: string,
-      operator: string,
+    rewardDistributor(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "rewardDistributor()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    setRewardDistributor(
+      newRewardDistributor: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "setLiquidityPoolOwnership(address,address)"(
-      liquidityPool: string,
-      operator: string,
+    "setRewardDistributor(address)"(
+      newRewardDistributor: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    setVault(
+      newVault: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setVault(address)"(
+      newVault: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1037,10 +1075,6 @@ export class PoolCreator extends Contract {
 
   "getSymbolService()"(overrides?: CallOverrides): Promise<string>;
 
-  getTimelock(overrides?: CallOverrides): Promise<string>;
-
-  "getTimelock()"(overrides?: CallOverrides): Promise<string>;
-
   getVault(overrides?: CallOverrides): Promise<string>;
 
   "getVault()"(overrides?: CallOverrides): Promise<string>;
@@ -1094,14 +1128,16 @@ export class PoolCreator extends Contract {
     symbolService: string,
     globalVault: string,
     globalVaultFeeRate: BigNumberish,
+    distributor: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "initialize(address,address,address,int256)"(
+  "initialize(address,address,address,int256,address)"(
     wethToken: string,
     symbolService: string,
     globalVault: string,
     globalVaultFeeRate: BigNumberish,
+    distributor: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1235,6 +1271,18 @@ export class PoolCreator extends Contract {
 
   "owner()"(overrides?: CallOverrides): Promise<string>;
 
+  registerOperatorOfLiquidityPool(
+    liquidityPool: string,
+    operator: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "registerOperatorOfLiquidityPool(address,address)"(
+    liquidityPool: string,
+    operator: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
 
   "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
@@ -1251,15 +1299,27 @@ export class PoolCreator extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  setLiquidityPoolOwnership(
-    liquidityPool: string,
-    operator: string,
+  rewardDistributor(overrides?: CallOverrides): Promise<string>;
+
+  "rewardDistributor()"(overrides?: CallOverrides): Promise<string>;
+
+  setRewardDistributor(
+    newRewardDistributor: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "setLiquidityPoolOwnership(address,address)"(
-    liquidityPool: string,
-    operator: string,
+  "setRewardDistributor(address)"(
+    newRewardDistributor: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  setVault(
+    newVault: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setVault(address)"(
+    newVault: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1448,10 +1508,6 @@ export class PoolCreator extends Contract {
 
     "getSymbolService()"(overrides?: CallOverrides): Promise<string>;
 
-    getTimelock(overrides?: CallOverrides): Promise<string>;
-
-    "getTimelock()"(overrides?: CallOverrides): Promise<string>;
-
     getVault(overrides?: CallOverrides): Promise<string>;
 
     "getVault()"(overrides?: CallOverrides): Promise<string>;
@@ -1505,14 +1561,16 @@ export class PoolCreator extends Contract {
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
+      distributor: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initialize(address,address,address,int256)"(
+    "initialize(address,address,address,int256,address)"(
       wethToken: string,
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
+      distributor: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1646,6 +1704,18 @@ export class PoolCreator extends Contract {
 
     "owner()"(overrides?: CallOverrides): Promise<string>;
 
+    registerOperatorOfLiquidityPool(
+      liquidityPool: string,
+      operator: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "registerOperatorOfLiquidityPool(address,address)"(
+      liquidityPool: string,
+      operator: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
@@ -1662,15 +1732,24 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setLiquidityPoolOwnership(
-      liquidityPool: string,
-      operator: string,
+    rewardDistributor(overrides?: CallOverrides): Promise<string>;
+
+    "rewardDistributor()"(overrides?: CallOverrides): Promise<string>;
+
+    setRewardDistributor(
+      newRewardDistributor: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "setLiquidityPoolOwnership(address,address)"(
-      liquidityPool: string,
-      operator: string,
+    "setRewardDistributor(address)"(
+      newRewardDistributor: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setVault(newVault: string, overrides?: CallOverrides): Promise<void>;
+
+    "setVault(address)"(
+      newVault: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1750,6 +1829,13 @@ export class PoolCreator extends Contract {
       grantee: string | null,
       privilege: null
     ): EventFilter;
+
+    SetRewardDistributor(
+      previousRewardDistributor: null,
+      newRewardDistributor: null
+    ): EventFilter;
+
+    SetVault(previousVault: null, newVault: null): EventFilter;
 
     SetVaultFeeRate(prevFeeRate: null, newFeeRate: null): EventFilter;
 
@@ -1887,10 +1973,6 @@ export class PoolCreator extends Contract {
 
     "getSymbolService()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getTimelock(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getTimelock()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     getVault(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getVault()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1930,14 +2012,16 @@ export class PoolCreator extends Contract {
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
+      distributor: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "initialize(address,address,address,int256)"(
+    "initialize(address,address,address,int256,address)"(
       wethToken: string,
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
+      distributor: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -2057,6 +2141,18 @@ export class PoolCreator extends Contract {
 
     "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    registerOperatorOfLiquidityPool(
+      liquidityPool: string,
+      operator: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "registerOperatorOfLiquidityPool(address,address)"(
+      liquidityPool: string,
+      operator: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     renounceOwnership(overrides?: Overrides): Promise<BigNumber>;
 
     "renounceOwnership()"(overrides?: Overrides): Promise<BigNumber>;
@@ -2073,15 +2169,24 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    setLiquidityPoolOwnership(
-      liquidityPool: string,
-      operator: string,
+    rewardDistributor(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "rewardDistributor()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    setRewardDistributor(
+      newRewardDistributor: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "setLiquidityPoolOwnership(address,address)"(
-      liquidityPool: string,
-      operator: string,
+    "setRewardDistributor(address)"(
+      newRewardDistributor: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    setVault(newVault: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "setVault(address)"(
+      newVault: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -2263,10 +2368,6 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getTimelock(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "getTimelock()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     getVault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getVault()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -2308,14 +2409,16 @@ export class PoolCreator extends Contract {
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
+      distributor: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "initialize(address,address,address,int256)"(
+    "initialize(address,address,address,int256,address)"(
       wethToken: string,
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
+      distributor: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -2435,6 +2538,18 @@ export class PoolCreator extends Contract {
 
     "owner()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    registerOperatorOfLiquidityPool(
+      liquidityPool: string,
+      operator: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "registerOperatorOfLiquidityPool(address,address)"(
+      liquidityPool: string,
+      operator: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     renounceOwnership(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "renounceOwnership()"(overrides?: Overrides): Promise<PopulatedTransaction>;
@@ -2451,15 +2566,29 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    setLiquidityPoolOwnership(
-      liquidityPool: string,
-      operator: string,
+    rewardDistributor(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "rewardDistributor()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    setRewardDistributor(
+      newRewardDistributor: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "setLiquidityPoolOwnership(address,address)"(
-      liquidityPool: string,
-      operator: string,
+    "setRewardDistributor(address)"(
+      newRewardDistributor: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    setVault(
+      newVault: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setVault(address)"(
+      newVault: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

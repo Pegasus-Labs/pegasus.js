@@ -412,39 +412,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "bytes32",
-        name: "userData1",
-        type: "bytes32",
-      },
-      {
-        internalType: "bytes32",
-        name: "userData2",
-        type: "bytes32",
-      },
-      {
-        internalType: "string",
-        name: "method",
-        type: "string",
-      },
-      {
-        internalType: "bytes",
-        name: "callData",
-        type: "bytes",
-      },
-      {
-        internalType: "bytes",
-        name: "signature",
-        type: "bytes",
-      },
-    ],
-    name: "callFunction",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         components: [
           {
             internalType: "address",
@@ -537,25 +504,6 @@ const _abi = [
     name: "deposit",
     outputs: [],
     stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-    ],
-    name: "getNonce",
-    outputs: [
-      {
-        internalType: "uint32",
-        name: "nonce",
-        type: "uint32",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {

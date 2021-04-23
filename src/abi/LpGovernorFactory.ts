@@ -399,49 +399,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "from",
-        type: "address",
-      },
-      {
-        internalType: "string",
-        name: "method",
-        type: "string",
-      },
-      {
-        internalType: "bytes",
-        name: "callData",
-        type: "bytes",
-      },
-      {
-        internalType: "uint32",
-        name: "nonce",
-        type: "uint32",
-      },
-      {
-        internalType: "uint32",
-        name: "expiration",
-        type: "uint32",
-      },
-      {
-        internalType: "uint64",
-        name: "gasLimit",
-        type: "uint64",
-      },
-      {
-        internalType: "bytes",
-        name: "signature",
-        type: "bytes",
-      },
-    ],
-    name: "callFunction",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "uint256",
         name: "proposalId",
         type: "uint256",
@@ -822,7 +779,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "lastTimeRewardApplicable",
+    name: "lastBlockRewardApplicable",
     outputs: [
       {
         internalType: "uint256",

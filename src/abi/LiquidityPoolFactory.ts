@@ -503,6 +503,37 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "trader",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "referrer",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "int256",
+        name: "referralRebate",
+        type: "int256",
+      },
+    ],
+    name: "TransferFeeToReferrer",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: "address",
         name: "newOperator",
@@ -1165,6 +1196,11 @@ const _abi = [
         name: "cashToReturn",
         type: "int256",
       },
+      {
+        internalType: "bool",
+        name: "needUnwrap",
+        type: "bool",
+      },
     ],
     name: "removeLiquidity",
     outputs: [],
@@ -1287,6 +1323,11 @@ const _abi = [
         name: "trader",
         type: "address",
       },
+      {
+        internalType: "bool",
+        name: "needUnwrap",
+        type: "bool",
+      },
     ],
     name: "settle",
     outputs: [],
@@ -1390,10 +1431,19 @@ const _abi = [
         name: "amount",
         type: "int256",
       },
+      {
+        internalType: "bool",
+        name: "needUnwrap",
+        type: "bool",
+      },
     ],
     name: "withdraw",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
+  },
+  {
+    stateMutability: "payable",
+    type: "receive",
   },
 ];

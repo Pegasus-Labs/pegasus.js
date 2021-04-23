@@ -189,6 +189,44 @@ const _abi = [
     inputs: [
       {
         indexed: false,
+        internalType: "address",
+        name: "previousRewardDistributor",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "newRewardDistributor",
+        type: "address",
+      },
+    ],
+    name: "SetRewardDistributor",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "previousVault",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "newVault",
+        type: "address",
+      },
+    ],
+    name: "SetVault",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
         internalType: "int256",
         name: "prevFeeRate",
         type: "int256",
@@ -522,19 +560,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "getTimelock",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "pure",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "getVault",
     outputs: [
       {
@@ -640,6 +665,11 @@ const _abi = [
         internalType: "int256",
         name: "globalVaultFeeRate",
         type: "int256",
+      },
+      {
+        internalType: "address",
+        name: "distributor",
+        type: "address",
       },
     ],
     name: "initialize",
@@ -899,6 +929,24 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "address",
+        name: "liquidityPool",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "operator",
+        type: "address",
+      },
+    ],
+    name: "registerOperatorOfLiquidityPool",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "renounceOwnership",
     outputs: [],
@@ -924,19 +972,40 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
+    inputs: [],
+    name: "rewardDistributor",
+    outputs: [
       {
         internalType: "address",
-        name: "liquidityPool",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "operator",
+        name: "",
         type: "address",
       },
     ],
-    name: "setLiquidityPoolOwnership",
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newRewardDistributor",
+        type: "address",
+      },
+    ],
+    name: "setRewardDistributor",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newVault",
+        type: "address",
+      },
+    ],
+    name: "setVault",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
