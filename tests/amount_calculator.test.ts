@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { computeTradeWithPrice, computeAMMTrade, computeAMMPrice } from '../src/computation'
 import {
-  computeMaxTradeAmountWithPrice,
+  computeLimitOrderMaxTradeAmount,
   computeAMMMaxTradeAmount,
   computeAMMTradeAmountByMargin,
   computeAMMAmountWithPrice,
@@ -132,13 +132,13 @@ const accountStorage3: AccountStorage = {
   entryFunding: null
 }
 
-describe('computeMaxTradeAmountWithPrice', function() {
+describe('computeLimitOrderMaxTradeAmount', function() {
   const price = perpetual1.markPrice // let trading price = mark price, because this function is designed for a stop order
   const lev = 5
   const fee = '0.001'
 
   it('safe account buy', function() {
-    const amount = computeMaxTradeAmountWithPrice(
+    const amount = computeLimitOrderMaxTradeAmount(
       poolStorage1,
       TEST_MARKET_INDEX0,
       accountStorage1,
@@ -154,7 +154,7 @@ describe('computeMaxTradeAmountWithPrice', function() {
   })
 
   it('safe account sell', function() {
-    const amount = computeMaxTradeAmountWithPrice(
+    const amount = computeLimitOrderMaxTradeAmount(
       poolStorage1,
       TEST_MARKET_INDEX0,
       accountStorage1,
@@ -170,7 +170,7 @@ describe('computeMaxTradeAmountWithPrice', function() {
   })
 
   it('unsafe account buy', function() {
-    const amount = computeMaxTradeAmountWithPrice(
+    const amount = computeLimitOrderMaxTradeAmount(
       poolStorage1,
       TEST_MARKET_INDEX0,
       accountStorage3,
@@ -186,7 +186,7 @@ describe('computeMaxTradeAmountWithPrice', function() {
   })
 
   it('unsafe account sell', function() {
-    const amount = computeMaxTradeAmountWithPrice(
+    const amount = computeLimitOrderMaxTradeAmount(
       poolStorage1,
       TEST_MARKET_INDEX0,
       accountStorage3,

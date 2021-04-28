@@ -94,7 +94,10 @@ export function computeAMMMaxTradeAmount(
 
   // guess = marginBalance * lev / index
   const traderDetails = computeAccount(p, perpetualIndex, trader)
-  const guess = traderDetails.accountComputed.marginBalance.times(normalizeMaxLeverage).div(ammContext.index)
+  let guess = traderDetails.accountComputed.marginBalance.times(normalizeMaxLeverage).div(ammContext.index)
+  if (!isTraderBuy) {
+    guess = guess.negated()
+  }
 
   // search
   function checkTrading(a: number): number {
@@ -112,14 +115,13 @@ export function computeAMMMaxTradeAmount(
     }
   }
   const options: any = {
-    maxIterations: 20
+    maxIterations: 20,
+    guess: guess.toNumber()
   }
   if (isTraderBuy) {
     options.lowerBound = 0
-    options.guess = guess.toNumber()
   } else {
     options.upperBound = 0
-    options.guess = guess.negated().toNumber()
   }
   const answer: any = {}
   minimize(checkTrading, options, answer)
@@ -166,16 +168,15 @@ export function computeAMMTradeAmountByMargin(
     }
   }
   const options: any = {
-    maxIterations: 40
+    maxIterations: 40,
+    guess: guess.toNumber()
   }
   if (normalizeDeltaMargin.lt(_0)) {
     // trader buys
     options.lowerBound = 0
-    options.guess = guess.toNumber()
   } else {
     // trader sells
     options.upperBound = 0
-    options.guess = guess.toNumber()
   }
   const answer: any = {}
   minimize(checkTrading, options, answer)
