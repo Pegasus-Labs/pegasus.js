@@ -76,6 +76,7 @@ const perpetual1: PerpetualStorage = {
   fundingRateLimit: { value: new BigNumber(0.005), minValue: _0, maxValue: _0 },
   ammMaxLeverage: { value: new BigNumber(3), minValue: _0, maxValue: _0 },
   maxClosePriceDiscount: { value: new BigNumber(0.2), minValue: _0, maxValue: _0 },
+  defaultTargetLeverage: { value: new BigNumber(10), minValue: _0, maxValue: _0 },
 
   ammCashBalance: _0, // assign me later
   ammPositionAmount: _0 // assign me later

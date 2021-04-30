@@ -92,6 +92,11 @@ const _abi = [
             name: "isMarginSafe",
             type: "bool",
           },
+          {
+            internalType: "int256",
+            name: "targetLeverage",
+            type: "int256",
+          },
         ],
         internalType: "struct Reader.AccountReaderResult",
         name: "accountStorage",
@@ -236,9 +241,9 @@ const _abi = [
                 type: "address",
               },
               {
-                internalType: "int256[36]",
+                internalType: "int256[39]",
                 name: "nums",
-                type: "int256[36]",
+                type: "int256[39]",
               },
               {
                 internalType: "uint256",

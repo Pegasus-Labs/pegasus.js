@@ -81,6 +81,7 @@ const perpetual1: PerpetualStorage = {
   fundingRateLimit: { value: new BigNumber(0.005), minValue: _0, maxValue: _0 },
   ammMaxLeverage: { value: new BigNumber(5), minValue: _0, maxValue: _0 },
   maxClosePriceDiscount: { value: new BigNumber(0.05), minValue: _0, maxValue: _0 },
+  defaultTargetLeverage: { value: new BigNumber(10), minValue: _0, maxValue: _0 },
 
   ammCashBalance: _0, // assign me later
   ammPositionAmount: _0 // assign me later
@@ -124,6 +125,7 @@ const poolStorage3: LiquidityPoolStorage = {
 const accountStorage1: AccountStorage = {
   cashBalance: new BigNumber('7698.86'), // 10000 - 2300.23 + (-0.91)
   positionAmount: new BigNumber('2.3'),
+  targetLeverage: new BigNumber('2'),
   entryValue: new BigNumber('2300.23'),
   entryFunding: new BigNumber('-0.91')
 }
@@ -131,6 +133,7 @@ const accountStorage1: AccountStorage = {
 const accountStorage2: AccountStorage = {
   cashBalance: new BigNumber('-1301.14'), // 1000 - 2300.23 + (-0.91)
   positionAmount: new BigNumber('2.3'),
+  targetLeverage: new BigNumber('2'),
   entryValue: new BigNumber('2300.23'),
   entryFunding: new BigNumber('-0.91')
 }
@@ -138,6 +141,7 @@ const accountStorage2: AccountStorage = {
 const accountStorage3: AccountStorage = {
   cashBalance: new BigNumber('16301.14'), // 14000 + 2300.23 + 0.91
   positionAmount: new BigNumber('-2.3'),
+  targetLeverage: new BigNumber('2'),
   entryValue: new BigNumber('-2300.23'),
   entryFunding: new BigNumber('0.91')
 }
@@ -145,6 +149,7 @@ const accountStorage3: AccountStorage = {
 const accountStorage4: AccountStorage = {
   cashBalance: new BigNumber('10000'),
   positionAmount: _0,
+  targetLeverage: new BigNumber('2'),
   entryValue: _0,
   entryFunding: _0
 }

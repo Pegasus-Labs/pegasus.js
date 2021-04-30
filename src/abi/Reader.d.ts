@@ -363,6 +363,7 @@ export class Reader extends Contract {
         isInitialMarginSafe: boolean;
         isMaintenanceMarginSafe: boolean;
         isMarginSafe: boolean;
+        targetLeverage: BigNumber;
         0: BigNumber;
         1: BigNumber;
         2: BigNumber;
@@ -371,6 +372,7 @@ export class Reader extends Contract {
         5: boolean;
         6: boolean;
         7: boolean;
+        8: BigNumber;
       };
       0: boolean;
       1: {
@@ -382,6 +384,7 @@ export class Reader extends Contract {
         isInitialMarginSafe: boolean;
         isMaintenanceMarginSafe: boolean;
         isMarginSafe: boolean;
+        targetLeverage: BigNumber;
         0: BigNumber;
         1: BigNumber;
         2: BigNumber;
@@ -390,6 +393,7 @@ export class Reader extends Contract {
         5: boolean;
         6: boolean;
         7: boolean;
+        8: BigNumber;
       };
     }>;
 
@@ -409,6 +413,7 @@ export class Reader extends Contract {
         isInitialMarginSafe: boolean;
         isMaintenanceMarginSafe: boolean;
         isMarginSafe: boolean;
+        targetLeverage: BigNumber;
         0: BigNumber;
         1: BigNumber;
         2: BigNumber;
@@ -417,6 +422,7 @@ export class Reader extends Contract {
         5: boolean;
         6: boolean;
         7: boolean;
+        8: BigNumber;
       };
       0: boolean;
       1: {
@@ -428,6 +434,7 @@ export class Reader extends Contract {
         isInitialMarginSafe: boolean;
         isMaintenanceMarginSafe: boolean;
         isMarginSafe: boolean;
+        targetLeverage: BigNumber;
         0: BigNumber;
         1: BigNumber;
         2: BigNumber;
@@ -436,6 +443,7 @@ export class Reader extends Contract {
         5: boolean;
         6: boolean;
         7: boolean;
+        8: BigNumber;
       };
     }>;
 
@@ -561,6 +569,9 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -571,6 +582,9 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -658,6 +672,9 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -668,6 +685,9 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -758,6 +778,9 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -768,6 +791,9 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -855,6 +881,9 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -865,6 +894,9 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -961,6 +993,9 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -971,6 +1006,9 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -1058,6 +1096,9 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -1068,6 +1109,9 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -1158,6 +1202,9 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -1168,6 +1215,9 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -1255,6 +1305,9 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -1265,6 +1318,9 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,

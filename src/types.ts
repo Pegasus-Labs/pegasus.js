@@ -118,6 +118,7 @@ export interface PerpetualStorage {
   fundingRateLimit: Option // Γ
   ammMaxLeverage: Option // λ
   maxClosePriceDiscount: Option // δ
+  defaultTargetLeverage: Option
 
   symbol: number
   underlyingSymbol: string
@@ -129,6 +130,7 @@ export interface PerpetualStorage {
 export interface AccountStorage {
   cashBalance: BigNumber
   positionAmount: BigNumber
+  targetLeverage: BigNumber
 
   // read from the graph
   entryValue: BigNumber | null

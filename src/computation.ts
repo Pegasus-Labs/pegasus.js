@@ -133,7 +133,7 @@ export function computeDecreasePosition(
   const positionAmount = oldAmount.plus(amount)
   entryFunding = entryFunding ? entryFunding.times(positionAmount).div(oldAmount) : null
   entryValue = entryValue ? entryValue.times(positionAmount).div(oldAmount) : null
-  return { cashBalance, entryValue, positionAmount, entryFunding }
+  return { cashBalance, entryValue, positionAmount, entryFunding, targetLeverage: a.targetLeverage }
 }
 
 export function computeIncreasePosition(
@@ -165,7 +165,7 @@ export function computeIncreasePosition(
   entryValue = entryValue ? entryValue.plus(price.times(amount)) : null
   entryFunding = entryFunding ? entryFunding.plus(perpetual.unitAccumulativeFunding.times(amount)) : null
   const positionAmount = oldAmount.plus(amount)
-  return { cashBalance, entryValue, positionAmount, entryFunding }
+  return { cashBalance, entryValue, positionAmount, entryFunding, targetLeverage: a.targetLeverage }
 }
 
 export function computeFee(price: BigNumberish, amount: BigNumberish, feeRate: BigNumberish): BigNumber {
@@ -264,6 +264,7 @@ export function computeAMMTrade(
   let fakeAMMAccount: AccountStorage = {
     cashBalance: p.poolCashBalance,
     positionAmount: perpetual.ammPositionAmount,
+    targetLeverage: _0,
     entryValue: null,
     entryFunding: null
   }

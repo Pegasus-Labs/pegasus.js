@@ -219,6 +219,11 @@ export async function getLiquidityPool(reader: Reader, liquidityPoolAddress: str
         minValue: parsePerpNums(34),
         maxValue: parsePerpNums(35)
       },
+      defaultTargetLeverage: {
+        value: parsePerpNums(36),
+        minValue: parsePerpNums(37),
+        maxValue: parsePerpNums(38)
+      },
       symbol: m.symbol.toNumber(),
       underlyingSymbol: m.underlyingAsset,
       isMarketClosed: m.isMarketClosed,
@@ -245,6 +250,7 @@ export async function getAccountStorage(
   return {
     cashBalance: normalizeBigNumberish(accountStorage.cash).shiftedBy(-DECIMALS),
     positionAmount: normalizeBigNumberish(accountStorage.position).shiftedBy(-DECIMALS),
+    targetLeverage: normalizeBigNumberish(accountStorage.targetLeverage).shiftedBy(-DECIMALS),
     entryValue: null,
     entryFunding: null
   }
