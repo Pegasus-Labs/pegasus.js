@@ -648,7 +648,7 @@ const _abi = [
     ],
     name: "addLiquidity",
     outputs: [],
-    stateMutability: "payable",
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -755,7 +755,7 @@ const _abi = [
     ],
     name: "deposit",
     outputs: [],
-    stateMutability: "payable",
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -768,7 +768,7 @@ const _abi = [
     ],
     name: "donateInsuranceFund",
     outputs: [],
-    stateMutability: "payable",
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -781,7 +781,7 @@ const _abi = [
     ],
     name: "donateLiquidity",
     outputs: [],
-    stateMutability: "payable",
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -1220,11 +1220,6 @@ const _abi = [
         name: "cashToReturn",
         type: "int256",
       },
-      {
-        internalType: "bool",
-        name: "needUnwrap",
-        type: "bool",
-      },
     ],
     name: "removeLiquidity",
     outputs: [],
@@ -1370,11 +1365,6 @@ const _abi = [
         name: "trader",
         type: "address",
       },
-      {
-        internalType: "bool",
-        name: "needUnwrap",
-        type: "bool",
-      },
     ],
     name: "settle",
     outputs: [],
@@ -1477,11 +1467,6 @@ const _abi = [
         internalType: "int256",
         name: "amount",
         type: "int256",
-      },
-      {
-        internalType: "bool",
-        name: "needUnwrap",
-        type: "bool",
       },
     ],
     name: "withdraw",

@@ -614,19 +614,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "getWeth",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "address",
@@ -646,11 +633,6 @@ const _abi = [
   },
   {
     inputs: [
-      {
-        internalType: "address",
-        name: "wethToken",
-        type: "address",
-      },
       {
         internalType: "address",
         name: "symbolService",

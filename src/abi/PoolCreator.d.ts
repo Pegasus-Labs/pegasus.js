@@ -38,9 +38,8 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "getVault()": FunctionFragment;
     "getVaultFeeRate()": FunctionFragment;
     "getVersion(bytes32)": FunctionFragment;
-    "getWeth()": FunctionFragment;
     "grantPrivilege(address,uint256)": FunctionFragment;
-    "initialize(address,address,address,int256,address)": FunctionFragment;
+    "initialize(address,address,int256,address)": FunctionFragment;
     "isActiveLiquidityPoolOf(address,address,uint256)": FunctionFragment;
     "isGranted(address,address,uint256)": FunctionFragment;
     "isLiquidityPool(address)": FunctionFragment;
@@ -124,14 +123,13 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     functionFragment: "getVersion",
     values: [BytesLike]
   ): string;
-  encodeFunctionData(functionFragment: "getWeth", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "grantPrivilege",
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [string, string, string, BigNumberish, string]
+    values: [string, string, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "isActiveLiquidityPoolOf",
@@ -263,7 +261,6 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getVersion", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getWeth", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "grantPrivilege",
     data: BytesLike
@@ -608,18 +605,6 @@ export class PoolCreator extends Contract {
       2: BigNumber;
     }>;
 
-    getWeth(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "getWeth()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
     grantPrivilege(
       grantee: string,
       privilege: BigNumberish,
@@ -633,7 +618,6 @@ export class PoolCreator extends Contract {
     ): Promise<ContractTransaction>;
 
     initialize(
-      wethToken: string,
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
@@ -641,8 +625,7 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "initialize(address,address,address,int256,address)"(
-      wethToken: string,
+    "initialize(address,address,int256,address)"(
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
@@ -1107,10 +1090,6 @@ export class PoolCreator extends Contract {
     2: BigNumber;
   }>;
 
-  getWeth(overrides?: CallOverrides): Promise<string>;
-
-  "getWeth()"(overrides?: CallOverrides): Promise<string>;
-
   grantPrivilege(
     grantee: string,
     privilege: BigNumberish,
@@ -1124,7 +1103,6 @@ export class PoolCreator extends Contract {
   ): Promise<ContractTransaction>;
 
   initialize(
-    wethToken: string,
     symbolService: string,
     globalVault: string,
     globalVaultFeeRate: BigNumberish,
@@ -1132,8 +1110,7 @@ export class PoolCreator extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "initialize(address,address,address,int256,address)"(
-    wethToken: string,
+  "initialize(address,address,int256,address)"(
     symbolService: string,
     globalVault: string,
     globalVaultFeeRate: BigNumberish,
@@ -1540,10 +1517,6 @@ export class PoolCreator extends Contract {
       2: BigNumber;
     }>;
 
-    getWeth(overrides?: CallOverrides): Promise<string>;
-
-    "getWeth()"(overrides?: CallOverrides): Promise<string>;
-
     grantPrivilege(
       grantee: string,
       privilege: BigNumberish,
@@ -1557,7 +1530,6 @@ export class PoolCreator extends Contract {
     ): Promise<void>;
 
     initialize(
-      wethToken: string,
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
@@ -1565,8 +1537,7 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initialize(address,address,address,int256,address)"(
-      wethToken: string,
+    "initialize(address,address,int256,address)"(
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
@@ -1991,10 +1962,6 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getWeth(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getWeth()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     grantPrivilege(
       grantee: string,
       privilege: BigNumberish,
@@ -2008,7 +1975,6 @@ export class PoolCreator extends Contract {
     ): Promise<BigNumber>;
 
     initialize(
-      wethToken: string,
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
@@ -2016,8 +1982,7 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "initialize(address,address,address,int256,address)"(
-      wethToken: string,
+    "initialize(address,address,int256,address)"(
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
@@ -2388,10 +2353,6 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getWeth(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "getWeth()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     grantPrivilege(
       grantee: string,
       privilege: BigNumberish,
@@ -2405,7 +2366,6 @@ export class PoolCreator extends Contract {
     ): Promise<PopulatedTransaction>;
 
     initialize(
-      wethToken: string,
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
@@ -2413,8 +2373,7 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "initialize(address,address,address,int256,address)"(
-      wethToken: string,
+    "initialize(address,address,int256,address)"(
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
