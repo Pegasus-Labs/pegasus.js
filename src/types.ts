@@ -208,12 +208,20 @@ export interface AMMTradingContext {
   positionMarginWithoutCurrent: BigNumber // Σ_j (P_i_j * | N_j | / λ_j) where j ≠ id
 }
 
+export interface TradeWithPriceResult {
+  afterTrade: AccountDetails
+  tradeIsSafe: boolean
+  totalFee: BigNumber
+  depositOrWithdraw: BigNumber // auto deposit or withdraw if option = MASK_USE_TARGET_LEVERAGE
+}
+
 export interface AMMTradingResult {
   tradeIsSafe: boolean
   trader: AccountDetails
   newPool: LiquidityPoolStorage
   totalFee: BigNumber
   tradingPrice: BigNumber
+  depositOrWithdraw: BigNumber // auto deposit or withdraw if option = MASK_USE_TARGET_LEVERAGE
 }
 
 export interface OracleRoute {

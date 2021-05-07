@@ -373,13 +373,13 @@ describe('computeTrade fail', function() {
 
   it('computeTradeWithPrice zero price', function() {
     expect((): void => {
-      computeTradeWithPrice(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, _0, _1, _0)
+      computeTradeWithPrice(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, _0, _1, _0, 0)
     }).toThrow()
   })
 
   it('computeTradeWithPrice zero amount', function() {
     expect((): void => {
-      computeTradeWithPrice(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, _1, _0, _0)
+      computeTradeWithPrice(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, _1, _0, _0, 0)
     }).toThrow()
   })
 })
@@ -712,7 +712,8 @@ describe('computeTradeWithPrice', function() {
         input.accountDetails.accountStorage,
         input.price,
         input.amount,
-        input.feeRate
+        input.feeRate,
+        0
       )
       expect(result.afterTrade.accountStorage.cashBalance).toApproximate(
         normalizeBigNumberish(expectedOutput.account.cashBalance)
@@ -777,7 +778,7 @@ describe('computeAMMPrice', function() {
 
 describe('computeAMMTrade', function() {
   it(`sell`, function() {
-    const res = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '-0.5')
+    const res = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '-0.5', 0)
     expect(res.tradingPrice).toApproximate(new BigNumber('6976.9161')) // see computeAMMPrice's test case
     expect(res.totalFee).toApproximate(new BigNumber('3.48845805')) // lpFee = 2.441920635
 
@@ -790,7 +791,7 @@ describe('computeAMMTrade', function() {
   })
 
   it(`buy without cross 0`, function() {
-    const res = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '0.5')
+    const res = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '0.5', 0)
     expect(res.tradingPrice).toApproximate(new BigNumber('6992.4957785904151334990367462')) // see computeAMMPrice's test case
     expect(res.totalFee).toApproximate(new BigNumber('3.4962478892952075667495183731')) // lpFee = 2.44737352250664529672466286117
 
@@ -803,7 +804,7 @@ describe('computeAMMTrade', function() {
   })
 
   it(`buy cross 0`, function() {
-    const res = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '3.3')
+    const res = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '3.3', 0)
     expect(res.tradingPrice).toApproximate(new BigNumber('6996.0111344722143116062591487')) // see computeAMMPrice's test case
     expect(res.totalFee).toApproximate(new BigNumber('23.0868367437583072283006551907')) // lpFee = 16.1607857206308150598104586335
 
@@ -816,7 +817,7 @@ describe('computeAMMTrade', function() {
   })
 
   it(`(saw) buy+sell`, function() {
-    const res1 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '0.5')
+    const res1 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '0.5', 0)
     expect(res1.tradingPrice).toApproximate(new BigNumber('6992.4957785904151334990367462'))
     expect(res1.newPool.poolCashBalance).toApproximate(new BigNumber('87435.0409503177142120462430360')) // see the above case
     expect(res1.newPool.perpetuals.get(TEST_MARKET_INDEX0)!.ammPositionAmount).toApproximate(new BigNumber('1.8'))
@@ -824,7 +825,7 @@ describe('computeAMMTrade', function() {
 
     // availableCash = 87435.0409503177142120462430360 - 9.9059375 * (1.8) = 87417.2102628177142120462430360
     // m0 = 100005.870928541926673731114517
-    const res2 = computeAMMTrade(res1.newPool, TEST_MARKET_INDEX0, res1.trader.accountStorage, '-0.5')
+    const res2 = computeAMMTrade(res1.newPool, TEST_MARKET_INDEX0, res1.trader.accountStorage, '-0.5', 0)
     expect(res2.tradingPrice).toApproximate(new BigNumber('6980.4133389538758324702073441'))
 
     // 4204.0688315654972256837321085 - 6980.4133389538758324702073441 * (-0.5) + 9.9059375 * (-0.5) - 6980.4133389538758324702073441 * 0.5 * 0.001
@@ -845,7 +846,7 @@ describe('computeAMMTrade should fail on limits', function() {
 
     // trade should fail
     const amount = '0.0001'
-    const query1 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, trader, amount)
+    const query1 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, trader, amount, 0)
     expect(query1.trader.accountComputed.availableMargin).toBeBigNumber(new BigNumber('0'))
     expect(query1.tradeIsSafe).toBeFalsy()
     expect(query1.tradingPrice).toApproximate(normalizeBigNumberish('6992.495778590415133499'))
@@ -854,7 +855,7 @@ describe('computeAMMTrade should fail on limits', function() {
     trader.cashBalance = trader.cashBalance.plus('0.0034488274369005548632499')
 
     // trade again, should success
-    const query2 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, trader, amount)
+    const query2 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, trader, amount, 0)
     expect(query2.tradeIsSafe).toBeTruthy()
     expect(query2.trader.accountComputed.availableMargin).toApproximate(normalizeBigNumberish('0'))
   })
@@ -872,11 +873,11 @@ describe('computeAMMTrade should fail on limits', function() {
         ],
       ])
     }
-    const res = computeAMMTrade(poolStorage, TEST_MARKET_INDEX0, accountStorage1, '3.3')
+    const res = computeAMMTrade(poolStorage, TEST_MARKET_INDEX0, accountStorage1, '3.3', 0)
     expect(res.newPool.perpetuals.get(TEST_MARKET_INDEX0)!.openInterest).toApproximate(new BigNumber('11'))
     poolStorage.perpetuals.get(TEST_MARKET_INDEX0)!.maxOpenInterestRate = new BigNumber(0.76)
     expect((): void => {
-      computeAMMTrade(poolStorage, TEST_MARKET_INDEX0, accountStorage1, '3.3')
+      computeAMMTrade(poolStorage, TEST_MARKET_INDEX0, accountStorage1, '3.3', 0)
     }).toThrow()
   })
 })

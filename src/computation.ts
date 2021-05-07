@@ -15,6 +15,7 @@ import {
   BugError,
   InsufficientLiquidityError,
   TradeFlag,
+  TradeWithPriceResult,
 } from './types'
 import { computeAMMInternalTrade, computeAMMPoolMargin, initAMMTradingContext } from './amm'
 import { _0, _1 } from './constants'
@@ -209,8 +210,8 @@ export function computeTradeWithPrice(
   price: BigNumberish,
   amount: BigNumberish,
   feeRate: BigNumberish,
-  options: TradeFlag = 0
-): { afterTrade: AccountDetails; tradeIsSafe: boolean; totalFee: BigNumber } {
+  options: TradeFlag
+): TradeWithPriceResult {
   const normalizedPrice = normalizeBigNumberish(price)
   const normalizedAmount = normalizeBigNumberish(amount)
   const normalizedFeeRate = normalizeBigNumberish(feeRate)
@@ -233,8 +234,9 @@ export function computeTradeWithPrice(
   const totalFee = computeFee(!open.isZero(), normalizedPrice, normalizedAmount, normalizedFeeRate, afterTrade)
 
   // adjust margin
+  let depositOrWithdraw = _0
   if ((options & TradeFlag.MASK_USE_TARGET_LEVERAGE) != 0) {
-    const depositOrWithdraw = adjustMarginLeverage(
+    depositOrWithdraw = adjustMarginLeverage(
       p, perpetualIndex, afterTrade,
       price, close, open, totalFee)
     newAccount.cashBalance = newAccount.cashBalance.plus(depositOrWithdraw)
@@ -252,7 +254,8 @@ export function computeTradeWithPrice(
   return {
     afterTrade,
     tradeIsSafe,
-    totalFee
+    totalFee,
+    depositOrWithdraw,
   }
 }
 
@@ -315,7 +318,8 @@ export function computeAMMTrade(
   p: LiquidityPoolStorage,
   perpetualIndex: number,
   trader: AccountStorage,
-  amount: BigNumberish // trader's perspective
+  amount: BigNumberish, // trader's perspective
+  options: TradeFlag,
 ): AMMTradingResult {
   const normalizedAmount = normalizeBigNumberish(amount)
   if (normalizedAmount.isZero()) {
@@ -343,7 +347,8 @@ export function computeAMMTrade(
     trader,
     tradingPrice,
     deltaAMMAmount.negated(),
-    perpetual.lpFeeRate.plus(p.vaultFeeRate).plus(perpetual.operatorFeeRate)
+    perpetual.lpFeeRate.plus(p.vaultFeeRate).plus(perpetual.operatorFeeRate),
+    options
   )
   newOpenInterest = computeOpenInterest(newOpenInterest, trader.positionAmount, deltaAMMAmount.negated())
 
@@ -360,7 +365,10 @@ export function computeAMMTrade(
     entryValue: null,
     entryFunding: null
   }
-  const fakeAMMResult = computeTradeWithPrice(p, perpetualIndex, fakeAMMAccount, tradingPrice, deltaAMMAmount, _0)
+  const fakeAMMResult = computeTradeWithPrice(
+    p, perpetualIndex, fakeAMMAccount,
+    tradingPrice, deltaAMMAmount, _0,
+    0 /* never deposit or withdraw for AMM account */)
   fakeAMMAccount = fakeAMMResult.afterTrade.accountStorage
   fakeAMMAccount.cashBalance = fakeAMMAccount.cashBalance.plus(lpFee)
   newOpenInterest = computeOpenInterest(newOpenInterest, perpetual.ammPositionAmount, deltaAMMAmount)
@@ -391,7 +399,8 @@ export function computeAMMTrade(
     trader: traderResult.afterTrade,
     newPool,
     totalFee: traderResult.totalFee,
-    tradingPrice
+    tradingPrice,
+    depositOrWithdraw: traderResult.depositOrWithdraw,
   }
 }
 
