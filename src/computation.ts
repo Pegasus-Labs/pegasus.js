@@ -38,8 +38,14 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
   const isMMSafe = marginBalance.gte(BigNumber.maximum(reservedCash, maintenanceMargin))
   const isIMSafe = marginBalance.gte(BigNumber.maximum(reservedCash, positionMargin))
   const isMarginSafe = marginBalance.gte(reservedCash)
-  const leverage = marginBalance.gt(0) ? positionValue.div(marginBalance) : _0
-
+  let leverage = _0
+  if (positionValue.gt(_0)) {
+    leverage = marginBalance.gt(_0) ? positionValue.div(marginBalance) : new BigNumber('Infinity')
+  }
+  let marginRatio = _0
+  if (maintenanceMargin.gt(_0)) {
+    marginRatio = marginBalance.gt(_0) ? maintenanceMargin.div(marginBalance) : new BigNumber('Infinity')
+  }
   let fundingPNL: BigNumber | null = null
   if (s.entryFunding) {
     fundingPNL = s.entryFunding.minus(s.positionAmount.times(perpetual.unitAccumulativeFunding))
@@ -91,6 +97,7 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
     isIMSafe,
     isMarginSafe,
     leverage,
+    marginRatio,
 
     entryPrice,
     fundingPNL,

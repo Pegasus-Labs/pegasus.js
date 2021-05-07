@@ -51,7 +51,8 @@ export enum TradeFlag {
   MASK_CLOSE_ONLY = 0x80000000,
   MASK_MARKET_ORDER = 0x40000000,
   MASK_STOP_LOSS_ORDER = 0x20000000,
-  MASK_TAKE_PROFIT_ORDER = 0x10000000
+  MASK_TAKE_PROFIT_ORDER = 0x10000000,
+  MASK_USE_TARGET_LEVERAGE = 0x08000000
 }
 
 export interface PerpetualID {
@@ -149,6 +150,7 @@ export interface AccountComputed {
   isIMSafe: boolean // use this if open positions
   isMarginSafe: boolean // use this if close positions. also known as bankrupt
   leverage: BigNumber
+  marginRatio: BigNumber
 
   entryPrice: BigNumber | null
   fundingPNL: BigNumber | null // entryFunding - pos * accumulatedFunding
