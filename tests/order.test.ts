@@ -85,6 +85,14 @@ const poolStorage1: LiquidityPoolStorage = {
   ])
 }
 
+const accountStorage0: AccountStorage = {
+  cashBalance: new BigNumber('1000'),
+  positionAmount: _0,
+  targetLeverage: new BigNumber('2'),
+  entryValue: _0,
+  entryFunding: _0
+}
+
 const accountStorage1: AccountStorage = {
   cashBalance: new BigNumber('7698.86'), // 10000 - 2300.23 + (-0.91)
   positionAmount: new BigNumber('2.3'),
@@ -116,7 +124,7 @@ describe('orderCost', function() {
     expect(cost).toApproximate(_0)
   })
 
-  it('empty order book. close + open. withdraw covers deposit', function() {
+  it('empty order book. close + open', function() {
     const walletBalance = _0
     const orders: Order[] = []
     const newOrder: Order = {
@@ -129,5 +137,18 @@ describe('orderCost', function() {
     // cost = deposit - withdraw = 3588.42
     const cost = orderCost(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, walletBalance, orders, newOrder)
     expect(cost).toApproximate(new BigNumber('3588.42365625'))
+  })
+
+  it('empty order book. pos = 0 but cash > 0. open', function() {
+    const walletBalance = _0
+    const orders: Order[] = []
+    const newOrder: Order = {
+      limitPrice: new BigNumber('6900'),
+      amount: new BigNumber('-10')
+    }
+    // deposit = 10*6900*(1/2 + 0.001) + (6965 - 6900)*10 = 35219
+    // cost = deposit - 1000 = 34219
+    const cost = orderCost(poolStorage1, TEST_MARKET_INDEX0, accountStorage0, walletBalance, orders, newOrder)
+    expect(cost).toApproximate(new BigNumber('34219'))
   })
 })

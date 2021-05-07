@@ -1,7 +1,7 @@
 import { computeAccount } from './computation'
 import { InvalidArgumentError, AccountStorage, LiquidityPoolStorage } from './types'
 import { _0, _1, _2 } from './constants'
-import { hasTheSameSign, splitAmount } from './utils'
+import { splitAmount } from './utils'
 import BigNumber from 'bignumber.js'
 
 export interface Order {
@@ -68,57 +68,58 @@ export function sideAvailable(
   if (orders.length == 0) {
     return { remainPosition, available }
   }
+
   // close position
-  if (!hasTheSameSign(trader.positionAmount, orders[0].amount)) {
-    for (let i = 0; i < orders.length; i++) {
-      const order = orders[i]
-      if (!remainPosition.isZero()) {
-        const { close } = splitAmount(remainPosition, order.amount)
-        const newPosition = remainPosition.plus(close)
-        const newPositionMargin = mark.times(newPosition.abs()).times(imRate)
-        const pnl = mark.minus(order.limitPrice).times(close)
-        let afterMargin = remainMargin.plus(pnl)
-        const fee = BigNumber.minimum(
-          // marginBalance + pnl - mark * | newPosition | * imRate
-          BigNumber.maximum(afterMargin.minus(newPositionMargin), _0),
-          order.limitPrice.times(close.abs()).times(feeRate),
-        )
-        afterMargin = afterMargin.minus(fee)
-        if (afterMargin.lt(_0)) {
-          // bankrupt when close. pretend all orders as open orders
-          remainPosition = _0
-          remainOrders.push(order)
-        } else {
-          // withdraw only if marginBalance >= IM
-          let withdraw = _0
-          if (afterMargin.gte(newPositionMargin)) {
-            // withdraw = afterMargin - remainMargin * (1 - | close / remainPosition |)
-            withdraw = close.div(remainPosition).abs()
-            withdraw = _1.minus(withdraw).times(remainMargin)
-            withdraw = afterMargin.minus(withdraw)
-            withdraw = BigNumber.maximum(_0, withdraw)
-          }
-          remainMargin = afterMargin.minus(withdraw)
-          available = available.plus(withdraw)
-          remainPosition = remainPosition.plus(close)
-          const newOrderAmount = order.amount.minus(close)
-          if (!newOrderAmount.isZero()) {
-            remainOrders.push({ ...order, amount: newOrderAmount })
-          }
-        }
-      } else {
+  for (let i = 0; i < orders.length; i++) {
+    const order = orders[i]
+    const { close } = splitAmount(remainPosition, order.amount)
+    if (!close.isZero()) {
+      const newPosition = remainPosition.plus(close)
+      const newPositionMargin = mark.times(newPosition.abs()).times(imRate)
+      const pnl = mark.minus(order.limitPrice).times(close)
+      let afterMargin = remainMargin.plus(pnl)
+      const fee = BigNumber.minimum(
+        // marginBalance + pnl - mark * | newPosition | * imRate
+        BigNumber.maximum(afterMargin.minus(newPositionMargin), _0),
+        order.limitPrice.times(close.abs()).times(feeRate),
+      )
+      afterMargin = afterMargin.minus(fee)
+      if (afterMargin.lt(_0)) {
+        // bankrupt when close. pretend all orders as open orders
+        remainPosition = _0
         remainOrders.push(order)
+      } else {
+        // withdraw only if marginBalance >= IM
+        let withdraw = _0
+        if (afterMargin.gte(newPositionMargin)) {
+          // withdraw = afterMargin - remainMargin * (1 - | close / remainPosition |)
+          withdraw = close.div(remainPosition).abs()
+          withdraw = _1.minus(withdraw).times(remainMargin)
+          withdraw = afterMargin.minus(withdraw)
+          withdraw = BigNumber.maximum(_0, withdraw)
+        }
+        remainMargin = afterMargin.minus(withdraw)
+        available = available.plus(withdraw)
+        remainPosition = remainPosition.plus(close)
+        const newOrderAmount = order.amount.minus(close)
+        if (!newOrderAmount.isZero()) {
+          remainOrders.push({ ...order, amount: newOrderAmount })
+        }
       }
+    } else {
+      remainOrders.push(order)
     }
   }
 
-  // TODO: if pos = 0, afterMargin saves to available?
+  // if close = 0 && position = 0 && margin > 0
+  if (remainPosition.isZero()) {
+    available = available.plus(remainMargin)
+  }
 
   // open position
   for (let i = 0; i < remainOrders.length; i++) {
     const cost = openOrderCost(p, perpetualIndex, remainOrders[i], trader.targetLeverage)
     available = available.minus(cost)
-
     // TODO:
     // if available < 0, the relayer should cancel some part of the order
   }
