@@ -211,7 +211,7 @@ describe('computeAccount', function() {
     maintenanceMargin: new BigNumber('800.975'),
     availableCashBalance: new BigNumber('16323.92365625'),
     marginBalance: new BigNumber('304.42365625'), // 14000 + (2300.23/2.3 - 6965) * 2.3 - (-23.69365625)
-    availableMargin: _0,
+    availableMargin: new BigNumber('-1297.52634375'), // marginBalance - positionMargin
     withdrawableBalance: _0,
     isMMSafe: false,
     isIMSafe: false,
@@ -847,7 +847,7 @@ describe('computeAMMTrade should fail on limits', function() {
     // trade should fail
     const amount = '0.0001'
     const query1 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, trader, amount, 0)
-    expect(query1.trader.accountComputed.availableMargin).toBeBigNumber(new BigNumber('0'))
+    expect(query1.trader.accountComputed.withdrawableBalance).toBeBigNumber(new BigNumber('0'))
     expect(query1.tradeIsSafe).toBeFalsy()
     expect(query1.tradingPrice).toApproximate(normalizeBigNumberish('6992.495778590415133499'))
 

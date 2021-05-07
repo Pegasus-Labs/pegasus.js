@@ -139,12 +139,12 @@ export interface AccountStorage {
 }
 
 export interface AccountComputed {
-  positionValue: BigNumber
-  positionMargin: BigNumber
-  maintenanceMargin: BigNumber
-  availableCashBalance: BigNumber // cash - accumulatedFunding * pos
-  marginBalance: BigNumber // cash + i pos - accumulatedFunding * pos
-  availableMargin: BigNumber
+  positionValue: BigNumber // mark * | position |
+  positionMargin: BigNumber // positionValue * IMRate
+  maintenanceMargin: BigNumber // positionValue * MMRate
+  availableCashBalance: BigNumber // cash - accumulatedFunding * position
+  marginBalance: BigNumber // cash + i pos - accumulatedFunding * position
+  availableMargin: BigNumber // marginBalance - positionMargin, possibly negative
   withdrawableBalance: BigNumber
   isMMSafe: boolean // use this if check liquidation
   isIMSafe: boolean // use this if open positions
