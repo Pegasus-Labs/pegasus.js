@@ -13,7 +13,8 @@ import {
   AMMTradingResult,
   InvalidArgumentError,
   BugError,
-  InsufficientLiquidityError
+  InsufficientLiquidityError,
+  TradeFlag,
 } from './types'
 import { computeAMMInternalTrade, computeAMMPoolMargin, initAMMTradingContext } from './amm'
 import { _0, _1 } from './constants'
@@ -175,14 +176,30 @@ export function computeIncreasePosition(
   return { cashBalance, entryValue, positionAmount, entryFunding, targetLeverage: a.targetLeverage }
 }
 
-export function computeFee(price: BigNumberish, amount: BigNumberish, feeRate: BigNumberish): BigNumber {
+export function computeFee(
+  hasOpened: boolean,
+  price: BigNumberish,
+  amount: BigNumberish,
+  feeRate: BigNumberish,
+  afterTrade: AccountDetails,
+): BigNumber {
   const normalizedPrice = normalizeBigNumberish(price)
   const normalizedAmount = normalizeBigNumberish(amount)
   const normalizedFeeRate = normalizeBigNumberish(feeRate)
   if (normalizedPrice.lte(_0) || normalizedAmount.isZero()) {
     throw new InvalidArgumentError(`bad price ${normalizedPrice.toFixed()} or amount ${normalizedAmount.toFixed()}`)
   }
-  return normalizedPrice.times(normalizedAmount.abs()).times(normalizedFeeRate)
+  let totalFee = normalizedPrice.times(normalizedAmount.abs()).times(normalizedFeeRate)
+  if (!hasOpened) {
+    const availableMargin = afterTrade.accountComputed.availableMargin
+    if (availableMargin.lte(_0)) {
+      totalFee = _0
+    } else if (totalFee.gt(availableMargin)) {
+      // make sure the sum of fees < available margin
+      totalFee = availableMargin
+    }
+  }
+  return totalFee
 }
 
 export function computeTradeWithPrice(
@@ -191,8 +208,9 @@ export function computeTradeWithPrice(
   a: AccountStorage,
   price: BigNumberish,
   amount: BigNumberish,
-  feeRate: BigNumberish
-): { afterTrade: AccountDetails; tradeIsSafe: boolean } {
+  feeRate: BigNumberish,
+  options: TradeFlag = 0
+): { afterTrade: AccountDetails; tradeIsSafe: boolean; totalFee: BigNumber } {
   const normalizedPrice = normalizeBigNumberish(price)
   const normalizedAmount = normalizeBigNumberish(amount)
   const normalizedFeeRate = normalizeBigNumberish(feeRate)
@@ -211,18 +229,85 @@ export function computeTradeWithPrice(
   }
   
   // fee
-  const fee = computeFee(normalizedPrice, normalizedAmount, normalizedFeeRate)
-  newAccount.cashBalance = newAccount.cashBalance.minus(fee)
+  let afterTrade = computeAccount(p, perpetualIndex, newAccount)
+  const totalFee = computeFee(!open.isZero(), normalizedPrice, normalizedAmount, normalizedFeeRate, afterTrade)
+
+  // adjust margin
+  if ((options & TradeFlag.MASK_USE_TARGET_LEVERAGE) != 0) {
+    const depositOrWithdraw = adjustMarginLeverage(
+      p, perpetualIndex, afterTrade,
+      price, close, open, totalFee)
+    newAccount.cashBalance = newAccount.cashBalance.plus(depositOrWithdraw)
+  }
+
+  // transfer fee
+  newAccount.cashBalance = newAccount.cashBalance.minus(totalFee)
 
   // open position requires margin > IM. close position requires !bankrupt
-  const afterTrade = computeAccount(p, perpetualIndex, newAccount)
+  afterTrade = computeAccount(p, perpetualIndex, newAccount)
   let tradeIsSafe = afterTrade.accountComputed.isMarginSafe
   if (!open.isZero()) {
     tradeIsSafe = afterTrade.accountComputed.isIMSafe
   }
   return {
     afterTrade,
-    tradeIsSafe
+    tradeIsSafe,
+    totalFee
+  }
+}
+
+// must be called after trade, before transferFee
+export function adjustMarginLeverage(
+  p: LiquidityPoolStorage,
+  perpetualIndex: number,
+  afterTrade: AccountDetails,
+  price: BigNumberish,
+  close: BigNumberish,
+  open: BigNumberish,
+  totalFee: BigNumberish
+): BigNumber {
+  const normalizedPrice = normalizeBigNumberish(price)
+  const normalizedOpen = normalizeBigNumberish(open)
+  const normalizedClose = normalizeBigNumberish(close)
+  const normalizedTotalFee = normalizeBigNumberish(totalFee)
+  const deltaPosition = normalizedClose.plus(normalizedOpen)
+  const deltaCash = deltaPosition.times(normalizedPrice).negated()
+  const position2 = afterTrade.accountStorage.positionAmount
+  const perpetual = p.perpetuals.get(perpetualIndex)
+  if (!perpetual) {
+    throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
+  }
+  if (!normalizedClose.isZero() && normalizedOpen.isZero()) {
+    // close only
+    // when close, keep the effective leverage
+    // -withdraw == (availableCash2 * close - deltaCash * position2) / position1 + fee
+    let adjustCollateral = afterTrade.accountComputed.availableCashBalance.times(normalizedClose)
+      .minus(deltaCash.times(position2))
+      .div(position2.minus(normalizedClose))
+      .plus(normalizedTotalFee)
+    // withdraw only when IM is satisfied
+    const limit = normalizedTotalFee.minus(afterTrade.accountComputed.availableMargin)
+    adjustCollateral = BigNumber.maximum(adjustCollateral, limit)
+    // never deposit when close positions
+    adjustCollateral = BigNumber.minimum(adjustCollateral, _0)
+    return adjustCollateral
+  } else {
+    // open only or close + open
+    // when open, deposit mark * | openPosition | / lev
+    const leverage = afterTrade.accountStorage.targetLeverage
+    if (leverage.lte(_0)) {
+      throw new InvalidArgumentError(`target leverage <= 0`)
+    }
+    const openPositionMargin = normalizedOpen.abs().times(perpetual.markPrice).div(leverage).plus(normalizedTotalFee)
+    if (position2.minus(deltaPosition).isZero() || !normalizedClose.isZero()) {
+        // strategy: let new margin balance = openPositionMargin
+        const adjustCollateral = openPositionMargin.minus(afterTrade.accountComputed.marginBalance)
+        return adjustCollateral
+    } else {
+        // strategy: always append positionMargin of openPosition
+        const adjustCollateral = openPositionMargin
+        return adjustCollateral
+    }
   }
 }
 
@@ -251,11 +336,6 @@ export function computeAMMTrade(
     )
   }
 
-  // fee
-  const lpFee = computeFee(tradingPrice, deltaAMMAmount, perpetual.lpFeeRate)
-  const vaultFee = computeFee(tradingPrice, deltaAMMAmount, p.vaultFeeRate)
-  const operatorFee = computeFee(tradingPrice, deltaAMMAmount, perpetual.operatorFeeRate)
-
   // trader
   const traderResult = computeTradeWithPrice(
     p,
@@ -266,6 +346,11 @@ export function computeAMMTrade(
     perpetual.lpFeeRate.plus(p.vaultFeeRate).plus(perpetual.operatorFeeRate)
   )
   newOpenInterest = computeOpenInterest(newOpenInterest, trader.positionAmount, deltaAMMAmount.negated())
+
+  // fee
+  const lpFee = traderResult.totalFee.times(perpetual.lpFeeRate).div(
+    perpetual.lpFeeRate.plus(p.vaultFeeRate).plus(perpetual.operatorFeeRate)
+  )
 
   // new AMM
   let fakeAMMAccount: AccountStorage = {
@@ -305,9 +390,7 @@ export function computeAMMTrade(
     tradeIsSafe: traderResult.tradeIsSafe,
     trader: traderResult.afterTrade,
     newPool,
-    lpFee,
-    vaultFee,
-    operatorFee,
+    totalFee: traderResult.totalFee,
     tradingPrice
   }
 }
@@ -331,32 +414,6 @@ export function computeAMMPrice(
   const deltaAMMAmount = ammTrading.deltaPosition
   const tradingPrice = deltaAMMMargin.div(deltaAMMAmount).abs()
   return { deltaAMMAmount, deltaAMMMargin, tradingPrice }
-}
-
-// > 0 if more collateral required
-export function computeMarginCost(
-  p: LiquidityPoolStorage,
-  perpetualIndex: number,
-  afterTrade: AccountDetails,
-  targetLeverage: BigNumberish
-): BigNumber {
-  const normalizedLeverage = normalizeBigNumberish(targetLeverage)
-  if (!normalizedLeverage.isPositive()) {
-    throw Error(`bad leverage ${targetLeverage.toString()}`)
-  }
-  const perpetual = p.perpetuals.get(perpetualIndex)
-  if (!perpetual) {
-    throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
-  }
-  let reservedCash = _0
-  let marginCost = _0
-  if (!afterTrade.accountStorage.positionAmount.isZero()) {
-    reservedCash = perpetual.keeperGasReward
-    const positionMargin = afterTrade.accountComputed.positionValue.div(normalizedLeverage)
-    const minAvailableMargin = BigNumber.maximum(reservedCash, positionMargin)
-    marginCost = minAvailableMargin.minus(afterTrade.accountComputed.marginBalance)
-  }
-  return marginCost
 }
 
 // > 0 if more collateral required

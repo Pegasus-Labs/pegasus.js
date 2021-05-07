@@ -3,11 +3,9 @@ import {
   computeAccount,
   computeDecreasePosition,
   computeIncreasePosition,
-  computeFee,
   computeTradeWithPrice,
   computeAMMPrice,
   computeAMMTrade,
-  computeMarginCost,
   computeOpenInterest
 } from '../src/computation'
 import { _0, _1 } from '../src/constants'
@@ -373,18 +371,6 @@ describe('computeTrade fail', function() {
     }).toThrow()
   })
 
-  it('fee zero price', function() {
-    expect((): void => {
-      computeFee(0, 1, 0.1)
-    }).toThrow()
-  })
-
-  it('fee zero amount', function() {
-    expect((): void => {
-      computeFee(1, 0, 0.1)
-    }).toThrow()
-  })
-
   it('computeTradeWithPrice zero price', function() {
     expect((): void => {
       computeTradeWithPrice(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, _0, _1, _0)
@@ -417,7 +403,6 @@ describe('computeTradeWithPrice', function() {
         entryFunding: BigNumberish
       }
       tradeIsSafe: boolean
-      marginCost: BigNumberish
       fee: BigNumberish
     }
   }
@@ -451,7 +436,6 @@ describe('computeTradeWithPrice', function() {
           entryFunding: '8.9959375'
         },
         tradeIsSafe: true,
-        marginCost: '-17148.32634375',
         fee: 20
       }
     },
@@ -479,8 +463,6 @@ describe('computeTradeWithPrice', function() {
           entryFunding: '48.6196875'
         },
         tradeIsSafe: true,
-        /*  6965 * 7.3 / 2 -23170.44634375 */
-        marginCost: '2251.67365625',
         fee: 350
       }
     },
@@ -508,7 +490,6 @@ describe('computeTradeWithPrice', function() {
           entryFunding: '98.149375'
         },
         tradeIsSafe: false,
-        marginCost: '16221.37365625',
         fee: 1000
       }
     },
@@ -538,7 +519,6 @@ describe('computeTradeWithPrice', function() {
           marginBalance: '18710.57634375'
         },
         tradeIsSafe: true,
-        marginCost: '-14183.32634375',
         fee: 20
       }
     },
@@ -561,7 +541,6 @@ describe('computeTradeWithPrice', function() {
           marginBalance: '12230.07634375'
         },
         tradeIsSafe: true,
-        marginCost: 0,
         fee: 46
       }
     },
@@ -589,7 +568,6 @@ describe('computeTradeWithPrice', function() {
           marginBalance: '7245.076343750000000000002'
         },
         tradeIsSafe: true,
-        marginCost: '-280.076343750000000000002',
         fee: 66
       }
     },
@@ -615,7 +593,6 @@ describe('computeTradeWithPrice', function() {
           marginBalance: '9790'
         },
         tradeIsSafe: true,
-        marginCost: 4140,
         fee: 140
       }
     },
@@ -642,7 +619,6 @@ describe('computeTradeWithPrice', function() {
           marginBalance: '9930'
         },
         tradeIsSafe: true,
-        marginCost: '4000',
         fee: 140
       }
     },
@@ -672,7 +648,6 @@ describe('computeTradeWithPrice', function() {
           marginBalance: '5249.42365625'
         },
         tradeIsSafe: true,
-        marginCost: '-722.17365625',
         fee: 20
       }
     },
@@ -695,7 +670,6 @@ describe('computeTradeWithPrice', function() {
           marginBalance: '11677.92365625'
         },
         tradeIsSafe: true,
-        marginCost: 0,
         fee: 46
       }
     },
@@ -721,7 +695,6 @@ describe('computeTradeWithPrice', function() {
           marginBalance: '16622.92365625'
         },
         tradeIsSafe: true,
-        marginCost: '53027.07634375',
         fee: 66
       }
     }
@@ -757,9 +730,6 @@ describe('computeTradeWithPrice', function() {
         normalizeBigNumberish(expectedOutput.account.marginBalance)
       )
       expect(result.tradeIsSafe).toEqual(expectedOutput.tradeIsSafe)
-
-      const marginCost = computeMarginCost(poolStorage1, TEST_MARKET_INDEX0, result.afterTrade, input.targetLeverage)
-      expect(marginCost).toApproximate(normalizeBigNumberish(expectedOutput.marginCost))
     })
   })
 })
@@ -809,9 +779,7 @@ describe('computeAMMTrade', function() {
   it(`sell`, function() {
     const res = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '-0.5')
     expect(res.tradingPrice).toApproximate(new BigNumber('6976.9161')) // see computeAMMPrice's test case
-    expect(res.lpFee).toApproximate(new BigNumber('2.441920635'))
-    expect(res.vaultFee).toApproximate(new BigNumber('0.697691610'))
-    expect(res.operatorFee).toApproximate(new BigNumber('0.348845805'))
+    expect(res.totalFee).toApproximate(new BigNumber('3.48845805')) // lpFee = 2.441920635
 
     // 7698.86 - 6976.9161 * (-0.5) + 9.9059375 * (-0.5) - 6976.9161 * 0.5 * 0.001
     expect(res.trader.accountStorage.cashBalance).toApproximate(new BigNumber('11178.8766232'))
@@ -824,9 +792,7 @@ describe('computeAMMTrade', function() {
   it(`buy without cross 0`, function() {
     const res = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '0.5')
     expect(res.tradingPrice).toApproximate(new BigNumber('6992.4957785904151334990367462')) // see computeAMMPrice's test case
-    expect(res.lpFee).toApproximate(new BigNumber('2.44737352250664529672466286117'))
-    expect(res.vaultFee).toApproximate(new BigNumber('0.69924957785904151334990367462'))
-    expect(res.operatorFee).toApproximate(new BigNumber('0.34962478892952075667495183731'))
+    expect(res.totalFee).toApproximate(new BigNumber('3.4962478892952075667495183731')) // lpFee = 2.44737352250664529672466286117
 
     // 7698.86 - 6992.4957785904151334990367462 * (0.5) + 9.9059375 * (0.5) - 6992.4957785904151334990367462 * 0.5 * 0.001
     expect(res.trader.accountStorage.cashBalance).toApproximate(new BigNumber('4204.0688315654972256837321085'))
@@ -839,9 +805,7 @@ describe('computeAMMTrade', function() {
   it(`buy cross 0`, function() {
     const res = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, '3.3')
     expect(res.tradingPrice).toApproximate(new BigNumber('6996.0111344722143116062591487')) // see computeAMMPrice's test case
-    expect(res.lpFee).toApproximate(new BigNumber('16.1607857206308150598104586335'))
-    expect(res.vaultFee).toApproximate(new BigNumber('4.6173673487516614456601310381'))
-    expect(res.operatorFee).toApproximate(new BigNumber('2.30868367437583072283006551907'))
+    expect(res.totalFee).toApproximate(new BigNumber('23.0868367437583072283006551907')) // lpFee = 16.1607857206308150598104586335
 
     // 7698.86 - 6996.0111344722143116062591487 * (3.3) + 9.9059375 * (3.3) - 6996.0111344722143116062591487 * 3.3 * 0.001
     expect(res.trader.accountStorage.cashBalance).toApproximate(new BigNumber('-15378.3739867520655355289558459'))
@@ -881,15 +845,12 @@ describe('computeAMMTrade should fail on limits', function() {
 
     // trade should fail
     const amount = '0.0001'
-    const targetLeverage = 10
     const query1 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, trader, amount)
     expect(query1.trader.accountComputed.availableMargin).toBeBigNumber(new BigNumber('0'))
     expect(query1.tradeIsSafe).toBeFalsy()
     expect(query1.tradingPrice).toApproximate(normalizeBigNumberish('6992.495778590415133499'))
 
     // cost
-    const marginCost = computeMarginCost(poolStorage1, TEST_MARKET_INDEX0, query1.trader, targetLeverage)
-    expect(marginCost).toApproximate(normalizeBigNumberish('0.0034488274369005548632499'))
     trader.cashBalance = trader.cashBalance.plus('0.0034488274369005548632499')
 
     // trade again, should success

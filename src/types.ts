@@ -212,9 +212,7 @@ export interface AMMTradingResult {
   tradeIsSafe: boolean
   trader: AccountDetails
   newPool: LiquidityPoolStorage
-  lpFee: BigNumber
-  vaultFee: BigNumber
-  operatorFee: BigNumber
+  totalFee: BigNumber
   tradingPrice: BigNumber
 }
 
