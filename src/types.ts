@@ -149,8 +149,8 @@ export interface AccountComputed {
   isMMSafe: boolean // use this if check liquidation
   isIMSafe: boolean // use this if open positions
   isMarginSafe: boolean // use this if close positions. also known as bankrupt
-  leverage: BigNumber
-  marginRatio: BigNumber
+  leverage: BigNumber // positionValue / marginBalance
+  marginRatio: BigNumber // maintenanceMargin / marginBalance
 
   entryPrice: BigNumber | null
   fundingPNL: BigNumber | null // entryFunding - pos * accumulatedFunding

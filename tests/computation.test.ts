@@ -177,6 +177,7 @@ describe('computeAccount', function() {
     isIMSafe: true,
     isMarginSafe: true,
     leverage: new BigNumber('0.67605445706853804198'),
+    marginRatio: new BigNumber('0.0338027228534269020991303356974'),
     entryPrice: new BigNumber('1000.1'),
     fundingPNL: new BigNumber('-23.69365625'), // 9.9059375 * 2.3 -(-0.91)
     pnl1: new BigNumber('13719.27'),
@@ -197,6 +198,7 @@ describe('computeAccount', function() {
     isIMSafe: true,
     isMarginSafe: true,
     leverage: new BigNumber('1.0900899444350858789365744572076'),
+    marginRatio: new BigNumber('0.054504497221754293946828722860'),
     entryPrice: new BigNumber('1000.1'),
     fundingPNL: new BigNumber('-23.69365625'), // 9.9059375 * 2.3 -(-0.91)
     pnl1: new BigNumber('13719.27'),
@@ -217,6 +219,7 @@ describe('computeAccount', function() {
     isIMSafe: false,
     isMarginSafe: true,
     leverage: new BigNumber('52.622388802939575523397504968355'),
+    marginRatio: new BigNumber('2.63111944014699087630447576296'),
     entryPrice: new BigNumber('1000.1'),
     fundingPNL: new BigNumber('23.69365625'), // 9.9059375 * (-2.3) -(-0.91)
     pnl1: new BigNumber('-13719.27'),
@@ -237,6 +240,7 @@ describe('computeAccount', function() {
     isIMSafe: true,
     isMarginSafe: true,
     leverage: _0,
+    marginRatio: _0,
     entryPrice: _0,
     fundingPNL: _0,
     pnl1: _0,
@@ -285,6 +289,7 @@ describe('computeAccount', function() {
       expect(computed.isIMSafe).toEqual(expectedOutput.isIMSafe)
       expect(computed.isMarginSafe).toEqual(expectedOutput.isMarginSafe)
       expect(computed.leverage).toApproximate(expectedOutput.leverage)
+      expect(computed.marginRatio).toApproximate(expectedOutput.marginRatio)
       expect(computed.entryPrice).not.toBeNull()
       if (computed.entryPrice && expectedOutput.entryPrice) {
         expect(computed.entryPrice).toBeBigNumber(expectedOutput.entryPrice)
