@@ -37,11 +37,12 @@ export function openOrderCost(
   const feeRate = p.vaultFeeRate.plus(perpetual.lpFeeRate).plus(perpetual.operatorFeeRate)
   const mark = perpetual.markPrice
   const potentialPNL = mark.minus(order.limitPrice).times(order.amount)
-  const potentialLoss = BigNumber.maximum(potentialPNL, _0)
+  // loss = pnl if pnl < 0 else 0
+  const potentialLoss = BigNumber.minimum(potentialPNL, _0)
   // limitPrice * | amount | * (1 / lev + feeRate) + loss
   return order.limitPrice.times(order.amount.abs())
     .times(_1.div(leverage).plus(feeRate))
-    .plus(potentialLoss)
+    .minus(potentialLoss)
 }
 
 // return available in wallet balance

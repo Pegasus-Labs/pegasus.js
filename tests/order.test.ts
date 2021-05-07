@@ -123,8 +123,11 @@ describe('orderCost', function() {
       limitPrice: new BigNumber('6900'),
       amount: new BigNumber('-10')
     }
+    // marginBalance = 23695.57634375
+    // withdraw = 23695.57634375 - (6965 - 6900)*2.3 - 6900*2.3*0.001 = 23530.20634375
+    // deposit = (10 - 2.3)*6900*(1/2 + 0.001) + (6965 - 6900)*7.7 = 27118.6
+    // cost = deposit - withdraw = 3588.42
     const cost = orderCost(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, walletBalance, orders, newOrder)
-    console.log('c', cost.toFixed())
-    expect(cost).toApproximate(_0)
+    expect(cost).toApproximate(new BigNumber('3588.42365625'))
   })
 })

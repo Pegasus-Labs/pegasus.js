@@ -303,13 +303,13 @@ export function adjustMarginLeverage(
     }
     const openPositionMargin = normalizedOpen.abs().times(perpetual.markPrice).div(leverage).plus(normalizedTotalFee)
     if (position2.minus(deltaPosition).isZero() || !normalizedClose.isZero()) {
-        // strategy: let new margin balance = openPositionMargin
-        const adjustCollateral = openPositionMargin.minus(afterTrade.accountComputed.marginBalance)
-        return adjustCollateral
+      // strategy: let new margin balance = openPositionMargin
+      const adjustCollateral = openPositionMargin.minus(afterTrade.accountComputed.marginBalance)
+      return adjustCollateral
     } else {
-        // strategy: always append positionMargin of openPosition
-        const adjustCollateral = openPositionMargin
-        return adjustCollateral
+      // strategy: always append positionMargin of openPosition
+      const adjustCollateral = openPositionMargin
+      return adjustCollateral
     }
   }
 }
