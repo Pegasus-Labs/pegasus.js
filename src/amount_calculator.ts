@@ -45,9 +45,10 @@ export function computeAMMMaxTradeAmount(
     }
   }
 
-  // guess = marginBalance * lev / index
+  // guess = (marginBalance + walletBalance) * lev / index - position
   const traderDetails = computeAccount(p, perpetualIndex, trader)
-  let guess = traderDetails.accountComputed.marginBalance.times(trader.targetLeverage).div(ammContext.index)
+  let guess = traderDetails.accountComputed.marginBalance.plus(normalizeWalletBalance)
+  guess = guess.times(trader.targetLeverage).div(ammContext.index)
   if (!isTraderBuy) {
     guess = guess.negated()
   }
@@ -158,14 +159,15 @@ export function computeLimitOrderMaxTradeAmount(
   const normalizeWalletBalance = normalizeBigNumberish(walletBalance)
   const normalizeLimitPrice = normalizeBigNumberish(limitPrice)
 
-  // guess = marginBalance * lev / index
+  // guess = (marginBalance + walletBalance) * lev / index - position
   const traderDetails = computeAccount(p, perpetualIndex, trader)
-  let guess = traderDetails.accountComputed.marginBalance.times(trader.targetLeverage).div(perpetual.markPrice)
+  let guess = traderDetails.accountComputed.marginBalance.plus(normalizeWalletBalance)
+  guess = guess.times(trader.targetLeverage).div(perpetual.markPrice)
   if (!isTraderBuy) {
     guess = guess.negated()
   }
   guess = guess.minus(trader.positionAmount)
-  
+
   // state after executing pre-orders
   const { preOrders, postOrders } = splitOrdersByLimitPrice(orders, normalizeLimitPrice, isTraderBuy)
   const preState = orderSideAvailable(
