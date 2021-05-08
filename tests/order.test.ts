@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { _0 } from '../src/constants'
-import { Order, orderAvailable, orderCost } from '../src/order'
-import { AccountStorage, LiquidityPoolStorage, PerpetualState, PerpetualStorage } from '../src/types'
+import { orderAvailable, orderCost } from '../src/order'
+import { AccountStorage, LiquidityPoolStorage, Order, PerpetualState, PerpetualStorage } from '../src/types'
 import { extendExpect } from './helper'
 
 extendExpect()

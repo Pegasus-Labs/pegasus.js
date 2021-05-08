@@ -90,8 +90,10 @@ export function sideAvailable(
     if (!close.isZero()) {
       const newPosition = remainPosition.plus(close)
       const newPositionMargin = mark.times(newPosition.abs()).times(imRate)
-      const pnl = mark.minus(order.limitPrice).times(close)
-      let afterMargin = remainMargin.plus(pnl)
+      const potentialPNL = mark.minus(order.limitPrice).times(close)
+      // loss = pnl if pnl < 0 else 0
+      const potentialLoss = BigNumber.minimum(potentialPNL, _0)
+      let afterMargin = remainMargin.plus(potentialLoss)
       const fee = BigNumber.minimum(
         // marginBalance + pnl - mark * | newPosition | * imRate
         BigNumber.maximum(afterMargin.minus(newPositionMargin), _0),
