@@ -4,6 +4,7 @@ import { _0, _1, _2 } from './constants'
 import { splitAmount } from './utils'
 import BigNumber from 'bignumber.js'
 
+// split orders into buyOrders and sellOrders
 export function splitOrderGroup(orders: Order[]) {
   let buyOrders: Order[] = []
   let sellOrders: Order[] = []
@@ -17,6 +18,24 @@ export function splitOrderGroup(orders: Order[]) {
   buyOrders.sort((a, b) => b.limitPrice.comparedTo(a.limitPrice)) // desc
   sellOrders.sort((a, b) => a.limitPrice.comparedTo(b.limitPrice)) // asc
   return { buyOrders, sellOrders }
+}
+
+// filter orders that will be executed before a new order
+export function filterOrdersBeforeLimitPrice(orders: Order[], newOrder: Order): Order[] {
+  const isBuy = newOrder.amount.gte(_0)
+  const preOrders: Order[] = []
+  orders.forEach(order => {
+    if ((isBuy && order.amount.gte(_0) && order.limitPrice.gte(newOrder.limitPrice))
+      || (!isBuy && order.amount.lte(_0) && order.limitPrice.lte(newOrder.limitPrice))) {
+      preOrders.push(order)
+    }
+  })
+  if (isBuy) {
+    preOrders.sort((a, b) => b.limitPrice.comparedTo(a.limitPrice)) // desc
+  } else {
+    preOrders.sort((a, b) => a.limitPrice.comparedTo(b.limitPrice)) // asc
+  }
+  return preOrders
 }
 
 export function openOrderCost(
@@ -82,7 +101,7 @@ export function sideAvailable(
       if (afterMargin.lt(_0)) {
         // bankrupt when close. pretend all orders as open orders
         remainPosition = _0
-        remainMargin = _0
+        remainMargin = _0 // TODO:
         remainOrders.push(order)
       } else {
         // withdraw only if marginBalance >= IM
