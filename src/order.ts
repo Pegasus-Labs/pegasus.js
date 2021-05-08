@@ -1,13 +1,8 @@
 import { computeAccount } from './computation'
-import { InvalidArgumentError, AccountStorage, LiquidityPoolStorage } from './types'
+import { InvalidArgumentError, AccountStorage, LiquidityPoolStorage, Order } from './types'
 import { _0, _1, _2 } from './constants'
 import { splitAmount } from './utils'
 import BigNumber from 'bignumber.js'
-
-export interface Order {
-  limitPrice: BigNumber
-  amount: BigNumber // should be Pending + Available
-}
 
 export function splitOrderGroup(orders: Order[]) {
   let buyOrders: Order[] = []
@@ -147,6 +142,7 @@ export function orderCost(
   perpetualIndex: number,
   trader: AccountStorage,
   walletBalance: BigNumber,
+  orders: Order[],
   oldAvailable: BigNumber, // please pass the returned value of orderAvailable(orders)
   newOrder: Order,
 ): BigNumber {

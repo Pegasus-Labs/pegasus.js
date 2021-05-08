@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { _0 } from '../src/constants'
-import { Order, orderCost } from '../src/order'
+import { Order, orderAvailable, orderCost } from '../src/order'
 import { AccountStorage, LiquidityPoolStorage, PerpetualState, PerpetualStorage } from '../src/types'
 import { extendExpect } from './helper'
 
@@ -109,7 +109,8 @@ describe('orderCost', function() {
       limitPrice: new BigNumber('6900'),
       amount: new BigNumber('-1')
     }
-    const cost = orderCost(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, walletBalance, orders, newOrder)
+    const oldAvailable = orderAvailable(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, walletBalance, orders)
+    const cost = orderCost(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, walletBalance, orders, oldAvailable, newOrder)
     expect(cost).toApproximate(_0)
   })
 
@@ -120,7 +121,8 @@ describe('orderCost', function() {
       limitPrice: new BigNumber('6900'),
       amount: new BigNumber('-3.3')
     }
-    const cost = orderCost(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, walletBalance, orders, newOrder)
+    const oldAvailable = orderAvailable(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, walletBalance, orders)
+    const cost = orderCost(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, walletBalance, orders, oldAvailable, newOrder)
     expect(cost).toApproximate(_0)
   })
 
@@ -135,7 +137,8 @@ describe('orderCost', function() {
     // withdraw = 23695.57634375 - (6965 - 6900)*2.3 - 6900*2.3*0.001 = 23530.20634375
     // deposit = (10 - 2.3)*6900*(1/2 + 0.001) + (6965 - 6900)*7.7 = 27118.6
     // cost = deposit - withdraw = 3588.42
-    const cost = orderCost(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, walletBalance, orders, newOrder)
+    const oldAvailable = orderAvailable(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, walletBalance, orders)
+    const cost = orderCost(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, walletBalance, orders, oldAvailable, newOrder)
     expect(cost).toApproximate(new BigNumber('3588.42365625'))
   })
 
@@ -148,7 +151,8 @@ describe('orderCost', function() {
     }
     // deposit = 10*6900*(1/2 + 0.001) + (6965 - 6900)*10 = 35219
     // cost = deposit - 1000 = 34219
-    const cost = orderCost(poolStorage1, TEST_MARKET_INDEX0, accountStorage0, walletBalance, orders, newOrder)
+    const oldAvailable = orderAvailable(poolStorage1, TEST_MARKET_INDEX0, accountStorage0, walletBalance, orders)
+    const cost = orderCost(poolStorage1, TEST_MARKET_INDEX0, accountStorage0, walletBalance, orders, oldAvailable, newOrder)
     expect(cost).toApproximate(new BigNumber('34219'))
   })
 })
