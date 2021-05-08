@@ -230,7 +230,7 @@ export async function perpetualReMargin(
   fromPoolAddress: string,
   fromPerpIndex: number,
   toPoolAddress: string,
-  toPerpIndex: number, 
+  toPerpIndex: number,
   amount: BigNumberish,
   overrides: Overrides = {},
 ): Promise<ethers.providers.TransactionResponse> {
@@ -245,4 +245,18 @@ export async function perpetualReMargin(
     largeAmount.toFixed(),
     overrides
   )
+}
+
+export async function setTargetLeverage(
+  liquidityPool: LiquidityPool,
+  perpetualIndex: number,
+  trader: string,
+  targetLeverage: BigNumberish,
+  overrides: Overrides = {},
+): Promise<ethers.providers.TransactionResponse> {
+  getAddress(trader)
+  const leverage = normalizeBigNumberish(targetLeverage)
+    .shiftedBy(DECIMALS)
+    .dp(0, BigNumber.ROUND_DOWN)
+  return await liquidityPool.setTargetLeverage(perpetualIndex, trader, leverage.toFixed(), overrides)
 }
