@@ -20,22 +20,26 @@ export function splitOrderGroup(orders: Order[]) {
   return { buyOrders, sellOrders }
 }
 
-// filter orders that will be executed before a new order
-export function filterOrdersBeforeLimitPrice(orders: Order[], newOrder: Order): Order[] {
-  const isBuy = newOrder.amount.gte(_0)
+// filter orders that will be executed before and after a new order
+export function splitOrdersByLimitPrice(orders: Order[], limitPrice: BigNumber, isBuy: boolean): { preOrders: Order[], postOrders: Order[] } {
   const preOrders: Order[] = []
+  const postOrders: Order[] = []
   orders.forEach(order => {
-    if ((isBuy && order.amount.gte(_0) && order.limitPrice.gte(newOrder.limitPrice))
-      || (!isBuy && order.amount.lte(_0) && order.limitPrice.lte(newOrder.limitPrice))) {
+    if ((isBuy && order.amount.gte(_0) && order.limitPrice.gte(limitPrice))
+      || (!isBuy && order.amount.lte(_0) && order.limitPrice.lte(limitPrice))) {
       preOrders.push(order)
+    } else {
+      postOrders.push(order)
     }
   })
   if (isBuy) {
     preOrders.sort((a, b) => b.limitPrice.comparedTo(a.limitPrice)) // desc
+    postOrders.sort((a, b) => b.limitPrice.comparedTo(a.limitPrice)) // desc
   } else {
     preOrders.sort((a, b) => a.limitPrice.comparedTo(b.limitPrice)) // asc
+    postOrders.sort((a, b) => a.limitPrice.comparedTo(b.limitPrice)) // asc
   }
-  return preOrders
+  return { preOrders, postOrders }
 }
 
 export function openOrderCost(
@@ -60,13 +64,15 @@ export function openOrderCost(
 }
 
 // return available in wallet balance
-export function sideAvailable(
+export function orderSideAvailable(
   p: LiquidityPoolStorage,
   perpetualIndex: number,
-  trader: AccountStorage,
+  marginBalance: BigNumber,
+  position: BigNumber,
+  targetLeverage: BigNumber,
   walletBalance: BigNumber,
   orders: Order[]
-): { remainPosition: BigNumber; available: BigNumber } {
+): { remainPosition: BigNumber; remainMargin: BigNumber, remainWalletBalance: BigNumber } {
   const perpetual = p.perpetuals.get(perpetualIndex)
   if (!perpetual) {
     throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
@@ -74,13 +80,12 @@ export function sideAvailable(
   const feeRate = p.vaultFeeRate.plus(perpetual.lpFeeRate).plus(perpetual.operatorFeeRate)
   const mark = perpetual.markPrice
   const imRate = perpetual.initialMarginRate
-  const computed = computeAccount(p, perpetualIndex, trader)
-  let remainPosition = trader.positionAmount // position
-  let remainMargin = computed.accountComputed.marginBalance
-  let available = walletBalance
+  let remainPosition = position
+  let remainMargin = marginBalance
+  let remainWalletBalance = walletBalance
   let remainOrders: Order[] = []
   if (orders.length == 0) {
-    return { remainPosition, available }
+    return { remainPosition, remainMargin, remainWalletBalance }
   }
 
   // close position
@@ -116,7 +121,7 @@ export function sideAvailable(
           withdraw = BigNumber.maximum(_0, withdraw)
         }
         remainMargin = afterMargin.minus(withdraw)
-        available = available.plus(withdraw)
+        remainWalletBalance = remainWalletBalance.plus(withdraw)
         remainPosition = remainPosition.plus(close)
         const newOrderAmount = order.amount.minus(close)
         if (!newOrderAmount.isZero()) {
@@ -130,21 +135,22 @@ export function sideAvailable(
 
   // if close = 0 && position = 0 && margin > 0
   if (remainPosition.isZero()) {
-    available = available.plus(remainMargin)
+    remainWalletBalance = remainWalletBalance.plus(remainMargin)
+    remainMargin = _0
   }
 
   // open position
   for (let i = 0; i < remainOrders.length; i++) {
-    const cost = openOrderCost(p, perpetualIndex, remainOrders[i], trader.targetLeverage)
-    available = available.minus(cost)
+    const cost = openOrderCost(p, perpetualIndex, remainOrders[i], targetLeverage)
+    remainWalletBalance = remainWalletBalance.minus(cost)
     // TODO:
-    // if available < 0, the relayer should cancel some part of the order
+    // if remainWalletBalance < 0, the relayer should cancel some part of the order
   }
 
-  return { remainPosition, available }
+  return { remainPosition, remainMargin, remainWalletBalance }
 }
 
-// available = walletBalance - orderMargin
+// available = remainWalletBalance = walletBalance - orderMargin
 export function orderAvailable(
   p: LiquidityPoolStorage,
   perpetualIndex: number,
@@ -153,9 +159,10 @@ export function orderAvailable(
   orders: Order[]
 ) : BigNumber {
   const { buyOrders, sellOrders } = splitOrderGroup(orders)
-  const buySide = sideAvailable(p, perpetualIndex, trader, walletBalance, buyOrders)
-  const sellSide = sideAvailable(p, perpetualIndex, trader, walletBalance, sellOrders)
-  return BigNumber.minimum(buySide.available, sellSide.available)
+  const marginBalance = computeAccount(p, perpetualIndex, trader).accountComputed.marginBalance
+  const buySide = orderSideAvailable(p, perpetualIndex, marginBalance, trader.positionAmount, trader.targetLeverage, walletBalance, buyOrders)
+  const sellSide = orderSideAvailable(p, perpetualIndex, marginBalance, trader.positionAmount, trader.targetLeverage, walletBalance, sellOrders)
+  return BigNumber.minimum(buySide.remainWalletBalance, sellSide.remainWalletBalance)
 }
 
 export function orderCost(
@@ -171,50 +178,3 @@ export function orderCost(
   // old - new if old > new else 0
   return BigNumber.maximum(_0, oldAvailable.minus(newAvailable))
 }
-
-// export function orderMaxOpen(perp: Perp, limitPrice: number, side: Side, leverage: number, available: number): number {
-//   let potentialLoss = 0
-//   if (side == Side.BUY && perp.mark < limitPrice) {
-//     potentialLoss = limitPrice - perp.mark
-//   } else if (side == Side.SELL && perp.mark > limitPrice) {
-//     potentialLoss = perp.mark - limitPrice
-//   }
-//   return available / (limitPrice * (1 / leverage + perp.fee) + potentialLoss)
-// }
-
-// export function orderMaxClose(perp: Perp, position: Position, remainPosition: number, limitPrice: number) {
-//   if (remainPosition == 0) {
-//     return { maxClose: 0, withdraw: position.size == 0 ? position.margin : 0 }
-//   }
-//   const pnl = position.side == Side.BUY ? limitPrice - position.entryPrice : position.entryPrice - limitPrice
-//   let withdraw = (position.margin / position.size + pnl) * remainPosition
-//   const delta = Math.max(0, withdraw - remainPosition * perp.mark * perp.im)
-//   const fee = Math.min(limitPrice * remainPosition * perp.fee, delta)
-//   withdraw -= fee
-
-//   if (withdraw < 0) {
-//     throw 'bad limit price'
-//   }
-
-//   return { maxClose: remainPosition, withdraw }
-// }
-
-// export function orderMax(
-//   perp: Perp,
-//   position: Position,
-//   remainPosition: number,
-//   limitPrice: number,
-//   side: Side,
-//   leverage: number,
-//   available: number
-// ) {
-//   let max = 0
-//   if (side != position.size) {
-//     const { maxClose, withdraw } = orderMaxClose(perp, position, remainPosition, limitPrice)
-//     max += maxClose
-//     available += withdraw
-//   }
-//   const maxOpen = orderMaxOpen(perp, limitPrice, side, leverage, available)
-//   max += maxOpen
-//   return max
-// }

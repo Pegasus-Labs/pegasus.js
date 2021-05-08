@@ -4,7 +4,7 @@
   If you don't need these tools, you can remove this file to reduce the package size.
 */
 import { computeAccount, computeAMMTrade, computeAMMPrice } from './computation'
-import { BigNumberish, InvalidArgumentError, AccountStorage, LiquidityPoolStorage, AMMTradingContext, TradeFlag } from './types'
+import { BigNumberish, InvalidArgumentError, AccountStorage, LiquidityPoolStorage, AMMTradingContext, TradeFlag, Order } from './types'
 import {
   initAMMTradingContext,
   isAMMSafe,
@@ -20,6 +20,7 @@ import { BugError } from './types'
 import { DECIMALS, _0, _1, _2 } from './constants'
 import { sqrt, normalizeBigNumberish } from './utils'
 import BigNumber from 'bignumber.js'
+import { orderSideAvailable, splitOrdersByLimitPrice } from './order'
 const minimize = require('minimize-golden-section-1d')
 
 // max amount when a trader uses market-order with USE_TARGET_LEVERAGE
@@ -50,6 +51,7 @@ export function computeAMMMaxTradeAmount(
   if (!isTraderBuy) {
     guess = guess.negated()
   }
+  guess = guess.minus(trader.positionAmount)
 
   // search
   function checkTrading(a: number): number {
@@ -59,11 +61,12 @@ export function computeAMMMaxTradeAmount(
     try {
       const result = computeAMMTrade(p, perpetualIndex, trader, new BigNumber(a), TradeFlag.MASK_USE_TARGET_LEVERAGE)
       if (!result.tradeIsSafe || result.depositOrWithdraw.gt(normalizeWalletBalance)) {
-        return Math.abs(a)
+        return Math.abs(a) // a positive value means failed
       }
-      return -Math.abs(a) // return a negative value
+      return -Math.abs(a) // a negative value means success
     } catch (e) {
-      return Math.abs(a) // punish larger a
+      // typically means a is too large
+      return Math.abs(a) // punish
     }
   }
   const options: any = {
@@ -114,9 +117,10 @@ export function computeAMMTradeAmountByMargin(
       // err = | expected trader margin - actual trader margin |
       const actualTraderMargin = price.deltaAMMMargin.negated()
       const err = actualTraderMargin.minus(normalizeDeltaMargin).abs()
-      return err.toNumber()
+      return err.toNumber() // smaller error is better
     } catch (e) {
-      return Math.abs(a) // punish larger a
+      // typically means a is too large
+      return Math.abs(a) * normalizeDeltaMargin.toNumber() // punish
     }
   }
   const options: any = {
@@ -128,6 +132,71 @@ export function computeAMMTradeAmountByMargin(
     options.lowerBound = 0
   } else {
     // trader sells
+    options.upperBound = 0
+  }
+  const answer: any = {}
+  minimize(checkTrading, options, answer)
+  const result = new BigNumber(answer.argmin as number)
+  return result
+}
+
+// max amount when a trader uses limit-order with USE_TARGET_LEVERAGE
+// the returned amount is the trader's perspective
+export function computeLimitOrderMaxTradeAmount(
+  p: LiquidityPoolStorage,
+  perpetualIndex: number,
+  trader: AccountStorage,
+  walletBalance: BigNumberish,
+  orders: Order[],
+  limitPrice: BigNumberish,
+  isTraderBuy: boolean,
+): BigNumber {
+  const perpetual = p.perpetuals.get(perpetualIndex)
+  if (!perpetual) {
+    throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
+  }
+  const normalizeWalletBalance = normalizeBigNumberish(walletBalance)
+  const normalizeLimitPrice = normalizeBigNumberish(limitPrice)
+
+  // guess = marginBalance * lev / index
+  const traderDetails = computeAccount(p, perpetualIndex, trader)
+  let guess = traderDetails.accountComputed.marginBalance.times(trader.targetLeverage).div(perpetual.markPrice)
+  if (!isTraderBuy) {
+    guess = guess.negated()
+  }
+  guess = guess.minus(trader.positionAmount)
+  
+  // state after executing pre-orders
+  const { preOrders, postOrders } = splitOrdersByLimitPrice(orders, normalizeLimitPrice, isTraderBuy)
+  const preState = orderSideAvailable(
+    p, perpetualIndex, traderDetails.accountComputed.marginBalance,
+    trader.positionAmount, trader.targetLeverage, normalizeWalletBalance, preOrders)
+  
+  // search
+  function checkTrading(a: number): number {
+    if (a == 0) {
+      return 0
+    }
+    let newOrderState = orderSideAvailable(
+      p, perpetualIndex, preState.remainMargin,
+      preState.remainPosition, trader.targetLeverage, preState.remainWalletBalance,
+      [{ limitPrice: normalizeLimitPrice, amount: new BigNumber(a) }])
+    let postState = orderSideAvailable(
+      p, perpetualIndex, newOrderState.remainMargin,
+      newOrderState.remainPosition, trader.targetLeverage, newOrderState.remainWalletBalance, postOrders)
+    if (postState.remainWalletBalance.lt(_0)) {
+      // a is too large
+      return Math.abs(a) // a positive value means failed
+    }
+    return -Math.abs(a) // a negative value means success
+  }
+  const options: any = {
+    maxIterations: 20,
+    guess: guess.toNumber()
+  }
+  if (isTraderBuy) {
+    options.lowerBound = 0
+  } else {
     options.upperBound = 0
   }
   const answer: any = {}

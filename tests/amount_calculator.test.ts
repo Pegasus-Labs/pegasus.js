@@ -1,14 +1,17 @@
 import BigNumber from 'bignumber.js'
-import { computeAMMTrade, computeAMMPrice } from '../src/computation'
+import { computeAMMPrice, computeAMMTrade } from '../src/computation'
 import {
   computeAMMMaxTradeAmount,
   computeAMMTradeAmountByMargin,
   computeAMMAmountWithPrice,
-  computeAMMInverseVWAP
+  computeAMMInverseVWAP,
+  computeLimitOrderMaxTradeAmount
 } from '../src/amount_calculator'
+import { computeAccount } from '../src/computation'
 import { computeAMMPoolMargin, initAMMTradingContext } from '../src/amm'
 import { _0, _1 } from '../src/constants'
-import { LiquidityPoolStorage, PerpetualStorage, AccountStorage, PerpetualState, TradeFlag } from '../src/types'
+import { orderSideAvailable } from '../src/order'
+import { LiquidityPoolStorage, PerpetualStorage, AccountStorage, PerpetualState, TradeFlag, Order } from '../src/types'
 import { normalizeBigNumberish } from '../src/utils'
 import { extendExpect } from './helper'
 
@@ -192,6 +195,31 @@ describe('computeAMMTradeAmountByMargin', function() {
   it(`safe trader + unsafe amm(holds long), trader sell`, function() {
     const amount = computeAMMTradeAmountByMargin(poolStorage6, TEST_MARKET_INDEX0, '100')
     expect(amount.isZero()).toBeTruthy()
+  })
+})
+
+describe('computeLimitOrderMaxTradeAmount', function() {
+  it('empty order book. close + open. withdraw covers deposit', function() {
+    const walletBalance = _0
+    const limitPrice = new BigNumber('6900')
+    const isBuy = false
+    const orders: Order[] = []
+    const amount = computeLimitOrderMaxTradeAmount(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, walletBalance, orders, limitPrice, isBuy)
+    // marginBalance = 23695.57634375, amount = -5.674817648108165
+    // withdraw = 23695.57634375 - (6965 - 6900)*2.3 - 6900*2.3*0.001 = 23530.20634375
+    // deposit = (5.674817648108165 - 2.3)*6900*(1/1 + 0.001) + (6965 - 6900)*(5.674817648108165 - 2.3) = 23528.9
+    // cost = deposit - withdraw = 0
+    // expect(amount.gt('-5.7')).toBeTruthy()
+    // expect(amount.lt('-5.6')).toBeTruthy()
+    const marginBalance = computeAccount(poolStorage1, TEST_MARKET_INDEX0, accountStorage1).accountComputed.marginBalance
+    const oldAvailable = orderSideAvailable(poolStorage1, TEST_MARKET_INDEX0, marginBalance, accountStorage1.positionAmount,
+      accountStorage1.targetLeverage, walletBalance, orders)
+    const newAvailable = orderSideAvailable(poolStorage1, TEST_MARKET_INDEX0, marginBalance, accountStorage1.positionAmount,
+      accountStorage1.targetLeverage, walletBalance, orders.concat([
+      { limitPrice, amount }
+    ]))
+    expect(oldAvailable.remainWalletBalance).toApproximate(_0)
+    expect(newAvailable.remainWalletBalance.lt('1')).toBeTruthy()
   })
 })
 

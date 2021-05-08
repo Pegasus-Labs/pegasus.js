@@ -135,7 +135,7 @@ describe('orderCost', function() {
     }
     // marginBalance = 23695.57634375
     // withdraw = 23695.57634375 - (6965 - 6900)*2.3 - 6900*2.3*0.001 = 23530.20634375
-    // deposit = (10 - 2.3)*6900*(1/2 + 0.001) + (6965 - 6900)*7.7 = 27118.6
+    // deposit = (10 - 2.3)*6900*(1/2 + 0.001) + (6965 - 6900)*(10 - 2.3) = 27118.6
     // cost = deposit - withdraw = 3588.42
     const oldAvailable = orderAvailable(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, walletBalance, orders)
     const cost = orderCost(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, walletBalance, orders, oldAvailable, newOrder)
