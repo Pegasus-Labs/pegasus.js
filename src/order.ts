@@ -147,10 +147,9 @@ export function orderCost(
   perpetualIndex: number,
   trader: AccountStorage,
   walletBalance: BigNumber,
-  orders: Order[],
+  oldAvailable: BigNumber, // please pass the returned value of orderAvailable(orders)
   newOrder: Order,
 ): BigNumber {
-  const oldAvailable = orderAvailable(p, perpetualIndex, trader, walletBalance, orders)
   const newAvailable = orderAvailable(p, perpetualIndex, trader, walletBalance, orders.concat([newOrder]))
   // old - new if old > new else 0
   return BigNumber.maximum(_0, oldAvailable.minus(newAvailable))

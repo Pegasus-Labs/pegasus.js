@@ -237,3 +237,8 @@ export interface PreviewOracleRouterResult {
   isMarketClosed: boolean
   isTerminated: boolean
 }
+
+export interface Order {
+  limitPrice: BigNumber
+  amount: BigNumber // should be availableAmount + pendingAmount
+}
