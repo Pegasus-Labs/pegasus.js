@@ -87,6 +87,7 @@ export function sideAvailable(
       if (afterMargin.lt(_0)) {
         // bankrupt when close. pretend all orders as open orders
         remainPosition = _0
+        remainMargin = _0
         remainOrders.push(order)
       } else {
         // withdraw only if marginBalance >= IM
