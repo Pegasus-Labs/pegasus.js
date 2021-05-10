@@ -945,7 +945,7 @@ describe('computeAMMTrade with USE_TARGET_LEVERAGE', function() {
     // cash = deposit - 3450 - 3450 * 0.003(fee). so deposit = 1960.35
     expect(res.tradingPrice).toBeBigNumber(normalizeBigNumberish('1150'))
     expect(res.totalFee).toBeBigNumber(normalizeBigNumberish('10.35'))
-    expect(res.depositOrWithdraw).toBeBigNumber(normalizeBigNumberish('1960.35'))
+    expect(res.adjustCollateral).toBeBigNumber(normalizeBigNumberish('1960.35'))
     expect(res.trader.accountStorage.cashBalance).toBeBigNumber(normalizeBigNumberish('-1500'))
     expect(res.trader.accountStorage.positionAmount).toBeBigNumber(normalizeBigNumberish('3'))
     expect(res.trader.accountComputed.marginBalance).toBeBigNumber(normalizeBigNumberish('1500'))
@@ -960,7 +960,7 @@ describe('computeAMMTrade with USE_TARGET_LEVERAGE', function() {
     // newCash = oldCash - withdraw + 2100 - 2100 * 0.003(fee). so withdraw = 1093.7
     expect(res.tradingPrice).toBeBigNumber(normalizeBigNumberish('1050'))
     expect(res.totalFee).toBeBigNumber(normalizeBigNumberish('6.3'))
-    expect(res.depositOrWithdraw).toBeBigNumber(normalizeBigNumberish('-1093.7'))
+    expect(res.adjustCollateral).toBeBigNumber(normalizeBigNumberish('-1093.7'))
     expect(res.trader.accountStorage.cashBalance).toBeBigNumber(normalizeBigNumberish('-500'))
     expect(res.trader.accountStorage.positionAmount).toBeBigNumber(normalizeBigNumberish('1'))
     expect(res.trader.accountComputed.isMMSafe).toEqual(true)
@@ -978,7 +978,7 @@ describe('computeAMMTrade with USE_TARGET_LEVERAGE', function() {
     // so deposit = 500 - (-500) - (1984...) + 1984... * 0.003 - (-1000) = 20.958233196541545506
     expect(res.tradingPrice).toApproximate(normalizeBigNumberish('992.498378537341251'))
     expect(res.totalFee).toApproximate(normalizeBigNumberish('5.95499027122404751'))
-    expect(res.depositOrWithdraw).toApproximate(normalizeBigNumberish('20.958233196541545506'))
+    expect(res.adjustCollateral).toApproximate(normalizeBigNumberish('20.958233196541545506'))
     expect(res.trader.accountStorage.cashBalance).toBeBigNumber(normalizeBigNumberish('1500'))
     expect(res.trader.accountStorage.positionAmount).toBeBigNumber(normalizeBigNumberish('-1'))
     expect(res.trader.accountComputed.isMMSafe).toEqual(true)
@@ -990,7 +990,7 @@ describe('computeAMMTrade with USE_TARGET_LEVERAGE', function() {
     // amm deltaCash = 977.783065493367778
     expect(res.tradingPrice).toApproximate(normalizeBigNumberish('977.783065493367778'))
     expect(res.totalFee).toApproximate(normalizeBigNumberish('2.93334919648010333'))
-    expect(res.depositOrWithdraw).toApproximate(normalizeBigNumberish('-519.2835853101521187')) // ctk.balanceOf - last ctk.balanceOf
+    expect(res.adjustCollateral).toApproximate(normalizeBigNumberish('-519.2835853101521187')) // ctk.balanceOf - last ctk.balanceOf
     expect(res.trader.accountStorage.cashBalance).toBeBigNumber(normalizeBigNumberish('0'))
     expect(res.trader.accountStorage.positionAmount).toBeBigNumber(normalizeBigNumberish('0'))
     expect(res.trader.accountComputed.isMMSafe).toEqual(true)
@@ -1013,7 +1013,7 @@ describe('computeAMMTrade with USE_TARGET_LEVERAGE', function() {
     // newCash = oldCash + deposit - 3450 - 3450 * 0.003(fee). so deposit = 1460.35
     expect(res.tradingPrice).toBeBigNumber(normalizeBigNumberish('1150'))
     expect(res.totalFee).toBeBigNumber(normalizeBigNumberish('10.35'))
-    expect(res.depositOrWithdraw).toBeBigNumber(normalizeBigNumberish('1460.35'))
+    expect(res.adjustCollateral).toBeBigNumber(normalizeBigNumberish('1460.35'))
     expect(res.trader.accountStorage.cashBalance).toBeBigNumber(normalizeBigNumberish('-1500'))
     expect(res.trader.accountStorage.positionAmount).toBeBigNumber(normalizeBigNumberish('3'))
     expect(res.trader.accountComputed.marginBalance).toBeBigNumber(normalizeBigNumberish('1500'))
@@ -1035,7 +1035,7 @@ describe('computeAMMTrade with USE_TARGET_LEVERAGE', function() {
     // newCash = oldCash - withdraw + 515... - 515... * 0.003(fee). so withdraw = 13.894509070200108090477
     expect(res.tradingPrice).toApproximate(normalizeBigNumberish('515.541132467602916841'))
     expect(res.totalFee).toApproximate(normalizeBigNumberish('1.54662339740280875052'))
-    expect(res.depositOrWithdraw).toApproximate(normalizeBigNumberish('-13.894509070200108090477'))
+    expect(res.adjustCollateral).toApproximate(normalizeBigNumberish('-13.894509070200108090477'))
     expect(res.trader.accountStorage.cashBalance).toBeBigNumber(normalizeBigNumberish('-999.9'))
     expect(res.trader.accountStorage.positionAmount).toBeBigNumber(normalizeBigNumberish('2'))
     expect(res.trader.accountComputed.isIMSafe).toEqual(true)
@@ -1061,7 +1061,7 @@ describe('computeAMMTrade with USE_TARGET_LEVERAGE', function() {
     // cash = oldCash + deltaCash - fee - withdraw. so withdraw = 11.618388224103858109
     expect(res.tradingPrice).toApproximate(normalizeBigNumberish('521.201994206724030199'))
     expect(res.totalFee).toApproximate(normalizeBigNumberish('1.56360598262017209060'))
-    expect(res.depositOrWithdraw).toApproximate(normalizeBigNumberish('-11.618388224103858109'))
+    expect(res.adjustCollateral).toApproximate(normalizeBigNumberish('-11.618388224103858109'))
     expect(res.trader.accountStorage.cashBalance).toBeBigNumber(normalizeBigNumberish('-991.98'))
     expect(res.trader.accountStorage.positionAmount).toBeBigNumber(normalizeBigNumberish('2'))
     expect(res.trader.accountComputed.isIMSafe).toEqual(true)
@@ -1082,7 +1082,7 @@ describe('computeAMMTrade with USE_TARGET_LEVERAGE', function() {
     // withdraw = 0
     expect(res.tradingPrice).toApproximate(normalizeBigNumberish('510.202621119993762015'))
     expect(res.totalFee).toApproximate(normalizeBigNumberish('0.202621119993762015'))
-    expect(res.depositOrWithdraw).toApproximate(normalizeBigNumberish('0'))
+    expect(res.adjustCollateral).toApproximate(normalizeBigNumberish('0'))
     expect(res.trader.accountStorage.cashBalance).toBeBigNumber(normalizeBigNumberish('-990'))
     expect(res.trader.accountStorage.positionAmount).toBeBigNumber(normalizeBigNumberish('2'))
     expect(res.trader.accountComputed.isIMSafe).toEqual(true)
@@ -1108,7 +1108,7 @@ describe('computeAMMTrade with USE_TARGET_LEVERAGE', function() {
     // so withdraw = 0, fee = 0
     expect(res.tradingPrice).toApproximate(normalizeBigNumberish('492.240720624875890864'))
     expect(res.totalFee).toApproximate(normalizeBigNumberish('0'))
-    expect(res.depositOrWithdraw).toApproximate(normalizeBigNumberish('0'))
+    expect(res.adjustCollateral).toApproximate(normalizeBigNumberish('0'))
     expect(res.trader.accountStorage.cashBalance).toApproximate(normalizeBigNumberish('-1007.759279375124109136'))
     expect(res.trader.accountStorage.positionAmount).toBeBigNumber(normalizeBigNumberish('2'))
     expect(res.trader.accountComputed.isMMSafe).toEqual(false)

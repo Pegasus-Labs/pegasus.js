@@ -212,7 +212,7 @@ export interface TradeWithPriceResult {
   afterTrade: AccountDetails
   tradeIsSafe: boolean
   totalFee: BigNumber
-  depositOrWithdraw: BigNumber // auto deposit or withdraw if option = MASK_USE_TARGET_LEVERAGE. > 0 means auto deposit from wallet
+  adjustCollateral: BigNumber // auto deposit or withdraw if option = MASK_USE_TARGET_LEVERAGE. > 0 means auto deposit from wallet
 }
 
 export interface AMMTradingResult {
@@ -221,7 +221,7 @@ export interface AMMTradingResult {
   newPool: LiquidityPoolStorage
   totalFee: BigNumber
   tradingPrice: BigNumber
-  depositOrWithdraw: BigNumber // auto deposit or withdraw if option = MASK_USE_TARGET_LEVERAGE. > 0 means auto deposit from wallet
+  adjustCollateral: BigNumber // auto deposit or withdraw if option = MASK_USE_TARGET_LEVERAGE. > 0 means auto deposit from wallet
 }
 
 export interface OracleRoute {

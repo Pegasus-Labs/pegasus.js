@@ -138,8 +138,8 @@ describe('computeAMMMaxTradeAmount', function() {
     expect(res.tradeIsSafe).toBeTruthy()
     expect(amount.gt('1.0')).toBeTruthy()
     expect(amount.lt('1.2')).toBeTruthy()
-    expect(res.depositOrWithdraw.gt('6999')).toBeTruthy()
-    expect(res.depositOrWithdraw.lt('7001')).toBeTruthy()
+    expect(res.adjustCollateral.gt('6999')).toBeTruthy()
+    expect(res.adjustCollateral.lt('7001')).toBeTruthy()
   })
 
   it(`safe trader + safe amm, trader sell. close + open . withdraw covers deposit`, function() {

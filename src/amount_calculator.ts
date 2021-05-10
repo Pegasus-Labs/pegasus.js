@@ -61,7 +61,7 @@ export function computeAMMMaxTradeAmount(
     }
     try {
       const result = computeAMMTrade(p, perpetualIndex, trader, new BigNumber(a), TradeFlag.MASK_USE_TARGET_LEVERAGE)
-      if (!result.tradeIsSafe || result.depositOrWithdraw.gt(normalizeWalletBalance)) {
+      if (!result.tradeIsSafe || result.adjustCollateral.gt(normalizeWalletBalance)) {
         return Math.abs(a) // a positive value means failed
       }
       return -Math.abs(a) // a negative value means success

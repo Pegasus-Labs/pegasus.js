@@ -234,12 +234,12 @@ export function computeTradeWithPrice(
   const totalFee = computeFee(!open.isZero(), normalizedPrice, normalizedAmount, normalizedFeeRate, afterTrade)
 
   // adjust margin
-  let depositOrWithdraw = _0
+  let adjustCollateral = _0
   if ((options & TradeFlag.MASK_USE_TARGET_LEVERAGE) != 0) {
-    depositOrWithdraw = adjustMarginLeverage(
+    adjustCollateral = adjustMarginLeverage(
       p, perpetualIndex, afterTrade,
       price, close, open, totalFee)
-    newAccount.cashBalance = newAccount.cashBalance.plus(depositOrWithdraw)
+    newAccount.cashBalance = newAccount.cashBalance.plus(adjustCollateral)
   }
 
   // transfer fee
@@ -255,7 +255,7 @@ export function computeTradeWithPrice(
     afterTrade,
     tradeIsSafe,
     totalFee,
-    depositOrWithdraw,
+    adjustCollateral,
   }
 }
 
@@ -400,7 +400,7 @@ export function computeAMMTrade(
     newPool,
     totalFee: traderResult.totalFee,
     tradingPrice,
-    depositOrWithdraw: traderResult.depositOrWithdraw,
+    adjustCollateral: traderResult.adjustCollateral,
   }
 }
 
