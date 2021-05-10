@@ -353,34 +353,23 @@ export function computeAMMTrade(
   newOpenInterest = computeOpenInterest(newOpenInterest, trader.positionAmount, deltaAMMAmount.negated())
 
   // fee
-  const lpFee = traderResult.totalFee.times(perpetual.lpFeeRate).div(
-    perpetual.lpFeeRate.plus(p.vaultFeeRate).plus(perpetual.operatorFeeRate)
-  )
+  const totalFeeRate = perpetual.lpFeeRate.plus(p.vaultFeeRate).plus(perpetual.operatorFeeRate)
+  const lpFee = totalFeeRate.isZero() ? _0 : traderResult.totalFee.times(perpetual.lpFeeRate).div(totalFeeRate)
 
   // new AMM
-  let fakeAMMAccount: AccountStorage = {
-    cashBalance: p.poolCashBalance,
-    positionAmount: perpetual.ammPositionAmount,
-    targetLeverage: _0,
-    entryValue: null,
-    entryFunding: null
-  }
-  const fakeAMMResult = computeTradeWithPrice(
-    p, perpetualIndex, fakeAMMAccount,
-    tradingPrice, deltaAMMAmount, _0,
-    0 /* never deposit or withdraw for AMM account */)
-  fakeAMMAccount = fakeAMMResult.afterTrade.accountStorage
-  fakeAMMAccount.cashBalance = fakeAMMAccount.cashBalance.plus(lpFee)
+  let newPoolCashBalance = p.poolCashBalance.minus(deltaAMMAmount.times(tradingPrice))
+                                            .plus(perpetual.unitAccumulativeFunding.times(deltaAMMAmount))
+                                            .plus(lpFee)
   newOpenInterest = computeOpenInterest(newOpenInterest, perpetual.ammPositionAmount, deltaAMMAmount)
   const newPool: LiquidityPoolStorage = {
     // clone the old pool to keep the return value immutable
     ...p,
-    poolCashBalance: fakeAMMAccount.cashBalance,
+    poolCashBalance: newPoolCashBalance,
     perpetuals: new Map(p.perpetuals)
   }
   newPool.perpetuals.set(perpetualIndex, {
     ...perpetual,
-    ammPositionAmount: fakeAMMAccount.positionAmount,
+    ammPositionAmount: perpetual.ammPositionAmount.plus(deltaAMMAmount),
     openInterest: newOpenInterest,
   })
 
