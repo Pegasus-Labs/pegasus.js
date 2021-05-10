@@ -101,21 +101,31 @@ export function orderSideAvailable(
       // loss = pnl if pnl < 0 else 0
       const potentialLoss = BigNumber.minimum(potentialPNL, _0)
       let afterMargin = remainMargin.plus(potentialLoss)
-      const fee = BigNumber.minimum(
-        // marginBalance + pnl - mark * | newPosition | * imRate
-        BigNumber.maximum(afterMargin.minus(newPositionMargin), _0),
-        order.limitPrice.times(close.abs()).times(feeRate),
-      )
+      // fee
+      let fee = _0
+      if (close.eq(order.amount)) {
+        // close only
+        fee = BigNumber.minimum(
+          // marginBalance + pnl - mark * | newPosition | * imRate
+          BigNumber.maximum(afterMargin.minus(newPositionMargin), _0),
+          order.limitPrice.times(close.abs()).times(feeRate)
+        )
+      } else {
+        // close + open
+        fee = order.limitPrice.times(close.abs()).times(feeRate)
+      }
       afterMargin = afterMargin.minus(fee)
+      // order
       if (afterMargin.lt(_0)) {
         // bankrupt when close. pretend all orders as open orders
         remainPosition = _0
         remainMargin = _0 // TODO:
         remainOrders.push(order)
       } else {
-        // withdraw only if marginBalance >= IM
+        // !bankrupt
         let withdraw = _0
         if (afterMargin.gte(newPositionMargin)) {
+          // withdraw only if marginBalance >= IM
           // withdraw = afterMargin - remainMargin * (1 - | close / remainPosition |)
           withdraw = close.div(remainPosition).abs()
           withdraw = _1.minus(withdraw).times(remainMargin)
@@ -145,6 +155,7 @@ export function orderSideAvailable(
   for (let i = 0; i < remainOrders.length; i++) {
     const cost = openOrderCost(p, perpetualIndex, remainOrders[i], targetLeverage)
     remainWalletBalance = remainWalletBalance.minus(cost)
+    // remainMargin and remainPosition are ignored
     // TODO:
     // if remainWalletBalance < 0, the relayer should cancel some part of the order
   }
