@@ -25,8 +25,10 @@ export function splitOrdersByLimitPrice(orders: Order[], limitPrice: BigNumber, 
   const preOrders: Order[] = []
   const postOrders: Order[] = []
   orders.forEach(order => {
-    if ((isBuy && order.amount.gte(_0) && order.limitPrice.gte(limitPrice))
-      || (!isBuy && order.amount.lte(_0) && order.limitPrice.lte(limitPrice))) {
+    if ((isBuy && order.amount.lt(_0)) || (!isBuy && order.amount.gt(_0))) {
+      return
+    }
+    if ((isBuy && order.limitPrice.gte(limitPrice)) || (!isBuy && order.limitPrice.lte(limitPrice))) {
       preOrders.push(order)
     } else {
       postOrders.push(order)
@@ -57,7 +59,7 @@ export function openOrderCost(
   const potentialPNL = mark.minus(order.limitPrice).times(order.amount)
   // loss = pnl if pnl < 0 else 0
   const potentialLoss = BigNumber.minimum(potentialPNL, _0)
-  // limitPrice * | amount | * (1 / lev + feeRate) + loss
+  // limitPrice * | amount | * (1 / lev + feeRate) - loss
   return order.limitPrice.times(order.amount.abs())
     .times(_1.div(leverage).plus(feeRate))
     .minus(potentialLoss)

@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { computeAccount } from '../src/computation'
 import { _0 } from '../src/constants'
-import { orderAvailable, orderCost, orderSideAvailable } from '../src/order'
+import { orderAvailable, orderCost, orderSideAvailable, splitOrderGroup, splitOrdersByLimitPrice } from '../src/order'
 import { AccountStorage, LiquidityPoolStorage, Order, PerpetualState, PerpetualStorage } from '../src/types'
 import { extendExpect } from './helper'
 
@@ -101,6 +101,48 @@ const accountStorage1: AccountStorage = {
   entryValue: new BigNumber('2300.23'),
   entryFunding: new BigNumber('-0.91')
 }
+
+const orders1 = [
+  { limitPrice: new BigNumber(3), amount: new BigNumber(3) },
+  { limitPrice: new BigNumber(6), amount: new BigNumber(6) },
+  { limitPrice: new BigNumber(1), amount: new BigNumber(1) },
+  { limitPrice: new BigNumber(3), amount: new BigNumber(-3) },
+  { limitPrice: new BigNumber(6), amount: new BigNumber(-6) },
+  { limitPrice: new BigNumber(1), amount: new BigNumber(-1) },
+]
+
+describe('splitOrderGroup', function() {
+  it('normal', function() {
+    const { buyOrders, sellOrders } = splitOrderGroup(orders1)
+    expect(buyOrders.length).toBe(3)
+    expect(sellOrders.length).toBe(3)
+    expect(buyOrders[0].amount).toBeBigNumber(new BigNumber(6))
+    expect(buyOrders[1].amount).toBeBigNumber(new BigNumber(3))
+    expect(buyOrders[2].amount).toBeBigNumber(new BigNumber(1))
+    expect(sellOrders[0].amount).toBeBigNumber(new BigNumber(-1))
+    expect(sellOrders[1].amount).toBeBigNumber(new BigNumber(-3))
+    expect(sellOrders[2].amount).toBeBigNumber(new BigNumber(-6))
+  })
+})
+
+describe('splitOrdersByLimitPrice', function() {
+  it('buy', function() {
+    const { preOrders, postOrders } = splitOrdersByLimitPrice(orders1, new BigNumber(2), true)
+    expect(preOrders.length).toBe(2)
+    expect(postOrders.length).toBe(1)
+    expect(preOrders[0].amount).toBeBigNumber(new BigNumber(6))
+    expect(preOrders[1].amount).toBeBigNumber(new BigNumber(3))
+    expect(postOrders[0].amount).toBeBigNumber(new BigNumber(1))
+  })
+  it('sell', function() {
+    const { preOrders, postOrders } = splitOrdersByLimitPrice(orders1, new BigNumber(2), false)
+    expect(preOrders.length).toBe(1)
+    expect(postOrders.length).toBe(2)
+    expect(preOrders[0].amount).toBeBigNumber(new BigNumber(-1))
+    expect(postOrders[0].amount).toBeBigNumber(new BigNumber(-3))
+    expect(postOrders[1].amount).toBeBigNumber(new BigNumber(-6))
+  })
+})
 
 describe('orderCost', function() {
   it('empty order book. close only', function() {
