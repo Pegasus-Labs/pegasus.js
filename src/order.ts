@@ -63,7 +63,7 @@ export function openOrderCost(
     .minus(potentialLoss)
 }
 
-// return available in wallet balance
+// return available in wallet balance. note: remainPosition and remainMargin are meaningless when open positions
 export function orderSideAvailable(
   p: LiquidityPoolStorage,
   perpetualIndex: number,
