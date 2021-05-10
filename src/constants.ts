@@ -10,7 +10,7 @@ export const _3: BigNumber = new BigNumber('3')
 
 export const CHAIN_ID_TO_READER_ADDRESS: { [chainID: number]: string } = {
   // kovan
-  42: '0x9ba69c0ef49AC2735Db933e450C0aaAA7B9E8C53',
+  42: '0x45Fe8E99F557F40E3B4d5Be501F4411c33023216',
   // s10poa
   1337: '0x79BFdFE7BD779d6c3a9F476C16044Ab21b9B0b37',
   // bsc
@@ -20,14 +20,14 @@ export const CHAIN_ID_TO_READER_ADDRESS: { [chainID: number]: string } = {
 }
 
 export const CHAIN_ID_TO_POOL_CREATOR_ADDRESS: { [chainID: number]: string } = {
-  42: '0x0956a627788199bE312c9a1f2d8cBA70ec30fCb5',
+  42: '0xb3dBa7366ec3B765569c97effe0C4D32A9a85c55',
   1337: '0x30DF108a6f3ec3CAFaD55E68A3D14c0654BE626A',
   // 56: '',
   97: '0x6cadfF06B18d9AeF58A974C7073F37B622D660B0',
 }
 
 export const CHAIN_ID_TO_BROKER_ADDRESS: { [chainID: number]: string } = {
-  42: '0xE852039e483F6E9aDbb0408a7d970d4cf5Ec879b',
+  42: '0x08698b63565E4C993beE35Ff4Ab912D8f7d028FD',
   1337: '0x70afC7cD35804fF1b69D1e2cF7150e2a60D4fd31',
   // 56: '',
   97: '0xde3093172Fe85691766391547169f903812d6450',
@@ -41,7 +41,7 @@ export const CHAIN_ID_TO_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: number]: str
 }
 
 export const CHAIN_ID_SYMBOL_SERVICE_ADDRESS: { [chainID: number]: string } = {
-  42: '0x0A701c621210859eAbE2F47BE37456BEc2427462',
+  42: '0x0521A90432624aa3e85AFcE73CB45E4243A82Bc3',
   1337: '0xAf85a1998ef007e85c95a2840cbfeE6dE9Bab48c',
   // 56: '',
   97: '0x63372427A3Bcc8A7d7F04f3A4581A37Cd41f89c4',
