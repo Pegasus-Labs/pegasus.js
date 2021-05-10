@@ -121,6 +121,17 @@ export function orderSideAvailable(
         remainPosition = _0
         remainMargin = _0 // TODO:
         remainOrders.push(order)
+
+        // // bankrupt
+        // if (close.eq(order.amount)) {
+        //   // close only. always allows
+        //   continue
+        // } else {
+        //   // close + open
+        //   remainPosition = _0
+        //   remainMargin = afterMargin // < 0!
+        //   remainOrders.push({ ...order, amount: order.amount.minus(close) })
+        // }
       } else {
         // !bankrupt
         let withdraw = _0
