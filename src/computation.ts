@@ -233,6 +233,10 @@ export function computeTradeWithPrice(
   let afterTrade = computeAccount(p, perpetualIndex, newAccount)
   const totalFee = computeFee(!open.isZero(), normalizedPrice, normalizedAmount, normalizedFeeRate, afterTrade)
 
+  // transfer fee
+  newAccount.cashBalance = newAccount.cashBalance.minus(totalFee)
+  afterTrade = computeAccount(p, perpetualIndex, newAccount)
+
   // adjust margin
   let adjustCollateral = _0
   if ((options & TradeFlag.MASK_USE_TARGET_LEVERAGE) != 0) {
@@ -241,9 +245,6 @@ export function computeTradeWithPrice(
       price, close, open, totalFee)
     newAccount.cashBalance = newAccount.cashBalance.plus(adjustCollateral)
   }
-
-  // transfer fee
-  newAccount.cashBalance = newAccount.cashBalance.minus(totalFee)
 
   // open position requires margin > IM. close position requires !bankrupt
   afterTrade = computeAccount(p, perpetualIndex, newAccount)
@@ -283,13 +284,12 @@ export function adjustMarginLeverage(
   if (!normalizedClose.isZero() && normalizedOpen.isZero()) {
     // close only
     // when close, keep the effective leverage
-    // -withdraw == (availableCash2 * close - deltaCash * position2) / position1 + fee
+    // -withdraw == (availableCash2 * close - (deltaCash - fee) * position2) / position1
     let adjustCollateral = afterTrade.accountComputed.availableCashBalance.times(normalizedClose)
-      .minus(deltaCash.times(position2))
+      .minus((deltaCash.minus(normalizedTotalFee)).times(position2))
       .div(position2.minus(normalizedClose))
-      .plus(normalizedTotalFee)
     // withdraw only when IM is satisfied
-    const limit = normalizedTotalFee.minus(afterTrade.accountComputed.availableMargin)
+    const limit = afterTrade.accountComputed.availableMargin.negated()
     adjustCollateral = BigNumber.maximum(adjustCollateral, limit)
     // never deposit when close positions
     adjustCollateral = BigNumber.minimum(adjustCollateral, _0)
@@ -301,17 +301,18 @@ export function adjustMarginLeverage(
     if (leverage.lte(_0)) {
       throw new InvalidArgumentError(`target leverage <= 0`)
     }
-    let openPositionMargin = normalizedOpen.abs().times(perpetual.markPrice).div(leverage).plus(normalizedTotalFee)
-    openPositionMargin = BigNumber.maximum(openPositionMargin, perpetual.keeperGasReward)
+    let openPositionMargin = normalizedOpen.abs().times(perpetual.markPrice).div(leverage)
+    let adjustCollateral = _0
     if (position2.minus(deltaPosition).isZero() || !normalizedClose.isZero()) {
       // strategy: let new margin balance = openPositionMargin
-      const adjustCollateral = openPositionMargin.minus(afterTrade.accountComputed.marginBalance)
-      return adjustCollateral
+      adjustCollateral = openPositionMargin.minus(afterTrade.accountComputed.marginBalance)
     } else {
       // strategy: always append positionMargin of openPosition
-      const adjustCollateral = openPositionMargin
-      return adjustCollateral
+      adjustCollateral = openPositionMargin
     }
+    // margin + adjustCollateral >= keeperGasReward
+    adjustCollateral = BigNumber.maximum(adjustCollateral, perpetual.keeperGasReward.minus(afterTrade.accountComputed.marginBalance))
+    return adjustCollateral
   }
 }
 

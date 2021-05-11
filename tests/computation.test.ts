@@ -1116,6 +1116,22 @@ describe('computeAMMTrade with USE_TARGET_LEVERAGE', function() {
     expect(res.newPool.poolCashBalance).toApproximate(normalizeBigNumberish('1919.907305844651708524')) // poolCash + amm cash
     expect(res.newPool.perpetuals.get(0)!.ammPositionAmount).toBeBigNumber(normalizeBigNumberish('2'))
   })
+  it("a very small amount", async () => {
+    // long 1e-7 (open)
+    let res = computeAMMTrade(poolStorage, 0, accountStorage, '1e-7', TradeFlag.MASK_USE_TARGET_LEVERAGE)
+    // amm deltaCash = 0.000101
+    // margin = gas reward = 0.5 = cash + positionValue. so cash = 0.4999
+    // cash = deposit - 0.000101 - 0.000101 * 0.003(fee). so deposit = 0.500001303
+    expect(res.tradingPrice).toBeBigNumber(normalizeBigNumberish('1010'))
+    expect(res.totalFee).toBeBigNumber(normalizeBigNumberish('0.000000303'))
+    expect(res.adjustCollateral).toBeBigNumber(normalizeBigNumberish('0.500001303'))
+    expect(res.trader.accountStorage.cashBalance).toBeBigNumber(normalizeBigNumberish('0.4999'))
+    expect(res.trader.accountStorage.positionAmount).toBeBigNumber(normalizeBigNumberish('1e-7'))
+    expect(res.trader.accountComputed.marginBalance).toBeBigNumber(normalizeBigNumberish('0.5'))
+    expect(res.trader.accountComputed.isMMSafe).toEqual(true)
+    expect(res.newPool.poolCashBalance).toBeBigNumber(normalizeBigNumberish('1000.000101101')) // poolCash + amm cash
+    expect(res.newPool.perpetuals.get(0)!.ammPositionAmount).toBeBigNumber(normalizeBigNumberish('-1e-7'))
+  })
 })
 
 describe('computeOpenInterest', function() {
