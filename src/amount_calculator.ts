@@ -43,9 +43,11 @@ export function computeAMMMaxTradeAmount(
       return _0
     }
   }
-
   // guess = (marginBalance + walletBalance) * lev / index - position
   const traderDetails = computeAccount(p, perpetualIndex, trader)
+  if (trader.targetLeverage.isZero()) {
+    throw new InvalidArgumentError('target leverage = 0')
+  }
   let guess = traderDetails.accountComputed.marginBalance.plus(normalizeWalletBalance)
   guess = guess.times(trader.targetLeverage).div(ammContext.index)
   if (!isTraderBuy) {
@@ -153,6 +155,9 @@ export function computeLimitOrderMaxTradeAmount(
   const normalizeLimitPrice = normalizeBigNumberish(limitPrice)
 
   // guess = (marginBalance + walletBalance) * lev / index - position
+  if (trader.targetLeverage.isZero()) {
+    throw new InvalidArgumentError('target leverage = 0')
+  }
   const traderDetails = computeAccount(p, perpetualIndex, trader)
   let guess = traderDetails.accountComputed.marginBalance.plus(normalizeWalletBalance)
   guess = guess.times(trader.targetLeverage).div(perpetual.markPrice)
