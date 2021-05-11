@@ -50,21 +50,6 @@ export async function perpetualDeposit(
   return await liquidityPool.deposit(perpetualIndex, trader, largeAmount.toFixed(), overrides)
 }
 
-export async function perpetualDepositEth(
-  liquidityPool: LiquidityPool,
-  perpetualIndex: number,
-  trader: string,
-  collateralAmount: BigNumberish, // should be a decimal number (ie: 1.234)
-  overrides: PayableOverrides = {},
-): Promise<ethers.providers.TransactionResponse> {
-  getAddress(trader)
-  const largeAmount = normalizeBigNumberish(collateralAmount)
-    .shiftedBy(DECIMALS)
-    .dp(0, BigNumber.ROUND_DOWN)
-  overrides.value = largeAmount.toFixed()
-  return await liquidityPool.deposit(perpetualIndex, trader, '0', overrides)
-}
-
 export async function perpetualWithdraw(
   liquidityPool: LiquidityPool,
   perpetualIndex: number,
@@ -130,18 +115,6 @@ export async function addLiquidity(
   return await liquidityPool.addLiquidity(largeAmount.toFixed(), overrides)
 }
 
-export async function addLiquidityEth(
-  liquidityPool: LiquidityPool,
-  collateralAmount: BigNumberish, // should be a decimal number (ie: 1.234)
-  overrides: PayableOverrides = {},
-): Promise<ethers.providers.TransactionResponse> {
-  const largeAmount = normalizeBigNumberish(collateralAmount)
-    .shiftedBy(DECIMALS)
-    .dp(0, BigNumber.ROUND_DOWN)
-  overrides.value = largeAmount.toFixed()
-  return await liquidityPool.addLiquidity('0', overrides)
-}
-
 export async function removeLiquidity(
   liquidityPool: LiquidityPool,
   shareToRemove: BigNumberish, // should be a decimal number (ie: 1.234)
@@ -166,18 +139,6 @@ export async function donateInsuranceFund(
     .shiftedBy(DECIMALS)
     .dp(0, BigNumber.ROUND_DOWN)
   return await liquidityPool.donateInsuranceFund(largeAmount.toFixed(), overrides)
-}
-
-export async function donateInsuranceFundEth(
-  liquidityPool: LiquidityPool,
-  collateralAmount: BigNumberish, // should be a decimal number (ie: 1.234)
-  overrides: PayableOverrides = {},
-): Promise<ethers.providers.TransactionResponse> {
-  const largeAmount = normalizeBigNumberish(collateralAmount)
-    .shiftedBy(DECIMALS)
-    .dp(0, BigNumber.ROUND_DOWN)
-  overrides.value = largeAmount.toFixed()
-  return await liquidityPool.donateInsuranceFund('0', overrides)
 }
 
 export async function takerOverOperator(
