@@ -115,7 +115,7 @@ export function computeAMMTradeAmountByMargin(
       a = a.negated()
     }
     try {
-      const res = computeAMMPrice(p, perpetualIndex, new BigNumber(a))
+      const res = computeAMMPrice(p, perpetualIndex, a)
       return res.deltaAMMMargin.abs().lte(normalizeDeltaMargin.abs())
     } catch (e) {
       // typically means a is too large
@@ -173,7 +173,7 @@ export function computeLimitOrderMaxTradeAmount(
     let newOrderState = orderSideAvailable(
       p, perpetualIndex, preState.remainMargin,
       preState.remainPosition, trader.targetLeverage, preState.remainWalletBalance,
-      [{ limitPrice: normalizeLimitPrice, amount: new BigNumber(a) }])
+      [{ limitPrice: normalizeLimitPrice, amount: a }])
     let postState = orderSideAvailable(
       p, perpetualIndex, newOrderState.remainMargin,
       newOrderState.remainPosition, trader.targetLeverage, newOrderState.remainWalletBalance, postOrders)
