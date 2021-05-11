@@ -123,3 +123,64 @@ export function getOracleRouterKey(path: Array<OracleRoute>): string {
   const hash = ethers.utils.keccak256(encodedPath);
   return hash
 }
+
+// search x*, assuming f(x) satisfies:
+// * f(0 <= x <= x*) = true which means x is a safe amount
+// * f(x > x*) = false
+// the returned x MUST satisfy f(x) = true
+export function searchMaxAmount(
+  f: (x: BigNumber) => boolean,
+  guess: BigNumber | null,
+  upperLimit: BigNumber | null = null, // x* < upperLimit
+  maxIteration: number | null = null,
+  tolerance: BigNumber | null = null, // | new - old | / old < tolerance
+): BigNumber {
+  // x* ∈ [left, right)
+  let left = _0
+  let right = new BigNumber('Infinite')
+  if (maxIteration === null) {
+    maxIteration = 100
+  }
+  if (tolerance === null) {
+    tolerance = new BigNumber('1e-7')
+  }
+  // shortcut of "0"
+  if (!f(tolerance)) {
+    return _0
+  }
+  if (upperLimit === null && guess !== null) {
+    // search an upper limit
+    if (guess.lte(_0) || !guess.isFinite()) {
+      guess = _1
+    }
+    while (maxIteration > 0) {
+      maxIteration -= 1
+      if (f(guess)) {
+        left = guess
+        guess = left.times(2)
+      } else {
+        right = guess
+        break
+      }
+    }
+  } else if (upperLimit !== null && guess === null) {
+    // a simple bisect
+    right = upperLimit
+  } else {
+    throw new Error('not supported yet')
+  }
+  // simple bisect
+  while (maxIteration > 0) {
+    maxIteration -= 1
+    guess = left.plus(right).div(2)
+    if (f(guess)) {
+      left = guess
+    } else {
+      right = guess
+    }
+    if (right.minus(left).div(right).lt(tolerance)) {
+      return left
+    }
+  }
+  return left
+}

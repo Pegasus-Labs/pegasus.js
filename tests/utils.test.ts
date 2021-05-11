@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
 import { BigNumberish, InvalidArgumentError } from '../src/types'
-import { normalizeBigNumberish, hasTheSameSign, mostSignificantBit, sqrt, splitAmount, getOracleRouterKey } from '../src/utils'
+import { normalizeBigNumberish, hasTheSameSign, mostSignificantBit, sqrt, splitAmount, getOracleRouterKey, searchMaxAmount } from '../src/utils'
 import { _0, _1 } from '../src/constants'
 
 import { extendExpect } from './helper'
@@ -250,4 +250,62 @@ describe('getOracleRouterKey', (): void => {
     { oracle: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512', isInverse: true},
   ])
   expect(key).toEqual('0x9552d4caa8c0f86dd82c8e6440f35ac070a1181499ace3d895069c2ae3e20f25')
+})
+
+describe('searchMaxAmount', (): void => {
+  let groundTruth = new BigNumber('314159.265358979323846264')
+  const f1 = (x: BigNumber) => {
+    return x.lt(groundTruth)
+  }
+  it('guess 1', () => {
+    const res = searchMaxAmount(f1, new BigNumber('100000'))
+    expect(res.lte(groundTruth)).toBeTruthy()
+    expect(res.gt(groundTruth.minus('0.001'))).toBeTruthy()
+  })
+  it('guess 2', () => {
+    const res = searchMaxAmount(f1, new BigNumber('500000'))
+    expect(res.lte(groundTruth)).toBeTruthy()
+    expect(res.gt(groundTruth.minus('0.001'))).toBeTruthy()
+  })
+  it('upper 1', () => {
+    const res = searchMaxAmount(f1, null, new BigNumber('10000000'))
+    expect(res.lte(groundTruth)).toBeTruthy()
+    expect(res.gt(groundTruth.minus('0.001'))).toBeTruthy()
+  })
+
+  const f2 = (x: BigNumber) => {
+    return x.isZero()
+  }
+  it('guess 1', () => {
+    const res = searchMaxAmount(f2, new BigNumber('0'))
+    expect(res).toBeBigNumber(_0)
+  })
+  it('guess 2', () => {
+    const res = searchMaxAmount(f2, new BigNumber('100000'))
+    expect(res).toBeBigNumber(_0)
+  })
+  it('upper 1', () => {
+    const res = searchMaxAmount(f2, null, new BigNumber('10000000'))
+    expect(res).toBeBigNumber(_0)
+  })
+
+  groundTruth = new BigNumber('0.000000123456')
+  const f3 = (x: BigNumber) => {
+    return x.lt(groundTruth)
+  }
+  it('guess 1', () => {
+    const res = searchMaxAmount(f3, new BigNumber('0'))
+    expect(res.lte(groundTruth)).toBeTruthy()
+    expect(res.gt(groundTruth.minus('0.001'))).toBeTruthy()
+  })
+  it('guess 2', () => {
+    const res = searchMaxAmount(f3, new BigNumber('10000'))
+    expect(res.lte(groundTruth)).toBeTruthy()
+    expect(res.gt(groundTruth.minus('0.001'))).toBeTruthy()
+  })
+  it('upper 1', () => {
+    const res = searchMaxAmount(f3, null, new BigNumber('10000000'))
+    expect(res.lte(groundTruth)).toBeTruthy()
+    expect(res.gt(groundTruth.minus('0.001'))).toBeTruthy()
+  })
 })
