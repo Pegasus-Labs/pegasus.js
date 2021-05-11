@@ -18,10 +18,9 @@ import {
 } from './amm'
 import { BugError } from './types'
 import { DECIMALS, _0, _1, _2 } from './constants'
-import { sqrt, normalizeBigNumberish } from './utils'
+import { sqrt, normalizeBigNumberish, searchMaxAmount } from './utils'
 import BigNumber from 'bignumber.js'
 import { orderSideAvailable, splitOrdersByLimitPrice } from './order'
-const minimize = require('minimize-golden-section-1d')
 
 // max amount when a trader uses market-order with USE_TARGET_LEVERAGE
 // the returned amount is the trader's perspective
@@ -55,34 +54,29 @@ export function computeAMMMaxTradeAmount(
   guess = guess.minus(trader.positionAmount)
 
   // search
-  function checkTrading(a: number): number {
-    if (a == 0) {
-      return 0
+  function checkTrading(a: BigNumber): boolean {
+    if (a.isZero()) {
+      return true
+    }
+    if (!isTraderBuy) {
+      a = a.negated()
     }
     try {
-      const result = computeAMMTrade(p, perpetualIndex, trader, new BigNumber(a), TradeFlag.MASK_USE_TARGET_LEVERAGE)
+      const result = computeAMMTrade(p, perpetualIndex, trader, a, TradeFlag.MASK_USE_TARGET_LEVERAGE)
       if (!result.tradeIsSafe || result.adjustCollateral.gt(normalizeWalletBalance)) {
-        return Math.abs(a) // a positive value means failed
+        return false
       }
-      return -Math.abs(a) // a negative value means success
+      return true
     } catch (e) {
       // typically means a is too large
-      return Math.abs(a) // punish
+      return false
     }
   }
-  const options: any = {
-    maxIterations: 20,
-    guess: guess.toNumber()
+  let maxAmount = searchMaxAmount(checkTrading, guess.abs())
+  if (!isTraderBuy) {
+    maxAmount = maxAmount.negated()
   }
-  if (isTraderBuy) {
-    options.lowerBound = 0
-  } else {
-    options.upperBound = 0
-  }
-  const answer: any = {}
-  minimize(checkTrading, options, answer)
-  const result = new BigNumber(answer.argmin as number)
-  return result
+  return maxAmount
 }
 
 // get amount according to a given (price(amount) * amount) when using market-order with USE_TARGET_LEVERAGE
@@ -107,38 +101,32 @@ export function computeAMMTradeAmountByMargin(
 
   // guess = deltaMargin / index
   const guess = normalizeDeltaMargin.div(ammContext.index).negated()
+  let isTraderBuy: boolean = true
+  if (guess.lt(_0)) {
+    isTraderBuy = false
+  }
 
   // search
-  function checkTrading(a: number): number {
-    if (a == 0) {
-      return 0
+  function checkTrading(a: BigNumber): boolean {
+    if (a.isZero()) {
+      return true
+    }
+    if (!isTraderBuy) {
+      a = a.negated()
     }
     try {
-      const price = computeAMMPrice(p, perpetualIndex, new BigNumber(a))
-      // err = | expected trader margin - actual trader margin |
-      const actualTraderMargin = price.deltaAMMMargin.negated()
-      const err = actualTraderMargin.minus(normalizeDeltaMargin).abs()
-      return err.toNumber() // smaller error is better
+      const res = computeAMMPrice(p, perpetualIndex, new BigNumber(a))
+      return res.deltaAMMMargin.abs().lte(normalizeDeltaMargin.abs())
     } catch (e) {
       // typically means a is too large
-      return Math.abs(a) * normalizeDeltaMargin.toNumber() // punish
+      return false
     }
   }
-  const options: any = {
-    maxIterations: 40,
-    guess: guess.toNumber()
+  let maxAmount = searchMaxAmount(checkTrading, guess.abs())
+  if (!isTraderBuy) {
+    maxAmount = maxAmount.negated()
   }
-  if (normalizeDeltaMargin.lt(_0)) {
-    // trader buys
-    options.lowerBound = 0
-  } else {
-    // trader sells
-    options.upperBound = 0
-  }
-  const answer: any = {}
-  minimize(checkTrading, options, answer)
-  const result = new BigNumber(answer.argmin as number)
-  return result
+  return maxAmount
 }
 
 // max amount when a trader uses limit-order with USE_TARGET_LEVERAGE
@@ -175,9 +163,12 @@ export function computeLimitOrderMaxTradeAmount(
     trader.positionAmount, trader.targetLeverage, normalizeWalletBalance, preOrders)
   
   // search
-  function checkTrading(a: number): number {
-    if (a == 0) {
-      return 0
+  function checkTrading(a: BigNumber): boolean {
+    if (a.isZero()) {
+      return true
+    }
+    if (!isTraderBuy) {
+      a = a.negated()
     }
     let newOrderState = orderSideAvailable(
       p, perpetualIndex, preState.remainMargin,
@@ -188,23 +179,15 @@ export function computeLimitOrderMaxTradeAmount(
       newOrderState.remainPosition, trader.targetLeverage, newOrderState.remainWalletBalance, postOrders)
     if (postState.remainWalletBalance.lt(_0)) {
       // a is too large
-      return Math.abs(a) // a positive value means failed
+      return false
     }
-    return -Math.abs(a) // a negative value means success
+    return true
   }
-  const options: any = {
-    maxIterations: 20,
-    guess: guess.toNumber()
+  let maxAmount = searchMaxAmount(checkTrading, guess.abs())
+  if (!isTraderBuy) {
+    maxAmount = maxAmount.negated()
   }
-  if (isTraderBuy) {
-    options.lowerBound = 0
-  } else {
-    options.upperBound = 0
-  }
-  const answer: any = {}
-  minimize(checkTrading, options, answer)
-  const result = new BigNumber(answer.argmin as number)
-  return result
+  return maxAmount
 }
 
 // the inverse function of VWAP of AMM pricing function

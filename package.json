@@ -35,7 +35,6 @@
   "dependencies": {
     "bignumber.js": "~9.0.0",
     "ethers": "^5.0.26",
-    "minimize-golden-section-1d": "~3.0.0",
     "axios": "^0.19.2"
   },
   "prepare": "npm run build",

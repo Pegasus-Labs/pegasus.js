@@ -142,7 +142,7 @@ describe('computeAMMMaxTradeAmount', function() {
     expect(res.adjustCollateral.lt('7001')).toBeTruthy()
   })
 
-  it(`safe trader + safe amm, trader sell. close + open . withdraw covers deposit`, function() {
+  it(`safe trader + safe amm, trader sell. close + open. withdraw covers deposit`, function() {
     const walletBalance = '0'
     const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, walletBalance, false) // -5.6
     const res = computeAMMTrade(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, amount, TradeFlag.MASK_USE_TARGET_LEVERAGE)
@@ -153,7 +153,7 @@ describe('computeAMMMaxTradeAmount', function() {
     expect(res.trader.accountComputed.leverage.lte('1.01')).toBeTruthy()
   })
 
-  it(`safe trader + safe amm, trader sell. close + open . withdraw covers deposit`, function() {
+  it(`safe trader + safe amm, trader sell. close + open. withdraw covers deposit`, function() {
     const walletBalance = '70000'
     const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, walletBalance, false) // -5.6
     const res = computeAMMTrade(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, amount, TradeFlag.MASK_USE_TARGET_LEVERAGE)
