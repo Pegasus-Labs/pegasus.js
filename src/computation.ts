@@ -301,7 +301,8 @@ export function adjustMarginLeverage(
     if (leverage.lte(_0)) {
       throw new InvalidArgumentError(`target leverage <= 0`)
     }
-    const openPositionMargin = normalizedOpen.abs().times(perpetual.markPrice).div(leverage).plus(normalizedTotalFee)
+    let openPositionMargin = normalizedOpen.abs().times(perpetual.markPrice).div(leverage).plus(normalizedTotalFee)
+    openPositionMargin = BigNumber.maximum(openPositionMargin, perpetual.keeperGasReward)
     if (position2.minus(deltaPosition).isZero() || !normalizedClose.isZero()) {
       // strategy: let new margin balance = openPositionMargin
       const adjustCollateral = openPositionMargin.minus(afterTrade.accountComputed.marginBalance)
