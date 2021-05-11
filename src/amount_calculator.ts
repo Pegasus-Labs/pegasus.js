@@ -99,6 +99,11 @@ export function computeAMMTradeAmountByMargin(
     }
   }
 
+  // shortcut for 0
+  if (normalizeDeltaMargin.isZero()) {
+    return _0
+  }
+
   // guess = deltaMargin / index
   const guess = normalizeDeltaMargin.div(ammContext.index).negated()
   let isTraderBuy: boolean = true
