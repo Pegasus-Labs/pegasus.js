@@ -264,7 +264,7 @@ export function computeAMMAmountWithPrice(
 ): BigNumber {
   const perpetual = p.perpetuals.get(perpetualIndex)
   if (!perpetual) {
-    throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
+    throw new InvalidArgumentError(`perpetual ${perpetualIndex} not found in the pool`)
   }
   let normalizedLimitPrice = normalizeBigNumberish(limitPrice)
 

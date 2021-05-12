@@ -68,7 +68,7 @@ export function openOrderCost(
 ): BigNumber {
   const perpetual = p.perpetuals.get(perpetualIndex)
   if (!perpetual) {
-    throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
+    throw new InvalidArgumentError(`perpetual ${perpetualIndex} not found in the pool`)
   }
   const feeRate = p.vaultFeeRate.plus(perpetual.lpFeeRate).plus(perpetual.operatorFeeRate)
   const mark = perpetual.markPrice
@@ -94,7 +94,7 @@ export function orderSideAvailable(
 ): { remainPosition: BigNumber; remainMargin: BigNumber, remainWalletBalance: BigNumber } {
   const perpetual = p.perpetuals.get(perpetualIndex)
   if (!perpetual) {
-    throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
+    throw new InvalidArgumentError(`perpetual ${perpetualIndex} not found in the pool`)
   }
   const feeRate = p.vaultFeeRate.plus(perpetual.lpFeeRate).plus(perpetual.operatorFeeRate)
   const mark = perpetual.markPrice

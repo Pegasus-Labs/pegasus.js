@@ -11,7 +11,7 @@ import { InsufficientLiquidityError, BugError, InvalidArgumentError } from './ty
 export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: number): AMMTradingContext {
   if (perpetualIndex) {
     if (!p.perpetuals.get(perpetualIndex)) {
-      throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
+      throw new InvalidArgumentError(`perpetual ${perpetualIndex} not found in the pool`)
     }
   }
 

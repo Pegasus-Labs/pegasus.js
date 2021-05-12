@@ -24,7 +24,7 @@ import { normalizeBigNumberish, hasTheSameSign, splitAmount } from './utils'
 export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, s: AccountStorage): AccountDetails {
   const perpetual = p.perpetuals.get(perpetualIndex)
   if (!perpetual) {
-    throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
+    throw new InvalidArgumentError(`perpetual ${perpetualIndex} not found in the pool`)
   }
   const positionValue = perpetual.markPrice.times(s.positionAmount.abs())
   const positionMargin = positionValue.times(perpetual.initialMarginRate)
@@ -120,7 +120,7 @@ export function computeDecreasePosition(
 ): AccountStorage {
   const perpetual = p.perpetuals.get(perpetualIndex)
   if (!perpetual) {
-    throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
+    throw new InvalidArgumentError(`perpetual ${perpetualIndex} not found in the pool`)
   }
   let cashBalance = a.cashBalance
   const oldAmount = a.positionAmount
@@ -154,7 +154,7 @@ export function computeIncreasePosition(
 ): AccountStorage {
   const perpetual = p.perpetuals.get(perpetualIndex)
   if (!perpetual) {
-    throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
+    throw new InvalidArgumentError(`perpetual ${perpetualIndex} not found in the pool`)
   }
   let cashBalance = a.cashBalance
   const oldAmount = a.positionAmount
@@ -279,7 +279,7 @@ export function adjustMarginLeverage(
   const position2 = afterTrade.accountStorage.positionAmount
   const perpetual = p.perpetuals.get(perpetualIndex)
   if (!perpetual) {
-    throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
+    throw new InvalidArgumentError(`perpetual ${perpetualIndex} not found in the pool`)
   }
   if (!normalizedClose.isZero() && normalizedOpen.isZero()) {
     // close only
@@ -333,7 +333,7 @@ export function computeAMMTrade(
   }
   const perpetual = p.perpetuals.get(perpetualIndex)
   if (!perpetual) {
-    throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
+    throw new InvalidArgumentError(`perpetual ${perpetualIndex} not found in the pool`)
   }
   let oldOpenInterest = perpetual.openInterest
   let newOpenInterest = oldOpenInterest
