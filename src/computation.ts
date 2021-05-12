@@ -301,16 +301,14 @@ export function adjustMarginLeverage(
     if (leverage.lte(_0)) {
       throw new InvalidArgumentError(`target leverage <= 0`)
     }
-    let openPositionMargin = normalizedOpen.abs().times(perpetual.markPrice).div(leverage)
-    let newMargin = _0
+    let newMargin = normalizedOpen.abs().times(perpetual.markPrice).div(leverage)
     if (position2.minus(deltaPosition).isZero() || !normalizedClose.isZero()) {
       // strategy: let new margin balance = openPositionMargin
-      newMargin = openPositionMargin
     } else {
       // strategy: always append positionMargin of openPosition
-      newMargin = afterTrade.accountComputed.marginBalance
-      // plus pnl + fee
-      newMargin = newMargin.plus(perpetual.markPrice.minus(normalizedPrice).times(normalizedOpen))
+      // newMargin = oldMargin + openPositionMargin + pnl + fee
+      newMargin = newMargin.plus(afterTrade.accountComputed.marginBalance)
+      newMargin = newMargin.plus(normalizedPrice.minus(perpetual.markPrice).times(normalizedOpen))
       newMargin = newMargin.plus(normalizedTotalFee)
       // at least IM after adjust
       newMargin = BigNumber.maximum(newMargin, afterTrade.accountComputed.positionMargin)

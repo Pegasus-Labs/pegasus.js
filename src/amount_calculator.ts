@@ -54,7 +54,7 @@ export function computeAMMMaxTradeAmount(
     guess = guess.negated()
   }
   guess = guess.minus(trader.positionAmount)
-
+  
   // search
   function checkTrading(a: BigNumber): boolean {
     if (a.isZero()) {

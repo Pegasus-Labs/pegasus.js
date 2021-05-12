@@ -160,9 +160,8 @@ describe('computeAMMMaxTradeAmount', function() {
     const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, walletBalance, true) // 1.1
     const res = computeAMMTrade(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, amount, TradeFlag.MASK_USE_TARGET_LEVERAGE)
     expect(res.tradeIsSafe).toBeTruthy()
-    console.log('!!!!!!!!!!!!!!!!!!', amount.toFixed(), res.adjustCollateral.toFixed())
-    // expect(amount.gt('1.0')).toBeTruthy()
-    // expect(amount.lt('1.2')).toBeTruthy()
+    expect(amount.gt('1.0')).toBeTruthy()
+    expect(amount.lt('1.2')).toBeTruthy()
     expect(res.adjustCollateral.gt('6999')).toBeTruthy()
     expect(res.adjustCollateral.lt('7001')).toBeTruthy()
   })
