@@ -229,14 +229,15 @@ export function orderAvailable(
   orders: Order[],
 ) : BigNumber {
   const symbol2Orders = splitOrderPerpetual(orders)
+  let available = walletBalance
   symbol2Orders.forEach((orders, symbol) => {
     const c = context.get(symbol)
     if (!c) {
       throw new InvalidArgumentError(`unknown symbol ${symbol}`)
     }
-    walletBalance = orderPerpetualAvailable(c.pool, c.perpetualIndex, c.account, walletBalance, orders)
+    available = orderPerpetualAvailable(c.pool, c.perpetualIndex, c.account, available, orders)
   })
-  return walletBalance
+  return available
 }
 
 export function orderCost(
