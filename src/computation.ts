@@ -309,8 +309,9 @@ export function adjustMarginLeverage(
     } else {
       // strategy: always append positionMargin of openPosition
       newMargin = afterTrade.accountComputed.marginBalance
-      // plus pnl
+      // plus pnl + fee
       newMargin = newMargin.plus(perpetual.markPrice.minus(normalizedPrice).times(normalizedOpen))
+      newMargin = newMargin.plus(normalizedTotalFee)
       // at least IM after adjust
       newMargin = BigNumber.maximum(newMargin, afterTrade.accountComputed.positionMargin)
     }
