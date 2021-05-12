@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { computeAccount } from '../src/computation'
 import { _0 } from '../src/constants'
-import { orderAvailable, orderCost, orderSideAvailable, splitOrderGroup, splitOrdersByLimitPrice } from '../src/order'
+import { orderAvailable, orderCost, orderSideAvailable, splitOrderSide, splitOrdersByLimitPrice } from '../src/order'
 import { AccountStorage, LiquidityPoolStorage, Order, PerpetualState, PerpetualStorage } from '../src/types'
 import { extendExpect } from './helper'
 
@@ -102,18 +102,18 @@ const accountStorage1: AccountStorage = {
   entryFunding: new BigNumber('-0.91')
 }
 
-const orders1 = [
-  { limitPrice: new BigNumber(3), amount: new BigNumber(3) },
-  { limitPrice: new BigNumber(6), amount: new BigNumber(6) },
-  { limitPrice: new BigNumber(1), amount: new BigNumber(1) },
-  { limitPrice: new BigNumber(3), amount: new BigNumber(-3) },
-  { limitPrice: new BigNumber(6), amount: new BigNumber(-6) },
-  { limitPrice: new BigNumber(1), amount: new BigNumber(-1) },
+const orders1: Order[] = [
+  { symbol: 0, limitPrice: new BigNumber(3), amount: new BigNumber(3) },
+  { symbol: 0, limitPrice: new BigNumber(6), amount: new BigNumber(6) },
+  { symbol: 0, limitPrice: new BigNumber(1), amount: new BigNumber(1) },
+  { symbol: 0, limitPrice: new BigNumber(3), amount: new BigNumber(-3) },
+  { symbol: 0, limitPrice: new BigNumber(6), amount: new BigNumber(-6) },
+  { symbol: 0, limitPrice: new BigNumber(1), amount: new BigNumber(-1) },
 ]
 
-describe('splitOrderGroup', function() {
+describe('splitOrderSide', function() {
   it('normal', function() {
-    const { buyOrders, sellOrders } = splitOrderGroup(orders1)
+    const { buyOrders, sellOrders } = splitOrderSide(orders1)
     expect(buyOrders.length).toBe(3)
     expect(sellOrders.length).toBe(3)
     expect(buyOrders[0].amount).toBeBigNumber(new BigNumber(6))
@@ -149,11 +149,15 @@ describe('orderCost', function() {
     const walletBalance = _0
     const orders: Order[] = []
     const newOrder: Order = {
+      symbol: 0,
       limitPrice: new BigNumber('6900'),
       amount: new BigNumber('-1')
     }
-    const oldAvailable = orderAvailable(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, walletBalance, orders)
-    const cost = orderCost(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, walletBalance, orders, oldAvailable, newOrder)
+    const context = new Map([
+      [0, {pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage1}],
+    ])
+    const oldAvailable = orderAvailable(context, walletBalance, orders)
+    const cost = orderCost(context, walletBalance, orders, oldAvailable, newOrder)
     expect(cost).toApproximate(_0)
 
     // marginBalance = 23695.57634375, fee = 6.9, | loss | = (6965 - 6900) * 1 = 65
@@ -171,11 +175,15 @@ describe('orderCost', function() {
     const walletBalance = _0
     const orders: Order[] = []
     const newOrder: Order = {
+      symbol: 0,
       limitPrice: new BigNumber('6900'),
       amount: new BigNumber('-3.3')
     }
-    const oldAvailable = orderAvailable(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, walletBalance, orders)
-    const cost = orderCost(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, walletBalance, orders, oldAvailable, newOrder)
+    const context = new Map([
+      [0, {pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage1}],
+    ])
+    const oldAvailable = orderAvailable(context, walletBalance, orders)
+    const cost = orderCost(context, walletBalance, orders, oldAvailable, newOrder)
     expect(cost).toApproximate(_0)
 
     // marginBalance = 23695.57634375
@@ -194,15 +202,19 @@ describe('orderCost', function() {
     const walletBalance = _0
     const orders: Order[] = []
     const newOrder: Order = {
+      symbol: 0,
       limitPrice: new BigNumber('6900'),
       amount: new BigNumber('-10')
     }
+    const context = new Map([
+      [0, {pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage1}],
+    ])
     // marginBalance = 23695.57634375
     // withdraw = 23695.57634375 - (6965 - 6900)*2.3 - 6900*2.3*0.001 = 23530.20634375
     // deposit = (10 - 2.3)*6900*(1/2 + 0.001) + (6965 - 6900)*(10 - 2.3) = 27118.6
     // cost = deposit - withdraw = 3588.42
-    const oldAvailable = orderAvailable(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, walletBalance, orders)
-    const cost = orderCost(poolStorage1, TEST_MARKET_INDEX0, accountStorage1, walletBalance, orders, oldAvailable, newOrder)
+    const oldAvailable = orderAvailable(context, walletBalance, orders)
+    const cost = orderCost(context, walletBalance, orders, oldAvailable, newOrder)
     expect(cost).toApproximate(new BigNumber('3588.42365625'))
   })
 
@@ -210,13 +222,17 @@ describe('orderCost', function() {
     const walletBalance = _0
     const orders: Order[] = []
     const newOrder: Order = {
+      symbol: 0,
       limitPrice: new BigNumber('6900'),
       amount: new BigNumber('-10')
     }
+    const context = new Map([
+      [0, {pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage0}],
+    ])
     // deposit = 10*6900*(1/2 + 0.001) + (6965 - 6900)*10 = 35219
     // cost = deposit - 1000 = 34219
-    const oldAvailable = orderAvailable(poolStorage1, TEST_MARKET_INDEX0, accountStorage0, walletBalance, orders)
-    const cost = orderCost(poolStorage1, TEST_MARKET_INDEX0, accountStorage0, walletBalance, orders, oldAvailable, newOrder)
+    const oldAvailable = orderAvailable(context, walletBalance, orders)
+    const cost = orderCost(context, walletBalance, orders, oldAvailable, newOrder)
     expect(cost).toApproximate(new BigNumber('34219'))
   })
 })

@@ -239,6 +239,13 @@ export interface PreviewOracleRouterResult {
 }
 
 export interface Order {
+  symbol: number // PerpetualStorage.symbol
   limitPrice: BigNumber
   amount: BigNumber // should be availableAmount + pendingAmount
+}
+
+export interface OrderContext {
+  pool: LiquidityPoolStorage
+  perpetualIndex: number
+  account: AccountStorage
 }

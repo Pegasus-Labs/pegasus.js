@@ -1,13 +1,28 @@
 import { computeAccount } from './computation'
-import { InvalidArgumentError, AccountStorage, LiquidityPoolStorage, Order } from './types'
+import { InvalidArgumentError, AccountStorage, LiquidityPoolStorage, Order, OrderContext } from './types'
 import { _0, _1, _2 } from './constants'
 import { splitAmount } from './utils'
 import BigNumber from 'bignumber.js'
 
+// split orders into different perpetuals
+export function splitOrderPerpetual(orders: Order[]): Map<number /* symbol */, Order[]> {
+  const ret: Map<number, Order[]> = new Map()
+  orders.forEach(order => {
+    let orders = ret.get(order.symbol)
+    if (!orders) {
+      orders = []
+      ret.set(order.symbol, orders)
+    }
+    orders.push(order)
+  })
+  return ret
+}
+
 // split orders into buyOrders and sellOrders
-export function splitOrderGroup(orders: Order[]) {
-  let buyOrders: Order[] = []
-  let sellOrders: Order[] = []
+// note: one perpetual only
+export function splitOrderSide(orders: Order[]) {
+  const buyOrders: Order[] = []
+  const sellOrders: Order[] = []
   orders.forEach(order => {
     if (order.amount.gt(_0)) {
       buyOrders.push(order)
@@ -21,6 +36,7 @@ export function splitOrderGroup(orders: Order[]) {
 }
 
 // filter orders that will be executed before and after a new order
+// note: one perpetual only
 export function splitOrdersByLimitPrice(orders: Order[], limitPrice: BigNumber, isBuy: boolean): { preOrders: Order[], postOrders: Order[] } {
   const preOrders: Order[] = []
   const postOrders: Order[] = []
@@ -66,6 +82,7 @@ export function openOrderCost(
 }
 
 // return available in wallet balance. note: remainPosition and remainMargin are meaningless when open positions
+// note: one perpetual + one side only
 export function orderSideAvailable(
   p: LiquidityPoolStorage,
   perpetualIndex: number,
@@ -175,21 +192,23 @@ export function orderSideAvailable(
 }
 
 // available = remainWalletBalance = walletBalance - orderMargin
-export function orderAvailable(
+// note: one perpetual only
+export function orderPerpetualAvailable(
   p: LiquidityPoolStorage,
   perpetualIndex: number,
   trader: AccountStorage,
   walletBalance: BigNumber,
   orders: Order[]
 ) : BigNumber {
-  const { buyOrders, sellOrders } = splitOrderGroup(orders)
+  const { buyOrders, sellOrders } = splitOrderSide(orders)
   const marginBalance = computeAccount(p, perpetualIndex, trader).accountComputed.marginBalance
   const buySide = orderSideAvailable(p, perpetualIndex, marginBalance, trader.positionAmount, trader.targetLeverage, walletBalance, buyOrders)
   const sellSide = orderSideAvailable(p, perpetualIndex, marginBalance, trader.positionAmount, trader.targetLeverage, walletBalance, sellOrders)
   return BigNumber.minimum(buySide.remainWalletBalance, sellSide.remainWalletBalance)
 }
 
-export function orderCost(
+// note: one perpetual only
+export function orderPerpetualCost(
   p: LiquidityPoolStorage,
   perpetualIndex: number,
   trader: AccountStorage,
@@ -198,7 +217,36 @@ export function orderCost(
   oldAvailable: BigNumber, // please pass the returned value of orderAvailable(orders)
   newOrder: Order,
 ): BigNumber {
-  const newAvailable = orderAvailable(p, perpetualIndex, trader, walletBalance, orders.concat([newOrder]))
+  const newAvailable = orderPerpetualAvailable(p, perpetualIndex, trader, walletBalance, orders.concat([newOrder]))
+  // old - new if old > new else 0
+  return BigNumber.maximum(_0, oldAvailable.minus(newAvailable))
+}
+
+// available = remainWalletBalance = walletBalance - orderMargin
+export function orderAvailable(
+  context: Map<number /* symbol */, OrderContext>,
+  walletBalance: BigNumber,
+  orders: Order[],
+) : BigNumber {
+  const symbol2Orders = splitOrderPerpetual(orders)
+  symbol2Orders.forEach((orders, symbol) => {
+    const c = context.get(symbol)
+    if (!c) {
+      throw new InvalidArgumentError(`unknown symbol ${symbol}`)
+    }
+    walletBalance = orderPerpetualAvailable(c.pool, c.perpetualIndex, c.account, walletBalance, orders)
+  })
+  return walletBalance
+}
+
+export function orderCost(
+  context: Map<number /* symbol */, OrderContext>,
+  walletBalance: BigNumber,
+  orders: Order[],
+  oldAvailable: BigNumber, // please pass the returned value of orderAvailable(orders)
+  newOrder: Order,
+): BigNumber {
+  const newAvailable = orderAvailable(context, walletBalance, orders.concat([newOrder]))
   // old - new if old > new else 0
   return BigNumber.maximum(_0, oldAvailable.minus(newAvailable))
 }
