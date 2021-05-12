@@ -4,7 +4,7 @@
   If you don't need these tools, you can remove this file to reduce the package size.
 */
 import { computeAccount, computeAMMTrade, computeAMMPrice } from './computation'
-import { BigNumberish, InvalidArgumentError, AccountStorage, LiquidityPoolStorage, AMMTradingContext, TradeFlag, Order } from './types'
+import { BigNumberish, InvalidArgumentError, AccountStorage, LiquidityPoolStorage, AMMTradingContext, TradeFlag, Order, OrderContext } from './types'
 import {
   initAMMTradingContext,
   isAMMSafe,
@@ -20,7 +20,7 @@ import { BugError } from './types'
 import { DECIMALS, _0, _1, _2 } from './constants'
 import { sqrt, normalizeBigNumberish, searchMaxAmount } from './utils'
 import BigNumber from 'bignumber.js'
-import { orderSideAvailable, splitOrdersByLimitPrice } from './order'
+import { orderSideAvailable, splitOrdersByLimitPrice, splitOrderPerpetual, orderPerpetualAvailable } from './order'
 
 // max amount when a trader uses market-order with USE_TARGET_LEVERAGE
 // the returned amount is the trader's perspective
@@ -139,38 +139,55 @@ export function computeAMMTradeAmountByMargin(
 // max amount when a trader uses limit-order with USE_TARGET_LEVERAGE
 // the returned amount is the trader's perspective
 export function computeLimitOrderMaxTradeAmount(
-  p: LiquidityPoolStorage,
-  perpetualIndex: number,
-  trader: AccountStorage,
+  context: Map<number /* symbol */, OrderContext>,
   walletBalance: BigNumberish,
   orders: Order[],
+  symbol: number,
   limitPrice: BigNumberish,
   isTraderBuy: boolean,
 ): BigNumber {
-  const perpetual = p.perpetuals.get(perpetualIndex)
-  if (!perpetual) {
-    throw new InvalidArgumentError(`perpetual {perpetualIndex} not found in the pool`)
-  }
   const normalizeWalletBalance = normalizeBigNumberish(walletBalance)
   const normalizeLimitPrice = normalizeBigNumberish(limitPrice)
 
-  // guess = (marginBalance + walletBalance) * lev / index - position
+  // get available margin other than current perpetual
+  const symbol2Orders = splitOrderPerpetual(orders)
+  let available = normalizeWalletBalance
+  symbol2Orders.forEach((orders: Order[], symbol: number) => {
+    const c = context.get(symbol)
+    if (!c) {
+      throw new InvalidArgumentError(`unknown symbol ${symbol}`)
+    }
+    available = orderPerpetualAvailable(c.pool, c.perpetualIndex, c.account, available, orders)
+  })
+
+  // current perpetual
+  const c = context.get(symbol)
+  if (!c) {
+    throw new InvalidArgumentError(`unknown symbol ${symbol}`)
+  }
+  const perpetual = c.pool.perpetuals.get(c.perpetualIndex)
+  if (!perpetual) {
+    throw new InvalidArgumentError(`perpetual ${c.perpetualIndex} not found in the pool`)
+  }
+  const trader = c.account
+  const currentPerpetualOrders: Order[] = symbol2Orders.get(symbol) || [] // probably the 1st order
+
+  // guess = available * lev / index - position
   if (trader.targetLeverage.isZero()) {
     throw new InvalidArgumentError('target leverage = 0')
   }
-  const traderDetails = computeAccount(p, perpetualIndex, trader)
-  let guess = traderDetails.accountComputed.marginBalance.plus(normalizeWalletBalance)
-  guess = guess.times(trader.targetLeverage).div(perpetual.markPrice)
+  const traderDetails = computeAccount(c.pool, c.perpetualIndex, trader)
+  let guess = available.times(trader.targetLeverage).div(perpetual.markPrice)
   if (!isTraderBuy) {
     guess = guess.negated()
   }
   guess = guess.minus(trader.positionAmount)
 
   // state after executing pre-orders
-  const { preOrders, postOrders } = splitOrdersByLimitPrice(orders, normalizeLimitPrice, isTraderBuy)
+  const { preOrders, postOrders } = splitOrdersByLimitPrice(currentPerpetualOrders, normalizeLimitPrice, isTraderBuy)
   const preState = orderSideAvailable(
-    p, perpetualIndex, traderDetails.accountComputed.marginBalance,
-    trader.positionAmount, trader.targetLeverage, normalizeWalletBalance, preOrders)
+    c.pool, c.perpetualIndex, traderDetails.accountComputed.marginBalance,
+    trader.positionAmount, trader.targetLeverage, available, preOrders)
   
   // search
   function checkTrading(a: BigNumber): boolean {
@@ -181,11 +198,11 @@ export function computeLimitOrderMaxTradeAmount(
       a = a.negated()
     }
     let newOrderState = orderSideAvailable(
-      p, perpetualIndex, preState.remainMargin,
+      c!.pool, c!.perpetualIndex, preState.remainMargin,
       preState.remainPosition, trader.targetLeverage, preState.remainWalletBalance,
-      [{ limitPrice: normalizeLimitPrice, amount: a }])
+      [{ symbol, limitPrice: normalizeLimitPrice, amount: a }])
     let postState = orderSideAvailable(
-      p, perpetualIndex, newOrderState.remainMargin,
+      c!.pool, c!.perpetualIndex, newOrderState.remainMargin,
       newOrderState.remainPosition, trader.targetLeverage, newOrderState.remainWalletBalance, postOrders)
     if (postState.remainWalletBalance.lt(_0)) {
       // a is too large
