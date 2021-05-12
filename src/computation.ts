@@ -302,17 +302,21 @@ export function adjustMarginLeverage(
       throw new InvalidArgumentError(`target leverage <= 0`)
     }
     let openPositionMargin = normalizedOpen.abs().times(perpetual.markPrice).div(leverage)
-    let adjustCollateral = _0
+    let newMargin = _0
     if (position2.minus(deltaPosition).isZero() || !normalizedClose.isZero()) {
       // strategy: let new margin balance = openPositionMargin
-      adjustCollateral = openPositionMargin.minus(afterTrade.accountComputed.marginBalance)
+      newMargin = openPositionMargin
     } else {
       // strategy: always append positionMargin of openPosition
-      adjustCollateral = openPositionMargin
+      newMargin = afterTrade.accountComputed.marginBalance
+      // plus pnl
+      newMargin = newMargin.plus(perpetual.markPrice.minus(normalizedPrice).times(normalizedOpen))
+      // at least IM after adjust
+      newMargin = BigNumber.maximum(newMargin, afterTrade.accountComputed.positionMargin)
     }
-    // margin + adjustCollateral >= keeperGasReward
-    adjustCollateral = BigNumber.maximum(adjustCollateral, perpetual.keeperGasReward.minus(afterTrade.accountComputed.marginBalance))
-    return adjustCollateral
+    // at least keeperGasReward
+    newMargin = BigNumber.maximum(newMargin, perpetual.keeperGasReward)
+    return newMargin.minus(afterTrade.accountComputed.marginBalance)
   }
 }
 
