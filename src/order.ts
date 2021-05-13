@@ -75,10 +75,18 @@ export function openOrderCost(
   const potentialPNL = mark.minus(order.limitPrice).times(order.amount)
   // loss = pnl if pnl < 0 else 0
   const potentialLoss = BigNumber.minimum(potentialPNL, _0)
-  // limitPrice * | amount | * (1 / lev + feeRate) - loss
-  return order.limitPrice.times(order.amount.abs())
-    .times(_1.div(leverage).plus(feeRate))
-    .minus(potentialLoss)
+  // fee = limitPrice * | amount | * feeRate
+  const fee = order.limitPrice.times(order.amount.abs()).times(feeRate)
+  let margin = _0
+  if (order.amount.lt(_0) && order.limitPrice.lt(mark)) {
+    // mark * | amount | / lev
+    margin = mark.times(order.amount.abs()).div(leverage)
+  } else {
+    // limitPrice * | amount | / lev
+    margin = order.limitPrice.times(order.amount.abs()).div(leverage)
+  }
+  // margin + fee - loss
+  return margin.plus(fee).minus(potentialLoss)
 }
 
 // return available in wallet balance. note: remainPosition and remainMargin are meaningless when open positions
