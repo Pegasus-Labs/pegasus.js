@@ -65,7 +65,7 @@ export function openOrderCost(
   perpetualIndex: number,
   order: Order,
   leverage: BigNumber,
-): BigNumber {
+): { cost: BigNumber, fee: BigNumber, potentialLoss: BigNumber } {
   const perpetual = p.perpetuals.get(perpetualIndex)
   if (!perpetual) {
     throw new InvalidArgumentError(`perpetual ${perpetualIndex} not found in the pool`)
@@ -85,11 +85,15 @@ export function openOrderCost(
     // limitPrice * | amount | / lev
     margin = order.limitPrice.times(order.amount.abs()).div(leverage)
   }
-  // margin + fee - loss
-  return margin.plus(fee).minus(potentialLoss)
+  return {
+    // margin + fee - loss
+    cost: margin.plus(fee).minus(potentialLoss),
+    fee,
+    potentialLoss,
+  }
 }
 
-// return available in wallet balance. note: remainPosition and remainMargin are meaningless when open positions
+// return available in wallet balance
 // note: one perpetual + one side only
 export function orderSideAvailable(
   p: LiquidityPoolStorage,
@@ -189,9 +193,19 @@ export function orderSideAvailable(
 
   // open position
   for (let i = 0; i < remainOrders.length; i++) {
-    const cost = openOrderCost(p, perpetualIndex, remainOrders[i], targetLeverage)
+    const order = remainOrders[i]
+    let { cost, fee, potentialLoss } = openOrderCost(p, perpetualIndex, order, targetLeverage)
+    remainPosition = remainPosition.plus(order.amount)
+    remainMargin = remainMargin.plus(potentialLoss).minus(fee)
+    // at least IM and keeperGasReward
+    const im = perpetual.markPrice.times(remainPosition.abs()).times(perpetual.initialMarginRate)
+    cost = BigNumber.maximum(
+      im.minus(remainMargin /* old margin */),
+      perpetual.keeperGasReward.minus(remainMargin /* old margin */),
+      cost
+    )
+    remainMargin = remainMargin.plus(cost)
     remainWalletBalance = remainWalletBalance.minus(cost)
-    // remainMargin and remainPosition are ignored
     // TODO:
     // if remainWalletBalance < 0, the relayer should cancel some part of the order
   }

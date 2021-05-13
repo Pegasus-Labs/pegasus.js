@@ -191,10 +191,11 @@ describe('orderCost', function() {
     // | loss | = (6965 - 6900) * 1 = 65, deposit = 6965 * 1 / lev + | loss | + openFee = 3554.4
     const marginBalance = computeAccount(poolStorage1, TEST_MARKET_INDEX0, accountStorage1).accountComputed.marginBalance
     const targetLeverage = accountStorage1.targetLeverage
+
     const details = orderSideAvailable(poolStorage1, TEST_MARKET_INDEX0, marginBalance,
       accountStorage1.positionAmount, targetLeverage, walletBalance, orders.concat(newOrder))
-    expect(details.remainPosition).toApproximate(new BigNumber('0')) // fully closed. meaningless when open positions
-    expect(details.remainMargin).toApproximate(new BigNumber('0')) // fully closed. meaningless when open positions
+    expect(details.remainPosition).toApproximate(new BigNumber('-1'))
+    expect(details.remainMargin).toApproximate(new BigNumber('3482.5')) // old - withdraw + deposit - fee - | loss |
     expect(details.remainWalletBalance).toApproximate(new BigNumber('19975.80634375')) // old + withdraw - deposit
   })
 
