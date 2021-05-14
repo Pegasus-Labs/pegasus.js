@@ -156,7 +156,7 @@ describe('orderCost', function() {
     const context = new Map([
       [0, {pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage1}],
     ])
-    const oldAvailable = orderAvailable(context, walletBalance, orders)
+    const oldAvailable = orderAvailable(context, walletBalance, orders, 0)
     const cost = orderCost(context, walletBalance, orders, oldAvailable, newOrder)
     expect(cost).toApproximate(_0)
 
@@ -182,7 +182,7 @@ describe('orderCost', function() {
     const context = new Map([
       [0, {pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage1}],
     ])
-    const oldAvailable = orderAvailable(context, walletBalance, orders)
+    const oldAvailable = orderAvailable(context, walletBalance, orders, 0)
     const cost = orderCost(context, walletBalance, orders, oldAvailable, newOrder)
     expect(cost).toApproximate(_0)
 
@@ -214,7 +214,7 @@ describe('orderCost', function() {
     // withdraw = 23695.57634375 - (6965 - 6900)*2.3 - 6900*2.3*0.001 = 23530.20634375
     // deposit = (10 - 2.3)*6965/2 + (10 - 2.3)*6900*0.001 + (6965 - 6900)*(10 - 2.3) = 27368.9
     // cost = deposit - withdraw = 3838.67365625
-    const oldAvailable = orderAvailable(context, walletBalance, orders)
+    const oldAvailable = orderAvailable(context, walletBalance, orders, 0)
     const cost = orderCost(context, walletBalance, orders, oldAvailable, newOrder)
     expect(cost).toApproximate(new BigNumber('3838.67365625'))
   })
@@ -230,11 +230,10 @@ describe('orderCost', function() {
     const context = new Map([
       [0, {pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage0}],
     ])
-    // deposit = 10*6965/2 + 10*6900*0.001 + (6965 - 6900)*10 = 35544
-    // cost = deposit - 1000 = 34544
-    const oldAvailable = orderAvailable(context, walletBalance, orders)
+    // cost = 10*6965/2 + 10*6900*0.001 + (6965 - 6900)*10 = 35544
+    const oldAvailable = orderAvailable(context, walletBalance, orders, 0)
     const cost = orderCost(context, walletBalance, orders, oldAvailable, newOrder)
-    expect(cost).toApproximate(new BigNumber('34544'))
+    expect(cost).toApproximate(new BigNumber('35544'))
   })
 
   it('empty order book. pos = 0 but cash > 0. open short. limit > mark', function() {
@@ -248,11 +247,10 @@ describe('orderCost', function() {
     const context = new Map([
       [0, {pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage0}],
     ])
-    // deposit = 10*7000/2 + 10*7000*0.001 + 0(profit) = 35070
-    // cost = deposit - 1000 = 34070
-    const oldAvailable = orderAvailable(context, walletBalance, orders)
+    // cost = 10*7000/2 + 10*7000*0.001 + 0(profit) = 35070
+    const oldAvailable = orderAvailable(context, walletBalance, orders, 0)
     const cost = orderCost(context, walletBalance, orders, oldAvailable, newOrder)
-    expect(cost).toApproximate(new BigNumber('34070'))
+    expect(cost).toApproximate(new BigNumber('35070'))
   })
 
   it('empty order book. pos = 0 but cash > 0. open long. limit < mark', function() {
@@ -266,11 +264,10 @@ describe('orderCost', function() {
     const context = new Map([
       [0, {pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage0}],
     ])
-    // deposit = 10*6900/2 + 10*6900*0.001 + 0(profit) = 34569
-    // cost = deposit - 1000 = 33569
-    const oldAvailable = orderAvailable(context, walletBalance, orders)
+    // cost = 10*6900/2 + 10*6900*0.001 + 0(profit) = 34569
+    const oldAvailable = orderAvailable(context, walletBalance, orders, 0)
     const cost = orderCost(context, walletBalance, orders, oldAvailable, newOrder)
-    expect(cost).toApproximate(new BigNumber('33569'))
+    expect(cost).toApproximate(new BigNumber('34569'))
   })
 
   it('empty order book. pos = 0 but cash > 0. open long. limit > mark', function() {
@@ -284,10 +281,9 @@ describe('orderCost', function() {
     const context = new Map([
       [0, {pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage0}],
     ])
-    // deposit = 10*7000/2 + 10*7000*0.001 + (7000 - 6965)*10 = 35420
-    // cost = deposit - 1000 = 34420
-    const oldAvailable = orderAvailable(context, walletBalance, orders)
+    // cost = 10*7000/2 + 10*7000*0.001 + (7000 - 6965)*10 = 35420
+    const oldAvailable = orderAvailable(context, walletBalance, orders, 0)
     const cost = orderCost(context, walletBalance, orders, oldAvailable, newOrder)
-    expect(cost).toApproximate(new BigNumber('34420'))
+    expect(cost).toApproximate(new BigNumber('35420'))
   })
 })

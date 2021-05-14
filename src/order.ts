@@ -4,6 +4,7 @@ import { _0, _1, _2 } from './constants'
 import { splitAmount } from './utils'
 import BigNumber from 'bignumber.js'
 
+// NOTE: collateral of orders from different markets MUST be the same as the current market
 // split orders into different perpetuals
 export function splitOrderPerpetual(orders: Order[]): Map<number /* symbol */, Order[]> {
   const ret: Map<number, Order[]> = new Map()
@@ -18,6 +19,7 @@ export function splitOrderPerpetual(orders: Order[]): Map<number /* symbol */, O
   return ret
 }
 
+// NOTE: collateral of orders from different markets MUST be the same as the current market
 // split orders into buyOrders and sellOrders
 // note: one perpetual only
 export function splitOrderSide(orders: Order[]) {
@@ -36,7 +38,8 @@ export function splitOrderSide(orders: Order[]) {
 }
 
 // filter orders that will be executed before and after a new order
-// note: one perpetual only
+// NOTE: collateral of orders from different markets MUST be the same as the current market
+// NOTE: one perpetual only
 export function splitOrdersByLimitPrice(orders: Order[], limitPrice: BigNumber, isBuy: boolean): { preOrders: Order[], postOrders: Order[] } {
   const preOrders: Order[] = []
   const postOrders: Order[] = []
@@ -94,7 +97,8 @@ export function openOrderCost(
 }
 
 // return available in wallet balance
-// note: one perpetual + one side only
+// NOTE: collateral of orders from different markets MUST be the same as the current market
+// NOTE: one perpetual + one side only
 export function orderSideAvailable(
   p: LiquidityPoolStorage,
   perpetualIndex: number,
@@ -214,7 +218,8 @@ export function orderSideAvailable(
 }
 
 // available = remainWalletBalance = walletBalance - orderMargin
-// note: one perpetual only
+// NOTE: collateral of orders from different markets MUST be the same as the current market
+// NOTE: one perpetual only
 export function orderPerpetualAvailable(
   p: LiquidityPoolStorage,
   perpetualIndex: number,
@@ -229,7 +234,8 @@ export function orderPerpetualAvailable(
   return BigNumber.minimum(buySide.remainWalletBalance, sellSide.remainWalletBalance)
 }
 
-// note: one perpetual only
+// NOTE: collateral of orders from different markets MUST be the same as the current market
+// NOTE: one perpetual only
 export function orderPerpetualCost(
   p: LiquidityPoolStorage,
   perpetualIndex: number,
@@ -245,13 +251,17 @@ export function orderPerpetualCost(
 }
 
 // available = remainWalletBalance = walletBalance - orderMargin
+// NOTE: collateral of orders from different markets MUST be the same as the current market
 export function orderAvailable(
   context: Map<number /* symbol */, OrderContext>,
   walletBalance: BigNumber,
   orders: Order[],
+  symbol: number, // the current market
 ) : BigNumber {
   const symbol2Orders = splitOrderPerpetual(orders)
+  // walletBalance
   let available = walletBalance
+  // minus orderMargin
   symbol2Orders.forEach((orders, symbol) => {
     const c = context.get(symbol)
     if (!c) {
@@ -259,9 +269,27 @@ export function orderAvailable(
     }
     available = orderPerpetualAvailable(c.pool, c.perpetualIndex, c.account, available, orders)
   })
+  // plus margin if position = 0 and order (of the current market) = 0
+  const c = context.get(symbol)
+  if (!c) {
+    throw new InvalidArgumentError(`unknown symbol ${symbol}`)
+  }
+  if (c.account.positionAmount.isZero()) {
+    let hasOrder = false
+    orders.forEach(order => {
+      if (order.symbol === symbol) {
+        hasOrder = true
+      }
+    })
+    if (!hasOrder) {
+      available = available.plus(c.account.cashBalance)
+    }
+  }
   return available
 }
 
+// how much "available" will be used for newOrder
+// NOTE: collateral of orders from different markets MUST be the same as the current market
 export function orderCost(
   context: Map<number /* symbol */, OrderContext>,
   walletBalance: BigNumber,
@@ -269,7 +297,7 @@ export function orderCost(
   oldAvailable: BigNumber, // please pass the returned value of orderAvailable(orders)
   newOrder: Order,
 ): BigNumber {
-  const newAvailable = orderAvailable(context, walletBalance, orders.concat([newOrder]))
+  const newAvailable = orderAvailable(context, walletBalance, orders.concat([newOrder]), newOrder.symbol)
   // old - new if old > new else 0
   return BigNumber.maximum(_0, oldAvailable.minus(newAvailable))
 }
