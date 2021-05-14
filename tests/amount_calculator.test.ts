@@ -269,12 +269,12 @@ describe('computeLimitOrderMaxTradeAmount', function() {
       [TEST_MARKET_INDEX0, { pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage1}]
     ])
     const amount = computeLimitOrderMaxTradeAmount(context, walletBalance, orders, TEST_MARKET_INDEX0, limitPrice, isBuy)
-    // marginBalance = 23695.57634375, amount = -15.715
+    // marginBalance = 23695.57634375, amount = -15.59
     // withdraw = 23695.57634375 - (6965 - 6900)*2.3 - 6900*2.3*0.001 = 23530.20634375
-    // deposit = (15.715 - 2.3)*6900*(1/1 + 0.001) + (6965 - 6900)*(15.715 - 2.3) = 93528
+    // deposit = (15.59 - 2.3)*6900*(1/1 + 0.001) + (6965 - 6900)*(15.59 - 2.3) = 92656.551
     // cost = deposit - 70000 - withdraw ≈ 0
-    expect(amount.gt('-15.8')).toBeTruthy()
-    expect(amount.lt('-15.7')).toBeTruthy()
+    expect(amount.gt('-15.6')).toBeTruthy()
+    expect(amount.lt('-15.5')).toBeTruthy()
     const marginBalance = computeAccount(poolStorage1, TEST_MARKET_INDEX0, accountStorage1).accountComputed.marginBalance
     const oldAvailable = orderSideAvailable(poolStorage1, TEST_MARKET_INDEX0, marginBalance, accountStorage1.positionAmount,
       accountStorage1.targetLeverage, walletBalance, orders)
@@ -284,6 +284,25 @@ describe('computeLimitOrderMaxTradeAmount', function() {
     ]))
     expect(oldAvailable.remainWalletBalance).toApproximate(new BigNumber('70000'))
     expect(newAvailable.remainWalletBalance.lt('1')).toBeTruthy()
+  })
+
+  it('(open a + open b) should be equivalent to open (a + b)', function() {
+    const walletBalance = new BigNumber('70000')
+    const limitPrice = new BigNumber('6900')
+    const isBuy = false
+    const orders: Order[] = []
+    const context = new Map([
+      [TEST_MARKET_INDEX0, { pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage1}]
+    ])
+    const amount1 = computeLimitOrderMaxTradeAmount(context, walletBalance, orders, TEST_MARKET_INDEX0, limitPrice, isBuy)
+    const amount2 = amount1.div(2)
+    orders.push({
+      symbol: TEST_MARKET_INDEX0,
+      limitPrice,
+      amount: amount2,
+    })
+    const amount3 = computeLimitOrderMaxTradeAmount(context, walletBalance, orders, TEST_MARKET_INDEX0, limitPrice, isBuy)
+    expect(amount2.plus(amount3)).toApproximate(amount1)
   })
 })
 

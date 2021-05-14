@@ -152,31 +152,34 @@ export function computeLimitOrderMaxTradeAmount(
   // get available margin other than current perpetual
   const symbol2Orders = splitOrderPerpetual(orders)
   let available = normalizeWalletBalance
-  symbol2Orders.forEach((orders: Order[], symbol: number) => {
-    const c = context.get(symbol)
-    if (!c) {
-      throw new InvalidArgumentError(`unknown symbol ${symbol}`)
+  symbol2Orders.forEach((otherMarketOrders: Order[], otherMarketSymbol: number) => {
+    if (otherMarketSymbol === symbol) {
+      return
     }
-    available = orderPerpetualAvailable(c.pool, c.perpetualIndex, c.account, available, orders)
+    const otherMarketContext = context.get(otherMarketSymbol)
+    if (!otherMarketContext) {
+      throw new InvalidArgumentError(`unknown symbol ${otherMarketSymbol}`)
+    }
+    available = orderPerpetualAvailable(otherMarketContext.pool, otherMarketContext.perpetualIndex, otherMarketContext.account, available, otherMarketOrders)
   })
 
   // current perpetual
-  const c = context.get(symbol)
-  if (!c) {
+  const currentMarketContext = context.get(symbol)
+  if (!currentMarketContext) {
     throw new InvalidArgumentError(`unknown symbol ${symbol}`)
   }
-  const perpetual = c.pool.perpetuals.get(c.perpetualIndex)
+  const perpetual = currentMarketContext.pool.perpetuals.get(currentMarketContext.perpetualIndex)
   if (!perpetual) {
-    throw new InvalidArgumentError(`perpetual ${c.perpetualIndex} not found in the pool`)
+    throw new InvalidArgumentError(`perpetual ${currentMarketContext.perpetualIndex} not found in the pool`)
   }
-  const trader = c.account
+  const trader = currentMarketContext.account
   const currentPerpetualOrders: Order[] = symbol2Orders.get(symbol) || [] // probably the 1st order
 
   // guess = available * lev / index - position
   if (trader.targetLeverage.isZero()) {
     throw new InvalidArgumentError('target leverage = 0')
   }
-  const traderDetails = computeAccount(c.pool, c.perpetualIndex, trader)
+  const traderDetails = computeAccount(currentMarketContext.pool, currentMarketContext.perpetualIndex, trader)
   let guess = available.times(trader.targetLeverage).div(perpetual.markPrice)
   if (!isTraderBuy) {
     guess = guess.negated()
@@ -186,7 +189,7 @@ export function computeLimitOrderMaxTradeAmount(
   // state after executing pre-orders
   const { preOrders, postOrders } = splitOrdersByLimitPrice(currentPerpetualOrders, normalizeLimitPrice, isTraderBuy)
   const preState = orderSideAvailable(
-    c.pool, c.perpetualIndex, traderDetails.accountComputed.marginBalance,
+    currentMarketContext.pool, currentMarketContext.perpetualIndex, traderDetails.accountComputed.marginBalance,
     trader.positionAmount, trader.targetLeverage, available, preOrders)
   
   // search
@@ -198,11 +201,11 @@ export function computeLimitOrderMaxTradeAmount(
       a = a.negated()
     }
     let newOrderState = orderSideAvailable(
-      c!.pool, c!.perpetualIndex, preState.remainMargin,
+      currentMarketContext!.pool, currentMarketContext!.perpetualIndex, preState.remainMargin,
       preState.remainPosition, trader.targetLeverage, preState.remainWalletBalance,
       [{ symbol, limitPrice: normalizeLimitPrice, amount: a }])
     let postState = orderSideAvailable(
-      c!.pool, c!.perpetualIndex, newOrderState.remainMargin,
+      currentMarketContext!.pool, currentMarketContext!.perpetualIndex, newOrderState.remainMargin,
       newOrderState.remainPosition, trader.targetLeverage, newOrderState.remainWalletBalance, postOrders)
     if (postState.remainWalletBalance.lt(_0)) {
       // a is too large

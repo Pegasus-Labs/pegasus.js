@@ -262,19 +262,20 @@ export function orderAvailable(
   // walletBalance
   let available = walletBalance
   // minus orderMargin
-  symbol2Orders.forEach((orders, symbol) => {
-    const c = context.get(symbol)
-    if (!c) {
-      throw new InvalidArgumentError(`unknown symbol ${symbol}`)
+  symbol2Orders.forEach((otherMarketOrders, otherMarketSymbol) => {
+    const otherMarketContext = context.get(otherMarketSymbol)
+    if (!otherMarketContext) {
+      throw new InvalidArgumentError(`unknown symbol ${otherMarketSymbol}`)
     }
-    available = orderPerpetualAvailable(c.pool, c.perpetualIndex, c.account, available, orders)
+    available = orderPerpetualAvailable(otherMarketContext.pool, otherMarketContext.perpetualIndex,
+      otherMarketContext.account, available, otherMarketOrders)
   })
   // plus margin if position = 0 and order (of the current market) = 0
-  const c = context.get(symbol)
-  if (!c) {
+  const currentMarketContext = context.get(symbol)
+  if (!currentMarketContext) {
     throw new InvalidArgumentError(`unknown symbol ${symbol}`)
   }
-  if (c.account.positionAmount.isZero()) {
+  if (currentMarketContext.account.positionAmount.isZero()) {
     let hasOrder = false
     orders.forEach(order => {
       if (order.symbol === symbol) {
@@ -282,7 +283,7 @@ export function orderAvailable(
       }
     })
     if (!hasOrder) {
-      available = available.plus(c.account.cashBalance)
+      available = available.plus(currentMarketContext.account.cashBalance)
     }
   }
   return available
