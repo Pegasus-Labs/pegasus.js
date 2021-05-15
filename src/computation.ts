@@ -13,9 +13,9 @@ import {
   AMMTradingResult,
   InvalidArgumentError,
   BugError,
-  InsufficientLiquidityError,
   TradeFlag,
   TradeWithPriceResult,
+  OpenInterestExceededError,
 } from './types'
 import { computeAMMInternalTrade, computeAMMPoolMargin, initAMMTradingContext } from './amm'
 import { _0, _1 } from './constants'
@@ -384,7 +384,9 @@ export function computeAMMTrade(
     context = computeAMMPoolMargin(context, context.openSlippageFactor, true /* allowUnsafe */)
     const limit = context.poolMargin.times(perpetual.maxOpenInterestRate).div(perpetual.indexPrice)
     if (newOpenInterest.gt(limit)) {
-      throw new InsufficientLiquidityError(`open interest exceeds limit: ${newOpenInterest.toFixed()} > ${limit.toFixed()}`)
+      throw new OpenInterestExceededError(
+        `open interest exceeds limit: ${newOpenInterest.toFixed()} > ${limit.toFixed()}`,
+        newOpenInterest, limit)
     }
   }
 

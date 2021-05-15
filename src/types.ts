@@ -30,6 +30,22 @@ export class BugError extends Error {
 }
 
 /**
+ * Indicates that if the trade completes, the open interest will exceed the limit.
+ */
+ export class OpenInterestExceededError extends Error {
+  public readonly isOpenInterestExceededError: true = true
+  public readonly newOpenInterest: BigNumber
+  public readonly limit: BigNumber
+
+  public constructor(message: string, newOpenInterest: BigNumber, limit: BigNumber) {
+    super()
+    this.name = message
+    this.newOpenInterest = newOpenInterest
+    this.limit = limit
+  }
+}
+
+/**
  * Invalid argument or the query condition is impossible.
  */
 export class InvalidArgumentError extends Error {
