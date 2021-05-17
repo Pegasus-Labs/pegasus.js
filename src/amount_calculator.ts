@@ -3,7 +3,7 @@
 
   If you don't need these tools, you can remove this file to reduce the package size.
 */
-import { computeAccount, computeAMMTrade, computeAMMPrice } from './computation'
+import { computeAccount, computeAMMTrade, computeAMMPrice, computeTradeWithPrice } from './computation'
 import { BigNumberish, InvalidArgumentError, AccountStorage, LiquidityPoolStorage, AMMTradingContext, TradeFlag, Order, OrderContext } from './types'
 import {
   initAMMTradingContext,
@@ -75,6 +75,61 @@ export function computeAMMMaxTradeAmount(
     }
   }
   let maxAmount = searchMaxAmount(checkTrading, guess.abs())
+  if (!isTraderBuy) {
+    maxAmount = maxAmount.negated()
+  }
+  return maxAmount
+}
+
+// min amount when a trader uses market-order with USE_TARGET_LEVERAGE
+// the returned amount is the trader's perspective
+export function computeAMMMinTradeAmount(
+  p: LiquidityPoolStorage,
+  perpetualIndex: number,
+  trader: AccountStorage,
+  isTraderBuy: boolean,
+): BigNumber {
+  const perpetual = p.perpetuals.get(perpetualIndex)
+  if (!perpetual) {
+    throw new InvalidArgumentError(`perpetual ${perpetualIndex} not found in the pool`)
+  }
+
+  // if AMM is unsafe, return 0
+  const ammContext = initAMMTradingContext(p, perpetualIndex)
+  if (!isAMMSafe(ammContext, ammContext.openSlippageFactor)) {
+    if (isTraderBuy && ammContext.position1.lt(_0)) {
+      return _0
+    }
+    if (!isTraderBuy && ammContext.position1.gt(_0)) {
+      return _0
+    }
+  }
+  
+  // search
+  function checkTrading(a: BigNumber): boolean {
+    if (a.isZero()) {
+      return true
+    }
+    if (!isTraderBuy) {
+      a = a.negated()
+    }
+    try {
+      const result = computeAMMTrade(p, perpetualIndex, trader, a, TradeFlag.MASK_USE_TARGET_LEVERAGE)
+      if (result.trader.accountStorage.positionAmount.gt(_0)
+        && result.trader.accountComputed.liquidationPrice.gt(perpetual!.markPrice)) {
+        return true
+      }
+      if (result.trader.accountStorage.positionAmount.lt(_0)
+        && result.trader.accountComputed.liquidationPrice.lt(perpetual!.markPrice)) {
+        return true
+      }
+      return false
+    } catch (e) {
+      // typically means a is too large
+      return false
+    }
+  }
+  let maxAmount = searchMaxAmount(checkTrading, _0)
   if (!isTraderBuy) {
     maxAmount = maxAmount.negated()
   }
@@ -214,6 +269,52 @@ export function computeLimitOrderMaxTradeAmount(
     return true
   }
   let maxAmount = searchMaxAmount(checkTrading, guess.abs())
+  if (!isTraderBuy) {
+    maxAmount = maxAmount.negated()
+  }
+  return maxAmount
+}
+
+// min amount when a trader uses limit-order with USE_TARGET_LEVERAGE
+// the returned amount is the trader's perspective
+export function computeLimitOrderMinTradeAmount(
+  p: LiquidityPoolStorage,
+  perpetualIndex: number,
+  trader: AccountStorage,
+  isTraderBuy: boolean,
+  limitPrice: BigNumberish,
+): BigNumber {
+  const perpetual = p.perpetuals.get(perpetualIndex)
+  if (!perpetual) {
+    throw new InvalidArgumentError(`perpetual ${perpetualIndex} not found in the pool`)
+  }
+  const feeRate = perpetual.lpFeeRate.plus(perpetual.operatorFeeRate).plus(p.vaultFeeRate)
+
+  // search
+  function checkTrading(a: BigNumber): boolean {
+    if (a.isZero()) {
+      return true
+    }
+    if (!isTraderBuy) {
+      a = a.negated()
+    }
+    try {
+      const result = computeTradeWithPrice(p, perpetualIndex, trader, limitPrice, a, feeRate, TradeFlag.MASK_USE_TARGET_LEVERAGE)
+      if (result.afterTrade.accountStorage.positionAmount.gt(_0)
+        && result.afterTrade.accountComputed.liquidationPrice.gt(perpetual!.markPrice)) {
+        return true
+      }
+      if (result.afterTrade.accountStorage.positionAmount.lt(_0)
+        && result.afterTrade.accountComputed.liquidationPrice.lt(perpetual!.markPrice)) {
+        return true
+      }
+      return false
+    } catch (e) {
+      // typically means a is too large
+      return false
+    }
+  }
+  let maxAmount = searchMaxAmount(checkTrading, _0)
   if (!isTraderBuy) {
     maxAmount = maxAmount.negated()
   }
