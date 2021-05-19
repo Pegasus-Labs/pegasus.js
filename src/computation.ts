@@ -35,10 +35,10 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
   }
   const availableCashBalance = s.cashBalance.minus(s.positionAmount.times(perpetual.unitAccumulativeFunding))
   const marginBalance = availableCashBalance.plus(perpetual.markPrice.times(s.positionAmount))
-  const availableMargin = marginBalance.minus(BigNumber.maximum(reservedCash, positionMargin))
+  const availableMargin = marginBalance.minus(positionMargin).minus(reservedCash)
   const withdrawableBalance = BigNumber.maximum(_0, availableMargin)
-  const isMMSafe = marginBalance.gte(BigNumber.maximum(reservedCash, maintenanceMargin))
-  const isIMSafe = marginBalance.gte(BigNumber.maximum(reservedCash, positionMargin))
+  const isIMSafe = availableMargin.gte(_0)
+  const isMMSafe = marginBalance.minus(maintenanceMargin).minus(reservedCash).gte(_0)
   const isMarginSafe = marginBalance.gte(reservedCash)
   let leverage = _0
   if (positionValue.gt(_0)) {
@@ -303,21 +303,24 @@ export function adjustMarginLeverage(
     if (leverage.lte(_0)) {
       throw new InvalidArgumentError(`target leverage <= 0`)
     }
-    let newMargin = normalizedOpen.abs().times(perpetual.markPrice).div(leverage)
+    let openPositionMargin = normalizedOpen.abs().times(perpetual.markPrice).div(leverage)
+    let adjustCollateral = _0
     if (position2.minus(deltaPosition).isZero() || !normalizedClose.isZero()) {
       // strategy: let new margin balance = openPositionMargin
+      adjustCollateral = openPositionMargin.minus(afterTrade.accountComputed.marginBalance)
     } else {
       // strategy: always append positionMargin of openPosition
-      // newMargin = oldMargin + openPositionMargin + pnl + fee
-      newMargin = newMargin.plus(afterTrade.accountComputed.marginBalance)
-      newMargin = newMargin.plus(normalizedPrice.minus(perpetual.markPrice).times(normalizedOpen))
-      newMargin = newMargin.plus(normalizedTotalFee)
-      // at least IM after adjust
-      newMargin = BigNumber.maximum(newMargin, afterTrade.accountComputed.positionMargin)
+      // adjustCollateral = openPositionMargin - pnl + fee
+      adjustCollateral = openPositionMargin.minus(perpetual.markPrice.times(normalizedOpen))
+      adjustCollateral = adjustCollateral.minus(deltaCash)
+      adjustCollateral = adjustCollateral.plus(normalizedTotalFee)
     }
-    // at least keeperGasReward
-    newMargin = BigNumber.maximum(newMargin, perpetual.keeperGasReward)
-    return newMargin.minus(afterTrade.accountComputed.marginBalance)
+    // at least IM after adjust
+    adjustCollateral = BigNumber.maximum(
+      adjustCollateral, 
+      afterTrade.accountComputed.availableMargin.negated()
+    )
+    return adjustCollateral
   }
 }
 

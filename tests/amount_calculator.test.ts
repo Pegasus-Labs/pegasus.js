@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { computeAMMPrice, computeAMMTrade, computeTradeWithPrice } from '../src/computation'
+import { computeAMMPrice, computeAMMTrade } from '../src/computation'
 import {
   computeAMMMaxTradeAmount,
   computeAMMTradeAmountByMargin,

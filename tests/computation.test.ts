@@ -170,8 +170,8 @@ describe('computeAccount', function() {
     maintenanceMargin: new BigNumber('800.975'),
     availableCashBalance: new BigNumber('7676.07634375'),
     marginBalance: new BigNumber('23695.57634375'), // 10000 + (6965 - 2300.23/2.3) * 2.3 - 23.69365625
-    availableMargin: new BigNumber('22093.62634375'),
-    withdrawableBalance: new BigNumber('22093.62634375'),
+    availableMargin: new BigNumber('22092.62634375'),
+    withdrawableBalance: new BigNumber('22092.62634375'),
     isMMSafe: true,
     isIMSafe: true,
     isMarginSafe: true,
@@ -191,8 +191,8 @@ describe('computeAccount', function() {
     maintenanceMargin: new BigNumber('800.975'),
     availableCashBalance: new BigNumber('-1323.92365625'),
     marginBalance: new BigNumber('14695.57634375'), // 1000 + (6965 - 2300.23/2.3) * 2.3 - 23.69365625
-    availableMargin: new BigNumber('13093.62634375'),
-    withdrawableBalance: new BigNumber('13093.62634375'),
+    availableMargin: new BigNumber('13092.62634375'),
+    withdrawableBalance: new BigNumber('13092.62634375'),
     isMMSafe: true,
     isIMSafe: true,
     isMarginSafe: true,
@@ -212,7 +212,7 @@ describe('computeAccount', function() {
     maintenanceMargin: new BigNumber('800.975'),
     availableCashBalance: new BigNumber('16323.92365625'),
     marginBalance: new BigNumber('304.42365625'), // 14000 + (2300.23/2.3 - 6965) * 2.3 - (-23.69365625)
-    availableMargin: new BigNumber('-1297.52634375'), // marginBalance - positionMargin
+    availableMargin: new BigNumber('-1298.52634375'), // marginBalance - positionMargin
     withdrawableBalance: _0,
     isMMSafe: false,
     isIMSafe: false,
@@ -853,12 +853,16 @@ describe('computeAMMTrade should fail on limits', function() {
     expect(query1.tradingPrice).toApproximate(normalizeBigNumberish('6992.495778590415133499'))
 
     // cost
-    trader.cashBalance = trader.cashBalance.plus('0.0034488274369005548632499')
+    trader.cashBalance = trader.cashBalance.plus('0.07209882743690055486324990000')
+    const query2 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, trader, amount, 0)
+    expect(query2.tradeIsSafe).toBeFalsy()
+    expect(query2.trader.accountComputed.availableMargin).toApproximate(normalizeBigNumberish('-0.001'))
 
     // trade again, should success
-    const query2 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, trader, amount, 0)
-    expect(query2.tradeIsSafe).toBeTruthy()
-    expect(query2.trader.accountComputed.availableMargin).toApproximate(normalizeBigNumberish('0'))
+    trader.cashBalance = trader.cashBalance.plus('0.001')
+    const query3 = computeAMMTrade(poolStorage1, TEST_MARKET_INDEX0, trader, amount, 0)
+    expect(query3.tradeIsSafe).toBeTruthy()
+    expect(query3.trader.accountComputed.availableMargin).toApproximate(normalizeBigNumberish('0'))
   })
 
   it(`exceeds open interest limit`, function() {
@@ -1031,12 +1035,12 @@ describe('computeAMMTrade with USE_TARGET_LEVERAGE', function() {
     expect(computeAccount(res.newPool, 0, res.trader.accountStorage).accountComputed.isIMSafe).toEqual(false)
     res = computeAMMTrade(res.newPool, 0, res.trader.accountStorage, '-1', TradeFlag.MASK_USE_TARGET_LEVERAGE)
     // amm deltaCash = -515.541132467602916841
-    // newMargin = newCash + 505 * 2 = 505 * 2 * 0.01. so cash = -999.9
-    // newCash = oldCash - withdraw + 515... - 515... * 0.003(fee). so withdraw = 13.894509070200108090477
+    // newMargin = newCash + 505 * 2 = 505 * 2 * 0.01 + 0.5. so cash = -999.4
+    // newCash = oldCash - withdraw + 515... - 515... * 0.003(fee). so withdraw = 13.394509070200108090477
     expect(res.tradingPrice).toApproximate(normalizeBigNumberish('515.541132467602916841'))
     expect(res.totalFee).toApproximate(normalizeBigNumberish('1.54662339740280875052'))
-    expect(res.adjustCollateral).toApproximate(normalizeBigNumberish('-13.894509070200108090477'))
-    expect(res.trader.accountStorage.cashBalance).toBeBigNumber(normalizeBigNumberish('-999.9'))
+    expect(res.adjustCollateral).toApproximate(normalizeBigNumberish('-13.394509070200108090477'))
+    expect(res.trader.accountStorage.cashBalance).toBeBigNumber(normalizeBigNumberish('-999.4'))
     expect(res.trader.accountStorage.positionAmount).toBeBigNumber(normalizeBigNumberish('2'))
     expect(res.trader.accountComputed.isIMSafe).toEqual(true)
     expect(res.newPool.poolCashBalance).toApproximate(normalizeBigNumberish('3938.42440866486468608')) // poolCash + amm cash
@@ -1057,36 +1061,37 @@ describe('computeAMMTrade with USE_TARGET_LEVERAGE', function() {
     // close when margin < MM, but profit is large, normal fees
     res = computeAMMTrade(res2.newPool, 0, res.trader.accountStorage, '-1', TradeFlag.MASK_USE_TARGET_LEVERAGE)
     // amm deltaCash = -521.201994206724030199
-    // old lev = 501x, margin = 501 * 2 * 1% = cash + 501 * 2
-    // cash = oldCash + deltaCash - fee - withdraw. so withdraw = 11.618388224103858109
+    // old lev = 501x, margin = 501 * 2 * 1% = cash + 501 * 2 + 0.5
+    // cash = oldCash + deltaCash - fee - withdraw. so withdraw = 11.118388224103858109
     expect(res.tradingPrice).toApproximate(normalizeBigNumberish('521.201994206724030199'))
     expect(res.totalFee).toApproximate(normalizeBigNumberish('1.56360598262017209060'))
-    expect(res.adjustCollateral).toApproximate(normalizeBigNumberish('-11.618388224103858109'))
-    expect(res.trader.accountStorage.cashBalance).toBeBigNumber(normalizeBigNumberish('-991.98'))
+    expect(res.adjustCollateral).toApproximate(normalizeBigNumberish('-11.118388224103858109'))
+    expect(res.trader.accountStorage.cashBalance).toBeBigNumber(normalizeBigNumberish('-991.48'))
     expect(res.trader.accountStorage.positionAmount).toBeBigNumber(normalizeBigNumberish('2'))
     expect(res.trader.accountComputed.isIMSafe).toEqual(true)
     expect(res.newPool.poolCashBalance).toApproximate(normalizeBigNumberish('5004.80460207704307954')) // poolCash + amm cash
     expect(res.newPool.perpetuals.get(0)!.ammPositionAmount).toBeBigNumber(normalizeBigNumberish('-4'))
   })
-  it("short 1 when bankrupt (close positions will cause profit), reduced fees", async () => {
+  it("short 1 when mm unsafe (close positions will cause profit), reduced fees", async () => {
     // long 3 (open)
     let res = computeAMMTrade(poolStorage, 0, accountStorage, '3', TradeFlag.MASK_USE_TARGET_LEVERAGE)
 
     // close when MM < margin < IM, normal fees
-    res.newPool.perpetuals.get(0)!.markPrice = new BigNumber('500')
-    res.newPool.perpetuals.get(0)!.indexPrice = new BigNumber('500')
-    expect(computeAccount(res.newPool, 0, res.trader.accountStorage).accountComputed.isMarginSafe).toEqual(false)
+    res.newPool.perpetuals.get(0)!.markPrice = new BigNumber('500.5')
+    res.newPool.perpetuals.get(0)!.indexPrice = new BigNumber('500.5')
+    expect(computeAccount(res.newPool, 0, res.trader.accountStorage).accountComputed.isMMSafe).toEqual(false)
+    expect(computeAccount(res.newPool, 0, res.trader.accountStorage).accountComputed.isMarginSafe).toEqual(true)
     res = computeAMMTrade(res.newPool, 0, res.trader.accountStorage, '-1', TradeFlag.MASK_USE_TARGET_LEVERAGE)
-    // amm deltaCash = -510.202621119993762015
-    // old lev = ∞ (margin balance = 0), fee = 3 * 0.067540373331254005 (13% of normal fees)
+    // amm deltaCash = -510.736146686978872625
+    // old lev = ∞ (margin balance = 0), fee = 3 * 0.408715562326290875 (80% of normal fees)
     // withdraw = 0
-    expect(res.tradingPrice).toApproximate(normalizeBigNumberish('510.202621119993762015'))
-    expect(res.totalFee).toApproximate(normalizeBigNumberish('0.202621119993762015'))
+    expect(res.tradingPrice).toApproximate(normalizeBigNumberish('510.736146686978872625'))
+    expect(res.totalFee).toApproximate(normalizeBigNumberish('1.226146686978872625'))
     expect(res.adjustCollateral).toApproximate(normalizeBigNumberish('0'))
-    expect(res.trader.accountStorage.cashBalance).toBeBigNumber(normalizeBigNumberish('-990'))
+    expect(res.trader.accountStorage.cashBalance).toBeBigNumber(normalizeBigNumberish('-990.49'))
     expect(res.trader.accountStorage.positionAmount).toBeBigNumber(normalizeBigNumberish('2'))
     expect(res.trader.accountComputed.isIMSafe).toEqual(true)
-    expect(res.newPool.poolCashBalance).toApproximate(normalizeBigNumberish('3943.314919253337491992')) // poolCash + amm cash
+    expect(res.newPool.poolCashBalance).toApproximate(normalizeBigNumberish('3943.122568875347418252')) // poolCash + amm cash
     expect(res.newPool.perpetuals.get(0)!.ammPositionAmount).toBeBigNumber(normalizeBigNumberish('-2'))
   })
   it("short 1 when safe (close positions will cause loss), fees = 0", async () => {
@@ -1116,19 +1121,20 @@ describe('computeAMMTrade with USE_TARGET_LEVERAGE', function() {
     expect(res.newPool.poolCashBalance).toApproximate(normalizeBigNumberish('1919.907305844651708524')) // poolCash + amm cash
     expect(res.newPool.perpetuals.get(0)!.ammPositionAmount).toBeBigNumber(normalizeBigNumberish('2'))
   })
-  it("a very small amount", async () => {
+  it("a very small amount. long small amount from 0 position, margin = keeperGasReward", async () => {
     // long 1e-7 (open)
     let res = computeAMMTrade(poolStorage, 0, accountStorage, '1e-7', TradeFlag.MASK_USE_TARGET_LEVERAGE)
     // amm deltaCash = 0.000101
-    // margin = gas reward = 0.5 = cash + positionValue. so cash = 0.4999
-    // cash = deposit - 0.000101 - 0.000101 * 0.003(fee). so deposit = 0.500001303
+    // margin = 1e-7*1000*0.01 + keeperGasReward = 0.5 + 1e-6
+    // newCash = margin - mark * pos = 0.5 + 1e-6 - 1000 * 1e-7 = 0.499901
+    // deposit = newCash + deltaCash = 0.499901 + 1010 * 1e-7 + 1010 * 1e-7 * 0.003 = 0.500002303
     expect(res.tradingPrice).toBeBigNumber(normalizeBigNumberish('1010'))
     expect(res.totalFee).toBeBigNumber(normalizeBigNumberish('0.000000303'))
-    expect(res.adjustCollateral).toBeBigNumber(normalizeBigNumberish('0.500001303'))
-    expect(res.trader.accountStorage.cashBalance).toBeBigNumber(normalizeBigNumberish('0.4999'))
+    expect(res.adjustCollateral).toBeBigNumber(normalizeBigNumberish('0.500002303'))
+    expect(res.trader.accountStorage.cashBalance).toBeBigNumber(normalizeBigNumberish('0.499901'))
     expect(res.trader.accountStorage.positionAmount).toBeBigNumber(normalizeBigNumberish('1e-7'))
-    expect(res.trader.accountComputed.marginBalance).toBeBigNumber(normalizeBigNumberish('0.5'))
-    expect(res.trader.accountComputed.isMMSafe).toEqual(true)
+    expect(res.trader.accountComputed.marginBalance).toBeBigNumber(normalizeBigNumberish('0.500001'))
+    expect(res.trader.accountComputed.isIMSafe).toEqual(true)
     expect(res.newPool.poolCashBalance).toBeBigNumber(normalizeBigNumberish('1000.000101101')) // poolCash + amm cash
     expect(res.newPool.perpetuals.get(0)!.ammPositionAmount).toBeBigNumber(normalizeBigNumberish('-1e-7'))
   })
@@ -1174,13 +1180,13 @@ describe('computeAMMTrade with USE_TARGET_LEVERAGE', function() {
     // amm deltaCash = 101.729704413161927575
     // margin = initialMargin = 4 * 100 * 0.01 = 4
     // newCash = margin - mark * pos = 4 - 100 * 4 = -396
-    // deposit = newMargin - oldMargin - pnl + fee = 4 - (-1200) - (-1.729704413161927575) + 101.729704413161927575 * 0.003 = 1206.034893526401413359
+    // deposit = newMargin - oldMargin - pnl + fee = 4.5 - (-1200) - (-1.729704413161927575) + 101.729704413161927575 * 0.003 = 1206.534893526401413359
     expect(res.tradingPrice).toApproximate(normalizeBigNumberish('101.729704413161927575'))
     expect(res.totalFee).toApproximate(normalizeBigNumberish('0.305189113239485782725'))
-    expect(res.adjustCollateral).toApproximate(normalizeBigNumberish('1206.034893526401413359'))
-    expect(res.trader.accountStorage.cashBalance).toBeBigNumber(normalizeBigNumberish('-396'))
+    expect(res.adjustCollateral).toApproximate(normalizeBigNumberish('1206.534893526401413359'))
+    expect(res.trader.accountStorage.cashBalance).toBeBigNumber(normalizeBigNumberish('-395.5'))
     expect(res.trader.accountStorage.positionAmount).toBeBigNumber(normalizeBigNumberish('4'))
-    expect(res.trader.accountComputed.marginBalance).toBeBigNumber(normalizeBigNumberish('4'))
+    expect(res.trader.accountComputed.marginBalance).toBeBigNumber(normalizeBigNumberish('4.5'))
     expect(res.trader.accountComputed.isIMSafe).toEqual(true)
     expect(res.newPool.poolCashBalance).toApproximate(normalizeBigNumberish('4555.281434117575089503')) // poolCash + amm cash
     expect(res.newPool.perpetuals.get(0)!.ammPositionAmount).toBeBigNumber(normalizeBigNumberish('-4'))
