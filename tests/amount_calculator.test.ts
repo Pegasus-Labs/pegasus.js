@@ -6,8 +6,6 @@ import {
   computeAMMAmountWithPrice,
   computeAMMInverseVWAP,
   computeLimitOrderMaxTradeAmount,
-  computeAMMMinTradeAmount,
-  computeLimitOrderMinTradeAmount
 } from '../src/amount_calculator'
 import { computeAccount } from '../src/computation'
 import { computeAMMPoolMargin, initAMMTradingContext } from '../src/amm'
@@ -203,20 +201,6 @@ describe('computeAMMMaxTradeAmount', function() {
   })
 })
 
-describe('computeAMMMinTradeAmount', function() {
-  it(`new user`, function() {
-    const amount = computeAMMMinTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage0, true)
-    const res = computeAMMTrade(poolStorage4, TEST_MARKET_INDEX0, accountStorage0, amount, TradeFlag.MASK_USE_TARGET_LEVERAGE)
-    expect(amount).toApproximate(new BigNumber('0.00015129084931686523'))
-    expect(res.trader.accountComputed.liquidationPrice.lte(6965))
-  })
-  it(`new user`, function() {
-    const amount = computeAMMMinTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage0, false)
-    const res = computeAMMTrade(poolStorage4, TEST_MARKET_INDEX0, accountStorage0, amount, TradeFlag.MASK_USE_TARGET_LEVERAGE)
-    expect(amount).toApproximate(new BigNumber('-0.00015129084931686523'))
-    expect(res.trader.accountComputed.liquidationPrice.gte(6965))
-  })
-})
 
 describe('computeAMMTradeAmountByMargin', function() {
   it(`safe trader + safe amm, trader buy`, function() {
@@ -320,26 +304,6 @@ describe('computeLimitOrderMaxTradeAmount', function() {
     })
     const amount3 = computeLimitOrderMaxTradeAmount(context, walletBalance, orders, TEST_MARKET_INDEX0, limitPrice, isBuy)
     expect(amount2.plus(amount3)).toApproximate(amount1)
-  })
-})
-
-describe('computeLimitOrderMinTradeAmount', function() {
-  const feeRate = poolStorage4.vaultFeeRate
-    .plus(poolStorage4.perpetuals.get(TEST_MARKET_INDEX0)!.operatorFeeRate)
-    .plus(poolStorage4.perpetuals.get(TEST_MARKET_INDEX0)!.lpFeeRate)
-  it(`new user`, function() {
-    const limitPrice = new BigNumber('6900')
-    const amount = computeLimitOrderMinTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage0, true, limitPrice)
-    const res = computeTradeWithPrice(poolStorage4, TEST_MARKET_INDEX0, accountStorage0, limitPrice, amount, feeRate, TradeFlag.MASK_USE_TARGET_LEVERAGE)
-    expect(amount).toApproximate(new BigNumber('0.00015129084931686523'))
-    expect(res.afterTrade.accountComputed.liquidationPrice.lte(6965))
-  })
-  it(`new user`, function() {
-    const limitPrice = new BigNumber('6900')
-    const amount = computeLimitOrderMinTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage0, false, limitPrice)
-    const res = computeTradeWithPrice(poolStorage4, TEST_MARKET_INDEX0, accountStorage0, limitPrice, amount, feeRate, TradeFlag.MASK_USE_TARGET_LEVERAGE)
-    expect(amount).toApproximate(new BigNumber('-0.00015129084931686523'))
-    expect(res.afterTrade.accountComputed.liquidationPrice.gte(6965))
   })
 })
 

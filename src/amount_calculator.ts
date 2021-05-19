@@ -3,7 +3,7 @@
 
   If you don't need these tools, you can remove this file to reduce the package size.
 */
-import { computeAccount, computeAMMTrade, computeAMMPrice, computeTradeWithPrice } from './computation'
+import { computeAccount, computeAMMTrade, computeAMMPrice } from './computation'
 import { BigNumberish, InvalidArgumentError, AccountStorage, LiquidityPoolStorage, AMMTradingContext, TradeFlag, Order, OrderContext } from './types'
 import {
   initAMMTradingContext,
