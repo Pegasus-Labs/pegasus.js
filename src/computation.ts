@@ -469,7 +469,6 @@ export function computePerpetualOpenInterestLimit(
   }
   let context = initAMMTradingContext(p, perpetualIndex)
   context = computeAMMPoolMargin(context, context.openSlippageFactor, true /* allowUnsafe */)
-  console.log('???max2', context.poolMargin.toFixed(), perpetual.maxOpenInterestRate.toFixed(), perpetual.indexPrice.toFixed())
   const limit = context.poolMargin.times(perpetual.maxOpenInterestRate).div(perpetual.indexPrice)
   return limit
 }
