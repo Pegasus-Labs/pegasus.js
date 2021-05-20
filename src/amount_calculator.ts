@@ -3,7 +3,7 @@
 
   If you don't need these tools, you can remove this file to reduce the package size.
 */
-import { computeAccount, computeAMMTrade, computeAMMPrice } from './computation'
+import { computeAccount, computeAMMTrade, computeAMMPrice, computeAMMOpenInterest, computePerpetualOpenInterestLimit } from './computation'
 import { BigNumberish, InvalidArgumentError, AccountStorage, LiquidityPoolStorage, AMMTradingContext, TradeFlag, Order, OrderContext } from './types'
 import {
   initAMMTradingContext,
@@ -174,6 +174,7 @@ export function computeLimitOrderMaxTradeAmount(
   }
   const trader = currentMarketContext.account
   const currentPerpetualOrders: Order[] = symbol2Orders.get(symbol) || [] // probably the 1st order
+  const openInterestLimit = computePerpetualOpenInterestLimit(currentMarketContext.pool, currentMarketContext.perpetualIndex)
 
   // guess = available * lev / index - position
   if (trader.targetLeverage.isZero()) {
@@ -208,6 +209,14 @@ export function computeLimitOrderMaxTradeAmount(
       currentMarketContext!.pool, currentMarketContext!.perpetualIndex, newOrderState.remainMargin,
       newOrderState.remainPosition, trader.targetLeverage, newOrderState.remainWalletBalance, postOrders)
     if (postState.remainWalletBalance.lt(_0)) {
+      // a is too large
+      return false
+    }
+    const newOpenInterest = computeAMMOpenInterest(
+      currentMarketContext!.pool, currentMarketContext!.perpetualIndex,
+      trader, a
+    )
+    if (newOpenInterest.gt(openInterestLimit)) {
       // a is too large
       return false
     }

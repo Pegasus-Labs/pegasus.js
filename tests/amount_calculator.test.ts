@@ -201,7 +201,6 @@ describe('computeAMMMaxTradeAmount', function() {
   })
 })
 
-
 describe('computeAMMTradeAmountByMargin', function() {
   it(`safe trader + safe amm, trader buy`, function() {
     const amount = computeAMMTradeAmountByMargin(poolStorage4, TEST_MARKET_INDEX0, '-100') // 0.0147487
@@ -304,6 +303,22 @@ describe('computeLimitOrderMaxTradeAmount', function() {
     })
     const amount3 = computeLimitOrderMaxTradeAmount(context, walletBalance, orders, TEST_MARKET_INDEX0, limitPrice, isBuy)
     expect(amount2.plus(amount3)).toApproximate(amount1)
+  })
+
+  it('the max amount should not exceeds max open interest', function() {
+    const walletBalance = new BigNumber('10000000000')
+    const limitPrice = new BigNumber('6965')
+    const isBuy = true
+    const orders: Order[] = []
+    const context = new Map([
+      [TEST_MARKET_INDEX0, { pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage1}]
+    ])
+    const amount = computeLimitOrderMaxTradeAmount(context, walletBalance, orders, TEST_MARKET_INDEX0, limitPrice, isBuy)
+    // poolMargin = 100000, maxOpenInterestRate = 100
+    // maxOpenInterest = 100000 * 100 / 7000 = 1428.5
+    // current oi = 10
+    expect(amount.gt('1418')).toBeTruthy()
+    expect(amount.lt('1419')).toBeTruthy()
   })
 })
 
