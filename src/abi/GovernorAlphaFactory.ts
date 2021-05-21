@@ -21,6 +21,11 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "dataExchange_",
+        type: "address",
+      },
+      {
+        internalType: "address",
         name: "timelock_",
         type: "address",
       },
@@ -33,6 +38,11 @@ const _abi = [
         internalType: "address",
         name: "guardian_",
         type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "initialProposalId_",
+        type: "uint256",
       },
     ],
     stateMutability: "nonpayable",
@@ -196,19 +206,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "DATA_EXCHANGE_ADDRESS",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "DOMAIN_TYPEHASH",
     outputs: [
       {
@@ -222,7 +219,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "MCB_TOTAL_SUPPLY",
+    name: "MCB_TOTAL_SUPPLY_KEY",
     outputs: [
       {
         internalType: "bytes32",
@@ -361,6 +358,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "dataExchange",
+    outputs: [
+      {
+        internalType: "contract IDataExchange",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "uint256",
@@ -456,6 +466,19 @@ const _abi = [
         internalType: "address",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "initialProposalId",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
