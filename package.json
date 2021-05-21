@@ -1,8 +1,8 @@
 {
-  "name": "@mcarloai/mai3.js",
+  "name": "@mcdex/mai3.js",
   "version": "0.5.31",
   "description": "Mai Protocol v3 JavaScript API",
-  "homepage": "http://github.com/mcarloai/mai3.js",
+  "homepage": "http://github.com/mcdexio/mai3.js",
   "author": "Zhu Tianchi <zhutianchi@mcarlo.com>",
   "contributors": [],
   "keywords": [
@@ -18,10 +18,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mcarloai/mai3.js"
+    "url": "https://github.com/mcdexio/mai3.js"
   },
   "bugs": {
-    "url": "https://github.com/mcarloai/mai3.js/issues"
+    "url": "https://github.com/mcdexio/mai3.js/issues"
   },
   "license": "MIT",
   "devDependencies": {
