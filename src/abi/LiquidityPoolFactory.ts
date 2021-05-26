@@ -308,6 +308,25 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: true,
+        internalType: "address",
+        name: "previousKeeper",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newKeeper",
+        type: "address",
+      },
+    ],
+    name: "SetKeeper",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: false,
         internalType: "int256[2]",
         name: "value",
@@ -592,6 +611,43 @@ const _abi = [
       },
     ],
     name: "UpdatePoolMargin",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "oracle",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "int256",
+        name: "markPrice",
+        type: "int256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "markPriceUpdateTime",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "int256",
+        name: "indexPrice",
+        type: "int256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "indexPriceUpdatetime",
+        type: "uint256",
+      },
+    ],
+    name: "UpdatePrice",
     type: "event",
   },
   {
@@ -1062,6 +1118,11 @@ const _abi = [
       },
       {
         internalType: "address",
+        name: "liquidator",
+        type: "address",
+      },
+      {
+        internalType: "address",
         name: "trader",
         type: "address",
       },
@@ -1249,6 +1310,19 @@ const _abi = [
       },
     ],
     name: "setEmergencyState",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newKeeper",
+        type: "address",
+      },
+    ],
+    name: "setKeeper",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

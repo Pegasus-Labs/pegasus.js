@@ -711,7 +711,7 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "distributor",
+        name: "poolCreator",
         type: "address",
       },
     ],
@@ -874,6 +874,19 @@ const _abi = [
         internalType: "uint256",
         name: "",
         type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "poolCreator",
+    outputs: [
+      {
+        internalType: "contract IPoolCreator",
+        name: "",
+        type: "address",
       },
     ],
     stateMutability: "view",

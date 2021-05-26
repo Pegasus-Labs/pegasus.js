@@ -23,6 +23,8 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface OracleRouterInterface extends ethers.utils.Interface {
   functions: {
     "collateral()": FunctionFragment;
+    "dumpPath()": FunctionFragment;
+    "getPath()": FunctionFragment;
     "isMarketClosed()": FunctionFragment;
     "isTerminated()": FunctionFragment;
     "priceTWAPLong()": FunctionFragment;
@@ -34,6 +36,8 @@ interface OracleRouterInterface extends ethers.utils.Interface {
     functionFragment: "collateral",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "dumpPath", values?: undefined): string;
+  encodeFunctionData(functionFragment: "getPath", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "isMarketClosed",
     values?: undefined
@@ -56,6 +60,8 @@ interface OracleRouterInterface extends ethers.utils.Interface {
   ): string;
 
   decodeFunctionResult(functionFragment: "collateral", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "dumpPath", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getPath", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isMarketClosed",
     data: BytesLike
@@ -106,6 +112,48 @@ export class OracleRouter extends Contract {
       0: string;
     }>;
 
+    dumpPath(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: {
+        oracle: string;
+        isInverse: boolean;
+        underlyingAsset: string;
+        collateral: string;
+        0: string;
+        1: boolean;
+        2: string;
+        3: string;
+      }[];
+    }>;
+
+    "dumpPath()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: {
+        oracle: string;
+        isInverse: boolean;
+        underlyingAsset: string;
+        collateral: string;
+        0: string;
+        1: boolean;
+        2: string;
+        3: string;
+      }[];
+    }>;
+
+    getPath(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: { oracle: string; isInverse: boolean; 0: string; 1: boolean }[];
+    }>;
+
+    "getPath()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: { oracle: string; isInverse: boolean; 0: string; 1: boolean }[];
+    }>;
+
     isMarketClosed(overrides?: Overrides): Promise<ContractTransaction>;
 
     "isMarketClosed()"(overrides?: Overrides): Promise<ContractTransaction>;
@@ -139,6 +187,44 @@ export class OracleRouter extends Contract {
 
   "collateral()"(overrides?: CallOverrides): Promise<string>;
 
+  dumpPath(
+    overrides?: CallOverrides
+  ): Promise<
+    {
+      oracle: string;
+      isInverse: boolean;
+      underlyingAsset: string;
+      collateral: string;
+      0: string;
+      1: boolean;
+      2: string;
+      3: string;
+    }[]
+  >;
+
+  "dumpPath()"(
+    overrides?: CallOverrides
+  ): Promise<
+    {
+      oracle: string;
+      isInverse: boolean;
+      underlyingAsset: string;
+      collateral: string;
+      0: string;
+      1: boolean;
+      2: string;
+      3: string;
+    }[]
+  >;
+
+  getPath(
+    overrides?: CallOverrides
+  ): Promise<{ oracle: string; isInverse: boolean; 0: string; 1: boolean }[]>;
+
+  "getPath()"(
+    overrides?: CallOverrides
+  ): Promise<{ oracle: string; isInverse: boolean; 0: string; 1: boolean }[]>;
+
   isMarketClosed(overrides?: Overrides): Promise<ContractTransaction>;
 
   "isMarketClosed()"(overrides?: Overrides): Promise<ContractTransaction>;
@@ -163,6 +249,44 @@ export class OracleRouter extends Contract {
     collateral(overrides?: CallOverrides): Promise<string>;
 
     "collateral()"(overrides?: CallOverrides): Promise<string>;
+
+    dumpPath(
+      overrides?: CallOverrides
+    ): Promise<
+      {
+        oracle: string;
+        isInverse: boolean;
+        underlyingAsset: string;
+        collateral: string;
+        0: string;
+        1: boolean;
+        2: string;
+        3: string;
+      }[]
+    >;
+
+    "dumpPath()"(
+      overrides?: CallOverrides
+    ): Promise<
+      {
+        oracle: string;
+        isInverse: boolean;
+        underlyingAsset: string;
+        collateral: string;
+        0: string;
+        1: boolean;
+        2: string;
+        3: string;
+      }[]
+    >;
+
+    getPath(
+      overrides?: CallOverrides
+    ): Promise<{ oracle: string; isInverse: boolean; 0: string; 1: boolean }[]>;
+
+    "getPath()"(
+      overrides?: CallOverrides
+    ): Promise<{ oracle: string; isInverse: boolean; 0: string; 1: boolean }[]>;
 
     isMarketClosed(overrides?: CallOverrides): Promise<boolean>;
 
@@ -220,6 +344,14 @@ export class OracleRouter extends Contract {
 
     "collateral()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    dumpPath(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "dumpPath()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getPath(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getPath()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     isMarketClosed(overrides?: Overrides): Promise<BigNumber>;
 
     "isMarketClosed()"(overrides?: Overrides): Promise<BigNumber>;
@@ -245,6 +377,14 @@ export class OracleRouter extends Contract {
     collateral(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "collateral()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    dumpPath(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "dumpPath()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getPath(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getPath()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     isMarketClosed(overrides?: Overrides): Promise<PopulatedTransaction>;
 

@@ -648,11 +648,6 @@ const _abi = [
         name: "globalVaultFeeRate",
         type: "int256",
       },
-      {
-        internalType: "address",
-        name: "distributor",
-        type: "address",
-      },
     ],
     name: "initialize",
     outputs: [],
@@ -949,32 +944,6 @@ const _abi = [
       },
     ],
     name: "revokePrivilege",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "rewardDistributor",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "newRewardDistributor",
-        type: "address",
-      },
-    ],
-    name: "setRewardDistributor",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

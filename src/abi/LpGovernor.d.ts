@@ -57,6 +57,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     "name()": FunctionFragment;
     "notifyRewardAmount(uint256)": FunctionFragment;
     "periodFinish()": FunctionFragment;
+    "poolCreator()": FunctionFragment;
     "proposalCount()": FunctionFragment;
     "proposalMaxOperations()": FunctionFragment;
     "proposalThresholdRate()": FunctionFragment;
@@ -192,6 +193,10 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "periodFinish",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "poolCreator",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -361,6 +366,10 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "periodFinish",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "poolCreator",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -779,7 +788,7 @@ export class LpGovernor extends Contract {
       minter: string,
       target: string,
       rewardToken: string,
-      distributor: string,
+      poolCreator: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -789,7 +798,7 @@ export class LpGovernor extends Contract {
       minter: string,
       target: string,
       rewardToken: string,
-      distributor: string,
+      poolCreator: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -909,6 +918,18 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
+    }>;
+
+    poolCreator(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "poolCreator()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
     }>;
 
     proposalCount(
@@ -1452,7 +1473,7 @@ export class LpGovernor extends Contract {
     minter: string,
     target: string,
     rewardToken: string,
-    distributor: string,
+    poolCreator: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1462,7 +1483,7 @@ export class LpGovernor extends Contract {
     minter: string,
     target: string,
     rewardToken: string,
-    distributor: string,
+    poolCreator: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1543,6 +1564,10 @@ export class LpGovernor extends Contract {
   periodFinish(overrides?: CallOverrides): Promise<BigNumber>;
 
   "periodFinish()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  poolCreator(overrides?: CallOverrides): Promise<string>;
+
+  "poolCreator()"(overrides?: CallOverrides): Promise<string>;
 
   proposalCount(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1952,7 +1977,7 @@ export class LpGovernor extends Contract {
       minter: string,
       target: string,
       rewardToken: string,
-      distributor: string,
+      poolCreator: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1962,7 +1987,7 @@ export class LpGovernor extends Contract {
       minter: string,
       target: string,
       rewardToken: string,
-      distributor: string,
+      poolCreator: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2042,6 +2067,10 @@ export class LpGovernor extends Contract {
     periodFinish(overrides?: CallOverrides): Promise<BigNumber>;
 
     "periodFinish()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    poolCreator(overrides?: CallOverrides): Promise<string>;
+
+    "poolCreator()"(overrides?: CallOverrides): Promise<string>;
 
     proposalCount(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2482,7 +2511,7 @@ export class LpGovernor extends Contract {
       minter: string,
       target: string,
       rewardToken: string,
-      distributor: string,
+      poolCreator: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -2492,7 +2521,7 @@ export class LpGovernor extends Contract {
       minter: string,
       target: string,
       rewardToken: string,
-      distributor: string,
+      poolCreator: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -2572,6 +2601,10 @@ export class LpGovernor extends Contract {
     periodFinish(overrides?: CallOverrides): Promise<BigNumber>;
 
     "periodFinish()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    poolCreator(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "poolCreator()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     proposalCount(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2946,7 +2979,7 @@ export class LpGovernor extends Contract {
       minter: string,
       target: string,
       rewardToken: string,
-      distributor: string,
+      poolCreator: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -2956,7 +2989,7 @@ export class LpGovernor extends Contract {
       minter: string,
       target: string,
       rewardToken: string,
-      distributor: string,
+      poolCreator: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -3043,6 +3076,10 @@ export class LpGovernor extends Contract {
     periodFinish(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "periodFinish()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    poolCreator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "poolCreator()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     proposalCount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

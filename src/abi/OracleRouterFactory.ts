@@ -55,6 +55,66 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "dumpPath",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "oracle",
+            type: "address",
+          },
+          {
+            internalType: "bool",
+            name: "isInverse",
+            type: "bool",
+          },
+          {
+            internalType: "string",
+            name: "underlyingAsset",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "collateral",
+            type: "string",
+          },
+        ],
+        internalType: "struct OracleRouter.RouteDump[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getPath",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "oracle",
+            type: "address",
+          },
+          {
+            internalType: "bool",
+            name: "isInverse",
+            type: "bool",
+          },
+        ],
+        internalType: "struct OracleRouter.Route[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "isMarketClosed",
     outputs: [
       {

@@ -39,7 +39,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "getVaultFeeRate()": FunctionFragment;
     "getVersion(bytes32)": FunctionFragment;
     "grantPrivilege(address,uint256)": FunctionFragment;
-    "initialize(address,address,int256,address)": FunctionFragment;
+    "initialize(address,address,int256)": FunctionFragment;
     "isActiveLiquidityPoolOf(address,address,uint256)": FunctionFragment;
     "isGranted(address,address,uint256)": FunctionFragment;
     "isLiquidityPool(address)": FunctionFragment;
@@ -53,8 +53,6 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "registerOperatorOfLiquidityPool(address,address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "revokePrivilege(address,uint256)": FunctionFragment;
-    "rewardDistributor()": FunctionFragment;
-    "setRewardDistributor(address)": FunctionFragment;
     "setVault(address)": FunctionFragment;
     "setVaultFeeRate(int256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
@@ -129,7 +127,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [string, string, BigNumberish, string]
+    values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "isActiveLiquidityPoolOf",
@@ -179,14 +177,6 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "revokePrivilege",
     values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "rewardDistributor",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setRewardDistributor",
-    values: [string]
   ): string;
   encodeFunctionData(functionFragment: "setVault", values: [string]): string;
   encodeFunctionData(
@@ -310,14 +300,6 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "revokePrivilege",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "rewardDistributor",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setRewardDistributor",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setVault", data: BytesLike): Result;
@@ -621,15 +603,13 @@ export class PoolCreator extends Contract {
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
-      distributor: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "initialize(address,address,int256,address)"(
+    "initialize(address,address,int256)"(
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
-      distributor: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -850,28 +830,6 @@ export class PoolCreator extends Contract {
     "revokePrivilege(address,uint256)"(
       grantee: string,
       privilege: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    rewardDistributor(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "rewardDistributor()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    setRewardDistributor(
-      newRewardDistributor: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setRewardDistributor(address)"(
-      newRewardDistributor: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1106,15 +1064,13 @@ export class PoolCreator extends Contract {
     symbolService: string,
     globalVault: string,
     globalVaultFeeRate: BigNumberish,
-    distributor: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "initialize(address,address,int256,address)"(
+  "initialize(address,address,int256)"(
     symbolService: string,
     globalVault: string,
     globalVaultFeeRate: BigNumberish,
-    distributor: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1273,20 +1229,6 @@ export class PoolCreator extends Contract {
   "revokePrivilege(address,uint256)"(
     grantee: string,
     privilege: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  rewardDistributor(overrides?: CallOverrides): Promise<string>;
-
-  "rewardDistributor()"(overrides?: CallOverrides): Promise<string>;
-
-  setRewardDistributor(
-    newRewardDistributor: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setRewardDistributor(address)"(
-    newRewardDistributor: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1533,15 +1475,13 @@ export class PoolCreator extends Contract {
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
-      distributor: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initialize(address,address,int256,address)"(
+    "initialize(address,address,int256)"(
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
-      distributor: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1700,20 +1640,6 @@ export class PoolCreator extends Contract {
     "revokePrivilege(address,uint256)"(
       grantee: string,
       privilege: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    rewardDistributor(overrides?: CallOverrides): Promise<string>;
-
-    "rewardDistributor()"(overrides?: CallOverrides): Promise<string>;
-
-    setRewardDistributor(
-      newRewardDistributor: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "setRewardDistributor(address)"(
-      newRewardDistributor: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1978,15 +1904,13 @@ export class PoolCreator extends Contract {
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
-      distributor: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "initialize(address,address,int256,address)"(
+    "initialize(address,address,int256)"(
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
-      distributor: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -2131,20 +2055,6 @@ export class PoolCreator extends Contract {
     "revokePrivilege(address,uint256)"(
       grantee: string,
       privilege: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    rewardDistributor(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "rewardDistributor()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    setRewardDistributor(
-      newRewardDistributor: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "setRewardDistributor(address)"(
-      newRewardDistributor: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -2369,15 +2279,13 @@ export class PoolCreator extends Contract {
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
-      distributor: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "initialize(address,address,int256,address)"(
+    "initialize(address,address,int256)"(
       symbolService: string,
       globalVault: string,
       globalVaultFeeRate: BigNumberish,
-      distributor: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -2522,22 +2430,6 @@ export class PoolCreator extends Contract {
     "revokePrivilege(address,uint256)"(
       grantee: string,
       privilege: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    rewardDistributor(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "rewardDistributor()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    setRewardDistributor(
-      newRewardDistributor: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setRewardDistributor(address)"(
-      newRewardDistributor: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
