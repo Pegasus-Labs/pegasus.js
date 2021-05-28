@@ -38,7 +38,7 @@ export const CHAIN_ID_TO_BROKER_ADDRESS: { [chainID: number]: string } = {
 }
 
 export const CHAIN_ID_TO_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: number]: string } = {
-  42: '0x380bd9EE6c4a00a4c98a64CBcC5bd6affBEa06a7',
+  42: '0x6434a5968C51F969D1c91C53eDf2A53b4a2F7cc3',
   1337: '0xc7b1229fd865f8CC0964FeEDCE7ACa288a8E0A36',
   // 56: '',
   97: '0x8d44fd514E16c3148cEfA6b759a715d58a11e676',
