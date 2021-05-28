@@ -176,7 +176,7 @@ describe('computeAccount', function() {
     isIMSafe: true,
     isMarginSafe: true,
     leverage: new BigNumber('0.67605445706853804198'),
-    marginRatio: new BigNumber('0.0338027228534269020991303356974'),
+    marginRatio: new BigNumber('0.0338041494551252415236591794781'), // 800.975 / (23695.57634375 - 1)
     entryPrice: new BigNumber('1000.1'),
     fundingPNL: new BigNumber('-23.69365625'), // 9.9059375 * 2.3 -(-0.91)
     pnl1: new BigNumber('13719.27'),
@@ -197,7 +197,7 @@ describe('computeAccount', function() {
     isIMSafe: true,
     isMarginSafe: true,
     leverage: new BigNumber('1.0900899444350858789365744572076'),
-    marginRatio: new BigNumber('0.054504497221754293946828722860'),
+    marginRatio: new BigNumber('0.054508206379197607140949323431'), // 800.975 / (14695.57634375 - 1)
     entryPrice: new BigNumber('1000.1'),
     fundingPNL: new BigNumber('-23.69365625'), // 9.9059375 * 2.3 -(-0.91)
     pnl1: new BigNumber('13719.27'),
@@ -218,7 +218,7 @@ describe('computeAccount', function() {
     isIMSafe: false,
     isMarginSafe: true,
     leverage: new BigNumber('52.622388802939575523397504968355'),
-    marginRatio: new BigNumber('2.63111944014699087630447576296'),
+    marginRatio: new BigNumber('2.63979087820381506591907334186'), // 800.975 / (304.42365625 - 1)
     entryPrice: new BigNumber('1000.1'),
     fundingPNL: new BigNumber('23.69365625'), // 9.9059375 * (-2.3) -(-0.91)
     pnl1: new BigNumber('-13719.27'),

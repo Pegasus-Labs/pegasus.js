@@ -46,8 +46,9 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
   }
   let marginRatio = _0
   if (maintenanceMargin.gt(_0)) {
-    marginRatio = marginBalance.gt(_0)
-      ? BigNumber.maximum(reservedCash, maintenanceMargin).div(marginBalance)
+    const marginWithoutReserved = marginBalance.minus(reservedCash)
+    marginRatio = marginWithoutReserved.gt(_0)
+      ? maintenanceMargin.div(marginWithoutReserved)
       : new BigNumber('Infinity')
   }
   let fundingPNL: BigNumber | null = null
