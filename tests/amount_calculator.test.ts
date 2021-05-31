@@ -610,3 +610,55 @@ describe('computeAMMAmountWithPrice - amm holds long, trader sells', function() 
     expect(trade.tradingPrice).toApproximate(limitPrice)
   })
 })
+
+describe('computeAMMAmountWithPrice - online cases', function() {
+  it(`slow20210531`, function() {
+    const limitPrice = new BigNumber('2399')
+    const perp: PerpetualStorage = {
+      ...perpetual1,
+      initialMarginRate:     new BigNumber('0.04'),
+      maintenanceMarginRate: new BigNumber('0.03'),
+      operatorFeeRate:       new BigNumber('0'),
+      lpFeeRate:             new BigNumber('0.00055'),
+      referrerRebateRate:    new BigNumber('0.2'),
+      liquidationPenaltyRate:new BigNumber('0.01'),
+      keeperGasReward:       new BigNumber('30'),
+      insuranceFundRate:     new BigNumber('0.5'),
+      maxOpenInterestRate:   new BigNumber('3'),
+    }
+    perp.halfSpread.value            = new BigNumber('0.0008')
+    perp.openSlippageFactor.value    = new BigNumber('0.015')
+    perp.closeSlippageFactor.value   = new BigNumber('0.011')
+    perp.fundingRateFactor.value     = new BigNumber('0.005')
+    perp.fundingRateLimit.value      = new BigNumber('0.01')
+    perp.ammMaxLeverage.value        = new BigNumber('3')
+    perp.maxClosePriceDiscount.value = new BigNumber('0.05')
+    const pool: LiquidityPoolStorage = {
+      ...defaultPool,
+      vaultFeeRate: new BigNumber('0.00015'),
+      poolCashBalance: new BigNumber('61439594.83745874751912811'),
+      perpetuals: new Map([
+        [TEST_MARKET_INDEX0, {
+          ...perp,
+          markPrice:               new BigNumber('2483.26'),
+          indexPrice:              new BigNumber('2483.26'),
+          unitAccumulativeFunding: new BigNumber('5.251555799327968135'),
+          openInterest:            new BigNumber('29371.273105471586573539'),
+          ammCashBalance:          new BigNumber('8298681.979842171583354906'),
+          ammPositionAmount:       new BigNumber('-3229.051128971586573539'),
+        }],
+        [1, {
+          ...perp,
+          markPrice:               new BigNumber('36074.44'),
+          indexPrice:              new BigNumber('36074.44'),
+          unitAccumulativeFunding: new BigNumber('19.621235681904859106'),
+          openInterest:            new BigNumber('1275.166235484256783314'),
+          ammCashBalance:          new BigNumber('3914040.067954807914861364'),
+          ammPositionAmount:       new BigNumber('-104.380535484256783314'),
+        }],
+      ])
+    }
+    const amount = computeAMMAmountWithPrice(pool, TEST_MARKET_INDEX0, false, limitPrice)
+    expect(amount).toApproximate(normalizeBigNumberish('-82085.982451575864585182'))
+  })
+})
