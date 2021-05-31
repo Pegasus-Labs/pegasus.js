@@ -286,11 +286,15 @@ export function adjustMarginLeverage(
   }
   if (!normalizedClose.isZero() && normalizedOpen.isZero()) {
     // close only
-    // when close, keep the effective leverage
-    // -withdraw == (availableCash2 * close - (deltaCash - fee) * position2) / position1
+    // when close, keep the margin ratio
+    // -withdraw == (availableCash2 * close - (deltaCash - fee) * position2 + reservedValue) / position1
+    // reservedValue = 0 if position2 == 0 else keeperGasReward * (-deltaPos)
     let adjustCollateral = afterTrade.accountComputed.availableCashBalance.times(normalizedClose)
       .minus((deltaCash.minus(normalizedTotalFee)).times(position2))
-      .div(position2.minus(normalizedClose))
+    if (!position2.isZero()) {
+      adjustCollateral = adjustCollateral.minus(perpetual.keeperGasReward.times(normalizedClose))
+    }
+    adjustCollateral = adjustCollateral.div(position2.minus(normalizedClose))
     // withdraw only when IM is satisfied
     const limit = afterTrade.accountComputed.availableMargin.negated()
     adjustCollateral = BigNumber.maximum(adjustCollateral, limit)
