@@ -37,6 +37,8 @@ import { Timelock } from './abi/Timelock'
 import { TimelockFactory } from './abi/TimelockFactory'
 import { RemarginHelper } from './abi/RemarginHelper'
 import { RemarginHelperFactory } from './abi/RemarginHelperFactory'
+import { InverseStateService } from './abi/InverseStateService'
+import { InverseStateServiceFactory } from './abi/InverseStateServiceFactory'
 
 export function getLiquidityPoolContract(contractAddress: string, signerOrProvider: SignerOrProvider): LiquidityPool {
   getAddress(contractAddress)
@@ -130,6 +132,11 @@ export async function getReaderContract(signerOrProvider: SignerOrProvider, cont
     }
   }
   return ReaderFactory.connect(contractAddress, signerOrProvider)
+}
+
+export async function getInverseStateService(contractAddress: string, signerOrProvider: SignerOrProvider): InverseStateService {
+  getAddress(contractAddress)
+  return InverseStateServiceFactory.connect(contractAddress, signerOrProvider)
 }
 
 export async function getLiquidityPool(reader: Reader, liquidityPoolAddress: string): Promise<LiquidityPoolStorage> {
