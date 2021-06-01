@@ -134,7 +134,7 @@ export async function getReaderContract(signerOrProvider: SignerOrProvider, cont
   return ReaderFactory.connect(contractAddress, signerOrProvider)
 }
 
-export async function getInverseStateService(contractAddress: string, signerOrProvider: SignerOrProvider): InverseStateService {
+export function getInverseStateService(contractAddress: string, signerOrProvider: SignerOrProvider): InverseStateService {
   getAddress(contractAddress)
   return InverseStateServiceFactory.connect(contractAddress, signerOrProvider)
 }
