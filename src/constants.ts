@@ -53,5 +53,13 @@ export const CHAIN_ID_SYMBOL_SERVICE_ADDRESS: { [chainID: number]: string } = {
   144545313136048: '0x465fB17aCc62Efd26D5B3bE9B3FFC984Cebd03d1'
 }
 
+export const CHAIN_ID_INVERSE_SERVICE_ADDRESS: { [chainID: number]: string } = {
+  42: '0x0A701c621210859eAbE2F47BE37456BEc2427462',
+  1337: '0xaEE38A00A7667B672b8a2bB0687Ac301F02f15c5',
+  // 56: '',
+  97: '0x63372427A3Bcc8A7d7F04f3A4581A37Cd41f89c4',
+  144545313136048: '0x007b29b7E5861f33e85990b45527c09084B760A6'
+}
+
 // leave 1% when calculating withdrawal penalty if position != 0
 export const REMOVE_LIQUIDITY_MAX_SHARE_RELAX = new BigNumber('0.99')
