@@ -11,12 +11,12 @@ npm install @mcdex/mai3.js
 
 1. Goto mcdex.io/trade to open some positions.
 
-2. Connect to Arbitrum Kovan5 Testnet:
+2. Connect to Arbitrum Testnet:
 
 ```js
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-const provider = new JsonRpcProvider('https://kovan5.arbitrum.io/rpc')
+const provider = new JsonRpcProvider('https://rinkeby.arbitrum.io/rpc')
 const chainId = (await provider.getNetwork()).chainId
 ```
 
