@@ -23,8 +23,6 @@ import { IOracle } from './abi/IOracle'
 import { IOracleFactory } from './abi/IOracleFactory'
 import { OracleRouterCreatorFactory } from './abi/OracleRouterCreatorFactory'
 import { OracleRouterCreator } from './abi/OracleRouterCreator'
-import { Minter } from './abi/Minter'
-import { MinterFactory } from './abi/MinterFactory'
 import { ValueCapture } from './abi/ValueCapture'
 import { ValueCaptureFactory } from './abi/ValueCaptureFactory'
 import { RewardDistribution } from './abi/RewardDistribution'
@@ -39,6 +37,8 @@ import { RemarginHelper } from './abi/RemarginHelper'
 import { RemarginHelperFactory } from './abi/RemarginHelperFactory'
 import { InverseStateService } from './abi/InverseStateService'
 import { InverseStateServiceFactory } from './abi/InverseStateServiceFactory'
+import { McbMinter } from './abi/McbMinter'
+import { McbMinterFactory } from './abi/McbMinterFactory'
 
 export function getLiquidityPoolContract(contractAddress: string, signerOrProvider: SignerOrProvider): LiquidityPool {
   getAddress(contractAddress)
@@ -80,9 +80,9 @@ export function getShareTokenContract(contractAddress: string, signerOrProvider:
   return ShareTokenFactory.connect(contractAddress, signerOrProvider)
 }
 
-export function getMinterContract(contractAddress: string, signerOrProvider: SignerOrProvider): Minter {
+export function getMinterContract(contractAddress: string, signerOrProvider: SignerOrProvider): McbMinter {
   getAddress(contractAddress)
-  return MinterFactory.connect(contractAddress, signerOrProvider)
+  return McbMinterFactory.connect(contractAddress, signerOrProvider)
 }
 
 export function getValueCaptureContract(contractAddress: string, signerOrProvider: SignerOrProvider): ValueCapture {

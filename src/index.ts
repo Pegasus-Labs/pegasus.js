@@ -52,3 +52,5 @@ export type { RemarginHelper, RemarginHelperInterface } from './abi/RemarginHelp
 export { RemarginHelperFactory } from './abi/RemarginHelperFactory'
 export type { InverseStateService, InverseStateServiceInterface } from './abi/InverseStateService'
 export { InverseStateServiceFactory } from './abi/InverseStateServiceFactory'
+export type { McbMinter, McbMinterInterface } from './abi/McbMinter'
+export { McbMinterFactory } from './abi/McbMinterFactory'
