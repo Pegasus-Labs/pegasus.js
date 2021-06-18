@@ -31,6 +31,7 @@ interface TimelockInterface extends ethers.utils.Interface {
     "cancelTransaction(address,uint256,string,bytes,uint256)": FunctionFragment;
     "delay()": FunctionFragment;
     "executeTransaction(address,uint256,string,bytes,uint256)": FunctionFragment;
+    "initialize(address,uint256)": FunctionFragment;
     "pendingAdmin()": FunctionFragment;
     "queueTransaction(address,uint256,string,bytes,uint256)": FunctionFragment;
     "queuedTransactions(bytes32)": FunctionFragment;
@@ -63,6 +64,10 @@ interface TimelockInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "executeTransaction",
     values: [string, BigNumberish, string, BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initialize",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "pendingAdmin",
@@ -111,6 +116,7 @@ interface TimelockInterface extends ethers.utils.Interface {
     functionFragment: "executeTransaction",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "pendingAdmin",
     data: BytesLike
@@ -260,6 +266,18 @@ export class Timelock extends Contract {
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
+    initialize(
+      admin_: string,
+      delay_: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "initialize(address,uint256)"(
+      admin_: string,
+      delay_: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     pendingAdmin(
       overrides?: CallOverrides
     ): Promise<{
@@ -385,6 +403,18 @@ export class Timelock extends Contract {
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
+  initialize(
+    admin_: string,
+    delay_: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "initialize(address,uint256)"(
+    admin_: string,
+    delay_: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   pendingAdmin(overrides?: CallOverrides): Promise<string>;
 
   "pendingAdmin()"(overrides?: CallOverrides): Promise<string>;
@@ -497,6 +527,18 @@ export class Timelock extends Contract {
       eta: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    initialize(
+      admin_: string,
+      delay_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "initialize(address,uint256)"(
+      admin_: string,
+      delay_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     pendingAdmin(overrides?: CallOverrides): Promise<string>;
 
@@ -644,6 +686,18 @@ export class Timelock extends Contract {
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
+    initialize(
+      admin_: string,
+      delay_: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "initialize(address,uint256)"(
+      admin_: string,
+      delay_: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     pendingAdmin(overrides?: CallOverrides): Promise<BigNumber>;
 
     "pendingAdmin()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -753,6 +807,18 @@ export class Timelock extends Contract {
       data: BytesLike,
       eta: BigNumberish,
       overrides?: PayableOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      admin_: string,
+      delay_: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "initialize(address,uint256)"(
+      admin_: string,
+      delay_: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     pendingAdmin(overrides?: CallOverrides): Promise<PopulatedTransaction>;

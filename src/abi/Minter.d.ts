@@ -13,7 +13,6 @@ import {
 import {
   Contract,
   ContractTransaction,
-  Overrides,
   CallOverrides,
 } from "@ethersproject/contracts";
 import { BytesLike } from "@ethersproject/bytes";
@@ -22,286 +21,50 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface MinterInterface extends ethers.utils.Interface {
   functions: {
-    "MINT_INITIATOR_ADDRESS()": FunctionFragment;
-    "ROLLUP_ADDRESS()": FunctionFragment;
-    "TOTAL_CAPTURED_USD_KEY()": FunctionFragment;
-    "baseMaxSupply()": FunctionFragment;
-    "baseMinReleaseRate()": FunctionFragment;
-    "baseMintedAmount()": FunctionFragment;
-    "dataExchange()": FunctionFragment;
-    "devAccount()": FunctionFragment;
-    "devCommissionRate()": FunctionFragment;
-    "executeMintRequest(uint256,address,uint256,uint256,uint256)": FunctionFragment;
-    "extraMintableAmount()": FunctionFragment;
+    "DEVELOPER_COMMISSION_RATE()": FunctionFragment;
+    "MCB_MAX_SUPPLY()": FunctionFragment;
+    "developer()": FunctionFragment;
     "genesisBlock()": FunctionFragment;
-    "getBaseMintableAmount()": FunctionFragment;
-    "getSeriesAMintableAmount()": FunctionFragment;
-    "l2SeriesAVesting()": FunctionFragment;
-    "lastValueCapturedBlock()": FunctionFragment;
     "mcbToken()": FunctionFragment;
-    "mcbTotalSupply()": FunctionFragment;
-    "mintRequests(uint256)": FunctionFragment;
-    "receiveMintRequestFromL2(uint8,address,uint256)": FunctionFragment;
-    "seriesALastUpdateBlock()": FunctionFragment;
-    "seriesAMaxReleaseRate()": FunctionFragment;
-    "seriesAMaxSupply()": FunctionFragment;
-    "seriesAMint(uint256,address,uint256,uint256,uint256)": FunctionFragment;
-    "seriesAMintableAmount()": FunctionFragment;
-    "seriesAMintedAmount()": FunctionFragment;
-    "setDevAccount(address)": FunctionFragment;
-    "totalCapturedValue()": FunctionFragment;
-    "updateMintableAmount()": FunctionFragment;
-    "updateSeriesAMintableAmount()": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "MINT_INITIATOR_ADDRESS",
+    functionFragment: "DEVELOPER_COMMISSION_RATE",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "ROLLUP_ADDRESS",
+    functionFragment: "MCB_MAX_SUPPLY",
     values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: "TOTAL_CAPTURED_USD_KEY",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "baseMaxSupply",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "baseMinReleaseRate",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "baseMintedAmount",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "dataExchange",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "devAccount",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "devCommissionRate",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "executeMintRequest",
-    values: [BigNumberish, string, BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "extraMintableAmount",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "developer", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "genesisBlock",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getBaseMintableAmount",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getSeriesAMintableAmount",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "l2SeriesAVesting",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "lastValueCapturedBlock",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "mcbToken", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "mcbTotalSupply",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "mintRequests",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "receiveMintRequestFromL2",
-    values: [BigNumberish, string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "seriesALastUpdateBlock",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "seriesAMaxReleaseRate",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "seriesAMaxSupply",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "seriesAMint",
-    values: [BigNumberish, string, BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "seriesAMintableAmount",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "seriesAMintedAmount",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setDevAccount",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "totalCapturedValue",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "updateMintableAmount",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "updateSeriesAMintableAmount",
-    values?: undefined
-  ): string;
 
   decodeFunctionResult(
-    functionFragment: "MINT_INITIATOR_ADDRESS",
+    functionFragment: "DEVELOPER_COMMISSION_RATE",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "ROLLUP_ADDRESS",
+    functionFragment: "MCB_MAX_SUPPLY",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "TOTAL_CAPTURED_USD_KEY",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "baseMaxSupply",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "baseMinReleaseRate",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "baseMintedAmount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "dataExchange",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "devAccount", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "devCommissionRate",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "executeMintRequest",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "extraMintableAmount",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "developer", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "genesisBlock",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "getBaseMintableAmount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getSeriesAMintableAmount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "l2SeriesAVesting",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "lastValueCapturedBlock",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "mcbToken", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "mcbTotalSupply",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "mintRequests",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "receiveMintRequestFromL2",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "seriesALastUpdateBlock",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "seriesAMaxReleaseRate",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "seriesAMaxSupply",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "seriesAMint",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "seriesAMintableAmount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "seriesAMintedAmount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setDevAccount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "totalCapturedValue",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "updateMintableAmount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "updateSeriesAMintableAmount",
-    data: BytesLike
-  ): Result;
 
   events: {
-    "ExecuteMintRequest(uint256,uint8,address,uint256)": EventFragment;
-    "MintMCB(address,uint256,address,uint256)": EventFragment;
-    "MintToL1(address,uint256)": EventFragment;
-    "MintToL2(address,uint256)": EventFragment;
-    "ReceiveMintRequest(uint256,uint8,address,uint256)": EventFragment;
-    "SetDevAccount(address,address)": EventFragment;
+    "Mint(address,uint256,address,uint256)": EventFragment;
+    "SetDeveloper(address,address)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "ExecuteMintRequest"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "MintMCB"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "MintToL1"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "MintToL2"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "ReceiveMintRequest"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SetDevAccount"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Mint"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetDeveloper"): EventFragment;
 }
 
 export class Minter extends Contract {
@@ -318,142 +81,40 @@ export class Minter extends Contract {
   interface: MinterInterface;
 
   functions: {
-    MINT_INITIATOR_ADDRESS(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "MINT_INITIATOR_ADDRESS()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    ROLLUP_ADDRESS(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "ROLLUP_ADDRESS()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    TOTAL_CAPTURED_USD_KEY(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "TOTAL_CAPTURED_USD_KEY()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    baseMaxSupply(
+    DEVELOPER_COMMISSION_RATE(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    "baseMaxSupply()"(
+    "DEVELOPER_COMMISSION_RATE()"(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    baseMinReleaseRate(
+    MCB_MAX_SUPPLY(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    "baseMinReleaseRate()"(
+    "MCB_MAX_SUPPLY()"(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
     }>;
 
-    baseMintedAmount(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "baseMintedAmount()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    dataExchange(
+    developer(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    "dataExchange()"(
+    "developer()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
-    }>;
-
-    devAccount(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "devAccount()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    devCommissionRate(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "devCommissionRate()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    executeMintRequest(
-      index: BigNumberish,
-      bridge: string,
-      maxSubmissionCost: BigNumberish,
-      maxGas: BigNumberish,
-      gasPriceBid: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "executeMintRequest(uint256,address,uint256,uint256,uint256)"(
-      index: BigNumberish,
-      bridge: string,
-      maxSubmissionCost: BigNumberish,
-      maxGas: BigNumberish,
-      gasPriceBid: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    extraMintableAmount(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "extraMintableAmount()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
     }>;
 
     genesisBlock(
@@ -463,44 +124,6 @@ export class Minter extends Contract {
     }>;
 
     "genesisBlock()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    getBaseMintableAmount(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "getBaseMintableAmount()"(
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    getSeriesAMintableAmount(
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "getSeriesAMintableAmount()"(
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    l2SeriesAVesting(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "l2SeriesAVesting()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    lastValueCapturedBlock(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "lastValueCapturedBlock()"(
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
@@ -517,996 +140,115 @@ export class Minter extends Contract {
     ): Promise<{
       0: string;
     }>;
-
-    mcbTotalSupply(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "mcbTotalSupply()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    mintRequests(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      releaseType: number;
-      executed: boolean;
-      recipient: string;
-      amount: BigNumber;
-      0: number;
-      1: boolean;
-      2: string;
-      3: BigNumber;
-    }>;
-
-    "mintRequests(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      releaseType: number;
-      executed: boolean;
-      recipient: string;
-      amount: BigNumber;
-      0: number;
-      1: boolean;
-      2: string;
-      3: BigNumber;
-    }>;
-
-    receiveMintRequestFromL2(
-      releaseType: BigNumberish,
-      recipient: string,
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "receiveMintRequestFromL2(uint8,address,uint256)"(
-      releaseType: BigNumberish,
-      recipient: string,
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    seriesALastUpdateBlock(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "seriesALastUpdateBlock()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    seriesAMaxReleaseRate(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "seriesAMaxReleaseRate()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    seriesAMaxSupply(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "seriesAMaxSupply()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    seriesAMint(
-      amount: BigNumberish,
-      bridge: string,
-      maxSubmissionCost: BigNumberish,
-      maxGas: BigNumberish,
-      gasPriceBid: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "seriesAMint(uint256,address,uint256,uint256,uint256)"(
-      amount: BigNumberish,
-      bridge: string,
-      maxSubmissionCost: BigNumberish,
-      maxGas: BigNumberish,
-      gasPriceBid: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    seriesAMintableAmount(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "seriesAMintableAmount()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    seriesAMintedAmount(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "seriesAMintedAmount()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    setDevAccount(
-      devAccount_: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setDevAccount(address)"(
-      devAccount_: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    totalCapturedValue(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "totalCapturedValue()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    updateMintableAmount(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "updateMintableAmount()"(
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    updateSeriesAMintableAmount(
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "updateSeriesAMintableAmount()"(
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
   };
 
-  MINT_INITIATOR_ADDRESS(overrides?: CallOverrides): Promise<string>;
+  DEVELOPER_COMMISSION_RATE(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "MINT_INITIATOR_ADDRESS()"(overrides?: CallOverrides): Promise<string>;
+  "DEVELOPER_COMMISSION_RATE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-  ROLLUP_ADDRESS(overrides?: CallOverrides): Promise<string>;
+  MCB_MAX_SUPPLY(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "ROLLUP_ADDRESS()"(overrides?: CallOverrides): Promise<string>;
+  "MCB_MAX_SUPPLY()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-  TOTAL_CAPTURED_USD_KEY(overrides?: CallOverrides): Promise<string>;
+  developer(overrides?: CallOverrides): Promise<string>;
 
-  "TOTAL_CAPTURED_USD_KEY()"(overrides?: CallOverrides): Promise<string>;
-
-  baseMaxSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "baseMaxSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  baseMinReleaseRate(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "baseMinReleaseRate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  baseMintedAmount(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "baseMintedAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  dataExchange(overrides?: CallOverrides): Promise<string>;
-
-  "dataExchange()"(overrides?: CallOverrides): Promise<string>;
-
-  devAccount(overrides?: CallOverrides): Promise<string>;
-
-  "devAccount()"(overrides?: CallOverrides): Promise<string>;
-
-  devCommissionRate(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "devCommissionRate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  executeMintRequest(
-    index: BigNumberish,
-    bridge: string,
-    maxSubmissionCost: BigNumberish,
-    maxGas: BigNumberish,
-    gasPriceBid: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "executeMintRequest(uint256,address,uint256,uint256,uint256)"(
-    index: BigNumberish,
-    bridge: string,
-    maxSubmissionCost: BigNumberish,
-    maxGas: BigNumberish,
-    gasPriceBid: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  extraMintableAmount(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "extraMintableAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "developer()"(overrides?: CallOverrides): Promise<string>;
 
   genesisBlock(overrides?: CallOverrides): Promise<BigNumber>;
 
   "genesisBlock()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-  getBaseMintableAmount(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "getBaseMintableAmount()"(
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  getSeriesAMintableAmount(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "getSeriesAMintableAmount()"(
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  l2SeriesAVesting(overrides?: CallOverrides): Promise<string>;
-
-  "l2SeriesAVesting()"(overrides?: CallOverrides): Promise<string>;
-
-  lastValueCapturedBlock(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "lastValueCapturedBlock()"(overrides?: CallOverrides): Promise<BigNumber>;
-
   mcbToken(overrides?: CallOverrides): Promise<string>;
 
   "mcbToken()"(overrides?: CallOverrides): Promise<string>;
 
-  mcbTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "mcbTotalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  mintRequests(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<{
-    releaseType: number;
-    executed: boolean;
-    recipient: string;
-    amount: BigNumber;
-    0: number;
-    1: boolean;
-    2: string;
-    3: BigNumber;
-  }>;
-
-  "mintRequests(uint256)"(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<{
-    releaseType: number;
-    executed: boolean;
-    recipient: string;
-    amount: BigNumber;
-    0: number;
-    1: boolean;
-    2: string;
-    3: BigNumber;
-  }>;
-
-  receiveMintRequestFromL2(
-    releaseType: BigNumberish,
-    recipient: string,
-    amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "receiveMintRequestFromL2(uint8,address,uint256)"(
-    releaseType: BigNumberish,
-    recipient: string,
-    amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  seriesALastUpdateBlock(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "seriesALastUpdateBlock()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  seriesAMaxReleaseRate(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "seriesAMaxReleaseRate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  seriesAMaxSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "seriesAMaxSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  seriesAMint(
-    amount: BigNumberish,
-    bridge: string,
-    maxSubmissionCost: BigNumberish,
-    maxGas: BigNumberish,
-    gasPriceBid: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "seriesAMint(uint256,address,uint256,uint256,uint256)"(
-    amount: BigNumberish,
-    bridge: string,
-    maxSubmissionCost: BigNumberish,
-    maxGas: BigNumberish,
-    gasPriceBid: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  seriesAMintableAmount(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "seriesAMintableAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  seriesAMintedAmount(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "seriesAMintedAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  setDevAccount(
-    devAccount_: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setDevAccount(address)"(
-    devAccount_: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  totalCapturedValue(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "totalCapturedValue()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  updateMintableAmount(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "updateMintableAmount()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-  updateSeriesAMintableAmount(
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "updateSeriesAMintableAmount()"(
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   callStatic: {
-    MINT_INITIATOR_ADDRESS(overrides?: CallOverrides): Promise<string>;
+    DEVELOPER_COMMISSION_RATE(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "MINT_INITIATOR_ADDRESS()"(overrides?: CallOverrides): Promise<string>;
-
-    ROLLUP_ADDRESS(overrides?: CallOverrides): Promise<string>;
-
-    "ROLLUP_ADDRESS()"(overrides?: CallOverrides): Promise<string>;
-
-    TOTAL_CAPTURED_USD_KEY(overrides?: CallOverrides): Promise<string>;
-
-    "TOTAL_CAPTURED_USD_KEY()"(overrides?: CallOverrides): Promise<string>;
-
-    baseMaxSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "baseMaxSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    baseMinReleaseRate(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "baseMinReleaseRate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    baseMintedAmount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "baseMintedAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    dataExchange(overrides?: CallOverrides): Promise<string>;
-
-    "dataExchange()"(overrides?: CallOverrides): Promise<string>;
-
-    devAccount(overrides?: CallOverrides): Promise<string>;
-
-    "devAccount()"(overrides?: CallOverrides): Promise<string>;
-
-    devCommissionRate(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "devCommissionRate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    executeMintRequest(
-      index: BigNumberish,
-      bridge: string,
-      maxSubmissionCost: BigNumberish,
-      maxGas: BigNumberish,
-      gasPriceBid: BigNumberish,
+    "DEVELOPER_COMMISSION_RATE()"(
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<BigNumber>;
 
-    "executeMintRequest(uint256,address,uint256,uint256,uint256)"(
-      index: BigNumberish,
-      bridge: string,
-      maxSubmissionCost: BigNumberish,
-      maxGas: BigNumberish,
-      gasPriceBid: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    MCB_MAX_SUPPLY(overrides?: CallOverrides): Promise<BigNumber>;
 
-    extraMintableAmount(overrides?: CallOverrides): Promise<BigNumber>;
+    "MCB_MAX_SUPPLY()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "extraMintableAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
+    developer(overrides?: CallOverrides): Promise<string>;
+
+    "developer()"(overrides?: CallOverrides): Promise<string>;
 
     genesisBlock(overrides?: CallOverrides): Promise<BigNumber>;
 
     "genesisBlock()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getBaseMintableAmount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getBaseMintableAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getSeriesAMintableAmount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getSeriesAMintableAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    l2SeriesAVesting(overrides?: CallOverrides): Promise<string>;
-
-    "l2SeriesAVesting()"(overrides?: CallOverrides): Promise<string>;
-
-    lastValueCapturedBlock(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "lastValueCapturedBlock()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     mcbToken(overrides?: CallOverrides): Promise<string>;
 
     "mcbToken()"(overrides?: CallOverrides): Promise<string>;
-
-    mcbTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "mcbTotalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    mintRequests(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      releaseType: number;
-      executed: boolean;
-      recipient: string;
-      amount: BigNumber;
-      0: number;
-      1: boolean;
-      2: string;
-      3: BigNumber;
-    }>;
-
-    "mintRequests(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      releaseType: number;
-      executed: boolean;
-      recipient: string;
-      amount: BigNumber;
-      0: number;
-      1: boolean;
-      2: string;
-      3: BigNumber;
-    }>;
-
-    receiveMintRequestFromL2(
-      releaseType: BigNumberish,
-      recipient: string,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "receiveMintRequestFromL2(uint8,address,uint256)"(
-      releaseType: BigNumberish,
-      recipient: string,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    seriesALastUpdateBlock(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "seriesALastUpdateBlock()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    seriesAMaxReleaseRate(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "seriesAMaxReleaseRate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    seriesAMaxSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "seriesAMaxSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    seriesAMint(
-      amount: BigNumberish,
-      bridge: string,
-      maxSubmissionCost: BigNumberish,
-      maxGas: BigNumberish,
-      gasPriceBid: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "seriesAMint(uint256,address,uint256,uint256,uint256)"(
-      amount: BigNumberish,
-      bridge: string,
-      maxSubmissionCost: BigNumberish,
-      maxGas: BigNumberish,
-      gasPriceBid: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    seriesAMintableAmount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "seriesAMintableAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    seriesAMintedAmount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "seriesAMintedAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    setDevAccount(
-      devAccount_: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "setDevAccount(address)"(
-      devAccount_: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    totalCapturedValue(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "totalCapturedValue()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    updateMintableAmount(overrides?: CallOverrides): Promise<void>;
-
-    "updateMintableAmount()"(overrides?: CallOverrides): Promise<void>;
-
-    updateSeriesAMintableAmount(overrides?: CallOverrides): Promise<void>;
-
-    "updateSeriesAMintableAmount()"(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
-    ExecuteMintRequest(
-      index: null,
-      releaseType: null,
+    Mint(
       recipient: string | null,
-      amount: null
+      toRecipientAmount: null,
+      developer: string | null,
+      toDevAmount: null
     ): EventFilter;
 
-    MintMCB(
-      recipient: string | null,
-      recipientReceivedAmount: null,
-      devAccount: string | null,
-      devReceivedAmount: null
+    SetDeveloper(
+      oldDeveloper: string | null,
+      newDeveloper: string | null
     ): EventFilter;
-
-    MintToL1(recipient: string | null, amount: null): EventFilter;
-
-    MintToL2(recipient: string | null, amount: null): EventFilter;
-
-    ReceiveMintRequest(
-      index: null,
-      releaseType: null,
-      recipient: string | null,
-      amount: null
-    ): EventFilter;
-
-    SetDevAccount(devOld: string | null, devNew: string | null): EventFilter;
   };
 
   estimateGas: {
-    MINT_INITIATOR_ADDRESS(overrides?: CallOverrides): Promise<BigNumber>;
+    DEVELOPER_COMMISSION_RATE(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "MINT_INITIATOR_ADDRESS()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    ROLLUP_ADDRESS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "ROLLUP_ADDRESS()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    TOTAL_CAPTURED_USD_KEY(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "TOTAL_CAPTURED_USD_KEY()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    baseMaxSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "baseMaxSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    baseMinReleaseRate(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "baseMinReleaseRate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    baseMintedAmount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "baseMintedAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    dataExchange(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "dataExchange()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    devAccount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "devAccount()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    devCommissionRate(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "devCommissionRate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    executeMintRequest(
-      index: BigNumberish,
-      bridge: string,
-      maxSubmissionCost: BigNumberish,
-      maxGas: BigNumberish,
-      gasPriceBid: BigNumberish,
-      overrides?: Overrides
+    "DEVELOPER_COMMISSION_RATE()"(
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "executeMintRequest(uint256,address,uint256,uint256,uint256)"(
-      index: BigNumberish,
-      bridge: string,
-      maxSubmissionCost: BigNumberish,
-      maxGas: BigNumberish,
-      gasPriceBid: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
+    MCB_MAX_SUPPLY(overrides?: CallOverrides): Promise<BigNumber>;
 
-    extraMintableAmount(overrides?: CallOverrides): Promise<BigNumber>;
+    "MCB_MAX_SUPPLY()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "extraMintableAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
+    developer(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "developer()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     genesisBlock(overrides?: CallOverrides): Promise<BigNumber>;
 
     "genesisBlock()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getBaseMintableAmount(overrides?: Overrides): Promise<BigNumber>;
-
-    "getBaseMintableAmount()"(overrides?: Overrides): Promise<BigNumber>;
-
-    getSeriesAMintableAmount(overrides?: Overrides): Promise<BigNumber>;
-
-    "getSeriesAMintableAmount()"(overrides?: Overrides): Promise<BigNumber>;
-
-    l2SeriesAVesting(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "l2SeriesAVesting()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    lastValueCapturedBlock(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "lastValueCapturedBlock()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     mcbToken(overrides?: CallOverrides): Promise<BigNumber>;
 
     "mcbToken()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    mcbTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "mcbTotalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    mintRequests(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "mintRequests(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    receiveMintRequestFromL2(
-      releaseType: BigNumberish,
-      recipient: string,
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "receiveMintRequestFromL2(uint8,address,uint256)"(
-      releaseType: BigNumberish,
-      recipient: string,
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    seriesALastUpdateBlock(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "seriesALastUpdateBlock()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    seriesAMaxReleaseRate(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "seriesAMaxReleaseRate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    seriesAMaxSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "seriesAMaxSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    seriesAMint(
-      amount: BigNumberish,
-      bridge: string,
-      maxSubmissionCost: BigNumberish,
-      maxGas: BigNumberish,
-      gasPriceBid: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "seriesAMint(uint256,address,uint256,uint256,uint256)"(
-      amount: BigNumberish,
-      bridge: string,
-      maxSubmissionCost: BigNumberish,
-      maxGas: BigNumberish,
-      gasPriceBid: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    seriesAMintableAmount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "seriesAMintableAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    seriesAMintedAmount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "seriesAMintedAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    setDevAccount(
-      devAccount_: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "setDevAccount(address)"(
-      devAccount_: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    totalCapturedValue(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "totalCapturedValue()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    updateMintableAmount(overrides?: Overrides): Promise<BigNumber>;
-
-    "updateMintableAmount()"(overrides?: Overrides): Promise<BigNumber>;
-
-    updateSeriesAMintableAmount(overrides?: Overrides): Promise<BigNumber>;
-
-    "updateSeriesAMintableAmount()"(overrides?: Overrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    MINT_INITIATOR_ADDRESS(
+    DEVELOPER_COMMISSION_RATE(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "MINT_INITIATOR_ADDRESS()"(
+    "DEVELOPER_COMMISSION_RATE()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    ROLLUP_ADDRESS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    MCB_MAX_SUPPLY(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "ROLLUP_ADDRESS()"(
+    "MCB_MAX_SUPPLY()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    TOTAL_CAPTURED_USD_KEY(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    developer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "TOTAL_CAPTURED_USD_KEY()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    baseMaxSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "baseMaxSupply()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    baseMinReleaseRate(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "baseMinReleaseRate()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    baseMintedAmount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "baseMintedAmount()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    dataExchange(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "dataExchange()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    devAccount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "devAccount()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    devCommissionRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "devCommissionRate()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    executeMintRequest(
-      index: BigNumberish,
-      bridge: string,
-      maxSubmissionCost: BigNumberish,
-      maxGas: BigNumberish,
-      gasPriceBid: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "executeMintRequest(uint256,address,uint256,uint256,uint256)"(
-      index: BigNumberish,
-      bridge: string,
-      maxSubmissionCost: BigNumberish,
-      maxGas: BigNumberish,
-      gasPriceBid: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    extraMintableAmount(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "extraMintableAmount()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    "developer()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     genesisBlock(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "genesisBlock()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getBaseMintableAmount(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "getBaseMintableAmount()"(
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    getSeriesAMintableAmount(
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "getSeriesAMintableAmount()"(
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    l2SeriesAVesting(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "l2SeriesAVesting()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    lastValueCapturedBlock(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "lastValueCapturedBlock()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     mcbToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "mcbToken()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    mcbTotalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "mcbTotalSupply()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    mintRequests(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "mintRequests(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    receiveMintRequestFromL2(
-      releaseType: BigNumberish,
-      recipient: string,
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "receiveMintRequestFromL2(uint8,address,uint256)"(
-      releaseType: BigNumberish,
-      recipient: string,
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    seriesALastUpdateBlock(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "seriesALastUpdateBlock()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    seriesAMaxReleaseRate(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "seriesAMaxReleaseRate()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    seriesAMaxSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "seriesAMaxSupply()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    seriesAMint(
-      amount: BigNumberish,
-      bridge: string,
-      maxSubmissionCost: BigNumberish,
-      maxGas: BigNumberish,
-      gasPriceBid: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "seriesAMint(uint256,address,uint256,uint256,uint256)"(
-      amount: BigNumberish,
-      bridge: string,
-      maxSubmissionCost: BigNumberish,
-      maxGas: BigNumberish,
-      gasPriceBid: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    seriesAMintableAmount(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "seriesAMintableAmount()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    seriesAMintedAmount(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "seriesAMintedAmount()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    setDevAccount(
-      devAccount_: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setDevAccount(address)"(
-      devAccount_: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    totalCapturedValue(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "totalCapturedValue()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    updateMintableAmount(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "updateMintableAmount()"(
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    updateSeriesAMintableAmount(
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "updateSeriesAMintableAmount()"(
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
   };
 }

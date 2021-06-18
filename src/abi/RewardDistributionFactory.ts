@@ -18,22 +18,6 @@ export class RewardDistributionFactory {
 
 const _abi = [
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "authenticator_",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "XMCB_",
-        type: "address",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "constructor",
-  },
-  {
     anonymous: false,
     inputs: [
       {
@@ -335,6 +319,24 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "authenticator_",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "XMCB_",
+        type: "address",
+      },
+    ],
+    name: "initialize",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {

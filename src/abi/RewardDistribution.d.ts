@@ -34,6 +34,7 @@ interface RewardDistributionInterface extends ethers.utils.Interface {
     "getRewardPlan(address)": FunctionFragment;
     "getRewardTokens()": FunctionFragment;
     "hasPlan(address)": FunctionFragment;
+    "initialize(address,address)": FunctionFragment;
     "lastTimeRewardApplicable(address)": FunctionFragment;
     "notifyRewardAmount(address,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -83,6 +84,10 @@ interface RewardDistributionInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "hasPlan", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "initialize",
+    values: [string, string]
+  ): string;
   encodeFunctionData(
     functionFragment: "lastTimeRewardApplicable",
     values: [string]
@@ -146,6 +151,7 @@ interface RewardDistributionInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "hasPlan", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "lastTimeRewardApplicable",
     data: BytesLike
@@ -350,6 +356,18 @@ export class RewardDistribution extends Contract {
       0: boolean;
     }>;
 
+    initialize(
+      authenticator_: string,
+      XMCB_: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "initialize(address,address)"(
+      authenticator_: string,
+      XMCB_: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     lastTimeRewardApplicable(
       token: string,
       overrides?: CallOverrides
@@ -545,6 +563,18 @@ export class RewardDistribution extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  initialize(
+    authenticator_: string,
+    XMCB_: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "initialize(address,address)"(
+    authenticator_: string,
+    XMCB_: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   lastTimeRewardApplicable(
     token: string,
     overrides?: CallOverrides
@@ -712,6 +742,18 @@ export class RewardDistribution extends Contract {
       token: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    initialize(
+      authenticator_: string,
+      XMCB_: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "initialize(address,address)"(
+      authenticator_: string,
+      XMCB_: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     lastTimeRewardApplicable(
       token: string,
@@ -897,6 +939,18 @@ export class RewardDistribution extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    initialize(
+      authenticator_: string,
+      XMCB_: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "initialize(address,address)"(
+      authenticator_: string,
+      XMCB_: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     lastTimeRewardApplicable(
       token: string,
       overrides?: CallOverrides
@@ -1071,6 +1125,18 @@ export class RewardDistribution extends Contract {
     "hasPlan(address)"(
       token: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      authenticator_: string,
+      XMCB_: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "initialize(address,address)"(
+      authenticator_: string,
+      XMCB_: string,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     lastTimeRewardApplicable(

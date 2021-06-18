@@ -22,7 +22,6 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface VaultInterface extends ethers.utils.Interface {
   functions: {
-    "VAULT_ADMIN_ROLE()": FunctionFragment;
     "authenticator()": FunctionFragment;
     "execute(address,bytes,uint256)": FunctionFragment;
     "initialize(address)": FunctionFragment;
@@ -32,10 +31,6 @@ interface VaultInterface extends ethers.utils.Interface {
     "transferETH(address,uint256)": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "VAULT_ADMIN_ROLE",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "authenticator",
     values?: undefined
@@ -62,10 +57,6 @@ interface VaultInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: "VAULT_ADMIN_ROLE",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "authenticator",
     data: BytesLike
@@ -116,18 +107,6 @@ export class Vault extends Contract {
   interface: VaultInterface;
 
   functions: {
-    VAULT_ADMIN_ROLE(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "VAULT_ADMIN_ROLE()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
     authenticator(
       overrides?: CallOverrides
     ): Promise<{
@@ -221,10 +200,6 @@ export class Vault extends Contract {
     ): Promise<ContractTransaction>;
   };
 
-  VAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
-
-  "VAULT_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<string>;
-
   authenticator(overrides?: CallOverrides): Promise<string>;
 
   "authenticator()"(overrides?: CallOverrides): Promise<string>;
@@ -310,10 +285,6 @@ export class Vault extends Contract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    VAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
-
-    "VAULT_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<string>;
-
     authenticator(overrides?: CallOverrides): Promise<string>;
 
     "authenticator()"(overrides?: CallOverrides): Promise<string>;
@@ -418,10 +389,6 @@ export class Vault extends Contract {
   };
 
   estimateGas: {
-    VAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "VAULT_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     authenticator(overrides?: CallOverrides): Promise<BigNumber>;
 
     "authenticator()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -508,12 +475,6 @@ export class Vault extends Contract {
   };
 
   populateTransaction: {
-    VAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "VAULT_ADMIN_ROLE()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     authenticator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "authenticator()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;

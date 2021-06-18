@@ -18,37 +18,6 @@ export class GovernorAlphaFactory {
 
 const _abi = [
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "dataExchange_",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "timelock_",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "comp_",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "guardian_",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "initialProposalId_",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "constructor",
-  },
-  {
     anonymous: false,
     inputs: [
       {
@@ -219,19 +188,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "MCB_TOTAL_SUPPLY_KEY",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "__abdicate",
     outputs: [],
     stateMutability: "nonpayable",
@@ -349,20 +305,7 @@ const _abi = [
     name: "comp",
     outputs: [
       {
-        internalType: "contract CompInterface",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "dataExchange",
-    outputs: [
-      {
-        internalType: "contract IDataExchange",
+        internalType: "contract IComp",
         name: "",
         type: "address",
       },
@@ -488,6 +431,39 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "mcbToken_",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "timelock_",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "comp_",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "guardian_",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "initialProposalId_",
+        type: "uint256",
+      },
+    ],
+    name: "initialize",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "",
         type: "address",
       },
@@ -498,6 +474,19 @@ const _abi = [
         internalType: "uint256",
         name: "",
         type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "mcbToken",
+    outputs: [
+      {
+        internalType: "contract IERC20Upgradeable",
+        name: "",
+        type: "address",
       },
     ],
     stateMutability: "view",
@@ -708,7 +697,7 @@ const _abi = [
     name: "timelock",
     outputs: [
       {
-        internalType: "contract TimelockInterface",
+        internalType: "contract ITimelock",
         name: "",
         type: "address",
       },

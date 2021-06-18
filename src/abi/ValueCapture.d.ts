@@ -23,31 +23,30 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface ValueCaptureInterface extends ethers.utils.Interface {
   functions: {
     "SYSTEM_DECIMALS()": FunctionFragment;
-    "TOTAL_CAPTURED_USD_KEY()": FunctionFragment;
     "VALUE_CAPTURE_ADMIN_ROLE()": FunctionFragment;
     "addUSDToken(address,uint256)": FunctionFragment;
-    "assetEntries(address)": FunctionFragment;
     "authenticator()": FunctionFragment;
-    "dataExchange()": FunctionFragment;
-    "feedCapturedValueToL1()": FunctionFragment;
+    "captureNotifyRecipient()": FunctionFragment;
+    "externalExchanges(address)": FunctionFragment;
     "forwardAsset(address,uint256)": FunctionFragment;
     "forwardERC20Token(address,uint256)": FunctionFragment;
     "forwardERC721Token(address,uint256)": FunctionFragment;
     "forwardETH(uint256)": FunctionFragment;
-    "initialize(address,address,address)": FunctionFragment;
+    "getCapturedValue()": FunctionFragment;
+    "initialize(address,address)": FunctionFragment;
+    "lastCapturedBlock()": FunctionFragment;
     "listUSDTokens(uint256,uint256)": FunctionFragment;
+    "normalizers(address)": FunctionFragment;
     "removeUSDToken(address)": FunctionFragment;
-    "setConvertor(address,address,address,uint256)": FunctionFragment;
+    "setCaptureNotifyRecipient(address)": FunctionFragment;
+    "setExternalExchange(address,address)": FunctionFragment;
     "totalCapturedUSD()": FunctionFragment;
+    "tryNotifyCapturedValue()": FunctionFragment;
     "vault()": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "SYSTEM_DECIMALS",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "TOTAL_CAPTURED_USD_KEY",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -59,20 +58,16 @@ interface ValueCaptureInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "assetEntries",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "authenticator",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "dataExchange",
+    functionFragment: "captureNotifyRecipient",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "feedCapturedValueToL1",
-    values?: undefined
+    functionFragment: "externalExchanges",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "forwardAsset",
@@ -91,33 +86,46 @@ interface ValueCaptureInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getCapturedValue",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "initialize",
-    values: [string, string, string]
+    values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "lastCapturedBlock",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "listUSDTokens",
     values: [BigNumberish, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "normalizers", values: [string]): string;
   encodeFunctionData(
     functionFragment: "removeUSDToken",
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "setConvertor",
-    values: [string, string, string, BigNumberish]
+    functionFragment: "setCaptureNotifyRecipient",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setExternalExchange",
+    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "totalCapturedUSD",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tryNotifyCapturedValue",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "vault", values?: undefined): string;
 
   decodeFunctionResult(
     functionFragment: "SYSTEM_DECIMALS",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "TOTAL_CAPTURED_USD_KEY",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -129,19 +137,15 @@ interface ValueCaptureInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "assetEntries",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "authenticator",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "dataExchange",
+    functionFragment: "captureNotifyRecipient",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "feedCapturedValueToL1",
+    functionFragment: "externalExchanges",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -157,9 +161,21 @@ interface ValueCaptureInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "forwardETH", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getCapturedValue",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "lastCapturedBlock",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "listUSDTokens",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "normalizers",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -167,34 +183,44 @@ interface ValueCaptureInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setConvertor",
+    functionFragment: "setCaptureNotifyRecipient",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setExternalExchange",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "totalCapturedUSD",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "tryNotifyCapturedValue",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "vault", data: BytesLike): Result;
 
   events: {
     "AddUSDToken(address)": EventFragment;
-    "ConvertToken(address,uint256,address,uint256)": EventFragment;
+    "ExchangeToken(address,uint256,address,uint256)": EventFragment;
     "ForwardAsset(address,uint256,uint256)": EventFragment;
     "ForwardERC20Token(address,uint256)": EventFragment;
     "ForwardERC721Token(address,uint256)": EventFragment;
     "ForwardETH(uint256)": EventFragment;
     "RemoveUSDToken(address)": EventFragment;
     "SetConvertor(address,address)": EventFragment;
+    "SetMiner(address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "AddUSDToken"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "ConvertToken"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ExchangeToken"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ForwardAsset"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ForwardERC20Token"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ForwardERC721Token"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ForwardETH"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveUSDToken"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetConvertor"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetMiner"): EventFragment;
 }
 
 export class ValueCapture extends Contract {
@@ -223,18 +249,6 @@ export class ValueCapture extends Contract {
       0: BigNumber;
     }>;
 
-    TOTAL_CAPTURED_USD_KEY(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "TOTAL_CAPTURED_USD_KEY()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
     VALUE_CAPTURE_ADMIN_ROLE(
       overrides?: CallOverrides
     ): Promise<{
@@ -259,34 +273,6 @@ export class ValueCapture extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    assetEntries(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      oracle: string;
-      convertor: string;
-      slippageTolerance: BigNumber;
-      cumulativeConvertedAmount: BigNumber;
-      0: string;
-      1: string;
-      2: BigNumber;
-      3: BigNumber;
-    }>;
-
-    "assetEntries(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      oracle: string;
-      convertor: string;
-      slippageTolerance: BigNumber;
-      cumulativeConvertedAmount: BigNumber;
-      0: string;
-      1: string;
-      2: BigNumber;
-      3: BigNumber;
-    }>;
-
     authenticator(
       overrides?: CallOverrides
     ): Promise<{
@@ -299,23 +285,31 @@ export class ValueCapture extends Contract {
       0: string;
     }>;
 
-    dataExchange(
+    captureNotifyRecipient(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    "dataExchange()"(
+    "captureNotifyRecipient()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    feedCapturedValueToL1(overrides?: Overrides): Promise<ContractTransaction>;
+    externalExchanges(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
 
-    "feedCapturedValueToL1()"(
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
+    "externalExchanges(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
 
     forwardAsset(
       token: string,
@@ -363,19 +357,43 @@ export class ValueCapture extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    getCapturedValue(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+      1: BigNumber;
+    }>;
+
+    "getCapturedValue()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+      1: BigNumber;
+    }>;
+
     initialize(
       authenticator_: string,
-      dataExchange_: string,
       vault_: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "initialize(address,address,address)"(
+    "initialize(address,address)"(
       authenticator_: string,
-      dataExchange_: string,
       vault_: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    lastCapturedBlock(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "lastCapturedBlock()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
 
     listUSDTokens(
       begin: BigNumberish,
@@ -395,6 +413,20 @@ export class ValueCapture extends Contract {
       0: string[];
     }>;
 
+    normalizers(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "normalizers(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
     removeUSDToken(
       token: string,
       overrides?: Overrides
@@ -405,19 +437,25 @@ export class ValueCapture extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    setConvertor(
-      token: string,
-      oracle: string,
-      convertor_: string,
-      slippageTolerance: BigNumberish,
+    setCaptureNotifyRecipient(
+      newRecipient: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "setConvertor(address,address,address,uint256)"(
+    "setCaptureNotifyRecipient(address)"(
+      newRecipient: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    setExternalExchange(
       token: string,
-      oracle: string,
-      convertor_: string,
-      slippageTolerance: BigNumberish,
+      exchange_: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setExternalExchange(address,address)"(
+      token: string,
+      exchange_: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -432,6 +470,12 @@ export class ValueCapture extends Contract {
     ): Promise<{
       0: BigNumber;
     }>;
+
+    tryNotifyCapturedValue(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "tryNotifyCapturedValue()"(
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     vault(
       overrides?: CallOverrides
@@ -450,10 +494,6 @@ export class ValueCapture extends Contract {
 
   "SYSTEM_DECIMALS()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-  TOTAL_CAPTURED_USD_KEY(overrides?: CallOverrides): Promise<string>;
-
-  "TOTAL_CAPTURED_USD_KEY()"(overrides?: CallOverrides): Promise<string>;
-
   VALUE_CAPTURE_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
   "VALUE_CAPTURE_ADMIN_ROLE()"(overrides?: CallOverrides): Promise<string>;
@@ -470,47 +510,20 @@ export class ValueCapture extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  assetEntries(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<{
-    oracle: string;
-    convertor: string;
-    slippageTolerance: BigNumber;
-    cumulativeConvertedAmount: BigNumber;
-    0: string;
-    1: string;
-    2: BigNumber;
-    3: BigNumber;
-  }>;
-
-  "assetEntries(address)"(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<{
-    oracle: string;
-    convertor: string;
-    slippageTolerance: BigNumber;
-    cumulativeConvertedAmount: BigNumber;
-    0: string;
-    1: string;
-    2: BigNumber;
-    3: BigNumber;
-  }>;
-
   authenticator(overrides?: CallOverrides): Promise<string>;
 
   "authenticator()"(overrides?: CallOverrides): Promise<string>;
 
-  dataExchange(overrides?: CallOverrides): Promise<string>;
+  captureNotifyRecipient(overrides?: CallOverrides): Promise<string>;
 
-  "dataExchange()"(overrides?: CallOverrides): Promise<string>;
+  "captureNotifyRecipient()"(overrides?: CallOverrides): Promise<string>;
 
-  feedCapturedValueToL1(overrides?: Overrides): Promise<ContractTransaction>;
+  externalExchanges(arg0: string, overrides?: CallOverrides): Promise<string>;
 
-  "feedCapturedValueToL1()"(
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+  "externalExchanges(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   forwardAsset(
     token: string,
@@ -558,19 +571,35 @@ export class ValueCapture extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  getCapturedValue(
+    overrides?: CallOverrides
+  ): Promise<{
+    0: BigNumber;
+    1: BigNumber;
+  }>;
+
+  "getCapturedValue()"(
+    overrides?: CallOverrides
+  ): Promise<{
+    0: BigNumber;
+    1: BigNumber;
+  }>;
+
   initialize(
     authenticator_: string,
-    dataExchange_: string,
     vault_: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "initialize(address,address,address)"(
+  "initialize(address,address)"(
     authenticator_: string,
-    dataExchange_: string,
     vault_: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  lastCapturedBlock(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "lastCapturedBlock()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   listUSDTokens(
     begin: BigNumberish,
@@ -584,6 +613,13 @@ export class ValueCapture extends Contract {
     overrides?: CallOverrides
   ): Promise<string[]>;
 
+  normalizers(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  "normalizers(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   removeUSDToken(
     token: string,
     overrides?: Overrides
@@ -594,25 +630,37 @@ export class ValueCapture extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  setConvertor(
-    token: string,
-    oracle: string,
-    convertor_: string,
-    slippageTolerance: BigNumberish,
+  setCaptureNotifyRecipient(
+    newRecipient: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "setConvertor(address,address,address,uint256)"(
+  "setCaptureNotifyRecipient(address)"(
+    newRecipient: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  setExternalExchange(
     token: string,
-    oracle: string,
-    convertor_: string,
-    slippageTolerance: BigNumberish,
+    exchange_: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setExternalExchange(address,address)"(
+    token: string,
+    exchange_: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   totalCapturedUSD(overrides?: CallOverrides): Promise<BigNumber>;
 
   "totalCapturedUSD()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  tryNotifyCapturedValue(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "tryNotifyCapturedValue()"(
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   vault(overrides?: CallOverrides): Promise<string>;
 
@@ -622,10 +670,6 @@ export class ValueCapture extends Contract {
     SYSTEM_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
 
     "SYSTEM_DECIMALS()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    TOTAL_CAPTURED_USD_KEY(overrides?: CallOverrides): Promise<string>;
-
-    "TOTAL_CAPTURED_USD_KEY()"(overrides?: CallOverrides): Promise<string>;
 
     VALUE_CAPTURE_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
@@ -643,45 +687,20 @@ export class ValueCapture extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    assetEntries(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      oracle: string;
-      convertor: string;
-      slippageTolerance: BigNumber;
-      cumulativeConvertedAmount: BigNumber;
-      0: string;
-      1: string;
-      2: BigNumber;
-      3: BigNumber;
-    }>;
-
-    "assetEntries(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      oracle: string;
-      convertor: string;
-      slippageTolerance: BigNumber;
-      cumulativeConvertedAmount: BigNumber;
-      0: string;
-      1: string;
-      2: BigNumber;
-      3: BigNumber;
-    }>;
-
     authenticator(overrides?: CallOverrides): Promise<string>;
 
     "authenticator()"(overrides?: CallOverrides): Promise<string>;
 
-    dataExchange(overrides?: CallOverrides): Promise<string>;
+    captureNotifyRecipient(overrides?: CallOverrides): Promise<string>;
 
-    "dataExchange()"(overrides?: CallOverrides): Promise<string>;
+    "captureNotifyRecipient()"(overrides?: CallOverrides): Promise<string>;
 
-    feedCapturedValueToL1(overrides?: CallOverrides): Promise<void>;
+    externalExchanges(arg0: string, overrides?: CallOverrides): Promise<string>;
 
-    "feedCapturedValueToL1()"(overrides?: CallOverrides): Promise<void>;
+    "externalExchanges(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     forwardAsset(
       token: string,
@@ -726,19 +745,35 @@ export class ValueCapture extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    getCapturedValue(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+      1: BigNumber;
+    }>;
+
+    "getCapturedValue()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+      1: BigNumber;
+    }>;
+
     initialize(
       authenticator_: string,
-      dataExchange_: string,
       vault_: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initialize(address,address,address)"(
+    "initialize(address,address)"(
       authenticator_: string,
-      dataExchange_: string,
       vault_: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    lastCapturedBlock(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "lastCapturedBlock()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     listUSDTokens(
       begin: BigNumberish,
@@ -752,6 +787,13 @@ export class ValueCapture extends Contract {
       overrides?: CallOverrides
     ): Promise<string[]>;
 
+    normalizers(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "normalizers(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     removeUSDToken(token: string, overrides?: CallOverrides): Promise<void>;
 
     "removeUSDToken(address)"(
@@ -759,25 +801,35 @@ export class ValueCapture extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setConvertor(
-      token: string,
-      oracle: string,
-      convertor_: string,
-      slippageTolerance: BigNumberish,
+    setCaptureNotifyRecipient(
+      newRecipient: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "setConvertor(address,address,address,uint256)"(
+    "setCaptureNotifyRecipient(address)"(
+      newRecipient: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setExternalExchange(
       token: string,
-      oracle: string,
-      convertor_: string,
-      slippageTolerance: BigNumberish,
+      exchange_: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setExternalExchange(address,address)"(
+      token: string,
+      exchange_: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     totalCapturedUSD(overrides?: CallOverrides): Promise<BigNumber>;
 
     "totalCapturedUSD()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    tryNotifyCapturedValue(overrides?: CallOverrides): Promise<void>;
+
+    "tryNotifyCapturedValue()"(overrides?: CallOverrides): Promise<void>;
 
     vault(overrides?: CallOverrides): Promise<string>;
 
@@ -787,7 +839,7 @@ export class ValueCapture extends Contract {
   filters: {
     AddUSDToken(usdToken: string | null): EventFilter;
 
-    ConvertToken(
+    ExchangeToken(
       tokenIn: string | null,
       balanceIn: null,
       tokenOut: string | null,
@@ -810,18 +862,16 @@ export class ValueCapture extends Contract {
 
     SetConvertor(
       tokenAddress: string | null,
-      convertor: string | null
+      exchange: string | null
     ): EventFilter;
+
+    SetMiner(oldMinter: string | null, newMinter: string | null): EventFilter;
   };
 
   estimateGas: {
     SYSTEM_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
 
     "SYSTEM_DECIMALS()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    TOTAL_CAPTURED_USD_KEY(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "TOTAL_CAPTURED_USD_KEY()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     VALUE_CAPTURE_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -839,24 +889,23 @@ export class ValueCapture extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    assetEntries(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "assetEntries(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     authenticator(overrides?: CallOverrides): Promise<BigNumber>;
 
     "authenticator()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    dataExchange(overrides?: CallOverrides): Promise<BigNumber>;
+    captureNotifyRecipient(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "dataExchange()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "captureNotifyRecipient()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    feedCapturedValueToL1(overrides?: Overrides): Promise<BigNumber>;
+    externalExchanges(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    "feedCapturedValueToL1()"(overrides?: Overrides): Promise<BigNumber>;
+    "externalExchanges(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     forwardAsset(
       token: string,
@@ -901,19 +950,25 @@ export class ValueCapture extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    getCapturedValue(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getCapturedValue()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     initialize(
       authenticator_: string,
-      dataExchange_: string,
       vault_: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "initialize(address,address,address)"(
+    "initialize(address,address)"(
       authenticator_: string,
-      dataExchange_: string,
       vault_: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    lastCapturedBlock(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "lastCapturedBlock()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     listUSDTokens(
       begin: BigNumberish,
@@ -927,6 +982,13 @@ export class ValueCapture extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    normalizers(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "normalizers(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     removeUSDToken(token: string, overrides?: Overrides): Promise<BigNumber>;
 
     "removeUSDToken(address)"(
@@ -934,25 +996,35 @@ export class ValueCapture extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    setConvertor(
-      token: string,
-      oracle: string,
-      convertor_: string,
-      slippageTolerance: BigNumberish,
+    setCaptureNotifyRecipient(
+      newRecipient: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "setConvertor(address,address,address,uint256)"(
+    "setCaptureNotifyRecipient(address)"(
+      newRecipient: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    setExternalExchange(
       token: string,
-      oracle: string,
-      convertor_: string,
-      slippageTolerance: BigNumberish,
+      exchange_: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "setExternalExchange(address,address)"(
+      token: string,
+      exchange_: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     totalCapturedUSD(overrides?: CallOverrides): Promise<BigNumber>;
 
     "totalCapturedUSD()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    tryNotifyCapturedValue(overrides?: Overrides): Promise<BigNumber>;
+
+    "tryNotifyCapturedValue()"(overrides?: Overrides): Promise<BigNumber>;
 
     vault(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -963,14 +1035,6 @@ export class ValueCapture extends Contract {
     SYSTEM_DECIMALS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "SYSTEM_DECIMALS()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    TOTAL_CAPTURED_USD_KEY(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "TOTAL_CAPTURED_USD_KEY()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -994,28 +1058,26 @@ export class ValueCapture extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    assetEntries(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "assetEntries(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     authenticator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "authenticator()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    dataExchange(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    captureNotifyRecipient(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    "dataExchange()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "captureNotifyRecipient()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    feedCapturedValueToL1(overrides?: Overrides): Promise<PopulatedTransaction>;
+    externalExchanges(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    "feedCapturedValueToL1()"(
-      overrides?: Overrides
+    "externalExchanges(address)"(
+      arg0: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     forwardAsset(
@@ -1064,18 +1126,28 @@ export class ValueCapture extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    getCapturedValue(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getCapturedValue()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     initialize(
       authenticator_: string,
-      dataExchange_: string,
       vault_: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "initialize(address,address,address)"(
+    "initialize(address,address)"(
       authenticator_: string,
-      dataExchange_: string,
       vault_: string,
       overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    lastCapturedBlock(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "lastCapturedBlock()"(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     listUSDTokens(
@@ -1090,6 +1162,16 @@ export class ValueCapture extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    normalizers(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "normalizers(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     removeUSDToken(
       token: string,
       overrides?: Overrides
@@ -1100,19 +1182,25 @@ export class ValueCapture extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    setConvertor(
-      token: string,
-      oracle: string,
-      convertor_: string,
-      slippageTolerance: BigNumberish,
+    setCaptureNotifyRecipient(
+      newRecipient: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "setConvertor(address,address,address,uint256)"(
+    "setCaptureNotifyRecipient(address)"(
+      newRecipient: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    setExternalExchange(
       token: string,
-      oracle: string,
-      convertor_: string,
-      slippageTolerance: BigNumberish,
+      exchange_: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setExternalExchange(address,address)"(
+      token: string,
+      exchange_: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -1120,6 +1208,14 @@ export class ValueCapture extends Contract {
 
     "totalCapturedUSD()"(
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    tryNotifyCapturedValue(
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "tryNotifyCapturedValue()"(
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     vault(overrides?: CallOverrides): Promise<PopulatedTransaction>;

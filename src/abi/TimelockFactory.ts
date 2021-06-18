@@ -18,22 +18,6 @@ export class TimelockFactory {
 
 const _abi = [
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "admin_",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "delay_",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "constructor",
-  },
-  {
     anonymous: false,
     inputs: [
       {
@@ -343,6 +327,24 @@ const _abi = [
       },
     ],
     stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "admin_",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "delay_",
+        type: "uint256",
+      },
+    ],
+    name: "initialize",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {

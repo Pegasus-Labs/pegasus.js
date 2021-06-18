@@ -58,7 +58,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "ConvertToken",
+    name: "ExchangeToken",
     type: "event",
   },
   {
@@ -162,11 +162,30 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "convertor",
+        name: "exchange",
         type: "address",
       },
     ],
     name: "SetConvertor",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "oldMinter",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newMinter",
+        type: "address",
+      },
+    ],
+    name: "SetMiner",
     type: "event",
   },
   {
@@ -177,19 +196,6 @@ const _abi = [
         internalType: "uint256",
         name: "",
         type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "TOTAL_CAPTURED_USD_KEY",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
       },
     ],
     stateMutability: "view",
@@ -227,40 +233,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    name: "assetEntries",
-    outputs: [
-      {
-        internalType: "address",
-        name: "oracle",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "convertor",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "slippageTolerance",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "cumulativeConvertedAmount",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [],
     name: "authenticator",
     outputs: [
@@ -275,10 +247,10 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "dataExchange",
+    name: "captureNotifyRecipient",
     outputs: [
       {
-        internalType: "contract IDataExchange",
+        internalType: "address",
         name: "",
         type: "address",
       },
@@ -287,10 +259,22 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "feedCapturedValueToL1",
-    outputs: [],
-    stateMutability: "nonpayable",
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    name: "externalExchanges",
+    outputs: [
+      {
+        internalType: "contract IUSDConvertor",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -361,15 +345,28 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "getCapturedValue",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
         name: "authenticator_",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "dataExchange_",
         type: "address",
       },
       {
@@ -381,6 +378,19 @@ const _abi = [
     name: "initialize",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "lastCapturedBlock",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -411,6 +421,25 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    name: "normalizers",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "token",
         type: "address",
       },
@@ -424,26 +453,29 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "newRecipient",
+        type: "address",
+      },
+    ],
+    name: "setCaptureNotifyRecipient",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "token",
         type: "address",
       },
       {
         internalType: "address",
-        name: "oracle",
+        name: "exchange_",
         type: "address",
-      },
-      {
-        internalType: "address",
-        name: "convertor_",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "slippageTolerance",
-        type: "uint256",
       },
     ],
-    name: "setConvertor",
+    name: "setExternalExchange",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -459,6 +491,13 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "tryNotifyCapturedValue",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
