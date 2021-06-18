@@ -38,6 +38,12 @@ const _abi = [
         name: "mintedShare",
         type: "int256",
       },
+      {
+        indexed: false,
+        internalType: "int256",
+        name: "addedPoolMargin",
+        type: "int256",
+      },
     ],
     name: "AddLiquidity",
     type: "event",
@@ -250,6 +256,12 @@ const _abi = [
         name: "burnedShare",
         type: "int256",
       },
+      {
+        indexed: false,
+        internalType: "int256",
+        name: "removedPoolMargin",
+        type: "int256",
+      },
     ],
     name: "RemoveLiquidity",
     type: "event",
@@ -308,6 +320,12 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
+      {
         indexed: true,
         internalType: "address",
         name: "previousKeeper",
@@ -352,6 +370,12 @@ const _abi = [
   {
     anonymous: false,
     inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
       {
         indexed: true,
         internalType: "address",
@@ -616,6 +640,12 @@ const _abi = [
   {
     anonymous: false,
     inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
       {
         indexed: true,
         internalType: "address",
@@ -903,6 +933,25 @@ const _abi = [
         internalType: "uint256",
         name: "total",
         type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
+    ],
+    name: "getKeeper",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
       },
     ],
     stateMutability: "view",
@@ -1316,6 +1365,11 @@ const _abi = [
   },
   {
     inputs: [
+      {
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
       {
         internalType: "address",
         name: "newKeeper",

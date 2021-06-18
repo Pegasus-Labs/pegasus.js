@@ -16,7 +16,7 @@ export const CHAIN_ID_TO_READER_ADDRESS: { [chainID: number]: string } = {
   // arb testnet
   421611: '0x25E74e6D8A414Dff02c9CCC680B49F3708955ECF',
   // arb one
-  42161: '0xD6a78B45caA10Ee3b6b4906D687f0E46dE89f0e2'
+  42161: '0xa48823Ff78e0D4D73D90b0Bf4B22Bf8a6EdBbb57'
 }
 
 export const CHAIN_ID_TO_POOL_CREATOR_ADDRESS: { [chainID: number]: string } = {
@@ -27,7 +27,7 @@ export const CHAIN_ID_TO_POOL_CREATOR_ADDRESS: { [chainID: number]: string } = {
   // arb testnet
   421611: '0x0A1334aCea4E38a746daC7DCf7C3E61F0AB3D834',
   // arb one
-  42161: '0x133906776302D10A2005ec2eD0C92ab6F2cbd903'
+  42161: '0xbCCF6C081d9aa6E8B85602C04e66c5405D9be4A7'
 }
 
 export const CHAIN_ID_TO_BROKER_ADDRESS: { [chainID: number]: string } = {
@@ -38,11 +38,11 @@ export const CHAIN_ID_TO_BROKER_ADDRESS: { [chainID: number]: string } = {
   // arb testnet
   421611: '0xC9010d5B798286651dC24A2c49BbAd673Dd4978b',
   // arb one
-  42161: '0xE0245D11D58a4Cb60687766B9ADe4eEd1dd66B2B'
+  42161: '0x2E6595d664606503E90C5107F844bfDB66b1CeA6'
 }
 
 export const CHAIN_ID_TO_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: number]: string } = {
-  // kovan
+  // kova
   42: '0x6434a5968C51F969D1c91C53eDf2A53b4a2F7cc3',
   // s10poa
   1337: '0xc7b1229fd865f8CC0964FeEDCE7ACa288a8E0A36',
@@ -60,7 +60,7 @@ export const CHAIN_ID_SYMBOL_SERVICE_ADDRESS: { [chainID: number]: string } = {
   // arb testnet
   421611: '0xA4109D0a36E0e66d64F3B7794C60694Ca6D66E22',
   // arb one
-  42161: '0xb95B9fb0539Ec84DeD2855Ed1C9C686Af9A4e8b3'
+  42161: '0x9a2b7B8117548D2DDaeF3fCF4102EF6930C8542A'
 }
 
 export const CHAIN_ID_INVERSE_SERVICE_ADDRESS: { [chainID: number]: string } = {
@@ -71,7 +71,7 @@ export const CHAIN_ID_INVERSE_SERVICE_ADDRESS: { [chainID: number]: string } = {
   // arb testnet
   421611: '0xc4F97bD99f10Ca08Ce9ec9C9CB05C72F358dbC5E',
   // arb one
-  42161: '0x470B57172976b9D60376e78882ca55b1Ab9B6dDf'
+  42161: '0xa4F6b7D4EC1BA48B6506D4557Ce547727e59654A'
 }
 
 // leave 1% when calculating withdrawal penalty if position != 0
