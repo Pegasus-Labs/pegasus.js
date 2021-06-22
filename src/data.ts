@@ -17,28 +17,12 @@ import { SymbolService } from './abi/SymbolService'
 import { SymbolServiceFactory } from './abi/SymbolServiceFactory'
 import { LpGovernor } from './abi/LpGovernor'
 import { LpGovernorFactory } from './abi/LpGovernorFactory'
-import { ShareToken } from './abi/ShareToken'
-import { ShareTokenFactory } from './abi/ShareTokenFactory'
 import { IOracle } from './abi/IOracle'
 import { IOracleFactory } from './abi/IOracleFactory'
 import { OracleRouterCreatorFactory } from './abi/OracleRouterCreatorFactory'
 import { OracleRouterCreator } from './abi/OracleRouterCreator'
-import { ValueCapture } from './abi/ValueCapture'
-import { ValueCaptureFactory } from './abi/ValueCaptureFactory'
-import { RewardDistribution } from './abi/RewardDistribution'
-import { RewardDistributionFactory } from './abi/RewardDistributionFactory'
-import { Xmcb } from './abi/Xmcb'
-import { XmcbFactory } from './abi/XmcbFactory'
-import { GovernorAlpha } from './abi/GovernorAlpha'
-import { GovernorAlphaFactory } from './abi/GovernorAlphaFactory'
-import { Timelock } from './abi/Timelock'
-import { TimelockFactory } from './abi/TimelockFactory'
-import { RemarginHelper } from './abi/RemarginHelper'
-import { RemarginHelperFactory } from './abi/RemarginHelperFactory'
 import { InverseStateService } from './abi/InverseStateService'
 import { InverseStateServiceFactory } from './abi/InverseStateServiceFactory'
-import { McbMinter } from './abi/McbMinter'
-import { McbMinterFactory } from './abi/McbMinterFactory'
 
 export function getLiquidityPoolContract(contractAddress: string, signerOrProvider: SignerOrProvider): LiquidityPool {
   getAddress(contractAddress)
@@ -73,46 +57,6 @@ export function getSymbolServiceContract(contractAddress: string, signerOrProvid
 export function getLpGovernorContract(contractAddress: string, signerOrProvider: SignerOrProvider): LpGovernor {
   getAddress(contractAddress)
   return LpGovernorFactory.connect(contractAddress, signerOrProvider)
-}
-
-export function getShareTokenContract(contractAddress: string, signerOrProvider: SignerOrProvider): ShareToken {
-  getAddress(contractAddress)
-  return ShareTokenFactory.connect(contractAddress, signerOrProvider)
-}
-
-export function getMinterContract(contractAddress: string, signerOrProvider: SignerOrProvider): McbMinter {
-  getAddress(contractAddress)
-  return McbMinterFactory.connect(contractAddress, signerOrProvider)
-}
-
-export function getValueCaptureContract(contractAddress: string, signerOrProvider: SignerOrProvider): ValueCapture {
-  getAddress(contractAddress)
-  return ValueCaptureFactory.connect(contractAddress, signerOrProvider)
-}
-
-export function getRewardDistributionContract(contractAddress: string, signerOrProvider: SignerOrProvider): RewardDistribution {
-  getAddress(contractAddress)
-  return RewardDistributionFactory.connect(contractAddress, signerOrProvider)
-}
-
-export function getXmcbContract(contractAddress: string, signerOrProvider: SignerOrProvider): Xmcb {
-  getAddress(contractAddress)
-  return XmcbFactory.connect(contractAddress, signerOrProvider)
-}
-
-export function getDaoGovernorContract(contractAddress: string, signerOrProvider: SignerOrProvider): GovernorAlpha {
-  getAddress(contractAddress)
-  return GovernorAlphaFactory.connect(contractAddress, signerOrProvider)
-}
-
-export function getTimeLockContract(contractAddress: string, signerOrProvider: SignerOrProvider): Timelock {
-  getAddress(contractAddress)
-  return TimelockFactory.connect(contractAddress, signerOrProvider)
-}
-
-export function getReMarginContract(contractAddress: string, signerOrProvider: SignerOrProvider): RemarginHelper {
-  getAddress(contractAddress)
-  return RemarginHelperFactory.connect(contractAddress, signerOrProvider)
 }
 
 export async function getReaderContract(signerOrProvider: SignerOrProvider, contractAddress?: string): Promise<Reader> {
