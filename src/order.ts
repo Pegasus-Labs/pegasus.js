@@ -129,7 +129,10 @@ export function orderSideAvailable(
     const { close } = splitAmount(remainPosition, order.amount)
     if (!close.isZero()) {
       const newPosition = remainPosition.plus(close)
-      const newPositionMargin = mark.times(newPosition.abs()).times(imRate)
+      let newPositionMargin = mark.times(newPosition.abs()).times(imRate)
+      if (!newPosition.isZero()) {
+        newPositionMargin = newPositionMargin.plus(perpetual.keeperGasReward)
+      }
       const potentialPNL = mark.minus(order.limitPrice).times(close)
       // loss = pnl if pnl < 0 else 0
       const potentialLoss = BigNumber.minimum(potentialPNL, _0)
@@ -170,10 +173,14 @@ export function orderSideAvailable(
         let withdraw = _0
         if (afterMargin.gte(newPositionMargin)) {
           // withdraw only if marginBalance >= IM
-          // withdraw = afterMargin - remainMargin * (1 - | close / remainPosition |)
+          // withdraw = afterMargin - reserved2 - (remainMargin - reserved1) * (1 - | close / remainPosition |)
           withdraw = close.div(remainPosition).abs()
-          withdraw = _1.minus(withdraw).times(remainMargin)
+          withdraw = _1.minus(withdraw).times(remainMargin.minus(perpetual.keeperGasReward))
           withdraw = afterMargin.minus(withdraw)
+          if (!newPosition.isZero()) {
+            withdraw = withdraw.minus(perpetual.keeperGasReward)
+          }
+          // never deposit when close
           withdraw = BigNumber.maximum(_0, withdraw)
         }
         remainMargin = afterMargin.minus(withdraw)
@@ -202,10 +209,9 @@ export function orderSideAvailable(
     remainPosition = remainPosition.plus(order.amount)
     remainMargin = remainMargin.plus(potentialLoss).minus(fee)
     // at least IM and keeperGasReward
-    const im = perpetual.markPrice.times(remainPosition.abs()).times(perpetual.initialMarginRate)
+    const im = perpetual.markPrice.times(remainPosition.abs()).times(perpetual.initialMarginRate).plus(perpetual.keeperGasReward)
     cost = BigNumber.maximum(
       im.minus(remainMargin /* old margin */),
-      perpetual.keeperGasReward.minus(remainMargin /* old margin */),
       cost
     )
     remainMargin = remainMargin.plus(cost)
@@ -226,7 +232,7 @@ export function orderPerpetualAvailable(
   trader: AccountStorage,
   walletBalance: BigNumber,
   orders: Order[]
-) : BigNumber {
+): BigNumber {
   const { buyOrders, sellOrders } = splitOrderSide(orders)
   const marginBalance = computeAccount(p, perpetualIndex, trader).accountComputed.marginBalance
   const buySide = orderSideAvailable(p, perpetualIndex, marginBalance, trader.positionAmount, trader.targetLeverage, walletBalance, buyOrders)
@@ -257,7 +263,7 @@ export function orderAvailable(
   walletBalance: BigNumber,
   orders: Order[],
   symbol: number, // the current market
-) : BigNumber {
+): BigNumber {
   const symbol2Orders = splitOrderPerpetual(orders)
   // walletBalance
   let available = walletBalance
