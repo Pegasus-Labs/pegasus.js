@@ -18,11 +18,6 @@ export class OracleRouterCreatorFactory {
 
 const _abi = [
   {
-    inputs: [],
-    stateMutability: "nonpayable",
-    type: "constructor",
-  },
-  {
     anonymous: false,
     inputs: [
       {

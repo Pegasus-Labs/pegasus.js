@@ -22,14 +22,12 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface UniswapV3OracleAdaptorInterface extends ethers.utils.Interface {
   functions: {
     "collateral()": FunctionFragment;
+    "dumpPath()": FunctionFragment;
     "isMarketClosed()": FunctionFragment;
     "isTerminated()": FunctionFragment;
-    "longPeriod()": FunctionFragment;
-    "path(uint256)": FunctionFragment;
-    "pools(uint256)": FunctionFragment;
     "priceTWAPLong()": FunctionFragment;
     "priceTWAPShort()": FunctionFragment;
-    "shortPeriod()": FunctionFragment;
+    "source()": FunctionFragment;
     "underlyingAsset()": FunctionFragment;
   };
 
@@ -37,6 +35,7 @@ interface UniswapV3OracleAdaptorInterface extends ethers.utils.Interface {
     functionFragment: "collateral",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "dumpPath", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "isMarketClosed",
     values?: undefined
@@ -46,12 +45,6 @@ interface UniswapV3OracleAdaptorInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "longPeriod",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "path", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "pools", values: [BigNumberish]): string;
-  encodeFunctionData(
     functionFragment: "priceTWAPLong",
     values?: undefined
   ): string;
@@ -59,16 +52,14 @@ interface UniswapV3OracleAdaptorInterface extends ethers.utils.Interface {
     functionFragment: "priceTWAPShort",
     values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: "shortPeriod",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "source", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "underlyingAsset",
     values?: undefined
   ): string;
 
   decodeFunctionResult(functionFragment: "collateral", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "dumpPath", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isMarketClosed",
     data: BytesLike
@@ -77,9 +68,6 @@ interface UniswapV3OracleAdaptorInterface extends ethers.utils.Interface {
     functionFragment: "isTerminated",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "longPeriod", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "path", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "pools", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "priceTWAPLong",
     data: BytesLike
@@ -88,10 +76,7 @@ interface UniswapV3OracleAdaptorInterface extends ethers.utils.Interface {
     functionFragment: "priceTWAPShort",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "shortPeriod",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "source", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "underlyingAsset",
     data: BytesLike
@@ -126,6 +111,64 @@ export class UniswapV3OracleAdaptor extends Contract {
       0: string;
     }>;
 
+    dumpPath(
+      overrides?: CallOverrides
+    ): Promise<{
+      data: {
+        path: string[];
+        symbols: string[];
+        fees: number[];
+        shortPeriod: number;
+        longPeriod: number;
+        0: string[];
+        1: string[];
+        2: number[];
+        3: number;
+        4: number;
+      };
+      0: {
+        path: string[];
+        symbols: string[];
+        fees: number[];
+        shortPeriod: number;
+        longPeriod: number;
+        0: string[];
+        1: string[];
+        2: number[];
+        3: number;
+        4: number;
+      };
+    }>;
+
+    "dumpPath()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      data: {
+        path: string[];
+        symbols: string[];
+        fees: number[];
+        shortPeriod: number;
+        longPeriod: number;
+        0: string[];
+        1: string[];
+        2: number[];
+        3: number;
+        4: number;
+      };
+      0: {
+        path: string[];
+        symbols: string[];
+        fees: number[];
+        shortPeriod: number;
+        longPeriod: number;
+        0: string[];
+        1: string[];
+        2: number[];
+        3: number;
+        4: number;
+      };
+    }>;
+
     isMarketClosed(
       overrides?: CallOverrides
     ): Promise<{
@@ -148,46 +191,6 @@ export class UniswapV3OracleAdaptor extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: boolean;
-    }>;
-
-    longPeriod(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: number;
-    }>;
-
-    "longPeriod()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: number;
-    }>;
-
-    path(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "path(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    pools(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "pools(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
     }>;
 
     priceTWAPLong(
@@ -218,16 +221,16 @@ export class UniswapV3OracleAdaptor extends Contract {
       1: BigNumber;
     }>;
 
-    shortPeriod(
+    source(
       overrides?: CallOverrides
     ): Promise<{
-      0: number;
+      0: string;
     }>;
 
-    "shortPeriod()"(
+    "source()"(
       overrides?: CallOverrides
     ): Promise<{
-      0: number;
+      0: string;
     }>;
 
     underlyingAsset(
@@ -247,6 +250,36 @@ export class UniswapV3OracleAdaptor extends Contract {
 
   "collateral()"(overrides?: CallOverrides): Promise<string>;
 
+  dumpPath(
+    overrides?: CallOverrides
+  ): Promise<{
+    path: string[];
+    symbols: string[];
+    fees: number[];
+    shortPeriod: number;
+    longPeriod: number;
+    0: string[];
+    1: string[];
+    2: number[];
+    3: number;
+    4: number;
+  }>;
+
+  "dumpPath()"(
+    overrides?: CallOverrides
+  ): Promise<{
+    path: string[];
+    symbols: string[];
+    fees: number[];
+    shortPeriod: number;
+    longPeriod: number;
+    0: string[];
+    1: string[];
+    2: number[];
+    3: number;
+    4: number;
+  }>;
+
   isMarketClosed(overrides?: CallOverrides): Promise<boolean>;
 
   "isMarketClosed()"(overrides?: CallOverrides): Promise<boolean>;
@@ -254,24 +287,6 @@ export class UniswapV3OracleAdaptor extends Contract {
   isTerminated(overrides?: CallOverrides): Promise<boolean>;
 
   "isTerminated()"(overrides?: CallOverrides): Promise<boolean>;
-
-  longPeriod(overrides?: CallOverrides): Promise<number>;
-
-  "longPeriod()"(overrides?: CallOverrides): Promise<number>;
-
-  path(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  "path(uint256)"(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  pools(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  "pools(uint256)"(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
 
   priceTWAPLong(
     overrides?: CallOverrides
@@ -301,9 +316,9 @@ export class UniswapV3OracleAdaptor extends Contract {
     1: BigNumber;
   }>;
 
-  shortPeriod(overrides?: CallOverrides): Promise<number>;
+  source(overrides?: CallOverrides): Promise<string>;
 
-  "shortPeriod()"(overrides?: CallOverrides): Promise<number>;
+  "source()"(overrides?: CallOverrides): Promise<string>;
 
   underlyingAsset(overrides?: CallOverrides): Promise<string>;
 
@@ -314,6 +329,36 @@ export class UniswapV3OracleAdaptor extends Contract {
 
     "collateral()"(overrides?: CallOverrides): Promise<string>;
 
+    dumpPath(
+      overrides?: CallOverrides
+    ): Promise<{
+      path: string[];
+      symbols: string[];
+      fees: number[];
+      shortPeriod: number;
+      longPeriod: number;
+      0: string[];
+      1: string[];
+      2: number[];
+      3: number;
+      4: number;
+    }>;
+
+    "dumpPath()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      path: string[];
+      symbols: string[];
+      fees: number[];
+      shortPeriod: number;
+      longPeriod: number;
+      0: string[];
+      1: string[];
+      2: number[];
+      3: number;
+      4: number;
+    }>;
+
     isMarketClosed(overrides?: CallOverrides): Promise<boolean>;
 
     "isMarketClosed()"(overrides?: CallOverrides): Promise<boolean>;
@@ -321,24 +366,6 @@ export class UniswapV3OracleAdaptor extends Contract {
     isTerminated(overrides?: CallOverrides): Promise<boolean>;
 
     "isTerminated()"(overrides?: CallOverrides): Promise<boolean>;
-
-    longPeriod(overrides?: CallOverrides): Promise<number>;
-
-    "longPeriod()"(overrides?: CallOverrides): Promise<number>;
-
-    path(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-    "path(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    pools(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-    "pools(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
 
     priceTWAPLong(
       overrides?: CallOverrides
@@ -368,9 +395,9 @@ export class UniswapV3OracleAdaptor extends Contract {
       1: BigNumber;
     }>;
 
-    shortPeriod(overrides?: CallOverrides): Promise<number>;
+    source(overrides?: CallOverrides): Promise<string>;
 
-    "shortPeriod()"(overrides?: CallOverrides): Promise<number>;
+    "source()"(overrides?: CallOverrides): Promise<string>;
 
     underlyingAsset(overrides?: CallOverrides): Promise<string>;
 
@@ -384,6 +411,10 @@ export class UniswapV3OracleAdaptor extends Contract {
 
     "collateral()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    dumpPath(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "dumpPath()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     isMarketClosed(overrides?: CallOverrides): Promise<BigNumber>;
 
     "isMarketClosed()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -391,24 +422,6 @@ export class UniswapV3OracleAdaptor extends Contract {
     isTerminated(overrides?: CallOverrides): Promise<BigNumber>;
 
     "isTerminated()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    longPeriod(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "longPeriod()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    path(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "path(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    pools(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "pools(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     priceTWAPLong(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -418,9 +431,9 @@ export class UniswapV3OracleAdaptor extends Contract {
 
     "priceTWAPShort()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    shortPeriod(overrides?: CallOverrides): Promise<BigNumber>;
+    source(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "shortPeriod()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "source()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     underlyingAsset(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -432,6 +445,10 @@ export class UniswapV3OracleAdaptor extends Contract {
 
     "collateral()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    dumpPath(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "dumpPath()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     isMarketClosed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "isMarketClosed()"(
@@ -441,30 +458,6 @@ export class UniswapV3OracleAdaptor extends Contract {
     isTerminated(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "isTerminated()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    longPeriod(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "longPeriod()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    path(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "path(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    pools(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "pools(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     priceTWAPLong(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -476,9 +469,9 @@ export class UniswapV3OracleAdaptor extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    shortPeriod(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    source(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "shortPeriod()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "source()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     underlyingAsset(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

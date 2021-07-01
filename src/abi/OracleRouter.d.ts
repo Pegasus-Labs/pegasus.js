@@ -29,6 +29,7 @@ interface OracleRouterInterface extends ethers.utils.Interface {
     "isTerminated()": FunctionFragment;
     "priceTWAPLong()": FunctionFragment;
     "priceTWAPShort()": FunctionFragment;
+    "source()": FunctionFragment;
     "underlyingAsset()": FunctionFragment;
   };
 
@@ -54,6 +55,7 @@ interface OracleRouterInterface extends ethers.utils.Interface {
     functionFragment: "priceTWAPShort",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "source", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "underlyingAsset",
     values?: undefined
@@ -78,6 +80,7 @@ interface OracleRouterInterface extends ethers.utils.Interface {
     functionFragment: "priceTWAPShort",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "source", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "underlyingAsset",
     data: BytesLike
@@ -170,6 +173,18 @@ export class OracleRouter extends Contract {
 
     "priceTWAPShort()"(overrides?: Overrides): Promise<ContractTransaction>;
 
+    source(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "source()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
     underlyingAsset(
       overrides?: CallOverrides
     ): Promise<{
@@ -240,6 +255,10 @@ export class OracleRouter extends Contract {
   priceTWAPShort(overrides?: Overrides): Promise<ContractTransaction>;
 
   "priceTWAPShort()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+  source(overrides?: CallOverrides): Promise<string>;
+
+  "source()"(overrides?: CallOverrides): Promise<string>;
 
   underlyingAsset(overrides?: CallOverrides): Promise<string>;
 
@@ -332,6 +351,10 @@ export class OracleRouter extends Contract {
       1: BigNumber;
     }>;
 
+    source(overrides?: CallOverrides): Promise<string>;
+
+    "source()"(overrides?: CallOverrides): Promise<string>;
+
     underlyingAsset(overrides?: CallOverrides): Promise<string>;
 
     "underlyingAsset()"(overrides?: CallOverrides): Promise<string>;
@@ -368,6 +391,10 @@ export class OracleRouter extends Contract {
 
     "priceTWAPShort()"(overrides?: Overrides): Promise<BigNumber>;
 
+    source(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "source()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     underlyingAsset(overrides?: CallOverrides): Promise<BigNumber>;
 
     "underlyingAsset()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -401,6 +428,10 @@ export class OracleRouter extends Contract {
     priceTWAPShort(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "priceTWAPShort()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    source(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "source()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     underlyingAsset(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

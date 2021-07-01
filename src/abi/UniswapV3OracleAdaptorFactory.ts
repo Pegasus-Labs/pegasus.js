@@ -67,6 +67,46 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "dumpPath",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address[]",
+            name: "path",
+            type: "address[]",
+          },
+          {
+            internalType: "string[]",
+            name: "symbols",
+            type: "string[]",
+          },
+          {
+            internalType: "uint24[]",
+            name: "fees",
+            type: "uint24[]",
+          },
+          {
+            internalType: "uint32",
+            name: "shortPeriod",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "longPeriod",
+            type: "uint32",
+          },
+        ],
+        internalType: "struct UniswapV3OracleAdaptor.DumpData",
+        name: "data",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "isMarketClosed",
     outputs: [
       {
@@ -89,57 +129,6 @@ const _abi = [
       },
     ],
     stateMutability: "pure",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "longPeriod",
-    outputs: [
-      {
-        internalType: "uint32",
-        name: "",
-        type: "uint32",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    name: "path",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    name: "pools",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {
@@ -180,12 +169,12 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "shortPeriod",
+    name: "source",
     outputs: [
       {
-        internalType: "uint32",
+        internalType: "string",
         name: "",
-        type: "uint32",
+        type: "string",
       },
     ],
     stateMutability: "view",
