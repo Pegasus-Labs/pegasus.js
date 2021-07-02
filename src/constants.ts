@@ -42,8 +42,8 @@ export const CHAIN_ID_TO_BROKER_ADDRESS: { [chainID: number]: string } = {
 }
 
 export const CHAIN_ID_TO_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: number]: string } = {
-  // kova
-  42: '0x6434a5968C51F969D1c91C53eDf2A53b4a2F7cc3',
+  // kovan
+  42: '0x5374F824c4EB93e37Ee21B5CF4e762F246D82d12',
   // s10poa
   1337: '0x372d180ef40873887768eb1d29dA1ca657895CBF',
   // arb testnet
@@ -53,6 +53,8 @@ export const CHAIN_ID_TO_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: number]: str
 }
 
 export const CHAIN_ID_TO_UNISWAP_V3_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: number]: string } = {
+  // kovan
+  42: '0xF67b243CF00ae7343Bd177Edf2d0EC4bAC4F47B7',
   // arb testnet
   421611: '0x6154996e1C80dE982f9eebC3E93B4DFd4F30a74a'
 }
