@@ -119,7 +119,28 @@ export function getOracleRouterKey(path: Array<OracleRoute>): string {
   if (path.length === 0) {
     throw new InvalidArgumentError('empty path')
   }
-  const encodedPath = ethers.utils.defaultAbiCoder.encode(["tuple(address oracle, bool isInverse)[]"], [path]);
+  const encodedPath = ethers.utils.defaultAbiCoder.encode(
+    ["tuple(address oracle, bool isInverse)[]"],
+    [path]);
+  const hash = ethers.utils.keccak256(encodedPath);
+  return hash
+}
+
+export function getUniswapV3OracleKey(
+  path: Array<string>,
+  fees: Array<number>, // 500, 3000, 10000
+  shortPeriod: number,
+  longPeriod: number,
+): string {
+  if (path.length < 2) {
+    throw new InvalidArgumentError('bad path')
+  }
+  if (path.length !== fees.length + 1) {
+    throw new InvalidArgumentError('bad fees')
+  }
+  const encodedPath = ethers.utils.defaultAbiCoder.encode(
+    ["tuple(address[] path, uint24[] fees, uint32 shortPeriod, uint32 longPeriod)"],
+    [{ path, fees, shortPeriod, longPeriod }]);
   const hash = ethers.utils.keccak256(encodedPath);
   return hash
 }

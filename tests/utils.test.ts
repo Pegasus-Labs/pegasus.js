@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
 import { BigNumberish, InvalidArgumentError } from '../src/types'
-import { normalizeBigNumberish, hasTheSameSign, mostSignificantBit, sqrt, splitAmount, getOracleRouterKey, searchMaxAmount } from '../src/utils'
+import { normalizeBigNumberish, hasTheSameSign, mostSignificantBit, sqrt, splitAmount, getOracleRouterKey, searchMaxAmount, getUniswapV3OracleKey } from '../src/utils'
 import { _0, _1 } from '../src/constants'
 
 import { extendExpect } from './helper'
@@ -250,6 +250,16 @@ describe('getOracleRouterKey', (): void => {
     { oracle: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512', isInverse: true},
   ])
   expect(key).toEqual('0x9552d4caa8c0f86dd82c8e6440f35ac070a1181499ace3d895069c2ae3e20f25')
+})
+
+describe('getUniswapV3OracleKey', (): void => {
+  const key = getUniswapV3OracleKey(
+    [ "0x4e352cF164E64ADCBad318C3a1e222E9EBa4Ce42", "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8" ],
+    [ 3000 ],
+    1,
+    30,
+  )
+  expect(key).toEqual('0xcf9f54e652994b11925b23df89e8dd743b04382c164c6f451b0a04b197fe3c5e')
 })
 
 describe('searchMaxAmount', (): void => {
