@@ -32,6 +32,8 @@ export type { OracleRouterCreator, OracleRouterCreatorInterface } from './abi/Or
 export { OracleRouterCreatorFactory } from './abi/OracleRouterCreatorFactory'
 export type { InverseStateService, InverseStateServiceInterface } from './abi/InverseStateService'
 export { InverseStateServiceFactory } from './abi/InverseStateServiceFactory'
+export type { UniswapV3OracleAdaptorCreator, UniswapV3OracleAdaptorCreatorInterface } from './abi/UniswapV3OracleAdaptorCreator'
+export { UniswapV3OracleAdaptorCreatorFactory } from './abi/UniswapV3OracleAdaptorCreatorFactory'
 export type { UniswapV3OracleAdaptor, UniswapV3OracleAdaptorInterface } from './abi/UniswapV3OracleAdaptor'
 export { UniswapV3OracleAdaptorFactory } from './abi/UniswapV3OracleAdaptorFactory'
 export type { UniswapV3Tool, UniswapV3ToolInterface } from './abi/UniswapV3Tool'
