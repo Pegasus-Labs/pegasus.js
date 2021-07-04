@@ -146,11 +146,12 @@ describe('computeAMMMaxTradeAmount', function() {
 
   it(`new user with walletBalance`, function() {
     const walletBalance = 7000
-    const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage0, walletBalance, true)
+    const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage0, walletBalance, true) // 0.999
     const res = computeAMMTrade(poolStorage4, TEST_MARKET_INDEX0, accountStorage0, amount, TradeFlag.MASK_USE_TARGET_LEVERAGE)
     expect(res.tradeIsSafe).toBeTruthy()
-    expect(amount.gt('1.0')).toBeTruthy()
-    expect(amount.lt('1.2')).toBeTruthy()
+    expect(res.trader.accountComputed.leverage).toBeBigNumber(_1)
+    expect(amount.gt('0.99')).toBeTruthy()
+    expect(amount.lt('1.00')).toBeTruthy()
     expect(res.adjustCollateral.gt('6999')).toBeTruthy()
     expect(res.adjustCollateral.lt('7001')).toBeTruthy()
   })

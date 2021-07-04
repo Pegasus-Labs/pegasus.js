@@ -40,13 +40,15 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
   const isIMSafe = availableMargin.gte(_0)
   const isMMSafe = marginBalance.minus(maintenanceMargin).minus(reservedCash).gte(_0)
   const isMarginSafe = marginBalance.gte(reservedCash)
+  const marginWithoutReserved = marginBalance.minus(reservedCash)
   let leverage = _0
   if (positionValue.gt(_0)) {
-    leverage = marginBalance.gt(_0) ? positionValue.div(marginBalance) : new BigNumber('Infinity')
+    leverage = marginWithoutReserved.gt(_0)
+      ? positionValue.div(marginWithoutReserved)
+      : new BigNumber('Infinity')
   }
   let marginRatio = _0
   if (maintenanceMargin.gt(_0)) {
-    const marginWithoutReserved = marginBalance.minus(reservedCash)
     marginRatio = marginWithoutReserved.gt(_0)
       ? maintenanceMargin.div(marginWithoutReserved)
       : new BigNumber('Infinity')
@@ -312,7 +314,8 @@ export function adjustMarginLeverage(
     let adjustCollateral = _0
     if (position2.minus(deltaPosition).isZero() || !normalizedClose.isZero()) {
       // strategy: let new margin balance = openPositionMargin
-      adjustCollateral = openPositionMargin.minus(afterTrade.accountComputed.marginBalance)
+      adjustCollateral = openPositionMargin.plus(perpetual.keeperGasReward)
+      adjustCollateral = adjustCollateral.minus(afterTrade.accountComputed.marginBalance)
     } else {
       // strategy: always append positionMargin of openPosition
       // adjustCollateral = openPositionMargin - pnl + fee
