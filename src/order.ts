@@ -28,7 +28,7 @@ export function splitOrderSide(orders: Order[]) {
   orders.forEach(order => {
     if (order.amount.gt(_0)) {
       buyOrders.push(order)
-    } else {
+    } else if (order.amount.lt(_0)) {
       sellOrders.push(order)
     }
   })
@@ -44,7 +44,7 @@ export function splitOrdersByLimitPrice(orders: Order[], limitPrice: BigNumber, 
   const preOrders: Order[] = []
   const postOrders: Order[] = []
   orders.forEach(order => {
-    if ((isBuy && order.amount.lt(_0)) || (!isBuy && order.amount.gt(_0))) {
+    if ((isBuy && order.amount.lte(_0)) || (!isBuy && order.amount.gte(_0))) {
       return
     }
     if ((isBuy && order.limitPrice.gte(limitPrice)) || (!isBuy && order.limitPrice.lte(limitPrice))) {
@@ -206,6 +206,9 @@ export function orderSideAvailable(
   for (let i = 0; i < remainOrders.length; i++) {
     const order = remainOrders[i]
     let { cost, fee, potentialLoss } = openOrderCost(p, perpetualIndex, order, targetLeverage)
+    if (remainPosition.isZero()) {
+      cost = cost.plus(perpetual.keeperGasReward)
+    }
     remainPosition = remainPosition.plus(order.amount)
     remainMargin = remainMargin.plus(potentialLoss).minus(fee)
     // at least IM and keeperGasReward
