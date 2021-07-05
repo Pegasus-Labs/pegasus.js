@@ -38,7 +38,7 @@ export const CHAIN_ID_TO_BROKER_ADDRESS: { [chainID: number]: string } = {
   // arb testnet
   421611: '0xC9010d5B798286651dC24A2c49BbAd673Dd4978b',
   // arb one
-  42161: '0x2E6595d664606503E90C5107F844bfDB66b1CeA6'
+  42161: '0xAAF4d5019F98f12c7ab0Ca877856Bcdd65213867'
 }
 
 export const CHAIN_ID_TO_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: number]: string } = {
