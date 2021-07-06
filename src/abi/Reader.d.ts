@@ -30,7 +30,8 @@ interface ReaderInterface extends ethers.utils.Interface {
     "poolCreator()": FunctionFragment;
     "queryAddLiquidity(address,int256,int256)": FunctionFragment;
     "queryRemoveLiquidity(address,int256,int256)": FunctionFragment;
-    "queryTradeWithAMM(address,uint256,int256)": FunctionFragment;
+    "queryTrade(address,uint256,address,int256,int256,uint256,address,uint32)": FunctionFragment;
+    "readIndexPrices(address[])": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -66,8 +67,21 @@ interface ReaderInterface extends ethers.utils.Interface {
     values: [string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "queryTradeWithAMM",
-    values: [string, BigNumberish, BigNumberish]
+    functionFragment: "queryTrade",
+    values: [
+      string,
+      BigNumberish,
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      string,
+      BigNumberish
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "readIndexPrices",
+    values: [string[]]
   ): string;
 
   decodeFunctionResult(
@@ -102,8 +116,9 @@ interface ReaderInterface extends ethers.utils.Interface {
     functionFragment: "queryRemoveLiquidity",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "queryTrade", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "queryTradeWithAMM",
+    functionFragment: "readIndexPrices",
     data: BytesLike
   ): Result;
 
@@ -228,17 +243,37 @@ export class Reader extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    queryTradeWithAMM(
+    queryTrade(
       liquidityPool: string,
       perpetualIndex: BigNumberish,
+      trader: string,
       amount: BigNumberish,
+      limitPrice: BigNumberish,
+      deadline: BigNumberish,
+      referrer: string,
+      flags: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "queryTradeWithAMM(address,uint256,int256)"(
+    "queryTrade(address,uint256,address,int256,int256,uint256,address,uint32)"(
       liquidityPool: string,
       perpetualIndex: BigNumberish,
+      trader: string,
       amount: BigNumberish,
+      limitPrice: BigNumberish,
+      deadline: BigNumberish,
+      referrer: string,
+      flags: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    readIndexPrices(
+      oracles: string[],
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "readIndexPrices(address[])"(
+      oracles: string[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
   };
@@ -332,17 +367,37 @@ export class Reader extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  queryTradeWithAMM(
+  queryTrade(
     liquidityPool: string,
     perpetualIndex: BigNumberish,
+    trader: string,
     amount: BigNumberish,
+    limitPrice: BigNumberish,
+    deadline: BigNumberish,
+    referrer: string,
+    flags: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "queryTradeWithAMM(address,uint256,int256)"(
+  "queryTrade(address,uint256,address,int256,int256,uint256,address,uint32)"(
     liquidityPool: string,
     perpetualIndex: BigNumberish,
+    trader: string,
     amount: BigNumberish,
+    limitPrice: BigNumberish,
+    deadline: BigNumberish,
+    referrer: string,
+    flags: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  readIndexPrices(
+    oracles: string[],
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "readIndexPrices(address[])"(
+    oracles: string[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1451,32 +1506,66 @@ export class Reader extends Contract {
       2: BigNumber;
     }>;
 
-    queryTradeWithAMM(
+    queryTrade(
       liquidityPool: string,
       perpetualIndex: BigNumberish,
+      trader: string,
       amount: BigNumberish,
+      limitPrice: BigNumberish,
+      deadline: BigNumberish,
+      referrer: string,
+      flags: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       isSynced: boolean;
-      deltaCash: BigNumber;
-      deltaPosition: BigNumber;
+      tradePrice: BigNumber;
+      totalFee: BigNumber;
+      cost: BigNumber;
       0: boolean;
       1: BigNumber;
       2: BigNumber;
+      3: BigNumber;
     }>;
 
-    "queryTradeWithAMM(address,uint256,int256)"(
+    "queryTrade(address,uint256,address,int256,int256,uint256,address,uint32)"(
       liquidityPool: string,
       perpetualIndex: BigNumberish,
+      trader: string,
       amount: BigNumberish,
+      limitPrice: BigNumberish,
+      deadline: BigNumberish,
+      referrer: string,
+      flags: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
       isSynced: boolean;
-      deltaCash: BigNumber;
-      deltaPosition: BigNumber;
+      tradePrice: BigNumber;
+      totalFee: BigNumber;
+      cost: BigNumber;
       0: boolean;
       1: BigNumber;
       2: BigNumber;
+      3: BigNumber;
+    }>;
+
+    readIndexPrices(
+      oracles: string[],
+      overrides?: CallOverrides
+    ): Promise<{
+      isSuccess: boolean[];
+      indexPrices: BigNumber[];
+      0: boolean[];
+      1: BigNumber[];
+    }>;
+
+    "readIndexPrices(address[])"(
+      oracles: string[],
+      overrides?: CallOverrides
+    ): Promise<{
+      isSuccess: boolean[];
+      indexPrices: BigNumber[];
+      0: boolean[];
+      1: BigNumber[];
     }>;
   };
 
@@ -1575,17 +1664,37 @@ export class Reader extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    queryTradeWithAMM(
+    queryTrade(
       liquidityPool: string,
       perpetualIndex: BigNumberish,
+      trader: string,
       amount: BigNumberish,
+      limitPrice: BigNumberish,
+      deadline: BigNumberish,
+      referrer: string,
+      flags: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "queryTradeWithAMM(address,uint256,int256)"(
+    "queryTrade(address,uint256,address,int256,int256,uint256,address,uint32)"(
       liquidityPool: string,
       perpetualIndex: BigNumberish,
+      trader: string,
       amount: BigNumberish,
+      limitPrice: BigNumberish,
+      deadline: BigNumberish,
+      referrer: string,
+      flags: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    readIndexPrices(
+      oracles: string[],
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "readIndexPrices(address[])"(
+      oracles: string[],
       overrides?: Overrides
     ): Promise<BigNumber>;
   };
@@ -1683,17 +1792,37 @@ export class Reader extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    queryTradeWithAMM(
+    queryTrade(
       liquidityPool: string,
       perpetualIndex: BigNumberish,
+      trader: string,
       amount: BigNumberish,
+      limitPrice: BigNumberish,
+      deadline: BigNumberish,
+      referrer: string,
+      flags: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "queryTradeWithAMM(address,uint256,int256)"(
+    "queryTrade(address,uint256,address,int256,int256,uint256,address,uint32)"(
       liquidityPool: string,
       perpetualIndex: BigNumberish,
+      trader: string,
       amount: BigNumberish,
+      limitPrice: BigNumberish,
+      deadline: BigNumberish,
+      referrer: string,
+      flags: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    readIndexPrices(
+      oracles: string[],
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "readIndexPrices(address[])"(
+      oracles: string[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
   };

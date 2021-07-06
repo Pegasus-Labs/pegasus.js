@@ -46,7 +46,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "listActiveAccounts(uint256,uint256,uint256)": FunctionFragment;
     "queryAddLiquidity(int256,int256)": FunctionFragment;
     "queryRemoveLiquidity(int256,int256)": FunctionFragment;
-    "queryTradeWithAMM(uint256,int256)": FunctionFragment;
+    "queryTrade(uint256,address,int256,int256,uint256,address,uint32)": FunctionFragment;
     "removeLiquidity(int256,int256)": FunctionFragment;
     "revokeOperator()": FunctionFragment;
     "runLiquidityPool()": FunctionFragment;
@@ -205,8 +205,16 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "queryTradeWithAMM",
-    values: [BigNumberish, BigNumberish]
+    functionFragment: "queryTrade",
+    values: [
+      BigNumberish,
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      string,
+      BigNumberish
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "removeLiquidity",
@@ -415,10 +423,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     functionFragment: "queryRemoveLiquidity",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "queryTradeWithAMM",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "queryTrade", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "removeLiquidity",
     data: BytesLike
@@ -1180,27 +1185,27 @@ export class LiquidityPool extends Contract {
       1: BigNumber;
     }>;
 
-    queryTradeWithAMM(
+    queryTrade(
       perpetualIndex: BigNumberish,
+      trader: string,
       amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      deltaCash: BigNumber;
-      deltaPosition: BigNumber;
-      0: BigNumber;
-      1: BigNumber;
-    }>;
+      limitPrice: BigNumberish,
+      deadline: BigNumberish,
+      referrer: string,
+      flags: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
-    "queryTradeWithAMM(uint256,int256)"(
+    "queryTrade(uint256,address,int256,int256,uint256,address,uint32)"(
       perpetualIndex: BigNumberish,
+      trader: string,
       amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      deltaCash: BigNumber;
-      deltaPosition: BigNumber;
-      0: BigNumber;
-      1: BigNumber;
-    }>;
+      limitPrice: BigNumberish,
+      deadline: BigNumberish,
+      referrer: string,
+      flags: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     removeLiquidity(
       shareToRemove: BigNumberish,
@@ -2083,27 +2088,27 @@ export class LiquidityPool extends Contract {
     1: BigNumber;
   }>;
 
-  queryTradeWithAMM(
+  queryTrade(
     perpetualIndex: BigNumberish,
+    trader: string,
     amount: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<{
-    deltaCash: BigNumber;
-    deltaPosition: BigNumber;
-    0: BigNumber;
-    1: BigNumber;
-  }>;
+    limitPrice: BigNumberish,
+    deadline: BigNumberish,
+    referrer: string,
+    flags: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  "queryTradeWithAMM(uint256,int256)"(
+  "queryTrade(uint256,address,int256,int256,uint256,address,uint32)"(
     perpetualIndex: BigNumberish,
+    trader: string,
     amount: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<{
-    deltaCash: BigNumber;
-    deltaPosition: BigNumber;
-    0: BigNumber;
-    1: BigNumber;
-  }>;
+    limitPrice: BigNumberish,
+    deadline: BigNumberish,
+    referrer: string,
+    flags: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   removeLiquidity(
     shareToRemove: BigNumberish,
@@ -2986,26 +2991,40 @@ export class LiquidityPool extends Contract {
       1: BigNumber;
     }>;
 
-    queryTradeWithAMM(
+    queryTrade(
       perpetualIndex: BigNumberish,
+      trader: string,
       amount: BigNumberish,
+      limitPrice: BigNumberish,
+      deadline: BigNumberish,
+      referrer: string,
+      flags: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      deltaCash: BigNumber;
-      deltaPosition: BigNumber;
+      tradePrice: BigNumber;
+      totalFee: BigNumber;
+      cost: BigNumber;
       0: BigNumber;
       1: BigNumber;
+      2: BigNumber;
     }>;
 
-    "queryTradeWithAMM(uint256,int256)"(
+    "queryTrade(uint256,address,int256,int256,uint256,address,uint32)"(
       perpetualIndex: BigNumberish,
+      trader: string,
       amount: BigNumberish,
+      limitPrice: BigNumberish,
+      deadline: BigNumberish,
+      referrer: string,
+      flags: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      deltaCash: BigNumber;
-      deltaPosition: BigNumber;
+      tradePrice: BigNumber;
+      totalFee: BigNumber;
+      cost: BigNumber;
       0: BigNumber;
       1: BigNumber;
+      2: BigNumber;
     }>;
 
     removeLiquidity(
@@ -3759,16 +3778,26 @@ export class LiquidityPool extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    queryTradeWithAMM(
+    queryTrade(
       perpetualIndex: BigNumberish,
+      trader: string,
       amount: BigNumberish,
-      overrides?: CallOverrides
+      limitPrice: BigNumberish,
+      deadline: BigNumberish,
+      referrer: string,
+      flags: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "queryTradeWithAMM(uint256,int256)"(
+    "queryTrade(uint256,address,int256,int256,uint256,address,uint32)"(
       perpetualIndex: BigNumberish,
+      trader: string,
       amount: BigNumberish,
-      overrides?: CallOverrides
+      limitPrice: BigNumberish,
+      deadline: BigNumberish,
+      referrer: string,
+      flags: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     removeLiquidity(
@@ -4375,16 +4404,26 @@ export class LiquidityPool extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    queryTradeWithAMM(
+    queryTrade(
       perpetualIndex: BigNumberish,
+      trader: string,
       amount: BigNumberish,
-      overrides?: CallOverrides
+      limitPrice: BigNumberish,
+      deadline: BigNumberish,
+      referrer: string,
+      flags: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "queryTradeWithAMM(uint256,int256)"(
+    "queryTrade(uint256,address,int256,int256,uint256,address,uint32)"(
       perpetualIndex: BigNumberish,
+      trader: string,
       amount: BigNumberish,
-      overrides?: CallOverrides
+      limitPrice: BigNumberish,
+      deadline: BigNumberish,
+      referrer: string,
+      flags: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     removeLiquidity(

@@ -417,12 +417,37 @@ const _abi = [
         type: "uint256",
       },
       {
+        internalType: "address",
+        name: "trader",
+        type: "address",
+      },
+      {
         internalType: "int256",
         name: "amount",
         type: "int256",
       },
+      {
+        internalType: "int256",
+        name: "limitPrice",
+        type: "int256",
+      },
+      {
+        internalType: "uint256",
+        name: "deadline",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "referrer",
+        type: "address",
+      },
+      {
+        internalType: "uint32",
+        name: "flags",
+        type: "uint32",
+      },
     ],
-    name: "queryTradeWithAMM",
+    name: "queryTrade",
     outputs: [
       {
         internalType: "bool",
@@ -431,13 +456,42 @@ const _abi = [
       },
       {
         internalType: "int256",
-        name: "deltaCash",
+        name: "tradePrice",
         type: "int256",
       },
       {
         internalType: "int256",
-        name: "deltaPosition",
+        name: "totalFee",
         type: "int256",
+      },
+      {
+        internalType: "int256",
+        name: "cost",
+        type: "int256",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address[]",
+        name: "oracles",
+        type: "address[]",
+      },
+    ],
+    name: "readIndexPrices",
+    outputs: [
+      {
+        internalType: "bool[]",
+        name: "isSuccess",
+        type: "bool[]",
+      },
+      {
+        internalType: "int256[]",
+        name: "indexPrices",
+        type: "int256[]",
       },
     ],
     stateMutability: "nonpayable",
