@@ -427,16 +427,6 @@ const _abi = [
         type: "int256",
       },
       {
-        internalType: "int256",
-        name: "limitPrice",
-        type: "int256",
-      },
-      {
-        internalType: "uint256",
-        name: "deadline",
-        type: "uint256",
-      },
-      {
         internalType: "address",
         name: "referrer",
         type: "address",

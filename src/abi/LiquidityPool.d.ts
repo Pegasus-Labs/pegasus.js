@@ -22,7 +22,9 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface LiquidityPoolInterface extends ethers.utils.Interface {
   functions: {
+    "addAMMKeeper(uint256,address)": FunctionFragment;
     "addLiquidity(int256)": FunctionFragment;
+    "addTraderKeeper(uint256,address)": FunctionFragment;
     "brokerTrade(bytes,int256)": FunctionFragment;
     "checkIn()": FunctionFragment;
     "claimOperator()": FunctionFragment;
@@ -35,7 +37,6 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "forceToSyncState()": FunctionFragment;
     "getActiveAccountCount(uint256)": FunctionFragment;
     "getClearProgress(uint256)": FunctionFragment;
-    "getKeeper(uint256)": FunctionFragment;
     "getLiquidityPoolInfo()": FunctionFragment;
     "getMarginAccount(uint256,address)": FunctionFragment;
     "getPerpetualInfo(uint256)": FunctionFragment;
@@ -44,14 +45,17 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "liquidateByAMM(uint256,address)": FunctionFragment;
     "liquidateByTrader(uint256,address,address,int256,int256,uint256)": FunctionFragment;
     "listActiveAccounts(uint256,uint256,uint256)": FunctionFragment;
+    "listByAMMKeepers(uint256,uint256,uint256)": FunctionFragment;
+    "listByTraderKeepers(uint256,uint256,uint256)": FunctionFragment;
     "queryAddLiquidity(int256,int256)": FunctionFragment;
     "queryRemoveLiquidity(int256,int256)": FunctionFragment;
-    "queryTrade(uint256,address,int256,int256,uint256,address,uint32)": FunctionFragment;
+    "queryTrade(uint256,address,int256,address,uint32)": FunctionFragment;
+    "removeAMMKeeper(uint256,address)": FunctionFragment;
     "removeLiquidity(int256,int256)": FunctionFragment;
+    "removeTraderKeeper(uint256,address)": FunctionFragment;
     "revokeOperator()": FunctionFragment;
     "runLiquidityPool()": FunctionFragment;
     "setEmergencyState(uint256)": FunctionFragment;
-    "setKeeper(uint256,address)": FunctionFragment;
     "setLiquidityPoolParameter(int256[2])": FunctionFragment;
     "setOracle(uint256,address)": FunctionFragment;
     "setPerpetualBaseParameter(uint256,int256[9])": FunctionFragment;
@@ -65,8 +69,16 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   };
 
   encodeFunctionData(
+    functionFragment: "addAMMKeeper",
+    values: [BigNumberish, string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "addLiquidity",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addTraderKeeper",
+    values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "brokerTrade",
@@ -154,10 +166,6 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getKeeper",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "getLiquidityPoolInfo",
     values?: undefined
   ): string;
@@ -197,6 +205,14 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "listByAMMKeepers",
+    values: [BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "listByTraderKeepers",
+    values: [BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "queryAddLiquidity",
     values: [BigNumberish, BigNumberish]
   ): string;
@@ -206,19 +222,19 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "queryTrade",
-    values: [
-      BigNumberish,
-      string,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      string,
-      BigNumberish
-    ]
+    values: [BigNumberish, string, BigNumberish, string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeAMMKeeper",
+    values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "removeLiquidity",
     values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeTraderKeeper",
+    values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "revokeOperator",
@@ -231,10 +247,6 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "setEmergencyState",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setKeeper",
-    values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "setLiquidityPoolParameter",
@@ -343,7 +355,15 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   ): string;
 
   decodeFunctionResult(
+    functionFragment: "addAMMKeeper",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "addLiquidity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "addTraderKeeper",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -385,7 +405,6 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     functionFragment: "getClearProgress",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "getKeeper", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getLiquidityPoolInfo",
     data: BytesLike
@@ -416,6 +435,14 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "listByAMMKeepers",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "listByTraderKeepers",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "queryAddLiquidity",
     data: BytesLike
   ): Result;
@@ -425,7 +452,15 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "queryTrade", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "removeAMMKeeper",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "removeLiquidity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeTraderKeeper",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -440,7 +475,6 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     functionFragment: "setEmergencyState",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setKeeper", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setLiquidityPoolParameter",
     data: BytesLike
@@ -471,6 +505,8 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {
+    "AddByAMMKeeper(uint256,address)": EventFragment;
+    "AddByTraderKeeper(uint256,address)": EventFragment;
     "AddLiquidity(address,int256,int256,int256)": EventFragment;
     "ClaimOperator(address)": EventFragment;
     "Clear(uint256,address)": EventFragment;
@@ -479,12 +515,13 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "DonateInsuranceFund(int256)": EventFragment;
     "Liquidate(uint256,address,address,int256,int256,int256,int256)": EventFragment;
     "OperatorCheckIn(address)": EventFragment;
+    "RemoveByAMMKeeper(uint256,address)": EventFragment;
+    "RemoveByTraderKeeper(uint256,address)": EventFragment;
     "RemoveLiquidity(address,int256,int256,int256)": EventFragment;
     "RevokeOperator()": EventFragment;
     "RunLiquidityPool()": EventFragment;
     "SetClearedState(uint256)": EventFragment;
     "SetEmergencyState(uint256,int256,uint256)": EventFragment;
-    "SetKeeper(uint256,address,address)": EventFragment;
     "SetLiquidityPoolParameter(int256[2])": EventFragment;
     "SetNormalState(uint256)": EventFragment;
     "SetOracle(uint256,address,address)": EventFragment;
@@ -504,6 +541,8 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "Withdraw(uint256,address,int256)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "AddByAMMKeeper"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "AddByTraderKeeper"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "AddLiquidity"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ClaimOperator"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Clear"): EventFragment;
@@ -512,12 +551,13 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "DonateInsuranceFund"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Liquidate"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OperatorCheckIn"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RemoveByAMMKeeper"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RemoveByTraderKeeper"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveLiquidity"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RevokeOperator"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RunLiquidityPool"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetClearedState"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetEmergencyState"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SetKeeper"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetLiquidityPoolParameter"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetNormalState"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetOracle"): EventFragment;
@@ -557,6 +597,18 @@ export class LiquidityPool extends Contract {
   interface: LiquidityPoolInterface;
 
   functions: {
+    addAMMKeeper(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "addAMMKeeper(uint256,address)"(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     addLiquidity(
       cashToAdd: BigNumberish,
       overrides?: Overrides
@@ -564,6 +616,18 @@ export class LiquidityPool extends Contract {
 
     "addLiquidity(int256)"(
       cashToAdd: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    addTraderKeeper(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "addTraderKeeper(uint256,address)"(
+      perpetualIndex: BigNumberish,
+      keeper: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -773,20 +837,6 @@ export class LiquidityPool extends Contract {
       total: BigNumber;
       0: BigNumber;
       1: BigNumber;
-    }>;
-
-    getKeeper(
-      perpetualIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "getKeeper(uint256)"(
-      perpetualIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
     }>;
 
     getLiquidityPoolInfo(
@@ -1141,6 +1191,46 @@ export class LiquidityPool extends Contract {
       0: string[];
     }>;
 
+    listByAMMKeepers(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      result: string[];
+      0: string[];
+    }>;
+
+    "listByAMMKeepers(uint256,uint256,uint256)"(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      result: string[];
+      0: string[];
+    }>;
+
+    listByTraderKeepers(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      result: string[];
+      0: string[];
+    }>;
+
+    "listByTraderKeepers(uint256,uint256,uint256)"(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      result: string[];
+      0: string[];
+    }>;
+
     queryAddLiquidity(
       cashToAdd: BigNumberish,
       shareToMint: BigNumberish,
@@ -1189,21 +1279,29 @@ export class LiquidityPool extends Contract {
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
-      limitPrice: BigNumberish,
-      deadline: BigNumberish,
       referrer: string,
       flags: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "queryTrade(uint256,address,int256,int256,uint256,address,uint32)"(
+    "queryTrade(uint256,address,int256,address,uint32)"(
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
-      limitPrice: BigNumberish,
-      deadline: BigNumberish,
       referrer: string,
       flags: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    removeAMMKeeper(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "removeAMMKeeper(uint256,address)"(
+      perpetualIndex: BigNumberish,
+      keeper: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1216,6 +1314,18 @@ export class LiquidityPool extends Contract {
     "removeLiquidity(int256,int256)"(
       shareToRemove: BigNumberish,
       cashToReturn: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    removeTraderKeeper(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "removeTraderKeeper(uint256,address)"(
+      perpetualIndex: BigNumberish,
+      keeper: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1234,18 +1344,6 @@ export class LiquidityPool extends Contract {
 
     "setEmergencyState(uint256)"(
       perpetualIndex: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    setKeeper(
-      perpetualIndex: BigNumberish,
-      newKeeper: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setKeeper(uint256,address)"(
-      perpetualIndex: BigNumberish,
-      newKeeper: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1476,6 +1574,18 @@ export class LiquidityPool extends Contract {
     ): Promise<ContractTransaction>;
   };
 
+  addAMMKeeper(
+    perpetualIndex: BigNumberish,
+    keeper: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "addAMMKeeper(uint256,address)"(
+    perpetualIndex: BigNumberish,
+    keeper: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   addLiquidity(
     cashToAdd: BigNumberish,
     overrides?: Overrides
@@ -1483,6 +1593,18 @@ export class LiquidityPool extends Contract {
 
   "addLiquidity(int256)"(
     cashToAdd: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  addTraderKeeper(
+    perpetualIndex: BigNumberish,
+    keeper: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "addTraderKeeper(uint256,address)"(
+    perpetualIndex: BigNumberish,
+    keeper: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1687,16 +1809,6 @@ export class LiquidityPool extends Contract {
     0: BigNumber;
     1: BigNumber;
   }>;
-
-  getKeeper(
-    perpetualIndex: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  "getKeeper(uint256)"(
-    perpetualIndex: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
 
   getLiquidityPoolInfo(
     overrides?: CallOverrides
@@ -2044,6 +2156,34 @@ export class LiquidityPool extends Contract {
     overrides?: CallOverrides
   ): Promise<string[]>;
 
+  listByAMMKeepers(
+    perpetualIndex: BigNumberish,
+    begin: BigNumberish,
+    end: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
+  "listByAMMKeepers(uint256,uint256,uint256)"(
+    perpetualIndex: BigNumberish,
+    begin: BigNumberish,
+    end: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
+  listByTraderKeepers(
+    perpetualIndex: BigNumberish,
+    begin: BigNumberish,
+    end: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
+  "listByTraderKeepers(uint256,uint256,uint256)"(
+    perpetualIndex: BigNumberish,
+    begin: BigNumberish,
+    end: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
   queryAddLiquidity(
     cashToAdd: BigNumberish,
     shareToMint: BigNumberish,
@@ -2092,21 +2232,29 @@ export class LiquidityPool extends Contract {
     perpetualIndex: BigNumberish,
     trader: string,
     amount: BigNumberish,
-    limitPrice: BigNumberish,
-    deadline: BigNumberish,
     referrer: string,
     flags: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "queryTrade(uint256,address,int256,int256,uint256,address,uint32)"(
+  "queryTrade(uint256,address,int256,address,uint32)"(
     perpetualIndex: BigNumberish,
     trader: string,
     amount: BigNumberish,
-    limitPrice: BigNumberish,
-    deadline: BigNumberish,
     referrer: string,
     flags: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  removeAMMKeeper(
+    perpetualIndex: BigNumberish,
+    keeper: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "removeAMMKeeper(uint256,address)"(
+    perpetualIndex: BigNumberish,
+    keeper: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -2119,6 +2267,18 @@ export class LiquidityPool extends Contract {
   "removeLiquidity(int256,int256)"(
     shareToRemove: BigNumberish,
     cashToReturn: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  removeTraderKeeper(
+    perpetualIndex: BigNumberish,
+    keeper: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "removeTraderKeeper(uint256,address)"(
+    perpetualIndex: BigNumberish,
+    keeper: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -2137,18 +2297,6 @@ export class LiquidityPool extends Contract {
 
   "setEmergencyState(uint256)"(
     perpetualIndex: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  setKeeper(
-    perpetualIndex: BigNumberish,
-    newKeeper: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setKeeper(uint256,address)"(
-    perpetualIndex: BigNumberish,
-    newKeeper: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -2379,6 +2527,18 @@ export class LiquidityPool extends Contract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    addAMMKeeper(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "addAMMKeeper(uint256,address)"(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     addLiquidity(
       cashToAdd: BigNumberish,
       overrides?: CallOverrides
@@ -2386,6 +2546,18 @@ export class LiquidityPool extends Contract {
 
     "addLiquidity(int256)"(
       cashToAdd: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    addTraderKeeper(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "addTraderKeeper(uint256,address)"(
+      perpetualIndex: BigNumberish,
+      keeper: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2590,16 +2762,6 @@ export class LiquidityPool extends Contract {
       0: BigNumber;
       1: BigNumber;
     }>;
-
-    getKeeper(
-      perpetualIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    "getKeeper(uint256)"(
-      perpetualIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
 
     getLiquidityPoolInfo(
       overrides?: CallOverrides
@@ -2947,6 +3109,34 @@ export class LiquidityPool extends Contract {
       overrides?: CallOverrides
     ): Promise<string[]>;
 
+    listByAMMKeepers(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
+    "listByAMMKeepers(uint256,uint256,uint256)"(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
+    listByTraderKeepers(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
+    "listByTraderKeepers(uint256,uint256,uint256)"(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
     queryAddLiquidity(
       cashToAdd: BigNumberish,
       shareToMint: BigNumberish,
@@ -2995,8 +3185,6 @@ export class LiquidityPool extends Contract {
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
-      limitPrice: BigNumberish,
-      deadline: BigNumberish,
       referrer: string,
       flags: BigNumberish,
       overrides?: CallOverrides
@@ -3009,12 +3197,10 @@ export class LiquidityPool extends Contract {
       2: BigNumber;
     }>;
 
-    "queryTrade(uint256,address,int256,int256,uint256,address,uint32)"(
+    "queryTrade(uint256,address,int256,address,uint32)"(
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
-      limitPrice: BigNumberish,
-      deadline: BigNumberish,
       referrer: string,
       flags: BigNumberish,
       overrides?: CallOverrides
@@ -3026,6 +3212,18 @@ export class LiquidityPool extends Contract {
       1: BigNumber;
       2: BigNumber;
     }>;
+
+    removeAMMKeeper(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "removeAMMKeeper(uint256,address)"(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     removeLiquidity(
       shareToRemove: BigNumberish,
@@ -3036,6 +3234,18 @@ export class LiquidityPool extends Contract {
     "removeLiquidity(int256,int256)"(
       shareToRemove: BigNumberish,
       cashToReturn: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    removeTraderKeeper(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "removeTraderKeeper(uint256,address)"(
+      perpetualIndex: BigNumberish,
+      keeper: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -3054,18 +3264,6 @@ export class LiquidityPool extends Contract {
 
     "setEmergencyState(uint256)"(
       perpetualIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setKeeper(
-      perpetualIndex: BigNumberish,
-      newKeeper: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "setKeeper(uint256,address)"(
-      perpetualIndex: BigNumberish,
-      newKeeper: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -3297,6 +3495,10 @@ export class LiquidityPool extends Contract {
   };
 
   filters: {
+    AddByAMMKeeper(perpetualIndex: null, keeper: string | null): EventFilter;
+
+    AddByTraderKeeper(perpetualIndex: null, keeper: string | null): EventFilter;
+
     AddLiquidity(
       trader: string | null,
       addedCash: null,
@@ -3339,6 +3541,13 @@ export class LiquidityPool extends Contract {
 
     OperatorCheckIn(operator: string | null): EventFilter;
 
+    RemoveByAMMKeeper(perpetualIndex: null, keeper: string | null): EventFilter;
+
+    RemoveByTraderKeeper(
+      perpetualIndex: null,
+      keeper: string | null
+    ): EventFilter;
+
     RemoveLiquidity(
       trader: string | null,
       returnedCash: null,
@@ -3358,19 +3567,13 @@ export class LiquidityPool extends Contract {
       settlementTime: null
     ): EventFilter;
 
-    SetKeeper(
-      perpetualIndex: null,
-      previousKeeper: string | null,
-      newKeeper: string | null
-    ): EventFilter;
-
     SetLiquidityPoolParameter(value: null): EventFilter;
 
     SetNormalState(perpetualIndex: null): EventFilter;
 
     SetOracle(
       perpetualIndex: null,
-      oldOralce: string | null,
+      oldOracle: string | null,
       newOracle: string | null
     ): EventFilter;
 
@@ -3432,7 +3635,7 @@ export class LiquidityPool extends Contract {
       markPrice: null,
       markPriceUpdateTime: null,
       indexPrice: null,
-      indexPriceUpdatetime: null
+      indexPriceUpdateTime: null
     ): EventFilter;
 
     UpdateUnitAccumulativeFunding(
@@ -3448,6 +3651,18 @@ export class LiquidityPool extends Contract {
   };
 
   estimateGas: {
+    addAMMKeeper(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "addAMMKeeper(uint256,address)"(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     addLiquidity(
       cashToAdd: BigNumberish,
       overrides?: Overrides
@@ -3455,6 +3670,18 @@ export class LiquidityPool extends Contract {
 
     "addLiquidity(int256)"(
       cashToAdd: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    addTraderKeeper(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "addTraderKeeper(uint256,address)"(
+      perpetualIndex: BigNumberish,
+      keeper: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -3650,16 +3877,6 @@ export class LiquidityPool extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getKeeper(
-      perpetualIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getKeeper(uint256)"(
-      perpetualIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     getLiquidityPoolInfo(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getLiquidityPoolInfo()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -3754,6 +3971,34 @@ export class LiquidityPool extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    listByAMMKeepers(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "listByAMMKeepers(uint256,uint256,uint256)"(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    listByTraderKeepers(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "listByTraderKeepers(uint256,uint256,uint256)"(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     queryAddLiquidity(
       cashToAdd: BigNumberish,
       shareToMint: BigNumberish,
@@ -3782,21 +4027,29 @@ export class LiquidityPool extends Contract {
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
-      limitPrice: BigNumberish,
-      deadline: BigNumberish,
       referrer: string,
       flags: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "queryTrade(uint256,address,int256,int256,uint256,address,uint32)"(
+    "queryTrade(uint256,address,int256,address,uint32)"(
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
-      limitPrice: BigNumberish,
-      deadline: BigNumberish,
       referrer: string,
       flags: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    removeAMMKeeper(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "removeAMMKeeper(uint256,address)"(
+      perpetualIndex: BigNumberish,
+      keeper: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -3809,6 +4062,18 @@ export class LiquidityPool extends Contract {
     "removeLiquidity(int256,int256)"(
       shareToRemove: BigNumberish,
       cashToReturn: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    removeTraderKeeper(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "removeTraderKeeper(uint256,address)"(
+      perpetualIndex: BigNumberish,
+      keeper: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -3827,18 +4092,6 @@ export class LiquidityPool extends Contract {
 
     "setEmergencyState(uint256)"(
       perpetualIndex: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    setKeeper(
-      perpetualIndex: BigNumberish,
-      newKeeper: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "setKeeper(uint256,address)"(
-      perpetualIndex: BigNumberish,
-      newKeeper: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -4070,6 +4323,18 @@ export class LiquidityPool extends Contract {
   };
 
   populateTransaction: {
+    addAMMKeeper(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "addAMMKeeper(uint256,address)"(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     addLiquidity(
       cashToAdd: BigNumberish,
       overrides?: Overrides
@@ -4077,6 +4342,18 @@ export class LiquidityPool extends Contract {
 
     "addLiquidity(int256)"(
       cashToAdd: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    addTraderKeeper(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "addTraderKeeper(uint256,address)"(
+      perpetualIndex: BigNumberish,
+      keeper: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -4272,16 +4549,6 @@ export class LiquidityPool extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getKeeper(
-      perpetualIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getKeeper(uint256)"(
-      perpetualIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     getLiquidityPoolInfo(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -4380,6 +4647,34 @@ export class LiquidityPool extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    listByAMMKeepers(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "listByAMMKeepers(uint256,uint256,uint256)"(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    listByTraderKeepers(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "listByTraderKeepers(uint256,uint256,uint256)"(
+      perpetualIndex: BigNumberish,
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     queryAddLiquidity(
       cashToAdd: BigNumberish,
       shareToMint: BigNumberish,
@@ -4408,21 +4703,29 @@ export class LiquidityPool extends Contract {
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
-      limitPrice: BigNumberish,
-      deadline: BigNumberish,
       referrer: string,
       flags: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "queryTrade(uint256,address,int256,int256,uint256,address,uint32)"(
+    "queryTrade(uint256,address,int256,address,uint32)"(
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
-      limitPrice: BigNumberish,
-      deadline: BigNumberish,
       referrer: string,
       flags: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    removeAMMKeeper(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "removeAMMKeeper(uint256,address)"(
+      perpetualIndex: BigNumberish,
+      keeper: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -4435,6 +4738,18 @@ export class LiquidityPool extends Contract {
     "removeLiquidity(int256,int256)"(
       shareToRemove: BigNumberish,
       cashToReturn: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    removeTraderKeeper(
+      perpetualIndex: BigNumberish,
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "removeTraderKeeper(uint256,address)"(
+      perpetualIndex: BigNumberish,
+      keeper: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -4453,18 +4768,6 @@ export class LiquidityPool extends Contract {
 
     "setEmergencyState(uint256)"(
       perpetualIndex: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    setKeeper(
-      perpetualIndex: BigNumberish,
-      newKeeper: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setKeeper(uint256,address)"(
-      perpetualIndex: BigNumberish,
-      newKeeper: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

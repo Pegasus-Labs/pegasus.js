@@ -21,6 +21,19 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: true,
+        internalType: "address",
+        name: "keeper",
+        type: "address",
+      },
+    ],
+    name: "AddKeeperToWhitelist",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: false,
         internalType: "bytes32",
         name: "versionKey",
@@ -165,6 +178,19 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
+        name: "keeper",
+        type: "address",
+      },
+    ],
+    name: "RemoveKeeperFromWhitelist",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
         name: "grantor",
         type: "address",
       },
@@ -182,6 +208,25 @@ const _abi = [
       },
     ],
     name: "RevokePrivilege",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "previousKeeper",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "newKeeper",
+        type: "address",
+      },
+    ],
+    name: "SetKeeper",
     type: "event",
   },
   {
@@ -247,7 +292,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "bytes32",
-        name: "vaersionKey",
+        name: "versionKey",
         type: "bytes32",
       },
       {
@@ -287,6 +332,19 @@ const _abi = [
         type: "bool",
       },
     ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "keeper",
+        type: "address",
+      },
+    ],
+    name: "addKeeper",
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -348,50 +406,6 @@ const _abi = [
       },
     ],
     name: "createLiquidityPool",
-    outputs: [
-      {
-        internalType: "address",
-        name: "liquidityPool",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "governor",
-        type: "address",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "bytes32",
-        name: "versionKey",
-        type: "bytes32",
-      },
-      {
-        internalType: "address",
-        name: "collateral",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "collateralDecimals",
-        type: "uint256",
-      },
-      {
-        internalType: "int256",
-        name: "nonce",
-        type: "int256",
-      },
-      {
-        internalType: "bytes",
-        name: "initData",
-        type: "bytes",
-      },
-    ],
-    name: "createLiquidityPoolWith",
     outputs: [
       {
         internalType: "address",
@@ -716,6 +730,25 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "keeper",
+        type: "address",
+      },
+    ],
+    name: "isKeeper",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "liquidityPool",
         type: "address",
       },
@@ -919,6 +952,19 @@ const _abi = [
       },
     ],
     name: "registerOperatorOfLiquidityPool",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "keeper",
+        type: "address",
+      },
+    ],
+    name: "removeKeeper",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

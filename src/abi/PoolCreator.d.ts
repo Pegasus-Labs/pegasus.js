@@ -23,9 +23,9 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface PoolCreatorInterface extends ethers.utils.Interface {
   functions: {
     "activatePerpetualFor(address,uint256)": FunctionFragment;
+    "addKeeper(address)": FunctionFragment;
     "addVersion(address,address,uint256,string)": FunctionFragment;
     "createLiquidityPool(address,uint256,int256,bytes)": FunctionFragment;
-    "createLiquidityPoolWith(bytes32,address,uint256,int256,bytes)": FunctionFragment;
     "deactivatePerpetualFor(address,uint256)": FunctionFragment;
     "getAccessController()": FunctionFragment;
     "getActiveLiquidityPoolCountOf(address)": FunctionFragment;
@@ -42,6 +42,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "initialize(address,address,int256)": FunctionFragment;
     "isActiveLiquidityPoolOf(address,address,uint256)": FunctionFragment;
     "isGranted(address,address,uint256)": FunctionFragment;
+    "isKeeper(address)": FunctionFragment;
     "isLiquidityPool(address)": FunctionFragment;
     "isVersionCompatible(bytes32,bytes32)": FunctionFragment;
     "isVersionKeyValid(bytes32)": FunctionFragment;
@@ -51,6 +52,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "listLiquidityPools(uint256,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "registerOperatorOfLiquidityPool(address,address)": FunctionFragment;
+    "removeKeeper(address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "revokePrivilege(address,uint256)": FunctionFragment;
     "setVault(address)": FunctionFragment;
@@ -64,6 +66,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     functionFragment: "activatePerpetualFor",
     values: [string, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "addKeeper", values: [string]): string;
   encodeFunctionData(
     functionFragment: "addVersion",
     values: [string, string, BigNumberish, string]
@@ -71,10 +74,6 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "createLiquidityPool",
     values: [string, BigNumberish, BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "createLiquidityPoolWith",
-    values: [BytesLike, string, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "deactivatePerpetualFor",
@@ -137,6 +136,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     functionFragment: "isGranted",
     values: [string, string, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "isKeeper", values: [string]): string;
   encodeFunctionData(
     functionFragment: "isLiquidityPool",
     values: [string]
@@ -171,6 +171,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     values: [string, string]
   ): string;
   encodeFunctionData(
+    functionFragment: "removeKeeper",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
@@ -200,13 +204,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     functionFragment: "activatePerpetualFor",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "addKeeper", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "addVersion", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "createLiquidityPool",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "createLiquidityPoolWith",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -261,6 +262,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "isGranted", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "isKeeper", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isLiquidityPool",
     data: BytesLike
@@ -295,6 +297,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "removeKeeper",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
@@ -321,22 +327,28 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
+    "AddKeeperToWhitelist(address)": EventFragment;
     "AddVersion(bytes32,address,address,address,uint256,string)": EventFragment;
     "CreateLiquidityPool(bytes32,address,address,address,address,address,uint256,bytes)": EventFragment;
     "GrantPrivilege(address,address,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
+    "RemoveKeeperFromWhitelist(address)": EventFragment;
     "RevokePrivilege(address,address,uint256)": EventFragment;
+    "SetKeeper(address,address)": EventFragment;
     "SetRewardDistributor(address,address)": EventFragment;
     "SetVault(address,address)": EventFragment;
     "SetVaultFeeRate(int256,int256)": EventFragment;
     "UpgradeLiquidityPool(bytes32,address,address)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "AddKeeperToWhitelist"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "AddVersion"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "CreateLiquidityPool"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "GrantPrivilege"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RemoveKeeperFromWhitelist"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RevokePrivilege"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetKeeper"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetRewardDistributor"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetVault"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetVaultFeeRate"): EventFragment;
@@ -369,6 +381,16 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    addKeeper(
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "addKeeper(address)"(
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     addVersion(
       liquidityPoolTemplate: string,
       governorTemplate: string,
@@ -394,24 +416,6 @@ export class PoolCreator extends Contract {
     ): Promise<ContractTransaction>;
 
     "createLiquidityPool(address,uint256,int256,bytes)"(
-      collateral: string,
-      collateralDecimals: BigNumberish,
-      nonce: BigNumberish,
-      initData: BytesLike,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    createLiquidityPoolWith(
-      versionKey: BytesLike,
-      collateral: string,
-      collateralDecimals: BigNumberish,
-      nonce: BigNumberish,
-      initData: BytesLike,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "createLiquidityPoolWith(bytes32,address,uint256,int256,bytes)"(
-      versionKey: BytesLike,
       collateral: string,
       collateralDecimals: BigNumberish,
       nonce: BigNumberish,
@@ -649,6 +653,20 @@ export class PoolCreator extends Contract {
       0: boolean;
     }>;
 
+    isKeeper(
+      keeper: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "isKeeper(address)"(
+      keeper: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
     isLiquidityPool(
       liquidityPool: string,
       overrides?: CallOverrides
@@ -817,6 +835,16 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    removeKeeper(
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "removeKeeper(address)"(
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
 
     "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
@@ -902,6 +930,16 @@ export class PoolCreator extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  addKeeper(
+    keeper: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "addKeeper(address)"(
+    keeper: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   addVersion(
     liquidityPoolTemplate: string,
     governorTemplate: string,
@@ -927,24 +965,6 @@ export class PoolCreator extends Contract {
   ): Promise<ContractTransaction>;
 
   "createLiquidityPool(address,uint256,int256,bytes)"(
-    collateral: string,
-    collateralDecimals: BigNumberish,
-    nonce: BigNumberish,
-    initData: BytesLike,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  createLiquidityPoolWith(
-    versionKey: BytesLike,
-    collateral: string,
-    collateralDecimals: BigNumberish,
-    nonce: BigNumberish,
-    initData: BytesLike,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "createLiquidityPoolWith(bytes32,address,uint256,int256,bytes)"(
-    versionKey: BytesLike,
     collateral: string,
     collateralDecimals: BigNumberish,
     nonce: BigNumberish,
@@ -1102,6 +1122,13 @@ export class PoolCreator extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  isKeeper(keeper: string, overrides?: CallOverrides): Promise<boolean>;
+
+  "isKeeper(address)"(
+    keeper: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   isLiquidityPool(
     liquidityPool: string,
     overrides?: CallOverrides
@@ -1216,6 +1243,16 @@ export class PoolCreator extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  removeKeeper(
+    keeper: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "removeKeeper(address)"(
+    keeper: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
 
   "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
@@ -1293,6 +1330,13 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    addKeeper(keeper: string, overrides?: CallOverrides): Promise<void>;
+
+    "addKeeper(address)"(
+      keeper: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     addVersion(
       liquidityPoolTemplate: string,
       governorTemplate: string,
@@ -1323,34 +1367,6 @@ export class PoolCreator extends Contract {
     }>;
 
     "createLiquidityPool(address,uint256,int256,bytes)"(
-      collateral: string,
-      collateralDecimals: BigNumberish,
-      nonce: BigNumberish,
-      initData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<{
-      liquidityPool: string;
-      governor: string;
-      0: string;
-      1: string;
-    }>;
-
-    createLiquidityPoolWith(
-      versionKey: BytesLike,
-      collateral: string,
-      collateralDecimals: BigNumberish,
-      nonce: BigNumberish,
-      initData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<{
-      liquidityPool: string;
-      governor: string;
-      0: string;
-      1: string;
-    }>;
-
-    "createLiquidityPoolWith(bytes32,address,uint256,int256,bytes)"(
-      versionKey: BytesLike,
       collateral: string,
       collateralDecimals: BigNumberish,
       nonce: BigNumberish,
@@ -1513,6 +1529,13 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    isKeeper(keeper: string, overrides?: CallOverrides): Promise<boolean>;
+
+    "isKeeper(address)"(
+      keeper: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     isLiquidityPool(
       liquidityPool: string,
       overrides?: CallOverrides
@@ -1627,6 +1650,13 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    removeKeeper(keeper: string, overrides?: CallOverrides): Promise<void>;
+
+    "removeKeeper(address)"(
+      keeper: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
@@ -1690,6 +1720,8 @@ export class PoolCreator extends Contract {
   };
 
   filters: {
+    AddKeeperToWhitelist(keeper: string | null): EventFilter;
+
     AddVersion(
       versionKey: null,
       liquidityPoolTemplate: string | null,
@@ -1721,11 +1753,15 @@ export class PoolCreator extends Contract {
       newOwner: string | null
     ): EventFilter;
 
+    RemoveKeeperFromWhitelist(keeper: string | null): EventFilter;
+
     RevokePrivilege(
       grantor: string | null,
       grantee: string | null,
       privilege: null
     ): EventFilter;
+
+    SetKeeper(previousKeeper: null, newKeeper: null): EventFilter;
 
     SetRewardDistributor(
       previousRewardDistributor: null,
@@ -1737,7 +1773,7 @@ export class PoolCreator extends Contract {
     SetVaultFeeRate(prevFeeRate: null, newFeeRate: null): EventFilter;
 
     UpgradeLiquidityPool(
-      vaersionKey: null,
+      versionKey: null,
       liquidityPool: string | null,
       governor: string | null
     ): EventFilter;
@@ -1753,6 +1789,13 @@ export class PoolCreator extends Contract {
     "activatePerpetualFor(address,uint256)"(
       trader: string,
       perpetualIndex: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    addKeeper(keeper: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "addKeeper(address)"(
+      keeper: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1781,24 +1824,6 @@ export class PoolCreator extends Contract {
     ): Promise<BigNumber>;
 
     "createLiquidityPool(address,uint256,int256,bytes)"(
-      collateral: string,
-      collateralDecimals: BigNumberish,
-      nonce: BigNumberish,
-      initData: BytesLike,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    createLiquidityPoolWith(
-      versionKey: BytesLike,
-      collateral: string,
-      collateralDecimals: BigNumberish,
-      nonce: BigNumberish,
-      initData: BytesLike,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "createLiquidityPoolWith(bytes32,address,uint256,int256,bytes)"(
-      versionKey: BytesLike,
       collateral: string,
       collateralDecimals: BigNumberish,
       nonce: BigNumberish,
@@ -1942,6 +1967,13 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    isKeeper(keeper: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "isKeeper(address)"(
+      keeper: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     isLiquidityPool(
       liquidityPool: string,
       overrides?: CallOverrides
@@ -2042,6 +2074,13 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    removeKeeper(keeper: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "removeKeeper(address)"(
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     renounceOwnership(overrides?: Overrides): Promise<BigNumber>;
 
     "renounceOwnership()"(overrides?: Overrides): Promise<BigNumber>;
@@ -2117,6 +2156,16 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    addKeeper(
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "addKeeper(address)"(
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     addVersion(
       liquidityPoolTemplate: string,
       governorTemplate: string,
@@ -2142,24 +2191,6 @@ export class PoolCreator extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "createLiquidityPool(address,uint256,int256,bytes)"(
-      collateral: string,
-      collateralDecimals: BigNumberish,
-      nonce: BigNumberish,
-      initData: BytesLike,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    createLiquidityPoolWith(
-      versionKey: BytesLike,
-      collateral: string,
-      collateralDecimals: BigNumberish,
-      nonce: BigNumberish,
-      initData: BytesLike,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "createLiquidityPoolWith(bytes32,address,uint256,int256,bytes)"(
-      versionKey: BytesLike,
       collateral: string,
       collateralDecimals: BigNumberish,
       nonce: BigNumberish,
@@ -2317,6 +2348,16 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    isKeeper(
+      keeper: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isKeeper(address)"(
+      keeper: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     isLiquidityPool(
       liquidityPool: string,
       overrides?: CallOverrides
@@ -2414,6 +2455,16 @@ export class PoolCreator extends Contract {
     "registerOperatorOfLiquidityPool(address,address)"(
       liquidityPool: string,
       operator: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    removeKeeper(
+      keeper: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "removeKeeper(address)"(
+      keeper: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

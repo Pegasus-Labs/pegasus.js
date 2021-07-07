@@ -30,7 +30,7 @@ interface ReaderInterface extends ethers.utils.Interface {
     "poolCreator()": FunctionFragment;
     "queryAddLiquidity(address,int256,int256)": FunctionFragment;
     "queryRemoveLiquidity(address,int256,int256)": FunctionFragment;
-    "queryTrade(address,uint256,address,int256,int256,uint256,address,uint32)": FunctionFragment;
+    "queryTrade(address,uint256,address,int256,address,uint32)": FunctionFragment;
     "readIndexPrices(address[])": FunctionFragment;
   };
 
@@ -68,16 +68,7 @@ interface ReaderInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "queryTrade",
-    values: [
-      string,
-      BigNumberish,
-      string,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      string,
-      BigNumberish
-    ]
+    values: [string, BigNumberish, string, BigNumberish, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "readIndexPrices",
@@ -248,20 +239,16 @@ export class Reader extends Contract {
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
-      limitPrice: BigNumberish,
-      deadline: BigNumberish,
       referrer: string,
       flags: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "queryTrade(address,uint256,address,int256,int256,uint256,address,uint32)"(
+    "queryTrade(address,uint256,address,int256,address,uint32)"(
       liquidityPool: string,
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
-      limitPrice: BigNumberish,
-      deadline: BigNumberish,
       referrer: string,
       flags: BigNumberish,
       overrides?: Overrides
@@ -372,20 +359,16 @@ export class Reader extends Contract {
     perpetualIndex: BigNumberish,
     trader: string,
     amount: BigNumberish,
-    limitPrice: BigNumberish,
-    deadline: BigNumberish,
     referrer: string,
     flags: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "queryTrade(address,uint256,address,int256,int256,uint256,address,uint32)"(
+  "queryTrade(address,uint256,address,int256,address,uint32)"(
     liquidityPool: string,
     perpetualIndex: BigNumberish,
     trader: string,
     amount: BigNumberish,
-    limitPrice: BigNumberish,
-    deadline: BigNumberish,
     referrer: string,
     flags: BigNumberish,
     overrides?: Overrides
@@ -1511,8 +1494,6 @@ export class Reader extends Contract {
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
-      limitPrice: BigNumberish,
-      deadline: BigNumberish,
       referrer: string,
       flags: BigNumberish,
       overrides?: CallOverrides
@@ -1527,13 +1508,11 @@ export class Reader extends Contract {
       3: BigNumber;
     }>;
 
-    "queryTrade(address,uint256,address,int256,int256,uint256,address,uint32)"(
+    "queryTrade(address,uint256,address,int256,address,uint32)"(
       liquidityPool: string,
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
-      limitPrice: BigNumberish,
-      deadline: BigNumberish,
       referrer: string,
       flags: BigNumberish,
       overrides?: CallOverrides
@@ -1669,20 +1648,16 @@ export class Reader extends Contract {
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
-      limitPrice: BigNumberish,
-      deadline: BigNumberish,
       referrer: string,
       flags: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "queryTrade(address,uint256,address,int256,int256,uint256,address,uint32)"(
+    "queryTrade(address,uint256,address,int256,address,uint32)"(
       liquidityPool: string,
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
-      limitPrice: BigNumberish,
-      deadline: BigNumberish,
       referrer: string,
       flags: BigNumberish,
       overrides?: Overrides
@@ -1797,20 +1772,16 @@ export class Reader extends Contract {
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
-      limitPrice: BigNumberish,
-      deadline: BigNumberish,
       referrer: string,
       flags: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "queryTrade(address,uint256,address,int256,int256,uint256,address,uint32)"(
+    "queryTrade(address,uint256,address,int256,address,uint32)"(
       liquidityPool: string,
       perpetualIndex: BigNumberish,
       trader: string,
       amount: BigNumberish,
-      limitPrice: BigNumberish,
-      deadline: BigNumberish,
       referrer: string,
       flags: BigNumberish,
       overrides?: Overrides

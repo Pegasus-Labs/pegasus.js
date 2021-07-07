@@ -884,7 +884,7 @@ const _abi = [
     name: "poolCreator",
     outputs: [
       {
-        internalType: "contract IPoolCreator",
+        internalType: "contract IPoolCreatorFull",
         name: "",
         type: "address",
       },

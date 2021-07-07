@@ -21,6 +21,44 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "keeper",
+        type: "address",
+      },
+    ],
+    name: "AddByAMMKeeper",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "keeper",
+        type: "address",
+      },
+    ],
+    name: "AddByTraderKeeper",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: "address",
         name: "trader",
@@ -239,6 +277,44 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "keeper",
+        type: "address",
+      },
+    ],
+    name: "RemoveByAMMKeeper",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "keeper",
+        type: "address",
+      },
+    ],
+    name: "RemoveByTraderKeeper",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: "address",
         name: "trader",
@@ -321,31 +397,6 @@ const _abi = [
     inputs: [
       {
         indexed: false,
-        internalType: "uint256",
-        name: "perpetualIndex",
-        type: "uint256",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "previousKeeper",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "newKeeper",
-        type: "address",
-      },
-    ],
-    name: "SetKeeper",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
         internalType: "int256[2]",
         name: "value",
         type: "int256[2]",
@@ -379,7 +430,7 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "oldOralce",
+        name: "oldOracle",
         type: "address",
       },
       {
@@ -673,7 +724,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "indexPriceUpdatetime",
+        name: "indexPriceUpdateTime",
         type: "uint256",
       },
     ],
@@ -727,12 +778,48 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "keeper",
+        type: "address",
+      },
+    ],
+    name: "addAMMKeeper",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "int256",
         name: "cashToAdd",
         type: "int256",
       },
     ],
     name: "addLiquidity",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "keeper",
+        type: "address",
+      },
+    ],
+    name: "addTraderKeeper",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -933,25 +1020,6 @@ const _abi = [
         internalType: "uint256",
         name: "total",
         type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "perpetualIndex",
-        type: "uint256",
-      },
-    ],
-    name: "getKeeper",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
       },
     ],
     stateMutability: "view",
@@ -1234,6 +1302,64 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "begin",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "end",
+        type: "uint256",
+      },
+    ],
+    name: "listByAMMKeepers",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "result",
+        type: "address[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "begin",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "end",
+        type: "uint256",
+      },
+    ],
+    name: "listByTraderKeepers",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "result",
+        type: "address[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "int256",
         name: "cashToAdd",
         type: "int256",
@@ -1307,16 +1433,6 @@ const _abi = [
         type: "int256",
       },
       {
-        internalType: "int256",
-        name: "limitPrice",
-        type: "int256",
-      },
-      {
-        internalType: "uint256",
-        name: "deadline",
-        type: "uint256",
-      },
-      {
         internalType: "address",
         name: "referrer",
         type: "address",
@@ -1351,6 +1467,24 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "keeper",
+        type: "address",
+      },
+    ],
+    name: "removeAMMKeeper",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "int256",
         name: "shareToRemove",
         type: "int256",
@@ -1362,6 +1496,24 @@ const _abi = [
       },
     ],
     name: "removeLiquidity",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "keeper",
+        type: "address",
+      },
+    ],
+    name: "removeTraderKeeper",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -1389,24 +1541,6 @@ const _abi = [
       },
     ],
     name: "setEmergencyState",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "perpetualIndex",
-        type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "newKeeper",
-        type: "address",
-      },
-    ],
-    name: "setKeeper",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
