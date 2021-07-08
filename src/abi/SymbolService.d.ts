@@ -27,6 +27,7 @@ interface SymbolServiceInterface extends ethers.utils.Interface {
     "assignReservedSymbol(address,uint256,uint256)": FunctionFragment;
     "getPerpetualUID(uint256)": FunctionFragment;
     "getSymbols(address,uint256)": FunctionFragment;
+    "initialize(uint256)": FunctionFragment;
     "isWhitelistedFactory(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "removeWhitelistedFactory(address)": FunctionFragment;
@@ -53,6 +54,10 @@ interface SymbolServiceInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getSymbols",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initialize",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "isWhitelistedFactory",
@@ -89,6 +94,7 @@ interface SymbolServiceInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getSymbols", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isWhitelistedFactory",
     data: BytesLike
@@ -207,6 +213,16 @@ export class SymbolService extends Contract {
       symbols: BigNumber[];
       0: BigNumber[];
     }>;
+
+    initialize(
+      reservedSymbolCount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "initialize(uint256)"(
+      reservedSymbolCount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
     isWhitelistedFactory(
       factory: string,
@@ -327,6 +343,16 @@ export class SymbolService extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
 
+  initialize(
+    reservedSymbolCount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "initialize(uint256)"(
+    reservedSymbolCount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   isWhitelistedFactory(
     factory: string,
     overrides?: CallOverrides
@@ -433,6 +459,16 @@ export class SymbolService extends Contract {
       perpetualIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
+
+    initialize(
+      reservedSymbolCount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "initialize(uint256)"(
+      reservedSymbolCount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     isWhitelistedFactory(
       factory: string,
@@ -549,6 +585,16 @@ export class SymbolService extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    initialize(
+      reservedSymbolCount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "initialize(uint256)"(
+      reservedSymbolCount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     isWhitelistedFactory(
       factory: string,
       overrides?: CallOverrides
@@ -645,6 +691,16 @@ export class SymbolService extends Contract {
       liquidityPool: string,
       perpetualIndex: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      reservedSymbolCount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "initialize(uint256)"(
+      reservedSymbolCount: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     isWhitelistedFactory(
