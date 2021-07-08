@@ -30,6 +30,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "getAccessController()": FunctionFragment;
     "getActiveLiquidityPoolCountOf(address)": FunctionFragment;
     "getAppliedVersionKey(address,address)": FunctionFragment;
+    "getKeeperCount()": FunctionFragment;
     "getLatestVersion()": FunctionFragment;
     "getLiquidityPoolCount()": FunctionFragment;
     "getMCBToken()": FunctionFragment;
@@ -48,6 +49,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "isVersionKeyValid(bytes32)": FunctionFragment;
     "listActiveLiquidityPoolsOf(address,uint256,uint256)": FunctionFragment;
     "listAvailableVersions(uint256,uint256)": FunctionFragment;
+    "listKeepers(uint256,uint256)": FunctionFragment;
     "listLiquidityPoolOwnedBy(address,uint256,uint256)": FunctionFragment;
     "listLiquidityPools(uint256,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -90,6 +92,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getAppliedVersionKey",
     values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getKeeperCount",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getLatestVersion",
@@ -155,6 +161,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "listAvailableVersions",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "listKeepers",
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
@@ -227,6 +237,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getKeeperCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getLatestVersion",
     data: BytesLike
   ): Result;
@@ -281,6 +295,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "listAvailableVersions",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "listKeepers",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -477,6 +495,18 @@ export class PoolCreator extends Contract {
     ): Promise<{
       appliedVersionKey: string;
       0: string;
+    }>;
+
+    getKeeperCount(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "getKeeperCount()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
     }>;
 
     getLatestVersion(
@@ -773,6 +803,22 @@ export class PoolCreator extends Contract {
       0: string[];
     }>;
 
+    listKeepers(
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string[];
+    }>;
+
+    "listKeepers(uint256,uint256)"(
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string[];
+    }>;
+
     listLiquidityPoolOwnedBy(
       operator: string,
       begin: BigNumberish,
@@ -1010,6 +1056,10 @@ export class PoolCreator extends Contract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  getKeeperCount(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "getKeeperCount()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   getLatestVersion(overrides?: CallOverrides): Promise<string>;
 
   "getLatestVersion()"(overrides?: CallOverrides): Promise<string>;
@@ -1196,6 +1246,18 @@ export class PoolCreator extends Contract {
   ): Promise<string[]>;
 
   "listAvailableVersions(uint256,uint256)"(
+    begin: BigNumberish,
+    end: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
+  listKeepers(
+    begin: BigNumberish,
+    end: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
+  "listKeepers(uint256,uint256)"(
     begin: BigNumberish,
     end: BigNumberish,
     overrides?: CallOverrides
@@ -1417,6 +1479,10 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    getKeeperCount(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getKeeperCount()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getLatestVersion(overrides?: CallOverrides): Promise<string>;
 
     "getLatestVersion()"(overrides?: CallOverrides): Promise<string>;
@@ -1603,6 +1669,18 @@ export class PoolCreator extends Contract {
     ): Promise<string[]>;
 
     "listAvailableVersions(uint256,uint256)"(
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
+    listKeepers(
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
+    "listKeepers(uint256,uint256)"(
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
@@ -1869,6 +1947,10 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getKeeperCount(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getKeeperCount()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getLatestVersion(overrides?: CallOverrides): Promise<BigNumber>;
 
     "getLatestVersion()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2027,6 +2109,18 @@ export class PoolCreator extends Contract {
     ): Promise<BigNumber>;
 
     "listAvailableVersions(uint256,uint256)"(
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    listKeepers(
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "listKeepers(uint256,uint256)"(
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides
@@ -2240,6 +2334,12 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getKeeperCount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getKeeperCount()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getLatestVersion(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "getLatestVersion()"(
@@ -2411,6 +2511,18 @@ export class PoolCreator extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "listAvailableVersions(uint256,uint256)"(
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    listKeepers(
+      begin: BigNumberish,
+      end: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "listKeepers(uint256,uint256)"(
       begin: BigNumberish,
       end: BigNumberish,
       overrides?: CallOverrides

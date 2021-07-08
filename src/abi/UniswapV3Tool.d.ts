@@ -22,14 +22,20 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface UniswapV3ToolInterface extends ethers.utils.Interface {
   functions: {
+    "getPrice(address,address[],uint24[])": FunctionFragment;
     "increaseObservationCardinalityNext(address,address[],uint24[],uint16)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "getPrice",
+    values: [string, string[], BigNumberish[]]
+  ): string;
   encodeFunctionData(
     functionFragment: "increaseObservationCardinalityNext",
     values: [string, string[], BigNumberish[], BigNumberish]
   ): string;
 
+  decodeFunctionResult(functionFragment: "getPrice", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "increaseObservationCardinalityNext",
     data: BytesLike
@@ -52,6 +58,24 @@ export class UniswapV3Tool extends Contract {
   interface: UniswapV3ToolInterface;
 
   functions: {
+    getPrice(
+      factory: string,
+      path: string[],
+      fees: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "getPrice(address,address[],uint24[])"(
+      factory: string,
+      path: string[],
+      fees: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
     increaseObservationCardinalityNext(
       factory: string,
       path: string[],
@@ -68,6 +92,20 @@ export class UniswapV3Tool extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
   };
+
+  getPrice(
+    factory: string,
+    path: string[],
+    fees: BigNumberish[],
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "getPrice(address,address[],uint24[])"(
+    factory: string,
+    path: string[],
+    fees: BigNumberish[],
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   increaseObservationCardinalityNext(
     factory: string,
@@ -86,13 +124,27 @@ export class UniswapV3Tool extends Contract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    getPrice(
+      factory: string,
+      path: string[],
+      fees: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getPrice(address,address[],uint24[])"(
+      factory: string,
+      path: string[],
+      fees: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     increaseObservationCardinalityNext(
       factory: string,
       path: string[],
       fees: BigNumberish[],
       observationCardinalityNext: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<BigNumber>;
 
     "increaseObservationCardinalityNext(address,address[],uint24[],uint16)"(
       factory: string,
@@ -100,12 +152,26 @@ export class UniswapV3Tool extends Contract {
       fees: BigNumberish[],
       observationCardinalityNext: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<BigNumber>;
   };
 
   filters: {};
 
   estimateGas: {
+    getPrice(
+      factory: string,
+      path: string[],
+      fees: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getPrice(address,address[],uint24[])"(
+      factory: string,
+      path: string[],
+      fees: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     increaseObservationCardinalityNext(
       factory: string,
       path: string[],
@@ -124,6 +190,20 @@ export class UniswapV3Tool extends Contract {
   };
 
   populateTransaction: {
+    getPrice(
+      factory: string,
+      path: string[],
+      fees: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getPrice(address,address[],uint24[])"(
+      factory: string,
+      path: string[],
+      fees: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     increaseObservationCardinalityNext(
       factory: string,
       path: string[],

@@ -52,15 +52,6 @@ export const CHAIN_ID_TO_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: number]: str
   42161: '0xB9553f5665f7512dFCBf0a0D96dd6Bc9Ceb218f2'
 }
 
-export const CHAIN_ID_TO_UNISWAP_V3_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: number]: string } = {
-  // kovan
-  42: '0xF67b243CF00ae7343Bd177Edf2d0EC4bAC4F47B7',
-  // arb testnet
-  421611: '0x6Cb30C1c10F7d73e790384c9bd1cE076Ca5aE2bD',
-  // arb one
-  42161: '0x812d693eD9a6F8F0b4aE7881B723fCBFae992D5F'
-}
-
 export const CHAIN_ID_SYMBOL_SERVICE_ADDRESS: { [chainID: number]: string } = {
   // kovan
   42: '0x0A701c621210859eAbE2F47BE37456BEc2427462',
@@ -81,6 +72,20 @@ export const CHAIN_ID_INVERSE_SERVICE_ADDRESS: { [chainID: number]: string } = {
   421611: '0xc4F97bD99f10Ca08Ce9ec9C9CB05C72F358dbC5E',
   // arb one
   42161: '0xa4F6b7D4EC1BA48B6506D4557Ce547727e59654A'
+}
+
+export const CHAIN_ID_TO_UNISWAP_V3_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: number]: string } = {
+  // kovan
+  42: '0xF67b243CF00ae7343Bd177Edf2d0EC4bAC4F47B7',
+  // arb testnet
+  421611: '0xAb228a61C66934f7C9091C249e47B313d6109325',
+  // arb one
+  42161: '0x812d693eD9a6F8F0b4aE7881B723fCBFae992D5F'
+}
+
+export const CHAIN_ID_TO_UNISWAP_V3_TOOL_ADDRESS: { [chainID: number]: string } = {
+  // arb testnet
+  421611: '0xB8834cD136402398AF58590799B0b6b5f94f872C',
 }
 
 // leave 1% when calculating withdrawal penalty if position != 0

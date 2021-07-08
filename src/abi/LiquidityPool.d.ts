@@ -505,9 +505,9 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {
-    "AddByAMMKeeper(uint256,address)": EventFragment;
-    "AddByTraderKeeper(uint256,address)": EventFragment;
+    "AddAMMKeeper(uint256,address)": EventFragment;
     "AddLiquidity(address,int256,int256,int256)": EventFragment;
+    "AddTraderKeeper(uint256,address)": EventFragment;
     "ClaimOperator(address)": EventFragment;
     "Clear(uint256,address)": EventFragment;
     "CreatePerpetual(uint256,address,address,address,address,address,int256[9],int256[8])": EventFragment;
@@ -515,9 +515,9 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "DonateInsuranceFund(int256)": EventFragment;
     "Liquidate(uint256,address,address,int256,int256,int256,int256)": EventFragment;
     "OperatorCheckIn(address)": EventFragment;
-    "RemoveByAMMKeeper(uint256,address)": EventFragment;
-    "RemoveByTraderKeeper(uint256,address)": EventFragment;
+    "RemoveAMMKeeper(uint256,address)": EventFragment;
     "RemoveLiquidity(address,int256,int256,int256)": EventFragment;
+    "RemoveTraderKeeper(uint256,address)": EventFragment;
     "RevokeOperator()": EventFragment;
     "RunLiquidityPool()": EventFragment;
     "SetClearedState(uint256)": EventFragment;
@@ -541,9 +541,9 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "Withdraw(uint256,address,int256)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "AddByAMMKeeper"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "AddByTraderKeeper"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "AddAMMKeeper"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "AddLiquidity"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "AddTraderKeeper"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ClaimOperator"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Clear"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "CreatePerpetual"): EventFragment;
@@ -551,9 +551,9 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "DonateInsuranceFund"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Liquidate"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OperatorCheckIn"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "RemoveByAMMKeeper"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "RemoveByTraderKeeper"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RemoveAMMKeeper"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveLiquidity"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RemoveTraderKeeper"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RevokeOperator"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RunLiquidityPool"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetClearedState"): EventFragment;
@@ -3495,9 +3495,7 @@ export class LiquidityPool extends Contract {
   };
 
   filters: {
-    AddByAMMKeeper(perpetualIndex: null, keeper: string | null): EventFilter;
-
-    AddByTraderKeeper(perpetualIndex: null, keeper: string | null): EventFilter;
+    AddAMMKeeper(perpetualIndex: null, keeper: string | null): EventFilter;
 
     AddLiquidity(
       trader: string | null,
@@ -3505,6 +3503,8 @@ export class LiquidityPool extends Contract {
       mintedShare: null,
       addedPoolMargin: null
     ): EventFilter;
+
+    AddTraderKeeper(perpetualIndex: null, keeper: string | null): EventFilter;
 
     ClaimOperator(newOperator: string | null): EventFilter;
 
@@ -3541,18 +3541,18 @@ export class LiquidityPool extends Contract {
 
     OperatorCheckIn(operator: string | null): EventFilter;
 
-    RemoveByAMMKeeper(perpetualIndex: null, keeper: string | null): EventFilter;
-
-    RemoveByTraderKeeper(
-      perpetualIndex: null,
-      keeper: string | null
-    ): EventFilter;
+    RemoveAMMKeeper(perpetualIndex: null, keeper: string | null): EventFilter;
 
     RemoveLiquidity(
       trader: string | null,
       returnedCash: null,
       burnedShare: null,
       removedPoolMargin: null
+    ): EventFilter;
+
+    RemoveTraderKeeper(
+      perpetualIndex: null,
+      keeper: string | null
     ): EventFilter;
 
     RevokeOperator(): EventFilter;

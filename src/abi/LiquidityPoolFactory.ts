@@ -33,26 +33,7 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "AddByAMMKeeper",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "perpetualIndex",
-        type: "uint256",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "keeper",
-        type: "address",
-      },
-    ],
-    name: "AddByTraderKeeper",
+    name: "AddAMMKeeper",
     type: "event",
   },
   {
@@ -84,6 +65,25 @@ const _abi = [
       },
     ],
     name: "AddLiquidity",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "keeper",
+        type: "address",
+      },
+    ],
+    name: "AddTraderKeeper",
     type: "event",
   },
   {
@@ -289,26 +289,7 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "RemoveByAMMKeeper",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "perpetualIndex",
-        type: "uint256",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "keeper",
-        type: "address",
-      },
-    ],
-    name: "RemoveByTraderKeeper",
+    name: "RemoveAMMKeeper",
     type: "event",
   },
   {
@@ -340,6 +321,25 @@ const _abi = [
       },
     ],
     name: "RemoveLiquidity",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "keeper",
+        type: "address",
+      },
+    ],
+    name: "RemoveTraderKeeper",
     type: "event",
   },
   {
