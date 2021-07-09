@@ -27,6 +27,7 @@ interface ReaderInterface extends ethers.utils.Interface {
     "getImplementation(address)": FunctionFragment;
     "getLiquidityPoolStorage(address)": FunctionFragment;
     "getPoolMargin(address)": FunctionFragment;
+    "isAMMMaintenanceSafe(address)": FunctionFragment;
     "poolCreator()": FunctionFragment;
     "queryAddLiquidity(address,int256,int256)": FunctionFragment;
     "queryRemoveLiquidity(address,int256,int256)": FunctionFragment;
@@ -52,6 +53,10 @@ interface ReaderInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getPoolMargin",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isAMMMaintenanceSafe",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -93,6 +98,10 @@ interface ReaderInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getPoolMargin",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isAMMMaintenanceSafe",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -190,6 +199,16 @@ export class Reader extends Contract {
     ): Promise<ContractTransaction>;
 
     "getPoolMargin(address)"(
+      liquidityPool: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    isAMMMaintenanceSafe(
+      liquidityPool: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "isAMMMaintenanceSafe(address)"(
       liquidityPool: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -318,6 +337,16 @@ export class Reader extends Contract {
   ): Promise<ContractTransaction>;
 
   "getPoolMargin(address)"(
+    liquidityPool: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  isAMMMaintenanceSafe(
+    liquidityPool: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "isAMMMaintenanceSafe(address)"(
     liquidityPool: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -1429,6 +1458,16 @@ export class Reader extends Contract {
       2: boolean;
     }>;
 
+    isAMMMaintenanceSafe(
+      liquidityPool: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "isAMMMaintenanceSafe(address)"(
+      liquidityPool: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     poolCreator(overrides?: CallOverrides): Promise<string>;
 
     "poolCreator()"(overrides?: CallOverrides): Promise<string>;
@@ -1611,6 +1650,16 @@ export class Reader extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    isAMMMaintenanceSafe(
+      liquidityPool: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "isAMMMaintenanceSafe(address)"(
+      liquidityPool: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     poolCreator(overrides?: CallOverrides): Promise<BigNumber>;
 
     "poolCreator()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1731,6 +1780,16 @@ export class Reader extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "getPoolMargin(address)"(
+      liquidityPool: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    isAMMMaintenanceSafe(
+      liquidityPool: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "isAMMMaintenanceSafe(address)"(
       liquidityPool: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

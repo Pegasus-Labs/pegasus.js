@@ -314,6 +314,25 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "address",
+        name: "liquidityPool",
+        type: "address",
+      },
+    ],
+    name: "isAMMMaintenanceSafe",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "poolCreator",
     outputs: [
