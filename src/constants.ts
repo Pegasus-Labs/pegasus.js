@@ -12,7 +12,7 @@ export const CHAIN_ID_TO_READER_ADDRESS: { [chainID: number]: string } = {
   // kovan
   42: '0xA097B75919F7a41221f140215A4C71fD4EFf7582',
   // s10poa
-  1337: '0xDcb4594238c1a6DD6878E814BDb718C34B8ec781',
+  1337: '0xbF04bf21005476e40109afD21BCac476D599a890',
   // arb testnet
   421611: '0x2396812b7295044C5e8aFBB8F84ca484DCaE0dD8',
   // arb one
