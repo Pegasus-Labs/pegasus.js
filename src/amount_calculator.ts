@@ -172,6 +172,7 @@ export function computeLimitOrderMaxTradeAmount(
   if (!perpetual) {
     throw new InvalidArgumentError(`perpetual ${currentMarketContext.perpetualIndex} not found in the pool`)
   }
+  const oldOpenInterest = perpetual.openInterest
   const trader = currentMarketContext.account
   const currentPerpetualOrders: Order[] = symbol2Orders.get(symbol) || [] // probably the 1st order
   const openInterestLimit = computePerpetualOpenInterestLimit(currentMarketContext.pool, currentMarketContext.perpetualIndex)
@@ -216,7 +217,7 @@ export function computeLimitOrderMaxTradeAmount(
       currentMarketContext!.pool, currentMarketContext!.perpetualIndex,
       trader, a
     )
-    if (newOpenInterest.gt(openInterestLimit)) {
+    if (newOpenInterest.gt(oldOpenInterest) && newOpenInterest.gt(openInterestLimit)) {
       // a is too large
       return false
     }
