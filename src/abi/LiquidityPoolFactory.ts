@@ -809,24 +809,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "perpetualIndex",
-        type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "keeper",
-        type: "address",
-      },
-    ],
-    name: "addTraderKeeper",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "bytes",
         name: "orderData",
         type: "bytes",
@@ -1331,35 +1313,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "perpetualIndex",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "begin",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "end",
-        type: "uint256",
-      },
-    ],
-    name: "listByTraderKeepers",
-    outputs: [
-      {
-        internalType: "address[]",
-        name: "result",
-        type: "address[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "int256",
         name: "cashToAdd",
         type: "int256",
@@ -1496,24 +1449,6 @@ const _abi = [
       },
     ],
     name: "removeLiquidity",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "perpetualIndex",
-        type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "keeper",
-        type: "address",
-      },
-    ],
-    name: "removeTraderKeeper",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

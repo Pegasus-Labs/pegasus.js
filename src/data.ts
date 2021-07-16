@@ -99,13 +99,14 @@ export async function getLiquidityPool(reader: Reader, liquidityPoolAddress: str
     vault: pool.addresses[6],
     vaultFeeRate: normalizeBigNumberish(pool.intNums[0]).shiftedBy(-DECIMALS),
     poolCashBalance: normalizeBigNumberish(pool.intNums[1]).shiftedBy(-DECIMALS),
+    isAMMMaintenanceSafe: pool.isAMMMaintenanceSafe,
     insuranceFundCap: normalizeBigNumberish(pool.intNums[2]).shiftedBy(-DECIMALS),
     insuranceFund: normalizeBigNumberish(pool.intNums[3]).shiftedBy(-DECIMALS),
     donatedInsuranceFund: normalizeBigNumberish(pool.intNums[4]).shiftedBy(-DECIMALS),
     collateralDecimals: pool.uintNums[0].toNumber(),
     fundingTime: pool.uintNums[2].toNumber(),
     operatorExpiration: pool.uintNums[3].toNumber(),
-    perpetuals: new Map()
+    perpetuals: new Map(),
   }
   pool.perpetuals.forEach((m, i) => {
     if (m.state < PerpetualState.INVALID || m.state > PerpetualState.CLEARED) {
@@ -178,8 +179,10 @@ export async function getLiquidityPool(reader: Reader, liquidityPoolAddress: str
       symbol: m.symbol.toNumber(),
       underlyingSymbol: m.underlyingAsset,
       isMarketClosed: m.isMarketClosed,
+      isTerminated: m.isTerminated,
       ammCashBalance: normalizeBigNumberish(m.ammCashBalance).shiftedBy(-DECIMALS),
-      ammPositionAmount: normalizeBigNumberish(m.ammPositionAmount).shiftedBy(-DECIMALS)
+      ammPositionAmount: normalizeBigNumberish(m.ammPositionAmount).shiftedBy(-DECIMALS),
+      isInversePerpetual: m.isInversePerpetual,
     })
   })
   return ret

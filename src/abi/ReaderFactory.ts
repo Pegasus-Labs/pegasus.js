@@ -18,7 +18,7 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "_poolCreator",
+        name: "inverseStateService_",
         type: "address",
       },
     ],
@@ -171,25 +171,6 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "proxy",
-        type: "address",
-      },
-    ],
-    name: "getImplementation",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
         name: "liquidityPool",
         type: "address",
       },
@@ -261,6 +242,11 @@ const _abi = [
                 type: "bool",
               },
               {
+                internalType: "bool",
+                name: "isTerminated",
+                type: "bool",
+              },
+              {
                 internalType: "int256",
                 name: "ammCashBalance",
                 type: "int256",
@@ -270,10 +256,20 @@ const _abi = [
                 name: "ammPositionAmount",
                 type: "int256",
               },
+              {
+                internalType: "bool",
+                name: "isInversePerpetual",
+                type: "bool",
+              },
             ],
             internalType: "struct Reader.PerpetualReaderResult[]",
             name: "perpetuals",
             type: "tuple[]",
+          },
+          {
+            internalType: "bool",
+            name: "isAMMMaintenanceSafe",
+            type: "bool",
           },
         ],
         internalType: "struct Reader.LiquidityPoolReaderResult",
@@ -314,6 +310,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "inverseStateService",
+    outputs: [
+      {
+        internalType: "contract IInverseStateService",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -330,19 +339,6 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "poolCreator",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {

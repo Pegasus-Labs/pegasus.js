@@ -99,12 +99,13 @@ export interface LiquidityPoolStorage {
   collateralDecimals: number
 
   poolCashBalance: BigNumber
+  isAMMMaintenanceSafe: boolean
   fundingTime: number
   operatorExpiration: number
   insuranceFund: BigNumber
   donatedInsuranceFund: BigNumber
 
-  perpetuals: Map<number, PerpetualStorage>
+  perpetuals: Map<number, PerpetualStorage>,
 }
 
 export interface PerpetualStorage {
@@ -140,8 +141,10 @@ export interface PerpetualStorage {
   symbol: number
   underlyingSymbol: string
   isMarketClosed: boolean
+  isTerminated: boolean
   ammCashBalance: BigNumber
   ammPositionAmount: BigNumber
+  isInversePerpetual: boolean
 }
 
 export interface AccountStorage {

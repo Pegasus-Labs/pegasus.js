@@ -41,6 +41,7 @@ const defaultPool: LiquidityPoolStorage = {
 
   vaultFeeRate: new BigNumber(0.0002),
   poolCashBalance: _0, // set me later
+  isAMMMaintenanceSafe: true,
   fundingTime: 1579601290,
   operatorExpiration: 1579601290,
   insuranceFund: _0,
@@ -53,9 +54,11 @@ const perpetual1: PerpetualStorage = {
   symbol: 0,
   underlyingSymbol: 'T',
   isMarketClosed: false,
+  isTerminated: false,
   state: PerpetualState.NORMAL,
   oracle: '0x0',
   totalCollateral: _0,
+  isInversePerpetual: false,
 
   markPrice: new BigNumber(6965),
   indexPrice: new BigNumber(7000),
@@ -893,9 +896,11 @@ describe('computeAMMTrade with USE_TARGET_LEVERAGE', function() {
     symbol: 0,
     underlyingSymbol: 'T',
     isMarketClosed: false,
+    isTerminated: false,
     state: PerpetualState.NORMAL,
     oracle: '0x0',
     totalCollateral: _0,
+    isInversePerpetual: false,
   
     markPrice: new BigNumber(1000),
     indexPrice: new BigNumber(1000),
