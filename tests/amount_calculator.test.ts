@@ -8,7 +8,7 @@ import {
   computeLimitOrderMaxTradeAmount,
 } from '../src/amount_calculator'
 import { computeAccount } from '../src/computation'
-import { computeAMMPoolMargin, initAMMTradingContext } from '../src/amm'
+import { computeAMMPoolMargin, computeBestAskBidPrice, computeBestAskBidPriceIfSafe, initAMMTradingContext, isAMMSafe } from '../src/amm'
 import { _0, _1 } from '../src/constants'
 import { orderSideAvailable } from '../src/order'
 import { LiquidityPoolStorage, PerpetualStorage, AccountStorage, PerpetualState, TradeFlag, Order } from '../src/types'
@@ -719,6 +719,14 @@ describe('computeAMMAmountWithPrice - online cases', function () {
           }],
         ])
       }
+    })
+
+    it('basic info', () => {
+      let context = initAMMTradingContext(pool, TEST_MARKET_INDEX0)
+      expect(isAMMSafe(context, context.closeSlippageFactor)).toBeTruthy()
+      context = computeAMMPoolMargin(context, context.closeSlippageFactor)
+      expect(computeBestAskBidPriceIfSafe(context, context.closeSlippageFactor, false)).toApproximate(normalizeBigNumberish('93.605929646536617768'))
+      expect(computeBestAskBidPrice(pool, TEST_MARKET_INDEX0, false)).toApproximate(normalizeBigNumberish('1805.494'))
     })
 
     it('below δ', () => {

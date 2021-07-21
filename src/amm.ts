@@ -160,7 +160,7 @@ export function computeAMMInternalTrade(
 
 // get the price if ΔN -> 0. equal to lim_(ΔN -> 0) (computeDeltaMargin / (ΔN))
 // call computeAMMPoolMargin before this function. make sure isAMMSafe before this function
-// CAUTION: this formula implements P_{best} in the paper, it's not the real trading price if δ takes effect
+// CAUTION: this function only implements P_{best} in the paper, it's not the real trading price if δ takes effect
 export function computeBestAskBidPriceIfSafe(
   context: AMMTradingContext,
   beta: BigNumber,
@@ -192,7 +192,11 @@ function appendSpread(context: AMMTradingContext, midPrice: BigNumber, isAMMBuy:
   }
 }
 
-// get the price if ΔN -> 0. equal to lim_(ΔN -> 0) (computeDeltaMargin / (ΔN))
+// get the price if ΔN -> 0. lim_(ΔN -> 0) (computeDeltaMargin / (ΔN))
+// this function implements all possible situations include:
+// * limit by α. this is P_{best} in the paper
+// * limit by δ when close
+// * amm unsafe
 export function computeBestAskBidPrice(p: LiquidityPoolStorage, perpetualIndex: number, isAMMBuy: boolean): BigNumber {
   let context = initAMMTradingContext(p, perpetualIndex)
   let isAMMClosing = false
@@ -201,15 +205,34 @@ export function computeBestAskBidPrice(p: LiquidityPoolStorage, perpetualIndex: 
     isAMMClosing = true
     beta = context.closeSlippageFactor
   }
+  // unsafe
   if (!isAMMSafe(context, beta)) {
     if (!isAMMClosing) {
       throw new InsufficientLiquidityError(`AMM can not open position anymore: unsafe before trade`)
     }
     return computeBestAskBidPriceIfUnsafe(context)
   }
-  // safe
+  // safe: limit by α
   context = computeAMMPoolMargin(context, beta)
-  return computeBestAskBidPriceIfSafe(context, beta, isAMMBuy)
+  let price = computeBestAskBidPriceIfSafe(context, beta, isAMMBuy)
+  if (isAMMClosing) {
+    // limit by δ
+    let discount = context.maxClosePriceDiscount
+    if (context.position1.gt(_0)) {
+      discount = discount.negated()
+    }
+    const discountLimitPrice = _1.plus(discount).times(context.index)
+    if (isAMMBuy) {
+      if (price.gt(discountLimitPrice)) {
+        return discountLimitPrice
+      }
+    } else {
+      if (price.lt(discountLimitPrice)) {
+        return discountLimitPrice
+      }
+    }
+  }
+  return price
 }
 
 // the amount is the AMM's perspective
