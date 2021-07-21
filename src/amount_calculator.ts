@@ -399,7 +399,7 @@ export function computeAMMCloseAndOpenAmountWithPrice(
     throw new InvalidArgumentError('close from 0 is not supported')
   }
 
-  // case 1: limit by spread
+  // case 1: limit by α
   const ammSafe = isAMMSafe(context, context.closeSlippageFactor)
   if (ammSafe) {
     context = computeAMMPoolMargin(context, context.closeSlippageFactor)
@@ -417,11 +417,28 @@ export function computeAMMCloseAndOpenAmountWithPrice(
     }
   }
 
-  // case 2: limit by existing positions
+  // case 2: limit by δ
+  let discount = context.maxClosePriceDiscount
+  if (context.position1.gt(_0)) {
+    discount = discount.negated()
+  }
+  const discountLimitPrice = _1.plus(discount).times(context.index)
+  if (isAMMBuy) {
+    if (limitPrice.gt(discountLimitPrice)) {
+      return _0
+    }
+  } else {
+    if (limitPrice.lt(discountLimitPrice)) {
+      return _0
+    }
+  }
+
+  // case 3: if close all (amm position = 0), check the price
   const zeroContext = computeAMMInternalClose(context, context.position1.negated())
   if (zeroContext.deltaPosition.isZero()) {
     throw new BugError('close to zero failed')
   }
+
   const zeroPrice = zeroContext.deltaMargin.div(zeroContext.deltaPosition).abs()
   if (
     (isAMMBuy && zeroPrice.gte(limitPrice)) /* short close */ ||
@@ -430,10 +447,10 @@ export function computeAMMCloseAndOpenAmountWithPrice(
     // close all
     context = zeroContext
   } else if (!ammSafe) {
-    // case 3: unsafe close, but price not matched
+    // case 4: unsafe close, but price not matched
     return _0
   } else {
-    // case 4: close by price
+    // case 5: close by price
     const amount = computeAMMInverseVWAP(context, limitPrice, context.closeSlippageFactor, isAMMBuy)
     if (
       (isAMMBuy && amount.gt(_0)) /* short close success */ ||
@@ -445,7 +462,7 @@ export function computeAMMCloseAndOpenAmountWithPrice(
     }
   }
 
-  // case 5: open positions
+  // case 6: open positions
   if (
     (isAMMBuy && context.position1.gte(_0)) /* cross 0 after short close */ ||
     (!isAMMBuy && context.position1.lte(_0)) /* cross 0 after long close */

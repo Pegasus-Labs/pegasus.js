@@ -160,6 +160,7 @@ export function computeAMMInternalTrade(
 
 // get the price if ΔN -> 0. equal to lim_(ΔN -> 0) (computeDeltaMargin / (ΔN))
 // call computeAMMPoolMargin before this function. make sure isAMMSafe before this function
+// CAUTION: this formula implements P_{best} in the paper, it's not the real trading price if δ takes effect
 export function computeBestAskBidPriceIfSafe(
   context: AMMTradingContext,
   beta: BigNumber,

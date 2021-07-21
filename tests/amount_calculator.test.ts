@@ -676,4 +676,72 @@ describe('computeAMMAmountWithPrice - online cases', function () {
     const amount = computeAMMAmountWithPrice(pool, TEST_MARKET_INDEX0, false, limitPrice)
     expect(amount).toApproximate(normalizeBigNumberish('-82085.982451575864585182'))
   })
+
+  describe(`limited by δ`, function () {
+    let pool = defaultPool
+
+    beforeEach(() => {
+      const perp: PerpetualStorage = {
+        ...perpetual1,
+        initialMarginRate: new BigNumber('0.1'),
+        maintenanceMarginRate: new BigNumber('0.05'),
+        operatorFeeRate: new BigNumber('0.00005'),
+        lpFeeRate: new BigNumber('0.00055'),
+        referrerRebateRate: new BigNumber('0.2'),
+        liquidationPenaltyRate: new BigNumber('0.01'),
+        keeperGasReward: new BigNumber('12'),
+        insuranceFundRate: new BigNumber('0.5'),
+        maxOpenInterestRate: new BigNumber('3'),
+      }
+      perp.halfSpread.value = new BigNumber('0.0008')
+      perp.openSlippageFactor.value = new BigNumber('0.015')
+      perp.closeSlippageFactor.value = new BigNumber('0.011')
+      perp.fundingRateFactor.value = new BigNumber('0.005')
+      perp.fundingRateLimit.value = new BigNumber('0.01')
+      perp.ammMaxLeverage.value = new BigNumber('3')
+      perp.maxClosePriceDiscount.value = new BigNumber('0.05')
+      pool = {
+        ...defaultPool,
+        vaultFeeRate: new BigNumber('0.00015'),
+        poolCashBalance: new BigNumber('1039.22753645713125'),
+        perpetuals: new Map([
+          [TEST_MARKET_INDEX0, {
+            ...perp,
+            markPrice: new BigNumber('1900.52'),
+            indexPrice: new BigNumber('1900.52'),
+            unitAccumulativeFunding: new BigNumber('-0.444798988576290844'),
+            openInterest: new BigNumber('0.052'),
+            ammCashBalance: new BigNumber('-51.67197526787653408'),
+            ammPositionAmount: new BigNumber('0.052'),
+            openSlippageFactor: { value: new BigNumber('10'), minValue: _0, maxValue: _0 },
+            closeSlippageFactor: { value: new BigNumber('10'), minValue: _0, maxValue: _0 },
+            ammMaxLeverage: { value: new BigNumber(1), minValue: _0, maxValue: _0 },
+          }],
+        ])
+      }
+    })
+
+    it('below δ', () => {
+      const limitPrice = new BigNumber('1000')
+      const amount = computeAMMAmountWithPrice(pool, TEST_MARKET_INDEX0, true, limitPrice)
+      expect(amount).toBeBigNumber(_0)
+    })
+
+    it('above δ', () => {
+      const limitPrice = new BigNumber('1820')      
+      const amount = computeAMMAmountWithPrice(pool, TEST_MARKET_INDEX0, true, limitPrice)
+      expect(amount).toApproximate(normalizeBigNumberish('0.056729315849480609'))
+      const trade = computeAMMTrade(pool, TEST_MARKET_INDEX0, accountStorage1, amount, TradeFlag.MASK_USE_TARGET_LEVERAGE)
+      expect(trade.tradingPrice.lte('1820')).toBeTruthy()
+      expect(trade.tradingPrice.gte('1819.99')).toBeTruthy()
+    })
+
+    it('to the other position side', () => {
+      const limitPrice = new BigNumber('10000')      
+      const amount = computeAMMAmountWithPrice(pool, TEST_MARKET_INDEX0, true, limitPrice)
+      expect(amount).toApproximate(normalizeBigNumberish('0.306480654357728561'))
+      const trade = computeAMMTrade(pool, TEST_MARKET_INDEX0, accountStorage1, amount, TradeFlag.MASK_USE_TARGET_LEVERAGE)
+      expect(trade.tradingPrice.lte(limitPrice)).toBeTruthy()
+    })
+  })
 })
