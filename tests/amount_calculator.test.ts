@@ -693,12 +693,9 @@ describe('computeAMMAmountWithPrice - online cases', function () {
         insuranceFundRate: new BigNumber('0.5'),
         maxOpenInterestRate: new BigNumber('3'),
       }
-      perp.halfSpread.value = new BigNumber('0.0008')
-      perp.openSlippageFactor.value = new BigNumber('0.015')
-      perp.closeSlippageFactor.value = new BigNumber('0.011')
-      perp.fundingRateFactor.value = new BigNumber('0.005')
-      perp.fundingRateLimit.value = new BigNumber('0.01')
-      perp.ammMaxLeverage.value = new BigNumber('3')
+      perp.openSlippageFactor.value = new BigNumber('10')
+      perp.closeSlippageFactor.value = new BigNumber('10')
+      perp.ammMaxLeverage.value = new BigNumber('1')
       perp.maxClosePriceDiscount.value = new BigNumber('0.05')
       pool = {
         ...defaultPool,
@@ -713,9 +710,6 @@ describe('computeAMMAmountWithPrice - online cases', function () {
             openInterest: new BigNumber('0.052'),
             ammCashBalance: new BigNumber('-51.67197526787653408'),
             ammPositionAmount: new BigNumber('0.052'),
-            openSlippageFactor: { value: new BigNumber('10'), minValue: _0, maxValue: _0 },
-            closeSlippageFactor: { value: new BigNumber('10'), minValue: _0, maxValue: _0 },
-            ammMaxLeverage: { value: new BigNumber(1), minValue: _0, maxValue: _0 },
           }],
         ])
       }
