@@ -497,6 +497,12 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
+      {
         indexed: true,
         internalType: "address",
         name: "trader",

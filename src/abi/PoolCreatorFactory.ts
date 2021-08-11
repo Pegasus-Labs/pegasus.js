@@ -214,6 +214,25 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: true,
+        internalType: "address",
+        name: "oldGuardian",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newGuradian",
+        type: "address",
+      },
+    ],
+    name: "SetGuardian",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: false,
         internalType: "address",
         name: "previousKeeper",
@@ -246,6 +265,19 @@ const _abi = [
       },
     ],
     name: "SetRewardDistributor",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "bool",
+        name: "isUniverseSettled",
+        type: "bool",
+      },
+    ],
+    name: "SetUniverseSettled",
     type: "event",
   },
   {
@@ -659,6 +691,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "guardian",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -767,6 +812,19 @@ const _abi = [
       },
     ],
     name: "isLiquidityPool",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "isUniverseSettled",
     outputs: [
       {
         internalType: "bool",
@@ -1008,6 +1066,13 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "renounceGuardian",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "renounceOwnership",
     outputs: [],
     stateMutability: "nonpayable",
@@ -1027,6 +1092,32 @@ const _abi = [
       },
     ],
     name: "revokePrivilege",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "guardian_",
+        type: "address",
+      },
+    ],
+    name: "setGuaridan",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bool",
+        name: "isUniverseSettled_",
+        type: "bool",
+      },
+    ],
+    name: "setUniverseSettled",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

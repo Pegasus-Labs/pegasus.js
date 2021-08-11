@@ -40,11 +40,13 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "getVaultFeeRate()": FunctionFragment;
     "getVersion(bytes32)": FunctionFragment;
     "grantPrivilege(address,uint256)": FunctionFragment;
+    "guardian()": FunctionFragment;
     "initialize(address,address,int256)": FunctionFragment;
     "isActiveLiquidityPoolOf(address,address,uint256)": FunctionFragment;
     "isGranted(address,address,uint256)": FunctionFragment;
     "isKeeper(address)": FunctionFragment;
     "isLiquidityPool(address)": FunctionFragment;
+    "isUniverseSettled()": FunctionFragment;
     "isVersionCompatible(bytes32,bytes32)": FunctionFragment;
     "isVersionKeyValid(bytes32)": FunctionFragment;
     "listActiveLiquidityPoolsOf(address,uint256,uint256)": FunctionFragment;
@@ -55,8 +57,11 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "owner()": FunctionFragment;
     "registerOperatorOfLiquidityPool(address,address)": FunctionFragment;
     "removeKeeper(address)": FunctionFragment;
+    "renounceGuardian()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "revokePrivilege(address,uint256)": FunctionFragment;
+    "setGuaridan(address)": FunctionFragment;
+    "setUniverseSettled(bool)": FunctionFragment;
     "setVault(address)": FunctionFragment;
     "setVaultFeeRate(int256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
@@ -130,6 +135,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     functionFragment: "grantPrivilege",
     values: [string, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "guardian", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "initialize",
     values: [string, string, BigNumberish]
@@ -146,6 +152,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "isLiquidityPool",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isUniverseSettled",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "isVersionCompatible",
@@ -185,12 +195,21 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
+    functionFragment: "renounceGuardian",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "revokePrivilege",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "setGuaridan", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "setUniverseSettled",
+    values: [boolean]
   ): string;
   encodeFunctionData(functionFragment: "setVault", values: [string]): string;
   encodeFunctionData(
@@ -270,6 +289,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     functionFragment: "grantPrivilege",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "guardian", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isActiveLiquidityPoolOf",
@@ -279,6 +299,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "isKeeper", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isLiquidityPool",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isUniverseSettled",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -319,11 +343,23 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "renounceGuardian",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "revokePrivilege",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setGuaridan",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setUniverseSettled",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setVault", data: BytesLike): Result;
@@ -352,8 +388,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "OwnershipTransferred(address,address)": EventFragment;
     "RemoveKeeperFromWhitelist(address)": EventFragment;
     "RevokePrivilege(address,address,uint256)": EventFragment;
+    "SetGuardian(address,address)": EventFragment;
     "SetKeeper(address,address)": EventFragment;
     "SetRewardDistributor(address,address)": EventFragment;
+    "SetUniverseSettled(bool)": EventFragment;
     "SetVault(address,address)": EventFragment;
     "SetVaultFeeRate(int256,int256)": EventFragment;
     "UpgradeLiquidityPool(bytes32,address,address)": EventFragment;
@@ -366,8 +404,10 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveKeeperFromWhitelist"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RevokePrivilege"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetGuardian"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetKeeper"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetRewardDistributor"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetUniverseSettled"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetVault"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetVaultFeeRate"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UpgradeLiquidityPool"): EventFragment;
@@ -633,6 +673,18 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    guardian(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "guardian()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
     initialize(
       symbolService: string,
       globalVault: string,
@@ -706,6 +758,18 @@ export class PoolCreator extends Contract {
 
     "isLiquidityPool(address)"(
       liquidityPool: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    isUniverseSettled(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "isUniverseSettled()"(
       overrides?: CallOverrides
     ): Promise<{
       0: boolean;
@@ -891,6 +955,10 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    renounceGuardian(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "renounceGuardian()"(overrides?: Overrides): Promise<ContractTransaction>;
+
     renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
 
     "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
@@ -904,6 +972,26 @@ export class PoolCreator extends Contract {
     "revokePrivilege(address,uint256)"(
       grantee: string,
       privilege: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    setGuaridan(
+      guardian_: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setGuaridan(address)"(
+      guardian_: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    setUniverseSettled(
+      isUniverseSettled_: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setUniverseSettled(bool)"(
+      isUniverseSettled_: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1130,6 +1218,10 @@ export class PoolCreator extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  guardian(overrides?: CallOverrides): Promise<string>;
+
+  "guardian()"(overrides?: CallOverrides): Promise<string>;
+
   initialize(
     symbolService: string,
     globalVault: string,
@@ -1188,6 +1280,10 @@ export class PoolCreator extends Contract {
     liquidityPool: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  isUniverseSettled(overrides?: CallOverrides): Promise<boolean>;
+
+  "isUniverseSettled()"(overrides?: CallOverrides): Promise<boolean>;
 
   isVersionCompatible(
     targetVersionKey: BytesLike,
@@ -1315,6 +1411,10 @@ export class PoolCreator extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  renounceGuardian(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "renounceGuardian()"(overrides?: Overrides): Promise<ContractTransaction>;
+
   renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
 
   "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
@@ -1328,6 +1428,26 @@ export class PoolCreator extends Contract {
   "revokePrivilege(address,uint256)"(
     grantee: string,
     privilege: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  setGuaridan(
+    guardian_: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setGuaridan(address)"(
+    guardian_: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  setUniverseSettled(
+    isUniverseSettled_: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setUniverseSettled(bool)"(
+    isUniverseSettled_: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1553,6 +1673,10 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    guardian(overrides?: CallOverrides): Promise<string>;
+
+    "guardian()"(overrides?: CallOverrides): Promise<string>;
+
     initialize(
       symbolService: string,
       globalVault: string,
@@ -1611,6 +1735,10 @@ export class PoolCreator extends Contract {
       liquidityPool: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    isUniverseSettled(overrides?: CallOverrides): Promise<boolean>;
+
+    "isUniverseSettled()"(overrides?: CallOverrides): Promise<boolean>;
 
     isVersionCompatible(
       targetVersionKey: BytesLike,
@@ -1735,6 +1863,10 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    renounceGuardian(overrides?: CallOverrides): Promise<void>;
+
+    "renounceGuardian()"(overrides?: CallOverrides): Promise<void>;
+
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
@@ -1748,6 +1880,23 @@ export class PoolCreator extends Contract {
     "revokePrivilege(address,uint256)"(
       grantee: string,
       privilege: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setGuaridan(guardian_: string, overrides?: CallOverrides): Promise<void>;
+
+    "setGuaridan(address)"(
+      guardian_: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setUniverseSettled(
+      isUniverseSettled_: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setUniverseSettled(bool)"(
+      isUniverseSettled_: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1839,12 +1988,19 @@ export class PoolCreator extends Contract {
       privilege: null
     ): EventFilter;
 
+    SetGuardian(
+      oldGuardian: string | null,
+      newGuradian: string | null
+    ): EventFilter;
+
     SetKeeper(previousKeeper: null, newKeeper: null): EventFilter;
 
     SetRewardDistributor(
       previousRewardDistributor: null,
       newRewardDistributor: null
     ): EventFilter;
+
+    SetUniverseSettled(isUniverseSettled: null): EventFilter;
 
     SetVault(previousVault: null, newVault: null): EventFilter;
 
@@ -2007,6 +2163,10 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    guardian(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "guardian()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     initialize(
       symbolService: string,
       globalVault: string,
@@ -2065,6 +2225,10 @@ export class PoolCreator extends Contract {
       liquidityPool: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    isUniverseSettled(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "isUniverseSettled()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     isVersionCompatible(
       targetVersionKey: BytesLike,
@@ -2175,6 +2339,10 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    renounceGuardian(overrides?: Overrides): Promise<BigNumber>;
+
+    "renounceGuardian()"(overrides?: Overrides): Promise<BigNumber>;
+
     renounceOwnership(overrides?: Overrides): Promise<BigNumber>;
 
     "renounceOwnership()"(overrides?: Overrides): Promise<BigNumber>;
@@ -2188,6 +2356,23 @@ export class PoolCreator extends Contract {
     "revokePrivilege(address,uint256)"(
       grantee: string,
       privilege: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    setGuaridan(guardian_: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "setGuaridan(address)"(
+      guardian_: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    setUniverseSettled(
+      isUniverseSettled_: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "setUniverseSettled(bool)"(
+      isUniverseSettled_: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -2406,6 +2591,10 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    guardian(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "guardian()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     initialize(
       symbolService: string,
       globalVault: string,
@@ -2465,6 +2654,12 @@ export class PoolCreator extends Contract {
 
     "isLiquidityPool(address)"(
       liquidityPool: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isUniverseSettled(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "isUniverseSettled()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2580,6 +2775,10 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    renounceGuardian(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "renounceGuardian()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+
     renounceOwnership(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "renounceOwnership()"(overrides?: Overrides): Promise<PopulatedTransaction>;
@@ -2593,6 +2792,26 @@ export class PoolCreator extends Contract {
     "revokePrivilege(address,uint256)"(
       grantee: string,
       privilege: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    setGuaridan(
+      guardian_: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setGuaridan(address)"(
+      guardian_: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    setUniverseSettled(
+      isUniverseSettled_: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setUniverseSettled(bool)"(
+      isUniverseSettled_: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

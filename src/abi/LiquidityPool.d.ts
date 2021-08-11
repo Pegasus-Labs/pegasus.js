@@ -500,7 +500,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "SetOracle(uint256,address,address)": EventFragment;
     "SetPerpetualBaseParameter(uint256,int256[9])": EventFragment;
     "SetPerpetualRiskParameter(uint256,int256[8],int256[8],int256[8])": EventFragment;
-    "SetTargetLeverage(address,int256)": EventFragment;
+    "SetTargetLeverage(uint256,address,int256)": EventFragment;
     "Settle(uint256,address,int256)": EventFragment;
     "Trade(uint256,address,int256,int256,int256,int256)": EventFragment;
     "TransferExcessInsuranceFundToLP(int256)": EventFragment;
@@ -3442,7 +3442,11 @@ export class LiquidityPool extends Contract {
       maxRiskParamValues: null
     ): EventFilter;
 
-    SetTargetLeverage(trader: string | null, targetLeverage: null): EventFilter;
+    SetTargetLeverage(
+      perpetualIndex: null,
+      trader: string | null,
+      targetLeverage: null
+    ): EventFilter;
 
     Settle(
       perpetualIndex: null,
