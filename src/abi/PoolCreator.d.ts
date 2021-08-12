@@ -60,7 +60,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "renounceGuardian()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "revokePrivilege(address,uint256)": FunctionFragment;
-    "setGuaridan(address)": FunctionFragment;
+    "setGuardian(address)": FunctionFragment;
     "setUniverseSettled(bool)": FunctionFragment;
     "setVault(address)": FunctionFragment;
     "setVaultFeeRate(int256)": FunctionFragment;
@@ -206,7 +206,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     functionFragment: "revokePrivilege",
     values: [string, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "setGuaridan", values: [string]): string;
+  encodeFunctionData(functionFragment: "setGuardian", values: [string]): string;
   encodeFunctionData(
     functionFragment: "setUniverseSettled",
     values: [boolean]
@@ -355,7 +355,7 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setGuaridan",
+    functionFragment: "setGuardian",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -975,12 +975,12 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    setGuaridan(
+    setGuardian(
       guardian_: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "setGuaridan(address)"(
+    "setGuardian(address)"(
       guardian_: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
@@ -1431,12 +1431,12 @@ export class PoolCreator extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  setGuaridan(
+  setGuardian(
     guardian_: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "setGuaridan(address)"(
+  "setGuardian(address)"(
     guardian_: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -1883,9 +1883,9 @@ export class PoolCreator extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setGuaridan(guardian_: string, overrides?: CallOverrides): Promise<void>;
+    setGuardian(guardian_: string, overrides?: CallOverrides): Promise<void>;
 
-    "setGuaridan(address)"(
+    "setGuardian(address)"(
       guardian_: string,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1990,7 +1990,7 @@ export class PoolCreator extends Contract {
 
     SetGuardian(
       oldGuardian: string | null,
-      newGuradian: string | null
+      newGuardian: string | null
     ): EventFilter;
 
     SetKeeper(previousKeeper: null, newKeeper: null): EventFilter;
@@ -2359,9 +2359,9 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    setGuaridan(guardian_: string, overrides?: Overrides): Promise<BigNumber>;
+    setGuardian(guardian_: string, overrides?: Overrides): Promise<BigNumber>;
 
-    "setGuaridan(address)"(
+    "setGuardian(address)"(
       guardian_: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -2795,12 +2795,12 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    setGuaridan(
+    setGuardian(
       guardian_: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "setGuaridan(address)"(
+    "setGuardian(address)"(
       guardian_: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;

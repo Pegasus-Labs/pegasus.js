@@ -222,7 +222,7 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "newGuradian",
+        name: "newGuardian",
         type: "address",
       },
     ],
@@ -1104,7 +1104,7 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "setGuaridan",
+    name: "setGuardian",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
