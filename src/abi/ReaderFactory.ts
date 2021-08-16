@@ -498,6 +498,11 @@ const _abi = [
         name: "indexPrices",
         type: "int256[]",
       },
+      {
+        internalType: "uint256[]",
+        name: "timestamps",
+        type: "uint256[]",
+      },
     ],
     stateMutability: "nonpayable",
     type: "function",

@@ -1572,8 +1572,10 @@ export class Reader extends Contract {
     ): Promise<{
       isSuccess: boolean[];
       indexPrices: BigNumber[];
+      timestamps: BigNumber[];
       0: boolean[];
       1: BigNumber[];
+      2: BigNumber[];
     }>;
 
     "readIndexPrices(address[])"(
@@ -1582,8 +1584,10 @@ export class Reader extends Contract {
     ): Promise<{
       isSuccess: boolean[];
       indexPrices: BigNumber[];
+      timestamps: BigNumber[];
       0: boolean[];
       1: BigNumber[];
+      2: BigNumber[];
     }>;
   };
 

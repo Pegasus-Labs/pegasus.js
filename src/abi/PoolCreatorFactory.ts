@@ -23,6 +23,19 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "AddGuardian",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
         name: "keeper",
         type: "address",
       },
@@ -191,6 +204,19 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "RenounceGuardian",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
         name: "grantor",
         type: "address",
       },
@@ -208,25 +234,6 @@ const _abi = [
       },
     ],
     name: "RevokePrivilege",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "oldGuardian",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "newGuardian",
-        type: "address",
-      },
-    ],
-    name: "SetGuardian",
     type: "event",
   },
   {
@@ -269,14 +276,7 @@ const _abi = [
   },
   {
     anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "bool",
-        name: "isUniverseSettled",
-        type: "bool",
-      },
-    ],
+    inputs: [],
     name: "SetUniverseSettled",
     type: "event",
   },
@@ -316,6 +316,25 @@ const _abi = [
       },
     ],
     name: "SetVaultFeeRate",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "fromAccount",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "toAccount",
+        type: "address",
+      },
+    ],
+    name: "TransferGuardian",
     type: "event",
   },
   {
@@ -364,6 +383,19 @@ const _abi = [
         type: "bool",
       },
     ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "addGuardian",
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -692,12 +724,31 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "guardian",
+    name: "guardianCount",
     outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
       {
         internalType: "address",
         name: "",
         type: "address",
+      },
+    ],
+    name: "guardians",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
       },
     ],
     stateMutability: "view",
@@ -774,6 +825,25 @@ const _abi = [
       },
     ],
     name: "isGranted",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "isGuardian",
     outputs: [
       {
         internalType: "bool",
@@ -1034,6 +1104,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "poolVersion",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -1097,26 +1180,7 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "guardian_",
-        type: "address",
-      },
-    ],
-    name: "setGuardian",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "bool",
-        name: "isUniverseSettled_",
-        type: "bool",
-      },
-    ],
+    inputs: [],
     name: "setUniverseSettled",
     outputs: [],
     stateMutability: "nonpayable",
@@ -1144,6 +1208,19 @@ const _abi = [
       },
     ],
     name: "setVaultFeeRate",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "toAccount",
+        type: "address",
+      },
+    ],
+    name: "transferGuardian",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -1193,6 +1270,13 @@ const _abi = [
       },
     ],
     name: "upgradeToAndCall",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "upgradeV3Once",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
