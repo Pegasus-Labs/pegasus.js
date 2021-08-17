@@ -16,9 +16,7 @@ export const CHAIN_ID_TO_READER_ADDRESS: { [chainID: number]: string } = {
   // arb testnet
   421611: '0x9F6928038d5d165536e1adb42163C59452C6C07e',
   // arb one
-  42161: '0x298BadDa419EECE0abe86FeDC2f0677a7e8E35a2',
-  // ovm testnet
-  69: '0x63372427A3Bcc8A7d7F04f3A4581A37Cd41f89c4',
+  42161: '0x708C17D0901B76cc5CF8F67e1a2E198077FD8641',
 }
 
 export const CHAIN_ID_TO_POOL_CREATOR_ADDRESS: { [chainID: number]: string } = {
@@ -29,9 +27,7 @@ export const CHAIN_ID_TO_POOL_CREATOR_ADDRESS: { [chainID: number]: string } = {
   // arb testnet
   421611: '0x0A1334aCea4E38a746daC7DCf7C3E61F0AB3D834',
   // arb one
-  42161: '0x784819cbA91Ed87C296565274fc150EaA11EBC04',
-  // ovm testnet
-  69: '0x545a206fB8ce367045f52b256d22a6eD99e74552',
+  42161: '0x9a691eD8a4482799E9419A17B77b6643cB782E20',
 }
 
 export const CHAIN_ID_TO_BROKER_ADDRESS: { [chainID: number]: string } = {
@@ -42,9 +38,7 @@ export const CHAIN_ID_TO_BROKER_ADDRESS: { [chainID: number]: string } = {
   // arb testnet
   421611: '0x637691459e757Aa6826BF32De679AcFf9955bDfA',
   // arb one
-  42161: '0x3D782bBa1c2568E33ba5a20a9Ddf3879BBf136c0',
-  // ovm testnet
-  69: '0x90b24561Ba9cf98dC6bbA3aF0B19442AE37c1fcf',
+  42161: '0xf985cA33B8b787599DE77E4Ccf2d0Ecbf27d87d9',
 }
 
 export const CHAIN_ID_TO_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: number]: string } = {
@@ -55,9 +49,7 @@ export const CHAIN_ID_TO_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: number]: str
   // arb testnet
   421611: '0x9730DD5a6eb170082c7c71c2e41332853681bb92',
   // arb one
-  42161: '0x5378B0388Ef594f0c2EB194504aee2B48d1eac18',
-  // ovm testnet
-  69: '0xd384807b6005e17430Eb42FB726Ca79B353F8895',
+  42161: '0xC3E272F76b3740C2AcF8e5272CbEF06D70e14FF3',
 }
 
 export const CHAIN_ID_SYMBOL_SERVICE_ADDRESS: { [chainID: number]: string } = {
@@ -68,9 +60,7 @@ export const CHAIN_ID_SYMBOL_SERVICE_ADDRESS: { [chainID: number]: string } = {
   // arb testnet
   421611: '0xA4109D0a36E0e66d64F3B7794C60694Ca6D66E22',
   // arb one
-  42161: '0x7863913067024e11249Da20B71d453164d4Dea7D',
-  // ovm testnet
-  69: '0x6cadfF06B18d9AeF58A974C7073F37B622D660B0',
+  42161: '0x20911345975ef55e31634a62666729d84aeE3aaB',
 }
 
 export const CHAIN_ID_INVERSE_SERVICE_ADDRESS: { [chainID: number]: string } = {
@@ -81,9 +71,7 @@ export const CHAIN_ID_INVERSE_SERVICE_ADDRESS: { [chainID: number]: string } = {
   // arb testnet
   421611: '0xc4F97bD99f10Ca08Ce9ec9C9CB05C72F358dbC5E',
   // arb one
-  42161: '0x9A01AEfe70B2Fbe4458B86136B2EEFEfb8Bc8DB4',
-  // ovm testnet
-  69: '0x49E71648A197E9277cC2195d7f4CeaeD68da9a43',
+  42161: '0x129AD040Bd127c00d6De9051b3CfE9F3E36453D3',
 }
 
 export const CHAIN_ID_TO_UNISWAP_V3_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: number]: string } = {
@@ -92,18 +80,14 @@ export const CHAIN_ID_TO_UNISWAP_V3_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: n
   // arb testnet
   421611: '0xAb228a61C66934f7C9091C249e47B313d6109325',
   // arb one
-  42161: '0xe2F6FB9C2f78Bcf9dacDF76Bd0e7Fad4E4b1794a',
-  // ovm testnet
-  69: '0xEf166f9A0e809A066814771bedf9D8A3073F6B8F',
+  42161: '0xCEda10b4d3bdE429DdA3A6daB87b38360313CBdB',
 }
 
 export const CHAIN_ID_TO_UNISWAP_V3_TOOL_ADDRESS: { [chainID: number]: string } = {
   // arb testnet
   421611: '0xB8834cD136402398AF58590799B0b6b5f94f872C',
   // arb one
-  42161: '0x286a7605aEf0824BbD531B7ba532cF00FCEA4B1E',
-  // ovm testnet
-  69: '0xA4239B93eD78b93322c065e4aA18fBF4bD787BD7',
+  42161: '0xE2Dd46dD043aaD539d156fEEC2448547c1466A04',
 }
 
 // leave 1% when calculating withdrawal penalty if position != 0
