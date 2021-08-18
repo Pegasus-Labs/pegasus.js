@@ -27,7 +27,7 @@ export const CHAIN_ID_TO_POOL_CREATOR_ADDRESS: { [chainID: number]: string } = {
   // arb testnet
   421611: '0x0A1334aCea4E38a746daC7DCf7C3E61F0AB3D834',
   // arb one
-  42161: '0x9a691eD8a4482799E9419A17B77b6643cB782E20',
+  42161: '0xA017B813652b93a0aF2887913EFCBB4ab250CE65',
 }
 
 export const CHAIN_ID_TO_BROKER_ADDRESS: { [chainID: number]: string } = {
@@ -60,7 +60,7 @@ export const CHAIN_ID_SYMBOL_SERVICE_ADDRESS: { [chainID: number]: string } = {
   // arb testnet
   421611: '0xA4109D0a36E0e66d64F3B7794C60694Ca6D66E22',
   // arb one
-  42161: '0x20911345975ef55e31634a62666729d84aeE3aaB',
+  42161: '0x2842c57C2736BB459BdAc97bAA22596e71f05811',
 }
 
 export const CHAIN_ID_INVERSE_SERVICE_ADDRESS: { [chainID: number]: string } = {
