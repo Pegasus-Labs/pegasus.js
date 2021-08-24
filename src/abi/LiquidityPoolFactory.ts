@@ -673,6 +673,25 @@ const _abi = [
       },
       {
         indexed: false,
+        internalType: "int256",
+        name: "fundingRate",
+        type: "int256",
+      },
+    ],
+    name: "UpdateFundingRate",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "perpetualIndex",
+        type: "uint256",
+      },
+      {
+        indexed: false,
         internalType: "int256[8]",
         name: "riskParams",
         type: "int256[8]",

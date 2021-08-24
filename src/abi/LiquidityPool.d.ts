@@ -507,6 +507,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "TransferFeeToOperator(address,int256)": EventFragment;
     "TransferFeeToReferrer(uint256,address,address,int256)": EventFragment;
     "TransferOperatorTo(address)": EventFragment;
+    "UpdateFundingRate(uint256,int256)": EventFragment;
     "UpdatePerpetualRiskParameter(uint256,int256[8])": EventFragment;
     "UpdatePoolMargin(int256)": EventFragment;
     "UpdatePrice(uint256,address,int256,uint256,int256,uint256)": EventFragment;
@@ -545,6 +546,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "TransferFeeToOperator"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferFeeToReferrer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferOperatorTo"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UpdateFundingRate"): EventFragment;
   getEvent(
     nameOrSignatureOrTopic: "UpdatePerpetualRiskParameter"
   ): EventFragment;
@@ -3478,6 +3480,8 @@ export class LiquidityPool extends Contract {
     ): EventFilter;
 
     TransferOperatorTo(newOperator: string | null): EventFilter;
+
+    UpdateFundingRate(perpetualIndex: null, fundingRate: null): EventFilter;
 
     UpdatePerpetualRiskParameter(
       perpetualIndex: null,

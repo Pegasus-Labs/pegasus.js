@@ -71,7 +71,6 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     "transferOwnership(address)": FunctionFragment;
     "upgradeAdmin()": FunctionFragment;
     "upgradeToAndCall(bytes32,bytes,bytes)": FunctionFragment;
-    "upgradeV3Once()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -246,10 +245,6 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
     functionFragment: "upgradeToAndCall",
     values: [BytesLike, BytesLike, BytesLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "upgradeV3Once",
-    values?: undefined
-  ): string;
 
   decodeFunctionResult(
     functionFragment: "activatePerpetualFor",
@@ -412,10 +407,6 @@ interface PoolCreatorInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "upgradeToAndCall",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "upgradeV3Once",
     data: BytesLike
   ): Result;
 
@@ -1137,10 +1128,6 @@ export class PoolCreator extends Contract {
       dataForGovernor: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
-
-    upgradeV3Once(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "upgradeV3Once()"(overrides?: Overrides): Promise<ContractTransaction>;
   };
 
   activatePerpetualFor(
@@ -1612,10 +1599,6 @@ export class PoolCreator extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  upgradeV3Once(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "upgradeV3Once()"(overrides?: Overrides): Promise<ContractTransaction>;
-
   callStatic: {
     activatePerpetualFor(
       trader: string,
@@ -2083,10 +2066,6 @@ export class PoolCreator extends Contract {
       dataForGovernor: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    upgradeV3Once(overrides?: CallOverrides): Promise<void>;
-
-    "upgradeV3Once()"(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
@@ -2589,10 +2568,6 @@ export class PoolCreator extends Contract {
       dataForGovernor: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
-
-    upgradeV3Once(overrides?: Overrides): Promise<BigNumber>;
-
-    "upgradeV3Once()"(overrides?: Overrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -3065,9 +3040,5 @@ export class PoolCreator extends Contract {
       dataForGovernor: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
-
-    upgradeV3Once(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "upgradeV3Once()"(overrides?: Overrides): Promise<PopulatedTransaction>;
   };
 }

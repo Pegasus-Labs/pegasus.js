@@ -1274,11 +1274,4 @@ const _abi = [
     stateMutability: "nonpayable",
     type: "function",
   },
-  {
-    inputs: [],
-    name: "upgradeV3Once",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
 ];

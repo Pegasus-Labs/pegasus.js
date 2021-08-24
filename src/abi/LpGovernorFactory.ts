@@ -277,9 +277,9 @@ const _abi = [
     name: "SIGNATURE_PERPETUAL_SETTLE",
     outputs: [
       {
-        internalType: "bytes32",
+        internalType: "bytes4",
         name: "",
-        type: "bytes32",
+        type: "bytes4",
       },
     ],
     stateMutability: "view",
@@ -290,9 +290,9 @@ const _abi = [
     name: "SIGNATURE_PERPETUAL_TRANSFER_OPERATOR",
     outputs: [
       {
-        internalType: "bytes32",
+        internalType: "bytes4",
         name: "",
-        type: "bytes32",
+        type: "bytes4",
       },
     ],
     stateMutability: "view",
@@ -303,9 +303,9 @@ const _abi = [
     name: "SIGNATURE_PERPETUAL_UPGRADE_AND_CALL",
     outputs: [
       {
-        internalType: "bytes32",
+        internalType: "bytes4",
         name: "",
-        type: "bytes32",
+        type: "bytes4",
       },
     ],
     stateMutability: "view",
