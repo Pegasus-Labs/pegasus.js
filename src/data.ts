@@ -85,7 +85,38 @@ export function getInverseStateService(contractAddress: string, signerOrProvider
 
 export async function getLiquidityPool(reader: Reader, liquidityPoolAddress: string): Promise<LiquidityPoolStorage> {
   getAddress(liquidityPoolAddress)
-  const { isSynced, pool } = await reader.callStatic.getLiquidityPoolStorage(liquidityPoolAddress)
+  let { isSynced, pool } = await reader.callStatic.getLiquidityPoolStorage(liquidityPoolAddress)
+  // there is an edge case. if the oracle is terminated, the Reader will automatically set the Perpetual into
+  // Emergency mode if it was Normal mode (because it calls forceToSyncState), which is only useful for on-chain
+  // programs and useless for off-chain programs. instead, in this case, we re-read from Getter to get the
+  // real chain state
+  const hasTerminatedOracle = !!pool.perpetuals.find(m => m.isTerminated)
+  const getter = getLiquidityPoolContract(liquidityPoolAddress, reader.provider)
+  type ThenArg<T> = T extends PromiseLike<infer U> ? U : T
+  type GetterGetLiquidityPoolInfo = ThenArg<ReturnType<typeof getter.callStatic.getLiquidityPoolInfo>>
+  type GetterGetPerpetualInfo = ThenArg<ReturnType<typeof getter.callStatic.getPerpetualInfo>>
+  let chainStates: (GetterGetLiquidityPoolInfo | GetterGetPerpetualInfo)[] = []
+  if (hasTerminatedOracle) {
+    // query getter
+    const chainStateRequests: Promise<GetterGetLiquidityPoolInfo | GetterGetPerpetualInfo>[] = []
+    chainStateRequests.push(getter.callStatic.getLiquidityPoolInfo())
+    for (let i = 0; i < pool.perpetuals.length; i++) {
+      chainStateRequests.push(getter.callStatic.getPerpetualInfo(i))
+    }
+    chainStates = await Promise.all(chainStateRequests)
+    // overwrite pool state
+    const chainState = chainStates[0] as GetterGetLiquidityPoolInfo
+    isSynced = false
+    pool = {
+      ...pool,
+      isRunning: chainState.isRunning,
+      isFastCreationEnabled: chainState.isFastCreationEnabled,
+      addresses: chainState.addresses,
+      intNums: chainState.intNums,
+      uintNums: chainState.uintNums,
+    }
+  }
+  // copy the pool state
   const ret: LiquidityPoolStorage = {
     isSynced,
     isRunning: pool.isRunning,
@@ -108,12 +139,24 @@ export async function getLiquidityPool(reader: Reader, liquidityPoolAddress: str
     operatorExpiration: pool.uintNums[3].toNumber(),
     perpetuals: new Map(),
   }
-  pool.perpetuals.forEach((m, i) => {
+  // copy the perpetual state
+  for (let i = 0; i < pool.perpetuals.length; i++) {
+    let m = pool.perpetuals[i]
     if (m.state < PerpetualState.INVALID || m.state > PerpetualState.CLEARED) {
       throw new Error(`unrecognized perpetual state: ${m.state}`)
     }
     const parsePerpNums = (index: number) => {
       return normalizeBigNumberish(m.nums[index]).shiftedBy(-DECIMALS)
+    }
+    if (hasTerminatedOracle) {
+      // overwrite perp state
+      const chainState = chainStates[i + 1] as GetterGetPerpetualInfo
+      m = {
+        ...m,
+        state: chainState.state,
+        oracle: chainState.oracle,
+        nums: chainState.nums,
+      }
     }
     ret.perpetuals.set(i, {
       state: m.state as PerpetualState,
@@ -133,7 +176,7 @@ export async function getLiquidityPool(reader: Reader, liquidityPoolAddress: str
       liquidationPenaltyRate: parsePerpNums(10),
       keeperGasReward: parsePerpNums(11),
       insuranceFundRate: parsePerpNums(12),
-      
+
       halfSpread: {
         value: parsePerpNums(13),
         minValue: parsePerpNums(14),
@@ -184,7 +227,7 @@ export async function getLiquidityPool(reader: Reader, liquidityPoolAddress: str
       ammPositionAmount: normalizeBigNumberish(m.ammPositionAmount).shiftedBy(-DECIMALS),
       isInversePerpetual: m.isInversePerpetual,
     })
-  })
+  } // foreach perpetual
   return ret
 }
 
