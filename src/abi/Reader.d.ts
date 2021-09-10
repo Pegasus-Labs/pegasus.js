@@ -24,6 +24,7 @@ interface ReaderInterface extends ethers.utils.Interface {
   functions: {
     "getAccountStorage(address,uint256,address)": FunctionFragment;
     "getAccountsInfo(address,uint256,uint256,uint256)": FunctionFragment;
+    "getAccountsInfoByAddress(address,uint256,address[])": FunctionFragment;
     "getLiquidityPoolStorage(address)": FunctionFragment;
     "getPoolMargin(address)": FunctionFragment;
     "inverseStateService()": FunctionFragment;
@@ -41,6 +42,10 @@ interface ReaderInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getAccountsInfo",
     values: [string, BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAccountsInfoByAddress",
+    values: [string, BigNumberish, string[]]
   ): string;
   encodeFunctionData(
     functionFragment: "getLiquidityPoolStorage",
@@ -81,6 +86,10 @@ interface ReaderInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getAccountsInfo",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAccountsInfoByAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -157,6 +166,20 @@ export class Reader extends Contract {
       perpetualIndex: BigNumberish,
       begin: BigNumberish,
       end: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    getAccountsInfoByAddress(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      accounts: string[],
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "getAccountsInfoByAddress(address,uint256,address[])"(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      accounts: string[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -288,6 +311,20 @@ export class Reader extends Contract {
     perpetualIndex: BigNumberish,
     begin: BigNumberish,
     end: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  getAccountsInfoByAddress(
+    liquidityPool: string,
+    perpetualIndex: BigNumberish,
+    accounts: string[],
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "getAccountsInfoByAddress(address,uint256,address[])"(
+    liquidityPool: string,
+    perpetualIndex: BigNumberish,
+    accounts: string[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -497,10 +534,12 @@ export class Reader extends Contract {
         position: BigNumber;
         margin: BigNumber;
         isSafe: boolean;
+        availableCash: BigNumber;
         0: string;
         1: BigNumber;
         2: BigNumber;
         3: boolean;
+        4: BigNumber;
       }[];
       0: boolean;
       1: {
@@ -508,10 +547,12 @@ export class Reader extends Contract {
         position: BigNumber;
         margin: BigNumber;
         isSafe: boolean;
+        availableCash: BigNumber;
         0: string;
         1: BigNumber;
         2: BigNumber;
         3: boolean;
+        4: BigNumber;
       }[];
     }>;
 
@@ -528,10 +569,12 @@ export class Reader extends Contract {
         position: BigNumber;
         margin: BigNumber;
         isSafe: boolean;
+        availableCash: BigNumber;
         0: string;
         1: BigNumber;
         2: BigNumber;
         3: boolean;
+        4: BigNumber;
       }[];
       0: boolean;
       1: {
@@ -539,10 +582,80 @@ export class Reader extends Contract {
         position: BigNumber;
         margin: BigNumber;
         isSafe: boolean;
+        availableCash: BigNumber;
         0: string;
         1: BigNumber;
         2: BigNumber;
         3: boolean;
+        4: BigNumber;
+      }[];
+    }>;
+
+    getAccountsInfoByAddress(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      accounts: string[],
+      overrides?: CallOverrides
+    ): Promise<{
+      isSynced: boolean;
+      result: {
+        account: string;
+        position: BigNumber;
+        margin: BigNumber;
+        isSafe: boolean;
+        availableCash: BigNumber;
+        0: string;
+        1: BigNumber;
+        2: BigNumber;
+        3: boolean;
+        4: BigNumber;
+      }[];
+      0: boolean;
+      1: {
+        account: string;
+        position: BigNumber;
+        margin: BigNumber;
+        isSafe: boolean;
+        availableCash: BigNumber;
+        0: string;
+        1: BigNumber;
+        2: BigNumber;
+        3: boolean;
+        4: BigNumber;
+      }[];
+    }>;
+
+    "getAccountsInfoByAddress(address,uint256,address[])"(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      accounts: string[],
+      overrides?: CallOverrides
+    ): Promise<{
+      isSynced: boolean;
+      result: {
+        account: string;
+        position: BigNumber;
+        margin: BigNumber;
+        isSafe: boolean;
+        availableCash: BigNumber;
+        0: string;
+        1: BigNumber;
+        2: BigNumber;
+        3: boolean;
+        4: BigNumber;
+      }[];
+      0: boolean;
+      1: {
+        account: string;
+        position: BigNumber;
+        margin: BigNumber;
+        isSafe: boolean;
+        availableCash: BigNumber;
+        0: string;
+        1: BigNumber;
+        2: BigNumber;
+        3: boolean;
+        4: BigNumber;
       }[];
     }>;
 
@@ -1624,6 +1737,20 @@ export class Reader extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    getAccountsInfoByAddress(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      accounts: string[],
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "getAccountsInfoByAddress(address,uint256,address[])"(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      accounts: string[],
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     getLiquidityPoolStorage(
       liquidityPool: string,
       overrides?: Overrides
@@ -1745,6 +1872,20 @@ export class Reader extends Contract {
       perpetualIndex: BigNumberish,
       begin: BigNumberish,
       end: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    getAccountsInfoByAddress(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      accounts: string[],
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "getAccountsInfoByAddress(address,uint256,address[])"(
+      liquidityPool: string,
+      perpetualIndex: BigNumberish,
+      accounts: string[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
