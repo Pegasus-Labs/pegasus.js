@@ -53,7 +53,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "revokeOperator()": FunctionFragment;
     "runLiquidityPool()": FunctionFragment;
     "setEmergencyState(uint256)": FunctionFragment;
-    "setLiquidityPoolParameter(int256[2])": FunctionFragment;
+    "setLiquidityPoolParameter(int256[4])": FunctionFragment;
     "setOracle(uint256,address)": FunctionFragment;
     "setPerpetualBaseParameter(uint256,int256[9])": FunctionFragment;
     "setPerpetualRiskParameter(uint256,int256[8],int256[8],int256[8])": FunctionFragment;
@@ -235,7 +235,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setLiquidityPoolParameter",
-    values: [[BigNumberish, BigNumberish]]
+    values: [[BigNumberish, BigNumberish, BigNumberish, BigNumberish]]
   ): string;
   encodeFunctionData(
     functionFragment: "setOracle",
@@ -495,7 +495,7 @@ interface LiquidityPoolInterface extends ethers.utils.Interface {
     "RunLiquidityPool()": EventFragment;
     "SetClearedState(uint256)": EventFragment;
     "SetEmergencyState(uint256,int256,uint256)": EventFragment;
-    "SetLiquidityPoolParameter(int256[2])": EventFragment;
+    "SetLiquidityPoolParameter(int256[4])": EventFragment;
     "SetNormalState(uint256)": EventFragment;
     "SetOracle(uint256,address,address)": EventFragment;
     "SetPerpetualBaseParameter(uint256,int256[9])": EventFragment;
@@ -809,12 +809,19 @@ export class LiquidityPool extends Contract {
       isFastCreationEnabled: boolean;
       addresses: [string, string, string, string, string, string, string];
       intNums: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
-      uintNums: [BigNumber, BigNumber, BigNumber, BigNumber];
+      uintNums: [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber
+      ];
       0: boolean;
       1: boolean;
       2: [string, string, string, string, string, string, string];
       3: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
-      4: [BigNumber, BigNumber, BigNumber, BigNumber];
+      4: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
     }>;
 
     "getLiquidityPoolInfo()"(
@@ -824,12 +831,19 @@ export class LiquidityPool extends Contract {
       isFastCreationEnabled: boolean;
       addresses: [string, string, string, string, string, string, string];
       intNums: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
-      uintNums: [BigNumber, BigNumber, BigNumber, BigNumber];
+      uintNums: [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber
+      ];
       0: boolean;
       1: boolean;
       2: [string, string, string, string, string, string, string];
       3: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
-      4: [BigNumber, BigNumber, BigNumber, BigNumber];
+      4: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
     }>;
 
     getMarginAccount(
@@ -1279,12 +1293,12 @@ export class LiquidityPool extends Contract {
     ): Promise<ContractTransaction>;
 
     setLiquidityPoolParameter(
-      params: [BigNumberish, BigNumberish],
+      params: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "setLiquidityPoolParameter(int256[2])"(
-      params: [BigNumberish, BigNumberish],
+    "setLiquidityPoolParameter(int256[4])"(
+      params: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -1736,12 +1750,19 @@ export class LiquidityPool extends Contract {
     isFastCreationEnabled: boolean;
     addresses: [string, string, string, string, string, string, string];
     intNums: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
-    uintNums: [BigNumber, BigNumber, BigNumber, BigNumber];
+    uintNums: [
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber
+    ];
     0: boolean;
     1: boolean;
     2: [string, string, string, string, string, string, string];
     3: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
-    4: [BigNumber, BigNumber, BigNumber, BigNumber];
+    4: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
   }>;
 
   "getLiquidityPoolInfo()"(
@@ -1751,12 +1772,19 @@ export class LiquidityPool extends Contract {
     isFastCreationEnabled: boolean;
     addresses: [string, string, string, string, string, string, string];
     intNums: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
-    uintNums: [BigNumber, BigNumber, BigNumber, BigNumber];
+    uintNums: [
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber
+    ];
     0: boolean;
     1: boolean;
     2: [string, string, string, string, string, string, string];
     3: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
-    4: [BigNumber, BigNumber, BigNumber, BigNumber];
+    4: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
   }>;
 
   getMarginAccount(
@@ -2194,12 +2222,12 @@ export class LiquidityPool extends Contract {
   ): Promise<ContractTransaction>;
 
   setLiquidityPoolParameter(
-    params: [BigNumberish, BigNumberish],
+    params: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "setLiquidityPoolParameter(int256[2])"(
-    params: [BigNumberish, BigNumberish],
+  "setLiquidityPoolParameter(int256[4])"(
+    params: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -2651,12 +2679,19 @@ export class LiquidityPool extends Contract {
       isFastCreationEnabled: boolean;
       addresses: [string, string, string, string, string, string, string];
       intNums: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
-      uintNums: [BigNumber, BigNumber, BigNumber, BigNumber];
+      uintNums: [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber
+      ];
       0: boolean;
       1: boolean;
       2: [string, string, string, string, string, string, string];
       3: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
-      4: [BigNumber, BigNumber, BigNumber, BigNumber];
+      4: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
     }>;
 
     "getLiquidityPoolInfo()"(
@@ -2666,12 +2701,19 @@ export class LiquidityPool extends Contract {
       isFastCreationEnabled: boolean;
       addresses: [string, string, string, string, string, string, string];
       intNums: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
-      uintNums: [BigNumber, BigNumber, BigNumber, BigNumber];
+      uintNums: [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber
+      ];
       0: boolean;
       1: boolean;
       2: [string, string, string, string, string, string, string];
       3: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
-      4: [BigNumber, BigNumber, BigNumber, BigNumber];
+      4: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
     }>;
 
     getMarginAccount(
@@ -3123,12 +3165,12 @@ export class LiquidityPool extends Contract {
     ): Promise<void>;
 
     setLiquidityPoolParameter(
-      params: [BigNumberish, BigNumberish],
+      params: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "setLiquidityPoolParameter(int256[2])"(
-      params: [BigNumberish, BigNumberish],
+    "setLiquidityPoolParameter(int256[4])"(
+      params: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -3919,12 +3961,12 @@ export class LiquidityPool extends Contract {
     ): Promise<BigNumber>;
 
     setLiquidityPoolParameter(
-      params: [BigNumberish, BigNumberish],
+      params: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "setLiquidityPoolParameter(int256[2])"(
-      params: [BigNumberish, BigNumberish],
+    "setLiquidityPoolParameter(int256[4])"(
+      params: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -4557,12 +4599,12 @@ export class LiquidityPool extends Contract {
     ): Promise<PopulatedTransaction>;
 
     setLiquidityPoolParameter(
-      params: [BigNumberish, BigNumberish],
+      params: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "setLiquidityPoolParameter(int256[2])"(
-      params: [BigNumberish, BigNumberish],
+    "setLiquidityPoolParameter(int256[4])"(
+      params: [BigNumberish, BigNumberish, BigNumberish, BigNumberish],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

@@ -397,9 +397,9 @@ const _abi = [
     inputs: [
       {
         indexed: false,
-        internalType: "int256[2]",
+        internalType: "int256[4]",
         name: "value",
-        type: "int256[2]",
+        type: "int256[4]",
       },
     ],
     name: "SetLiquidityPoolParameter",
@@ -1057,9 +1057,9 @@ const _abi = [
         type: "int256[5]",
       },
       {
-        internalType: "uint256[4]",
+        internalType: "uint256[6]",
         name: "uintNums",
-        type: "uint256[4]",
+        type: "uint256[6]",
       },
     ],
     stateMutability: "view",
@@ -1508,9 +1508,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "int256[2]",
+        internalType: "int256[4]",
         name: "params",
-        type: "int256[2]",
+        type: "int256[4]",
       },
     ],
     name: "setLiquidityPoolParameter",

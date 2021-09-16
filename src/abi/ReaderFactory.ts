@@ -18,6 +18,11 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "poolCreator_",
+        type: "address",
+      },
+      {
+        internalType: "address",
         name: "inverseStateService_",
         type: "address",
       },
@@ -237,6 +242,25 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "proxy",
+        type: "address",
+      },
+    ],
+    name: "getImplementation",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "liquidityPool",
         type: "address",
       },
@@ -271,9 +295,9 @@ const _abi = [
             type: "int256[5]",
           },
           {
-            internalType: "uint256[4]",
+            internalType: "uint256[6]",
             name: "uintNums",
-            type: "uint256[4]",
+            type: "uint256[6]",
           },
           {
             components: [
@@ -405,6 +429,19 @@ const _abi = [
       },
     ],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "poolCreator",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {

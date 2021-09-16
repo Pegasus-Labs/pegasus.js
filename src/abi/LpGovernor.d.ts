@@ -51,6 +51,7 @@ interface LpGovernorInterface extends ethers.utils.Interface {
     "isLocked(address)": FunctionFragment;
     "isLockedByVoting(address)": FunctionFragment;
     "lastBlockRewardApplicable()": FunctionFragment;
+    "lastMintBlock(address)": FunctionFragment;
     "lastUpdateTime()": FunctionFragment;
     "latestProposalIds(address)": FunctionFragment;
     "mint(address,uint256)": FunctionFragment;
@@ -173,6 +174,10 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "lastBlockRewardApplicable",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "lastMintBlock",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "lastUpdateTime",
@@ -348,6 +353,10 @@ interface LpGovernorInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "lastBlockRewardApplicable",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "lastMintBlock",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -843,6 +852,20 @@ export class LpGovernor extends Contract {
     }>;
 
     "lastBlockRewardApplicable()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    lastMintBlock(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: BigNumber;
+    }>;
+
+    "lastMintBlock(address)"(
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<{
       0: BigNumber;
@@ -1521,6 +1544,13 @@ export class LpGovernor extends Contract {
 
   "lastBlockRewardApplicable()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+  lastMintBlock(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  "lastMintBlock(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   lastUpdateTime(overrides?: CallOverrides): Promise<BigNumber>;
 
   "lastUpdateTime()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2021,6 +2051,13 @@ export class LpGovernor extends Contract {
     lastBlockRewardApplicable(overrides?: CallOverrides): Promise<BigNumber>;
 
     "lastBlockRewardApplicable()"(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    lastMintBlock(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "lastMintBlock(address)"(
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2558,6 +2595,13 @@ export class LpGovernor extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    lastMintBlock(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "lastMintBlock(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     lastUpdateTime(overrides?: CallOverrides): Promise<BigNumber>;
 
     "lastUpdateTime()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -3028,6 +3072,16 @@ export class LpGovernor extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "lastBlockRewardApplicable()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    lastMintBlock(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "lastMintBlock(address)"(
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
