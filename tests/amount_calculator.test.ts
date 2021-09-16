@@ -39,6 +39,8 @@ const defaultPool: LiquidityPoolStorage = {
   operatorExpiration: 1579601290,
   insuranceFund: _0,
   donatedInsuranceFund: _0,
+  liquidityCap: _0,
+  shareTransferDelay: 1,
 
   perpetuals: new Map() // set me later
 }

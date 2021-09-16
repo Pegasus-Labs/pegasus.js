@@ -104,6 +104,8 @@ export interface LiquidityPoolStorage {
   operatorExpiration: number
   insuranceFund: BigNumber
   donatedInsuranceFund: BigNumber
+  liquidityCap: BigNumber
+  shareTransferDelay: number
 
   perpetuals: Map<number, PerpetualStorage>,
 }

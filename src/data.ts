@@ -137,6 +137,9 @@ export async function getLiquidityPool(reader: Reader, liquidityPoolAddress: str
     collateralDecimals: pool.uintNums[0].toNumber(),
     fundingTime: pool.uintNums[2].toNumber(),
     operatorExpiration: pool.uintNums[3].toNumber(),
+    liquidityCap: normalizeBigNumberish(pool.uintNums[4]).shiftedBy(-DECIMALS),
+    shareTransferDelay: pool.uintNums[5].toNumber(),
+
     perpetuals: new Map(),
   }
   // copy the perpetual state
