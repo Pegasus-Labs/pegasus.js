@@ -487,21 +487,15 @@ export class LpGovernor extends Contract {
   interface: LpGovernorInterface;
 
   functions: {
-    SIGNATURE_PERPETUAL_SETTLE(
-      overrides?: CallOverrides
-    ): Promise<{
+    SIGNATURE_PERPETUAL_SETTLE(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "SIGNATURE_PERPETUAL_SETTLE()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "SIGNATURE_PERPETUAL_SETTLE()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    SIGNATURE_PERPETUAL_TRANSFER_OPERATOR(
-      overrides?: CallOverrides
-    ): Promise<{
+    SIGNATURE_PERPETUAL_TRANSFER_OPERATOR(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
@@ -511,9 +505,7 @@ export class LpGovernor extends Contract {
       0: string;
     }>;
 
-    SIGNATURE_PERPETUAL_UPGRADE_AND_CALL(
-      overrides?: CallOverrides
-    ): Promise<{
+    SIGNATURE_PERPETUAL_UPGRADE_AND_CALL(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
@@ -589,27 +581,19 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    criticalQuorumRate(
-      overrides?: CallOverrides
-    ): Promise<{
+    criticalQuorumRate(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "criticalQuorumRate()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "criticalQuorumRate()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    decimals(
-      overrides?: CallOverrides
-    ): Promise<{
+    decimals(overrides?: CallOverrides): Promise<{
       0: number;
     }>;
 
-    "decimals()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "decimals()"(overrides?: CallOverrides): Promise<{
       0: number;
     }>;
 
@@ -649,15 +633,11 @@ export class LpGovernor extends Contract {
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
-    executionDelay(
-      overrides?: CallOverrides
-    ): Promise<{
+    executionDelay(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "executionDelay()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "executionDelay()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
@@ -681,27 +661,19 @@ export class LpGovernor extends Contract {
       1: string[];
     }>;
 
-    getMinter(
-      overrides?: CallOverrides
-    ): Promise<{
+    getMinter(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "getMinter()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "getMinter()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    getProposalThreshold(
-      overrides?: CallOverrides
-    ): Promise<{
+    getProposalThreshold(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "getProposalThreshold()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "getProposalThreshold()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
@@ -753,15 +725,11 @@ export class LpGovernor extends Contract {
 
     "getReward()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-    getTarget(
-      overrides?: CallOverrides
-    ): Promise<{
+    getTarget(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "getTarget()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "getTarget()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
@@ -845,15 +813,11 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    lastBlockRewardApplicable(
-      overrides?: CallOverrides
-    ): Promise<{
+    lastBlockRewardApplicable(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "lastBlockRewardApplicable()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "lastBlockRewardApplicable()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
@@ -871,15 +835,11 @@ export class LpGovernor extends Contract {
       0: BigNumber;
     }>;
 
-    lastUpdateTime(
-      overrides?: CallOverrides
-    ): Promise<{
+    lastUpdateTime(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "lastUpdateTime()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "lastUpdateTime()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
@@ -909,15 +869,11 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    name(
-      overrides?: CallOverrides
-    ): Promise<{
+    name(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "name()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "name()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
@@ -931,63 +887,43 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    periodFinish(
-      overrides?: CallOverrides
-    ): Promise<{
+    periodFinish(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "periodFinish()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "periodFinish()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    poolCreator(
-      overrides?: CallOverrides
-    ): Promise<{
+    poolCreator(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "poolCreator()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "poolCreator()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    proposalCount(
-      overrides?: CallOverrides
-    ): Promise<{
+    proposalCount(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "proposalCount()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "proposalCount()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    proposalMaxOperations(
-      overrides?: CallOverrides
-    ): Promise<{
+    proposalMaxOperations(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "proposalMaxOperations()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "proposalMaxOperations()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    proposalThresholdRate(
-      overrides?: CallOverrides
-    ): Promise<{
+    proposalThresholdRate(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "proposalThresholdRate()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "proposalThresholdRate()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
@@ -1069,75 +1005,51 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    quorumRate(
-      overrides?: CallOverrides
-    ): Promise<{
+    quorumRate(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "quorumRate()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "quorumRate()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    rewardDistribution(
-      overrides?: CallOverrides
-    ): Promise<{
+    rewardDistribution(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "rewardDistribution()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "rewardDistribution()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    rewardPerToken(
-      overrides?: CallOverrides
-    ): Promise<{
+    rewardPerToken(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "rewardPerToken()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "rewardPerToken()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    rewardPerTokenStored(
-      overrides?: CallOverrides
-    ): Promise<{
+    rewardPerTokenStored(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "rewardPerTokenStored()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "rewardPerTokenStored()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    rewardRate(
-      overrides?: CallOverrides
-    ): Promise<{
+    rewardRate(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "rewardRate()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "rewardRate()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    rewardToken(
-      overrides?: CallOverrides
-    ): Promise<{
+    rewardToken(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "rewardToken()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "rewardToken()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
@@ -1179,27 +1091,19 @@ export class LpGovernor extends Contract {
       0: number;
     }>;
 
-    symbol(
-      overrides?: CallOverrides
-    ): Promise<{
+    symbol(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "symbol()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "symbol()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    totalSupply(
-      overrides?: CallOverrides
-    ): Promise<{
+    totalSupply(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "totalSupply()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "totalSupply()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
@@ -1229,15 +1133,11 @@ export class LpGovernor extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    unlockDelay(
-      overrides?: CallOverrides
-    ): Promise<{
+    unlockDelay(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "unlockDelay()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "unlockDelay()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
@@ -1255,27 +1155,19 @@ export class LpGovernor extends Contract {
       0: BigNumber;
     }>;
 
-    votingDelay(
-      overrides?: CallOverrides
-    ): Promise<{
+    votingDelay(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "votingDelay()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "votingDelay()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    votingPeriod(
-      overrides?: CallOverrides
-    ): Promise<{
+    votingPeriod(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "votingPeriod()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "votingPeriod()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
   };

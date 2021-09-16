@@ -802,9 +802,7 @@ export class LiquidityPool extends Contract {
       1: BigNumber;
     }>;
 
-    getLiquidityPoolInfo(
-      overrides?: CallOverrides
-    ): Promise<{
+    getLiquidityPoolInfo(overrides?: CallOverrides): Promise<{
       isRunning: boolean;
       isFastCreationEnabled: boolean;
       addresses: [string, string, string, string, string, string, string];
@@ -824,9 +822,7 @@ export class LiquidityPool extends Contract {
       4: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
     }>;
 
-    "getLiquidityPoolInfo()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "getLiquidityPoolInfo()"(overrides?: CallOverrides): Promise<{
       isRunning: boolean;
       isFastCreationEnabled: boolean;
       addresses: [string, string, string, string, string, string, string];
@@ -1080,18 +1076,14 @@ export class LiquidityPool extends Contract {
       ];
     }>;
 
-    getPoolMargin(
-      overrides?: CallOverrides
-    ): Promise<{
+    getPoolMargin(overrides?: CallOverrides): Promise<{
       poolMargin: BigNumber;
       isAMMSafe: boolean;
       0: BigNumber;
       1: boolean;
     }>;
 
-    "getPoolMargin()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "getPoolMargin()"(overrides?: CallOverrides): Promise<{
       poolMargin: BigNumber;
       isAMMSafe: boolean;
       0: BigNumber;
@@ -1743,9 +1735,7 @@ export class LiquidityPool extends Contract {
     1: BigNumber;
   }>;
 
-  getLiquidityPoolInfo(
-    overrides?: CallOverrides
-  ): Promise<{
+  getLiquidityPoolInfo(overrides?: CallOverrides): Promise<{
     isRunning: boolean;
     isFastCreationEnabled: boolean;
     addresses: [string, string, string, string, string, string, string];
@@ -1765,9 +1755,7 @@ export class LiquidityPool extends Contract {
     4: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
   }>;
 
-  "getLiquidityPoolInfo()"(
-    overrides?: CallOverrides
-  ): Promise<{
+  "getLiquidityPoolInfo()"(overrides?: CallOverrides): Promise<{
     isRunning: boolean;
     isFastCreationEnabled: boolean;
     addresses: [string, string, string, string, string, string, string];
@@ -2021,18 +2009,14 @@ export class LiquidityPool extends Contract {
     ];
   }>;
 
-  getPoolMargin(
-    overrides?: CallOverrides
-  ): Promise<{
+  getPoolMargin(overrides?: CallOverrides): Promise<{
     poolMargin: BigNumber;
     isAMMSafe: boolean;
     0: BigNumber;
     1: boolean;
   }>;
 
-  "getPoolMargin()"(
-    overrides?: CallOverrides
-  ): Promise<{
+  "getPoolMargin()"(overrides?: CallOverrides): Promise<{
     poolMargin: BigNumber;
     isAMMSafe: boolean;
     0: BigNumber;
@@ -2672,9 +2656,7 @@ export class LiquidityPool extends Contract {
       1: BigNumber;
     }>;
 
-    getLiquidityPoolInfo(
-      overrides?: CallOverrides
-    ): Promise<{
+    getLiquidityPoolInfo(overrides?: CallOverrides): Promise<{
       isRunning: boolean;
       isFastCreationEnabled: boolean;
       addresses: [string, string, string, string, string, string, string];
@@ -2694,9 +2676,7 @@ export class LiquidityPool extends Contract {
       4: [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber];
     }>;
 
-    "getLiquidityPoolInfo()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "getLiquidityPoolInfo()"(overrides?: CallOverrides): Promise<{
       isRunning: boolean;
       isFastCreationEnabled: boolean;
       addresses: [string, string, string, string, string, string, string];
@@ -2950,18 +2930,14 @@ export class LiquidityPool extends Contract {
       ];
     }>;
 
-    getPoolMargin(
-      overrides?: CallOverrides
-    ): Promise<{
+    getPoolMargin(overrides?: CallOverrides): Promise<{
       poolMargin: BigNumber;
       isAMMSafe: boolean;
       0: BigNumber;
       1: boolean;
     }>;
 
-    "getPoolMargin()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "getPoolMargin()"(overrides?: CallOverrides): Promise<{
       poolMargin: BigNumber;
       isAMMSafe: boolean;
       0: BigNumber;

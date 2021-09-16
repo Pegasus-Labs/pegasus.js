@@ -99,21 +99,15 @@ export class UniswapV3OracleAdaptor extends Contract {
   interface: UniswapV3OracleAdaptorInterface;
 
   functions: {
-    collateral(
-      overrides?: CallOverrides
-    ): Promise<{
+    collateral(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "collateral()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "collateral()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    dumpPath(
-      overrides?: CallOverrides
-    ): Promise<{
+    dumpPath(overrides?: CallOverrides): Promise<{
       data: {
         path: string[];
         symbols: string[];
@@ -140,9 +134,7 @@ export class UniswapV3OracleAdaptor extends Contract {
       };
     }>;
 
-    "dumpPath()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "dumpPath()"(overrides?: CallOverrides): Promise<{
       data: {
         path: string[];
         symbols: string[];
@@ -169,79 +161,55 @@ export class UniswapV3OracleAdaptor extends Contract {
       };
     }>;
 
-    isMarketClosed(
-      overrides?: CallOverrides
-    ): Promise<{
+    isMarketClosed(overrides?: CallOverrides): Promise<{
       0: boolean;
     }>;
 
-    "isMarketClosed()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "isMarketClosed()"(overrides?: CallOverrides): Promise<{
       0: boolean;
     }>;
 
-    isTerminated(
-      overrides?: CallOverrides
-    ): Promise<{
+    isTerminated(overrides?: CallOverrides): Promise<{
       0: boolean;
     }>;
 
-    "isTerminated()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "isTerminated()"(overrides?: CallOverrides): Promise<{
       0: boolean;
     }>;
 
-    priceTWAPLong(
-      overrides?: CallOverrides
-    ): Promise<{
+    priceTWAPLong(overrides?: CallOverrides): Promise<{
       0: BigNumber;
       1: BigNumber;
     }>;
 
-    "priceTWAPLong()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "priceTWAPLong()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
       1: BigNumber;
     }>;
 
-    priceTWAPShort(
-      overrides?: CallOverrides
-    ): Promise<{
+    priceTWAPShort(overrides?: CallOverrides): Promise<{
       0: BigNumber;
       1: BigNumber;
     }>;
 
-    "priceTWAPShort()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "priceTWAPShort()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
       1: BigNumber;
     }>;
 
-    source(
-      overrides?: CallOverrides
-    ): Promise<{
+    source(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "source()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "source()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    underlyingAsset(
-      overrides?: CallOverrides
-    ): Promise<{
+    underlyingAsset(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "underlyingAsset()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "underlyingAsset()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
   };
@@ -288,30 +256,22 @@ export class UniswapV3OracleAdaptor extends Contract {
 
   "isTerminated()"(overrides?: CallOverrides): Promise<boolean>;
 
-  priceTWAPLong(
-    overrides?: CallOverrides
-  ): Promise<{
+  priceTWAPLong(overrides?: CallOverrides): Promise<{
     0: BigNumber;
     1: BigNumber;
   }>;
 
-  "priceTWAPLong()"(
-    overrides?: CallOverrides
-  ): Promise<{
+  "priceTWAPLong()"(overrides?: CallOverrides): Promise<{
     0: BigNumber;
     1: BigNumber;
   }>;
 
-  priceTWAPShort(
-    overrides?: CallOverrides
-  ): Promise<{
+  priceTWAPShort(overrides?: CallOverrides): Promise<{
     0: BigNumber;
     1: BigNumber;
   }>;
 
-  "priceTWAPShort()"(
-    overrides?: CallOverrides
-  ): Promise<{
+  "priceTWAPShort()"(overrides?: CallOverrides): Promise<{
     0: BigNumber;
     1: BigNumber;
   }>;
@@ -367,30 +327,22 @@ export class UniswapV3OracleAdaptor extends Contract {
 
     "isTerminated()"(overrides?: CallOverrides): Promise<boolean>;
 
-    priceTWAPLong(
-      overrides?: CallOverrides
-    ): Promise<{
+    priceTWAPLong(overrides?: CallOverrides): Promise<{
       0: BigNumber;
       1: BigNumber;
     }>;
 
-    "priceTWAPLong()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "priceTWAPLong()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
       1: BigNumber;
     }>;
 
-    priceTWAPShort(
-      overrides?: CallOverrides
-    ): Promise<{
+    priceTWAPShort(overrides?: CallOverrides): Promise<{
       0: BigNumber;
       1: BigNumber;
     }>;
 
-    "priceTWAPShort()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "priceTWAPShort()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
       1: BigNumber;
     }>;

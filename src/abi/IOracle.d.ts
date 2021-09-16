@@ -94,15 +94,11 @@ export class IOracle extends Contract {
   interface: IOracleInterface;
 
   functions: {
-    collateral(
-      overrides?: CallOverrides
-    ): Promise<{
+    collateral(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "collateral()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "collateral()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
@@ -122,15 +118,11 @@ export class IOracle extends Contract {
 
     "priceTWAPShort()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-    underlyingAsset(
-      overrides?: CallOverrides
-    ): Promise<{
+    underlyingAsset(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "underlyingAsset()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "underlyingAsset()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
   };
@@ -172,36 +164,28 @@ export class IOracle extends Contract {
 
     "isTerminated()"(overrides?: CallOverrides): Promise<boolean>;
 
-    priceTWAPLong(
-      overrides?: CallOverrides
-    ): Promise<{
+    priceTWAPLong(overrides?: CallOverrides): Promise<{
       newPrice: BigNumber;
       newTimestamp: BigNumber;
       0: BigNumber;
       1: BigNumber;
     }>;
 
-    "priceTWAPLong()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "priceTWAPLong()"(overrides?: CallOverrides): Promise<{
       newPrice: BigNumber;
       newTimestamp: BigNumber;
       0: BigNumber;
       1: BigNumber;
     }>;
 
-    priceTWAPShort(
-      overrides?: CallOverrides
-    ): Promise<{
+    priceTWAPShort(overrides?: CallOverrides): Promise<{
       newPrice: BigNumber;
       newTimestamp: BigNumber;
       0: BigNumber;
       1: BigNumber;
     }>;
 
-    "priceTWAPShort()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "priceTWAPShort()"(overrides?: CallOverrides): Promise<{
       newPrice: BigNumber;
       newTimestamp: BigNumber;
       0: BigNumber;

@@ -537,15 +537,11 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    getAccessController(
-      overrides?: CallOverrides
-    ): Promise<{
+    getAccessController(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "getAccessController()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "getAccessController()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
@@ -581,53 +577,37 @@ export class PoolCreator extends Contract {
       0: string;
     }>;
 
-    getKeeperCount(
-      overrides?: CallOverrides
-    ): Promise<{
+    getKeeperCount(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "getKeeperCount()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "getKeeperCount()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    getLatestVersion(
-      overrides?: CallOverrides
-    ): Promise<{
+    getLatestVersion(overrides?: CallOverrides): Promise<{
       latestVersionKey: string;
       0: string;
     }>;
 
-    "getLatestVersion()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "getLatestVersion()"(overrides?: CallOverrides): Promise<{
       latestVersionKey: string;
       0: string;
     }>;
 
-    getLiquidityPoolCount(
-      overrides?: CallOverrides
-    ): Promise<{
+    getLiquidityPoolCount(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "getLiquidityPoolCount()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "getLiquidityPoolCount()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    getMCBToken(
-      overrides?: CallOverrides
-    ): Promise<{
+    getMCBToken(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "getMCBToken()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "getMCBToken()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
@@ -645,39 +625,27 @@ export class PoolCreator extends Contract {
       0: BigNumber;
     }>;
 
-    getSymbolService(
-      overrides?: CallOverrides
-    ): Promise<{
+    getSymbolService(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "getSymbolService()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "getSymbolService()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    getVault(
-      overrides?: CallOverrides
-    ): Promise<{
+    getVault(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "getVault()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "getVault()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    getVaultFeeRate(
-      overrides?: CallOverrides
-    ): Promise<{
+    getVaultFeeRate(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "getVaultFeeRate()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "getVaultFeeRate()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
@@ -717,15 +685,11 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    guardianCount(
-      overrides?: CallOverrides
-    ): Promise<{
+    guardianCount(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "guardianCount()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "guardianCount()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
@@ -835,15 +799,11 @@ export class PoolCreator extends Contract {
       0: boolean;
     }>;
 
-    isUniverseSettled(
-      overrides?: CallOverrides
-    ): Promise<{
+    isUniverseSettled(overrides?: CallOverrides): Promise<{
       0: boolean;
     }>;
 
-    "isUniverseSettled()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "isUniverseSettled()"(overrides?: CallOverrides): Promise<{
       0: boolean;
     }>;
 
@@ -993,27 +953,19 @@ export class PoolCreator extends Contract {
       0: string[];
     }>;
 
-    owner(
-      overrides?: CallOverrides
-    ): Promise<{
+    owner(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "owner()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "owner()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    poolVersion(
-      overrides?: CallOverrides
-    ): Promise<{
+    poolVersion(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
-    "poolVersion()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "poolVersion()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
     }>;
 
@@ -1103,15 +1055,11 @@ export class PoolCreator extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    upgradeAdmin(
-      overrides?: CallOverrides
-    ): Promise<{
+    upgradeAdmin(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "upgradeAdmin()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "upgradeAdmin()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 

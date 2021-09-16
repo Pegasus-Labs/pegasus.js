@@ -103,21 +103,15 @@ export class OracleRouter extends Contract {
   interface: OracleRouterInterface;
 
   functions: {
-    collateral(
-      overrides?: CallOverrides
-    ): Promise<{
+    collateral(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "collateral()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "collateral()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    dumpPath(
-      overrides?: CallOverrides
-    ): Promise<{
+    dumpPath(overrides?: CallOverrides): Promise<{
       0: {
         oracle: string;
         isInverse: boolean;
@@ -130,9 +124,7 @@ export class OracleRouter extends Contract {
       }[];
     }>;
 
-    "dumpPath()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "dumpPath()"(overrides?: CallOverrides): Promise<{
       0: {
         oracle: string;
         isInverse: boolean;
@@ -145,15 +137,11 @@ export class OracleRouter extends Contract {
       }[];
     }>;
 
-    getPath(
-      overrides?: CallOverrides
-    ): Promise<{
+    getPath(overrides?: CallOverrides): Promise<{
       0: { oracle: string; isInverse: boolean; 0: string; 1: boolean }[];
     }>;
 
-    "getPath()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "getPath()"(overrides?: CallOverrides): Promise<{
       0: { oracle: string; isInverse: boolean; 0: string; 1: boolean }[];
     }>;
 
@@ -173,27 +161,19 @@ export class OracleRouter extends Contract {
 
     "priceTWAPShort()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-    source(
-      overrides?: CallOverrides
-    ): Promise<{
+    source(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "source()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "source()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    underlyingAsset(
-      overrides?: CallOverrides
-    ): Promise<{
+    underlyingAsset(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "underlyingAsset()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "underlyingAsset()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
   };
@@ -315,36 +295,28 @@ export class OracleRouter extends Contract {
 
     "isTerminated()"(overrides?: CallOverrides): Promise<boolean>;
 
-    priceTWAPLong(
-      overrides?: CallOverrides
-    ): Promise<{
+    priceTWAPLong(overrides?: CallOverrides): Promise<{
       newPrice: BigNumber;
       newTimestamp: BigNumber;
       0: BigNumber;
       1: BigNumber;
     }>;
 
-    "priceTWAPLong()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "priceTWAPLong()"(overrides?: CallOverrides): Promise<{
       newPrice: BigNumber;
       newTimestamp: BigNumber;
       0: BigNumber;
       1: BigNumber;
     }>;
 
-    priceTWAPShort(
-      overrides?: CallOverrides
-    ): Promise<{
+    priceTWAPShort(overrides?: CallOverrides): Promise<{
       newPrice: BigNumber;
       newTimestamp: BigNumber;
       0: BigNumber;
       1: BigNumber;
     }>;
 
-    "priceTWAPShort()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "priceTWAPShort()"(overrides?: CallOverrides): Promise<{
       newPrice: BigNumber;
       newTimestamp: BigNumber;
       0: BigNumber;

@@ -26,6 +26,7 @@ interface ReaderInterface extends ethers.utils.Interface {
     "getAccountsInfo(address,uint256,uint256,uint256)": FunctionFragment;
     "getAccountsInfoByAddress(address,uint256,address[])": FunctionFragment;
     "getImplementation(address)": FunctionFragment;
+    "getL1BlockNumber()": FunctionFragment;
     "getLiquidityPoolStorage(address)": FunctionFragment;
     "getPoolMargin(address)": FunctionFragment;
     "inverseStateService()": FunctionFragment;
@@ -52,6 +53,10 @@ interface ReaderInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getImplementation",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getL1BlockNumber",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getLiquidityPoolStorage",
@@ -104,6 +109,10 @@ interface ReaderInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getImplementation",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getL1BlockNumber",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -215,6 +224,14 @@ export class Reader extends Contract {
       0: string;
     }>;
 
+    getL1BlockNumber(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "getL1BlockNumber()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
     getLiquidityPoolStorage(
       liquidityPool: string,
       overrides?: Overrides
@@ -235,15 +252,11 @@ export class Reader extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    inverseStateService(
-      overrides?: CallOverrides
-    ): Promise<{
+    inverseStateService(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "inverseStateService()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "inverseStateService()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
@@ -257,15 +270,11 @@ export class Reader extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    poolCreator(
-      overrides?: CallOverrides
-    ): Promise<{
+    poolCreator(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    "poolCreator()"(
-      overrides?: CallOverrides
-    ): Promise<{
+    "poolCreator()"(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
@@ -378,6 +387,10 @@ export class Reader extends Contract {
     proxy: string,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  getL1BlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "getL1BlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   getLiquidityPoolStorage(
     liquidityPool: string,
@@ -723,6 +736,10 @@ export class Reader extends Contract {
       proxy: string,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    getL1BlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getL1BlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getLiquidityPoolStorage(
       liquidityPool: string,
@@ -1858,6 +1875,10 @@ export class Reader extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getL1BlockNumber(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getL1BlockNumber()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getLiquidityPoolStorage(
       liquidityPool: string,
       overrides?: Overrides
@@ -2007,6 +2028,12 @@ export class Reader extends Contract {
 
     "getImplementation(address)"(
       proxy: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getL1BlockNumber(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "getL1BlockNumber()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
