@@ -519,12 +519,27 @@ export function computeFundingRate(p: LiquidityPoolStorage, perpetualIndex: numb
     }
   }
 
+  const perpetual = p.perpetuals.get(perpetualIndex)
+  if (!perpetual) {
+    throw new InvalidArgumentError(`perpetual ${perpetualIndex} not found in the pool`)
+  }
   context = computeAMMPoolMargin(context, context.openSlippageFactor)
-  let fr = context.fundingRateFactor
+  let fr = _0
+  if (!perpetual.openInterest.isZero()) {
+    if (
+      (perpetual.baseFundingRate.value.gt(_0) && context.position1.lte(_0)) ||
+      (perpetual.baseFundingRate.value.lt(_0) && context.position1.gte(_0))
+    ) {
+      fr = perpetual.baseFundingRate.value
+    }
+  }
+  fr = fr.plus(
+    context.fundingRateFactor
     .times(context.index)
     .times(context.position1)
     .div(context.poolMargin)
     .negated()
+  )
   fr = BigNumber.minimum(fr, context.fundingRateLimit)
   fr = BigNumber.maximum(fr, context.fundingRateLimit.negated())
   return fr

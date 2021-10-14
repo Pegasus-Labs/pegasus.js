@@ -829,6 +829,59 @@ describe('computeFundingRate', function() {
     expect(computeFundingRate(poolStorage5, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('-0.005')) // clip
     expect(computeFundingRate(poolStorage6, TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('-0.005'))
   })
+
+  const addPhi0 = (pool: LiquidityPoolStorage, phi0: BigNumber, oi: BigNumber) => {
+    return {
+      ...pool,
+      perpetuals: new Map([
+        [
+          TEST_MARKET_INDEX0,
+          {
+            ...(pool.perpetuals.get(TEST_MARKET_INDEX0) as PerpetualStorage),
+            baseFundingRate: { minValue: _0, maxValue: _0, value: phi0 },
+            openInterest: oi,
+          }
+        ],
+        [TEST_MARKET_INDEX1, poolStorage4.perpetuals.get(TEST_MARKET_INDEX1) as PerpetualStorage]
+      ]),
+    }
+  }
+
+  it('baseFundingRate +0.01%, oi > 0', () => {
+    const phi0 = new BigNumber('0.0001')
+    const oi = new BigNumber('10')
+    expect(computeFundingRate(addPhi0(poolStorage0, phi0, oi), TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('0.0001'))
+    expect(computeFundingRate(addPhi0(poolStorage1, phi0, oi), TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('0.0006'))
+    expect(computeFundingRate(addPhi0(poolStorage2, phi0, oi), TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('0.00279597158238683137'))
+    expect(computeFundingRate(addPhi0(poolStorage3, phi0, oi), TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('0.005'))
+    expect(computeFundingRate(addPhi0(poolStorage4, phi0, oi), TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('-0.0005'))
+    expect(computeFundingRate(addPhi0(poolStorage5, phi0, oi), TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('-0.005')) // clip
+    expect(computeFundingRate(addPhi0(poolStorage6, phi0, oi), TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('-0.005'))
+  })
+
+  it('baseFundingRate +0.01%, oi = 0', () => {
+    const phi0 = new BigNumber('0.0001')
+    const oi = new BigNumber('0')
+    expect(computeFundingRate(addPhi0(poolStorage0, phi0, oi), TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('0'))
+  })
+
+  it('baseFundingRate -0.01%, oi > 0', () => {
+    const phi0 = new BigNumber('-0.0001')
+    const oi = new BigNumber('10')
+    expect(computeFundingRate(addPhi0(poolStorage0, phi0, oi), TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('-0.0001'))
+    expect(computeFundingRate(addPhi0(poolStorage1, phi0, oi), TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('0.0005'))
+    expect(computeFundingRate(addPhi0(poolStorage2, phi0, oi), TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('0.00269597158238683137'))
+    expect(computeFundingRate(addPhi0(poolStorage3, phi0, oi), TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('0.005'))
+    expect(computeFundingRate(addPhi0(poolStorage4, phi0, oi), TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('-0.0006'))
+    expect(computeFundingRate(addPhi0(poolStorage5, phi0, oi), TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('-0.005')) // clip
+    expect(computeFundingRate(addPhi0(poolStorage6, phi0, oi), TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('-0.005'))
+  })
+
+  it('baseFundingRate -0.01%, oi = 0', () => {
+    const phi0 = new BigNumber('-0.0001')
+    const oi = new BigNumber('0')
+    expect(computeFundingRate(addPhi0(poolStorage0, phi0, oi), TEST_MARKET_INDEX0)).toApproximate(normalizeBigNumberish('0'))
+  })
 })
 
 describe('computeAMMShareToMint', function() {
