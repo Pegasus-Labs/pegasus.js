@@ -139,6 +139,7 @@ export interface PerpetualStorage {
   ammMaxLeverage: Option // λ
   maxClosePriceDiscount: Option // δ
   defaultTargetLeverage: Option
+  baseFundingRate: Option
 
   symbol: number
   underlyingSymbol: string
@@ -207,7 +208,7 @@ export interface AMMTradingContext {
   fundingRateLimit: BigNumber // Γ_m
   maxClosePriceDiscount: BigNumber // δ_m
   ammMaxLeverage: BigNumber // λ_m
-
+  
   // other perpetuals
   otherIndex: BigNumber[] // P_i_j
   otherPosition: BigNumber[] // N_j

@@ -801,6 +801,9 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -813,6 +816,9 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -909,6 +915,9 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -921,6 +930,9 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -1027,6 +1039,9 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -1039,6 +1054,9 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -1135,6 +1153,9 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -1147,6 +1168,9 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -1259,6 +1283,9 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -1271,6 +1298,9 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -1367,6 +1397,9 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -1379,6 +1412,9 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -1485,6 +1521,9 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -1497,6 +1536,9 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -1593,6 +1635,9 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -1605,6 +1650,9 @@ export class Reader extends Contract {
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,

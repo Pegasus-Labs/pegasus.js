@@ -325,9 +325,9 @@ const _abi = [
                 type: "address",
               },
               {
-                internalType: "int256[39]",
+                internalType: "int256[42]",
                 name: "nums",
-                type: "int256[39]",
+                type: "int256[42]",
               },
               {
                 internalType: "uint256",

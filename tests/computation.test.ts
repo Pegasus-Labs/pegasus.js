@@ -86,6 +86,7 @@ const perpetual1: PerpetualStorage = {
   ammMaxLeverage: { value: new BigNumber(5), minValue: _0, maxValue: _0 },
   maxClosePriceDiscount: { value: new BigNumber(0.05), minValue: _0, maxValue: _0 },
   defaultTargetLeverage: { value: new BigNumber(10), minValue: _0, maxValue: _0 },
+  baseFundingRate: { value: _0, minValue: _0, maxValue: _0 },
 
   ammCashBalance: _0, // assign me later
   ammPositionAmount: _0 // assign me later
@@ -928,6 +929,7 @@ describe('computeAMMTrade with USE_TARGET_LEVERAGE', function() {
     ammMaxLeverage: { value: new BigNumber(5), minValue: _0, maxValue: _0 },
     maxClosePriceDiscount: { value: new BigNumber(0.05), minValue: _0, maxValue: _0 },
     defaultTargetLeverage: { value: new BigNumber(1), minValue: _0, maxValue: _0 },
+    baseFundingRate: { value: _0, minValue: _0, maxValue: _0 },
   
     ammCashBalance: _0,
     ammPositionAmount: _0

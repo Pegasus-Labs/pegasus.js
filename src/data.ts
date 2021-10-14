@@ -222,6 +222,11 @@ export async function getLiquidityPool(reader: Reader, liquidityPoolAddress: str
         minValue: parsePerpNums(37),
         maxValue: parsePerpNums(38)
       },
+      baseFundingRate: {
+        value: parsePerpNums(39),
+        minValue: parsePerpNums(40),
+        maxValue: parsePerpNums(41)
+      },
       symbol: m.symbol.toNumber(),
       underlyingSymbol: m.underlyingAsset,
       isMarketClosed: m.isMarketClosed,
