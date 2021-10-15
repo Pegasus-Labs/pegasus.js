@@ -16,9 +16,9 @@ export const CHAIN_ID_TO_READER_ADDRESS: { [chainID: number]: string } = {
   // arb testnet
   421611: '0xAaa96ce55CF6E2DEc62857Cc4d437381d1413d43',
   // arb one
-  42161: '0xC2Da61e5e16021f8DBd1A9a6836cE30cAe1066A9',
+  42161: '0xf7D17C801b3Df2c818AB5aA07e9108589241B8a5',
   // bsc
-  56: '0x93a9182883C1019e1dBEbB5d40C140e7680cd151',
+  56: '0x942Df696cd1995ba2eAB710D168B2D9CeE53B52c',
 }
 
 export const CHAIN_ID_TO_POOL_CREATOR_ADDRESS: { [chainID: number]: string } = {
