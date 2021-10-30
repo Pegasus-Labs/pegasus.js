@@ -109,12 +109,12 @@ const accountStorage1: AccountStorage = {
 }
 
 const orders1: Order[] = [
-  { symbol: 0, limitPrice: new BigNumber(3), amount: new BigNumber(3) },
-  { symbol: 0, limitPrice: new BigNumber(6), amount: new BigNumber(6) },
-  { symbol: 0, limitPrice: new BigNumber(1), amount: new BigNumber(1) },
-  { symbol: 0, limitPrice: new BigNumber(3), amount: new BigNumber(-3) },
-  { symbol: 0, limitPrice: new BigNumber(6), amount: new BigNumber(-6) },
-  { symbol: 0, limitPrice: new BigNumber(1), amount: new BigNumber(-1) },
+  { symbol: 0, limitPrice: new BigNumber(3), amount: new BigNumber(3), targetLeverage: new BigNumber(1) },
+  { symbol: 0, limitPrice: new BigNumber(6), amount: new BigNumber(6), targetLeverage: new BigNumber(1) },
+  { symbol: 0, limitPrice: new BigNumber(1), amount: new BigNumber(1), targetLeverage: new BigNumber(1) },
+  { symbol: 0, limitPrice: new BigNumber(3), amount: new BigNumber(-3), targetLeverage: new BigNumber(1) },
+  { symbol: 0, limitPrice: new BigNumber(6), amount: new BigNumber(-6), targetLeverage: new BigNumber(1) },
+  { symbol: 0, limitPrice: new BigNumber(1), amount: new BigNumber(-1), targetLeverage: new BigNumber(1) },
 ]
 
 describe('splitOrderSide', function () {
@@ -154,10 +154,12 @@ describe('orderCost', function () {
   it('empty order book. close only', function () {
     const walletBalance = _0
     const orders: Order[] = []
+    const targetLeverage = accountStorage1.targetLeverage
     const newOrder: Order = {
       symbol: 0,
       limitPrice: new BigNumber('6900'),
-      amount: new BigNumber('-1')
+      amount: new BigNumber('-1'),
+      targetLeverage: targetLeverage
     }
     const context = new Map([
       [0, { pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage1 }],
@@ -168,9 +170,8 @@ describe('orderCost', function () {
     // marginBalance = 23695.57634375, fee = 6.9, | loss | = (6965 - 6900) * 1 = 65
     // withdraw = (marginBalance - keeperGasReward) * | Δpos / pos | - | loss | - fee = 10230.0897146739130434782608696
     const marginBalance = computeAccount(poolStorage1, TEST_MARKET_INDEX0, accountStorage1).accountComputed.marginBalance
-    const targetLeverage = accountStorage1.targetLeverage
     const details = orderSideAvailable(poolStorage1, TEST_MARKET_INDEX0, marginBalance,
-      accountStorage1.positionAmount, targetLeverage, walletBalance, orders.concat(newOrder))
+      accountStorage1.positionAmount, walletBalance, orders.concat(newOrder))
     expect(details.remainPosition).toApproximate(new BigNumber('1.3'))
     expect(details.remainMargin).toApproximate(new BigNumber('13393.5866290760869565217391304')) // marginBalance - | loss | - fee - withdraw
     expect(details.remainWalletBalance).toApproximate(new BigNumber('10230.0897146739130434782608696')) // old + withdraw
@@ -178,11 +179,13 @@ describe('orderCost', function () {
 
   it('empty order book. close + open. withdraw covers deposit', function () {
     const walletBalance = _0
+    const targetLeverage = accountStorage1.targetLeverage
     const orders: Order[] = []
     const newOrder: Order = {
       symbol: 0,
       limitPrice: new BigNumber('6900'),
-      amount: new BigNumber('-3.3')
+      amount: new BigNumber('-3.3'),
+      targetLeverage: targetLeverage
     }
     const context = new Map([
       [0, { pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage1 }],
@@ -195,10 +198,9 @@ describe('orderCost', function () {
     // | loss | = (6965 - 6900) * 2.3 = 149.5, withdraw = marginBalance - | loss | - closeFee = 23530.20634375
     // | loss | = (6965 - 6900) * 1 = 65, deposit = 6965 * 1 / lev + | loss | + openFee = 3554.4
     const marginBalance = computeAccount(poolStorage1, TEST_MARKET_INDEX0, accountStorage1).accountComputed.marginBalance
-    const targetLeverage = accountStorage1.targetLeverage
 
     const details = orderSideAvailable(poolStorage1, TEST_MARKET_INDEX0, marginBalance,
-      accountStorage1.positionAmount, targetLeverage, walletBalance, orders.concat(newOrder))
+      accountStorage1.positionAmount, walletBalance, orders.concat(newOrder))
     expect(details.remainPosition).toApproximate(new BigNumber('-1'))
     expect(details.remainMargin).toApproximate(new BigNumber('3483.5')) // old - withdraw + deposit - fee - | loss | + keeperGasReward
     expect(details.remainWalletBalance).toApproximate(new BigNumber('19974.80634375')) // old + withdraw - deposit
@@ -207,10 +209,12 @@ describe('orderCost', function () {
   it('empty order book. close + open', function () {
     const walletBalance = _0
     const orders: Order[] = []
+    const targetLeverage = accountStorage1.targetLeverage
     const newOrder: Order = {
       symbol: 0,
       limitPrice: new BigNumber('6900'),
-      amount: new BigNumber('-10')
+      amount: new BigNumber('-10'),
+      targetLeverage: targetLeverage
     }
     const context = new Map([
       [0, { pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage1 }],
@@ -226,11 +230,13 @@ describe('orderCost', function () {
 
   it('empty order book. pos = 0 but cash > 0. open short. limit < mark', function () {
     const walletBalance = _0
+    const targetLeverage = accountStorage0.targetLeverage
     const orders: Order[] = []
     const newOrder: Order = {
       symbol: 0,
       limitPrice: new BigNumber('6900'),
-      amount: new BigNumber('-10')
+      amount: new BigNumber('-10'),
+      targetLeverage: targetLeverage
     }
     const context = new Map([
       [0, { pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage0 }],
@@ -243,11 +249,13 @@ describe('orderCost', function () {
 
   it('empty order book. pos = 0 but cash > 0. open short. limit > mark', function () {
     const walletBalance = _0
+    const targetLeverage = accountStorage0.targetLeverage
     const orders: Order[] = []
     const newOrder: Order = {
       symbol: 0,
       limitPrice: new BigNumber('7000'),
-      amount: new BigNumber('-10')
+      amount: new BigNumber('-10'),
+      targetLeverage: targetLeverage
     }
     const context = new Map([
       [0, { pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage0 }],
@@ -260,11 +268,13 @@ describe('orderCost', function () {
 
   it('empty order book. pos = 0 but cash > 0. open long. limit < mark', function () {
     const walletBalance = _0
+    const targetLeverage = accountStorage0.targetLeverage
     const orders: Order[] = []
     const newOrder: Order = {
       symbol: 0,
       limitPrice: new BigNumber('6900'),
-      amount: new BigNumber('10')
+      amount: new BigNumber('10'),
+      targetLeverage: targetLeverage
     }
     const context = new Map([
       [0, { pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage0 }],
@@ -277,11 +287,13 @@ describe('orderCost', function () {
 
   it('empty order book. pos = 0 but cash > 0. open long. limit > mark', function () {
     const walletBalance = _0
+    const targetLeverage = accountStorage0.targetLeverage
     const orders: Order[] = []
     const newOrder: Order = {
       symbol: 0,
       limitPrice: new BigNumber('7000'),
-      amount: new BigNumber('10')
+      amount: new BigNumber('10'),
+      targetLeverage: targetLeverage
     }
     const context = new Map([
       [0, { pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage0 }],

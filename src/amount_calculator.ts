@@ -192,7 +192,7 @@ export function computeLimitOrderMaxTradeAmount(
   const { preOrders, postOrders } = splitOrdersByLimitPrice(currentPerpetualOrders, normalizeLimitPrice, isTraderBuy)
   const preState = orderSideAvailable(
     currentMarketContext.pool, currentMarketContext.perpetualIndex, traderDetails.accountComputed.marginBalance,
-    trader.positionAmount, trader.targetLeverage, available, preOrders)
+    trader.positionAmount, available, preOrders)
   
   // search
   function checkTrading(a: BigNumber): boolean {
@@ -202,13 +202,14 @@ export function computeLimitOrderMaxTradeAmount(
     if (!isTraderBuy) {
       a = a.negated()
     }
+    const targetLeverage = trader.targetLeverage
     let newOrderState = orderSideAvailable(
       currentMarketContext!.pool, currentMarketContext!.perpetualIndex, preState.remainMargin,
-      preState.remainPosition, trader.targetLeverage, preState.remainWalletBalance,
-      [{ symbol, limitPrice: normalizeLimitPrice, amount: a }])
+      preState.remainPosition, preState.remainWalletBalance,
+      [{ symbol, limitPrice: normalizeLimitPrice, amount: a, targetLeverage }])
     let postState = orderSideAvailable(
       currentMarketContext!.pool, currentMarketContext!.perpetualIndex, newOrderState.remainMargin,
-      newOrderState.remainPosition, trader.targetLeverage, newOrderState.remainWalletBalance, postOrders)
+      newOrderState.remainPosition, newOrderState.remainWalletBalance, postOrders)
     if (postState.remainWalletBalance.lt(_0)) {
       // a is too large
       return false

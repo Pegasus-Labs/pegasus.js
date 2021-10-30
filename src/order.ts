@@ -104,7 +104,6 @@ export function orderSideAvailable(
   perpetualIndex: number,
   marginBalance: BigNumber,
   position: BigNumber,
-  targetLeverage: BigNumber,
   walletBalance: BigNumber,
   orders: Order[]
 ): { remainPosition: BigNumber; remainMargin: BigNumber, remainWalletBalance: BigNumber } {
@@ -205,7 +204,7 @@ export function orderSideAvailable(
   // open position
   for (let i = 0; i < remainOrders.length; i++) {
     const order = remainOrders[i]
-    let { cost, fee, potentialLoss } = openOrderCost(p, perpetualIndex, order, targetLeverage)
+    let { cost, fee, potentialLoss } = openOrderCost(p, perpetualIndex, order, order.targetLeverage)
     if (remainPosition.isZero()) {
       cost = cost.plus(perpetual.keeperGasReward)
     }
@@ -238,8 +237,8 @@ export function orderPerpetualAvailable(
 ): BigNumber {
   const { buyOrders, sellOrders } = splitOrderSide(orders)
   const marginBalance = computeAccount(p, perpetualIndex, trader).accountComputed.marginBalance
-  const buySide = orderSideAvailable(p, perpetualIndex, marginBalance, trader.positionAmount, trader.targetLeverage, walletBalance, buyOrders)
-  const sellSide = orderSideAvailable(p, perpetualIndex, marginBalance, trader.positionAmount, trader.targetLeverage, walletBalance, sellOrders)
+  const buySide = orderSideAvailable(p, perpetualIndex, marginBalance, trader.positionAmount, walletBalance, buyOrders)
+  const sellSide = orderSideAvailable(p, perpetualIndex, marginBalance, trader.positionAmount, walletBalance, sellOrders)
   return BigNumber.minimum(buySide.remainWalletBalance, sellSide.remainWalletBalance)
 }
 

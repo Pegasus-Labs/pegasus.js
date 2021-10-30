@@ -245,6 +245,7 @@ describe('computeLimitOrderMaxTradeAmount', function () {
     const walletBalance = _0
     const limitPrice = new BigNumber('6900')
     const isBuy = false
+    const targetLeverage = accountStorage1.targetLeverage
     const orders: Order[] = []
     const context = new Map([
       [TEST_MARKET_INDEX0, { pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage1 }]
@@ -258,10 +259,10 @@ describe('computeLimitOrderMaxTradeAmount', function () {
     expect(amount.lt('-5.6')).toBeTruthy()
     const marginBalance = computeAccount(poolStorage1, TEST_MARKET_INDEX0, accountStorage1).accountComputed.marginBalance
     const oldAvailable = orderSideAvailable(poolStorage1, TEST_MARKET_INDEX0, marginBalance, accountStorage1.positionAmount,
-      accountStorage1.targetLeverage, walletBalance, orders)
+      walletBalance, orders)
     const newAvailable = orderSideAvailable(poolStorage1, TEST_MARKET_INDEX0, marginBalance, accountStorage1.positionAmount,
-      accountStorage1.targetLeverage, walletBalance, orders.concat([
-        { symbol: TEST_MARKET_INDEX0, limitPrice, amount }
+      walletBalance, orders.concat([
+        { symbol: TEST_MARKET_INDEX0, limitPrice, amount, targetLeverage }
       ]))
     expect(oldAvailable.remainWalletBalance).toApproximate(_0)
     expect(newAvailable.remainWalletBalance.lt('1')).toBeTruthy()
@@ -271,6 +272,7 @@ describe('computeLimitOrderMaxTradeAmount', function () {
     const walletBalance = new BigNumber('70000')
     const limitPrice = new BigNumber('6900')
     const isBuy = false
+    const targetLeverage = accountStorage1.targetLeverage
     const orders: Order[] = []
     const context = new Map([
       [TEST_MARKET_INDEX0, { pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage1 }]
@@ -284,10 +286,10 @@ describe('computeLimitOrderMaxTradeAmount', function () {
     expect(amount.lt('-15.5')).toBeTruthy()
     const marginBalance = computeAccount(poolStorage1, TEST_MARKET_INDEX0, accountStorage1).accountComputed.marginBalance
     const oldAvailable = orderSideAvailable(poolStorage1, TEST_MARKET_INDEX0, marginBalance, accountStorage1.positionAmount,
-      accountStorage1.targetLeverage, walletBalance, orders)
+      walletBalance, orders)
     const newAvailable = orderSideAvailable(poolStorage1, TEST_MARKET_INDEX0, marginBalance, accountStorage1.positionAmount,
-      accountStorage1.targetLeverage, walletBalance, orders.concat([
-        { symbol: TEST_MARKET_INDEX0, limitPrice, amount }
+      walletBalance, orders.concat([
+        { symbol: TEST_MARKET_INDEX0, limitPrice, amount, targetLeverage }
       ]))
     expect(oldAvailable.remainWalletBalance).toApproximate(new BigNumber('70000'))
     expect(newAvailable.remainWalletBalance.lt('1')).toBeTruthy()
@@ -298,6 +300,7 @@ describe('computeLimitOrderMaxTradeAmount', function () {
     const limitPrice = new BigNumber('6900')
     const amount = new BigNumber('1')
     const isBuy = false
+    const targetLeverage = accountStorage1.targetLeverage
     let orders: Order[] = []
     const context = new Map([
       [TEST_MARKET_INDEX0, { pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage1 }]
@@ -306,11 +309,13 @@ describe('computeLimitOrderMaxTradeAmount', function () {
       symbol: TEST_MARKET_INDEX0,
       limitPrice,
       amount: amount,
+      targetLeverage
     })
     orders.push({
       symbol: TEST_MARKET_INDEX0,
       limitPrice,
       amount: amount,
+      targetLeverage
     })
     const amount1 = computeLimitOrderMaxTradeAmount(context, walletBalance, orders, TEST_MARKET_INDEX0, limitPrice, isBuy)
     orders = []
@@ -318,6 +323,7 @@ describe('computeLimitOrderMaxTradeAmount', function () {
       symbol: TEST_MARKET_INDEX0,
       limitPrice,
       amount: amount.plus(amount),
+      targetLeverage
     })
     const amount2 = computeLimitOrderMaxTradeAmount(context, walletBalance, orders, TEST_MARKET_INDEX0, limitPrice, isBuy)
     expect(amount2).toApproximate(amount1)

@@ -264,6 +264,7 @@ export interface Order {
   symbol: number // PerpetualStorage.symbol
   limitPrice: BigNumber
   amount: BigNumber // should be availableAmount + pendingAmount
+  targetLeverage: BigNumber
 }
 
 export interface OrderContext {
