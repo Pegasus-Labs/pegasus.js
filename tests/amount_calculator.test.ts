@@ -146,14 +146,27 @@ const accountStorage1: AccountStorage = {
 describe('computeAMMMaxTradeAmount', function () {
   it(`new user`, function () {
     const walletBalance = _0
-    const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage0, walletBalance, true)
+    const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage0, walletBalance, true, accountStorage0.targetLeverage.toNumber())
     expect(amount).toBeBigNumber(_0)
   })
 
-  it(`new user with walletBalance`, function () {
+  it(`new user with walletBalance(old targetLeverage)`, function () {
     const walletBalance = 7000
-    const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage0, walletBalance, true) // 0.999
+    const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage0, walletBalance, true, accountStorage0.targetLeverage.toNumber()) // 0.999
     const res = computeAMMTrade(poolStorage4, TEST_MARKET_INDEX0, accountStorage0, amount, TradeFlag.MASK_USE_TARGET_LEVERAGE)
+    expect(res.tradeIsSafe).toBeTruthy()
+    expect(res.trader.accountComputed.leverage).toBeBigNumber(_1)
+    expect(amount.gt('0.99')).toBeTruthy()
+    expect(amount.lt('1.00')).toBeTruthy()
+    expect(res.adjustCollateral.gt('6999')).toBeTruthy()
+    expect(res.adjustCollateral.lt('7001')).toBeTruthy()
+  })
+
+  it(`new user with walletBalance(new targetLeverage)`, function () {
+    const walletBalance = 7000
+    const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage0, walletBalance, true, accountStorage0.targetLeverage.toNumber()) // 0.999
+    // 100 << 7 = 12800
+    const res = computeAMMTrade(poolStorage4, TEST_MARKET_INDEX0, accountStorage0, amount, 12800)
     expect(res.tradeIsSafe).toBeTruthy()
     expect(res.trader.accountComputed.leverage).toBeBigNumber(_1)
     expect(amount.gt('0.99')).toBeTruthy()
@@ -164,7 +177,7 @@ describe('computeAMMMaxTradeAmount', function () {
 
   it(`safe trader + safe amm, trader buy. open positions only`, function () {
     const walletBalance = 7000
-    const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, walletBalance, true) // 1.1
+    const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, walletBalance, true, accountStorage1.targetLeverage.toNumber()) // 1.1
     const res = computeAMMTrade(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, amount, TradeFlag.MASK_USE_TARGET_LEVERAGE)
     expect(res.tradeIsSafe).toBeTruthy()
     expect(amount.gt('1.0')).toBeTruthy()
@@ -175,7 +188,7 @@ describe('computeAMMMaxTradeAmount', function () {
 
   it(`safe trader + safe amm, trader sell. close + open. withdraw covers deposit`, function () {
     const walletBalance = 0
-    const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, walletBalance, false) // -5.6
+    const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, walletBalance, false, accountStorage1.targetLeverage.toNumber()) // -5.6
     const res = computeAMMTrade(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, amount, TradeFlag.MASK_USE_TARGET_LEVERAGE)
     expect(res.tradeIsSafe).toBeTruthy()
     expect(amount.lt('-5')).toBeTruthy()
@@ -186,7 +199,7 @@ describe('computeAMMMaxTradeAmount', function () {
 
   it(`safe trader + safe amm, trader sell. close + open. withdraw covers deposit`, function () {
     const walletBalance = 70000
-    const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, walletBalance, false) // -5.6
+    const amount = computeAMMMaxTradeAmount(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, walletBalance, false, accountStorage1.targetLeverage.toNumber()) // -5.6
     const res = computeAMMTrade(poolStorage4, TEST_MARKET_INDEX0, accountStorage1, amount, TradeFlag.MASK_USE_TARGET_LEVERAGE)
     expect(res.tradeIsSafe).toBeTruthy()
     expect(amount.lt('-15')).toBeTruthy()
@@ -197,13 +210,13 @@ describe('computeAMMMaxTradeAmount', function () {
 
   it(`safe trader + unsafe amm(holds short), trader buy`, function () {
     const walletBalance = 0
-    const amount = computeAMMMaxTradeAmount(poolStorage3, TEST_MARKET_INDEX0, accountStorage1, walletBalance, true)
+    const amount = computeAMMMaxTradeAmount(poolStorage3, TEST_MARKET_INDEX0, accountStorage1, walletBalance, true, accountStorage1.targetLeverage.toNumber())
     expect(amount.isZero()).toBeTruthy()
   })
 
   it(`safe trader + unsafe amm(holds long), trader sell`, function () {
     const walletBalance = 0
-    const amount = computeAMMMaxTradeAmount(poolStorage6, TEST_MARKET_INDEX0, accountStorage1, walletBalance, false)
+    const amount = computeAMMMaxTradeAmount(poolStorage6, TEST_MARKET_INDEX0, accountStorage1, walletBalance, false, accountStorage1.targetLeverage.toNumber())
     expect(amount.isZero()).toBeTruthy()
   })
 })

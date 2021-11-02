@@ -4,7 +4,7 @@
   If you don't need these tools, you can remove this file to reduce the package size.
 */
 import { computeAccount, computeAMMTrade, computeAMMPrice, computeAMMOpenInterest, computePerpetualOpenInterestLimit } from './computation'
-import { BigNumberish, InvalidArgumentError, AccountStorage, LiquidityPoolStorage, AMMTradingContext, TradeFlag, Order, OrderContext } from './types'
+import { BigNumberish, InvalidArgumentError, AccountStorage, LiquidityPoolStorage, AMMTradingContext, Order, OrderContext } from './types'
 import {
   initAMMTradingContext,
   isAMMSafe,
@@ -30,6 +30,7 @@ export function computeAMMMaxTradeAmount(
   trader: AccountStorage,
   walletBalance: BigNumberish,
   isTraderBuy: boolean,
+  targetLeverage: number
 ): BigNumber {
   const normalizeWalletBalance = normalizeBigNumberish(walletBalance)
 
@@ -45,9 +46,6 @@ export function computeAMMMaxTradeAmount(
   }
   // guess = (marginBalance + walletBalance) * lev / index - position
   const traderDetails = computeAccount(p, perpetualIndex, trader)
-  if (trader.targetLeverage.isZero()) {
-    throw new InvalidArgumentError('target leverage = 0')
-  }
   let guess = traderDetails.accountComputed.marginBalance.plus(normalizeWalletBalance)
   guess = guess.times(trader.targetLeverage).div(ammContext.index)
   if (!isTraderBuy) {
@@ -64,7 +62,7 @@ export function computeAMMMaxTradeAmount(
       a = a.negated()
     }
     try {
-      const result = computeAMMTrade(p, perpetualIndex, trader, a, TradeFlag.MASK_USE_TARGET_LEVERAGE)
+      const result = computeAMMTrade(p, perpetualIndex, trader, a, targetLeverage * 100 << 7)
       if (!result.tradeIsSafe || result.adjustCollateral.gt(normalizeWalletBalance)) {
         return false
       }

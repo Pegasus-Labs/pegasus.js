@@ -215,7 +215,7 @@ export function computeTradeWithPrice(
   price: BigNumberish,
   amount: BigNumberish,
   feeRate: BigNumberish,
-  options: TradeFlag
+  options: number
 ): TradeWithPriceResult {
   const normalizedPrice = normalizeBigNumberish(price)
   const normalizedAmount = normalizeBigNumberish(amount)
@@ -244,10 +244,17 @@ export function computeTradeWithPrice(
 
   // adjust margin
   let adjustCollateral = _0
-  if ((options & TradeFlag.MASK_USE_TARGET_LEVERAGE) != 0) {
+  const oldUseTargetLeverage = (options & TradeFlag.MASK_USE_TARGET_LEVERAGE) > 0
+  const newTargetLeverage = new BigNumber(((options >> 7) & 0xfffff) / 100)
+  const newUseTargetLeverage = newTargetLeverage.gt(_0)
+  if (oldUseTargetLeverage && newUseTargetLeverage) {
+    throw new InvalidArgumentError('invalid flags')
+  }
+  if (oldUseTargetLeverage || newUseTargetLeverage) {
+    const targetLeverage = oldUseTargetLeverage ? a.targetLeverage : newTargetLeverage
     adjustCollateral = adjustMarginLeverage(
       p, perpetualIndex, afterTrade,
-      price, close, open, totalFee)
+      price, close, open, totalFee, targetLeverage)
     newAccount.cashBalance = newAccount.cashBalance.plus(adjustCollateral)
   }
 
@@ -273,12 +280,14 @@ export function adjustMarginLeverage(
   price: BigNumberish,
   close: BigNumberish,
   open: BigNumberish,
-  totalFee: BigNumberish
+  totalFee: BigNumberish,
+  leverage: BigNumberish
 ): BigNumber {
   const normalizedPrice = normalizeBigNumberish(price)
   const normalizedOpen = normalizeBigNumberish(open)
   const normalizedClose = normalizeBigNumberish(close)
   const normalizedTotalFee = normalizeBigNumberish(totalFee)
+  const normalizedLeverage = normalizeBigNumberish(leverage)
   const deltaPosition = normalizedClose.plus(normalizedOpen)
   const deltaCash = deltaPosition.times(normalizedPrice).negated()
   const position2 = afterTrade.accountStorage.positionAmount
@@ -306,11 +315,10 @@ export function adjustMarginLeverage(
   } else {
     // open only or close + open
     // when open, deposit mark * | openPosition | / lev
-    const leverage = afterTrade.accountStorage.targetLeverage
-    if (leverage.lte(_0)) {
+    if (normalizedLeverage.lte(_0)) {
       throw new InvalidArgumentError(`target leverage <= 0`)
     }
-    let openPositionMargin = normalizedOpen.abs().times(perpetual.markPrice).div(leverage)
+    let openPositionMargin = normalizedOpen.abs().times(perpetual.markPrice).div(normalizedLeverage)
     let adjustCollateral = _0
     if (position2.minus(deltaPosition).isZero() || !normalizedClose.isZero()) {
       // strategy: let new margin balance = openPositionMargin
@@ -337,7 +345,7 @@ export function computeAMMTrade(
   perpetualIndex: number,
   trader: AccountStorage,
   amount: BigNumberish, // trader's perspective
-  options: TradeFlag,
+  options: number
 ): AMMTradingResult {
   const normalizedAmount = normalizeBigNumberish(amount)
   if (normalizedAmount.isZero()) {
