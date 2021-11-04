@@ -19,7 +19,7 @@ import {
 } from './types'
 import { computeAMMInternalTrade, computeAMMPoolMargin, initAMMTradingContext } from './amm'
 import { _0, _1 } from './constants'
-import { normalizeBigNumberish, hasTheSameSign, splitAmount } from './utils'
+import { normalizeBigNumberish, hasTheSameSign, splitAmount, decodeTargetLeverage } from './utils'
 
 export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, s: AccountStorage): AccountDetails {
   const perpetual = p.perpetuals.get(perpetualIndex)
@@ -245,13 +245,22 @@ export function computeTradeWithPrice(
   // adjust margin
   let adjustCollateral = _0
   const oldUseTargetLeverage = (options & TradeFlag.MASK_USE_TARGET_LEVERAGE) > 0
-  const newTargetLeverage = new BigNumber(((options >> 7) & 0xfffff) / 100)
+  const newTargetLeverage = new BigNumber(decodeTargetLeverage(options))
   const newUseTargetLeverage = newTargetLeverage.gt(_0)
   if (oldUseTargetLeverage && newUseTargetLeverage) {
     throw new InvalidArgumentError('invalid flags')
   }
   if (oldUseTargetLeverage || newUseTargetLeverage) {
-    const targetLeverage = oldUseTargetLeverage ? a.targetLeverage : newTargetLeverage
+    const perpetual = p.perpetuals.get(perpetualIndex)
+    if (!perpetual) {
+      throw new InvalidArgumentError(`perpetual ${perpetualIndex} not found in the pool`)
+    }
+    let targetLeverage = oldUseTargetLeverage ? a.targetLeverage : newTargetLeverage
+    if (targetLeverage.isZero()) {
+      targetLeverage = perpetual.defaultTargetLeverage.value
+    }
+    const maxLeverage = _1.div(perpetual.initialMarginRate)
+    targetLeverage = BigNumber.minimum(targetLeverage, maxLeverage);
     adjustCollateral = adjustMarginLeverage(
       p, perpetualIndex, afterTrade,
       price, close, open, totalFee, targetLeverage)
@@ -340,6 +349,20 @@ export function adjustMarginLeverage(
   }
 }
 
+/* 
+ * Options is a 32 bit uint value which indicates: (from highest bit)
+ *   31               27 26                     7 6              0
+ *  +---+---+---+---+---+------------------------+----------------+
+ *  | C | M | S | T | R | Target leverage 20bits | Reserved 7bits |
+ *  +---+---+---+---+---+------------------------+----------------+
+ *    |   |   |   |   |   ` Target leverage  Fixed-point decimal with 2 decimal digits. 
+ *    |   |   |   |   |                      0 means don't automatically deposit / withdraw.
+ *    |   |   |   |   `---  Reserved
+ *    |   |   |   `-------  Take profit      Only available in brokerTrade mode.
+ *    |   |   `-----------  Stop loss        Only available in brokerTrade mode.
+ *    |   `---------------  Market order     Do not check limit price during trading.
+ *    `-------------------  Close only       Only close position during trading.
+ */
 export function computeAMMTrade(
   p: LiquidityPoolStorage,
   perpetualIndex: number,

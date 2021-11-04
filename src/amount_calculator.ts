@@ -18,11 +18,11 @@ import {
 } from './amm'
 import { BugError } from './types'
 import { DECIMALS, _0, _1, _2 } from './constants'
-import { sqrt, normalizeBigNumberish, searchMaxAmount } from './utils'
+import { sqrt, normalizeBigNumberish, searchMaxAmount, encodeTargetLeverage } from './utils'
 import BigNumber from 'bignumber.js'
 import { orderSideAvailable, splitOrdersByLimitPrice, splitOrderPerpetual, orderPerpetualAvailable } from './order'
 
-// max amount when a trader uses market-order with USE_TARGET_LEVERAGE
+// max amount when a trader uses market-order with targetLeverage, 0 means don't automatically deposit / withdraw
 // the returned amount is the trader's perspective
 export function computeAMMMaxTradeAmount(
   p: LiquidityPoolStorage,
@@ -62,7 +62,7 @@ export function computeAMMMaxTradeAmount(
       a = a.negated()
     }
     try {
-      const result = computeAMMTrade(p, perpetualIndex, trader, a, targetLeverage * 100 << 7)
+      const result = computeAMMTrade(p, perpetualIndex, trader, a, encodeTargetLeverage(targetLeverage))
       if (!result.tradeIsSafe || result.adjustCollateral.gt(normalizeWalletBalance)) {
         return false
       }

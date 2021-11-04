@@ -205,3 +205,11 @@ export function searchMaxAmount(
   }
   return left
 }
+
+export function decodeTargetLeverage(options: number): number {
+  return ((options >> 7) & 0xfffff) / 100
+}
+
+export function encodeTargetLeverage(targetLeverage: number): number {
+  return (targetLeverage * 100) << 7
+}
