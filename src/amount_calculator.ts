@@ -46,8 +46,13 @@ export function computeAMMMaxTradeAmount(
   }
   // guess = (marginBalance + walletBalance) * lev / index - position
   const traderDetails = computeAccount(p, perpetualIndex, trader)
-  let guess = traderDetails.accountComputed.marginBalance.plus(normalizeWalletBalance)
-  guess = guess.times(trader.targetLeverage).div(ammContext.index)
+  let guess
+  if (targetLeverage > 0) {
+    guess = traderDetails.accountComputed.marginBalance.plus(normalizeWalletBalance)
+    guess = guess.times(new BigNumber(targetLeverage)).div(ammContext.index)
+  } else {
+    guess = traderDetails.accountComputed.marginBalance.div(ammContext.index)
+  }
   if (!isTraderBuy) {
     guess = guess.negated()
   }
