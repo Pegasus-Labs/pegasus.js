@@ -263,7 +263,7 @@ describe('computeLimitOrderMaxTradeAmount', function () {
     const context = new Map([
       [TEST_MARKET_INDEX0, { pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage1 }]
     ])
-    const amount = computeLimitOrderMaxTradeAmount(context, walletBalance, orders, TEST_MARKET_INDEX0, limitPrice, isBuy)
+    const amount = computeLimitOrderMaxTradeAmount(context, walletBalance, orders, TEST_MARKET_INDEX0, limitPrice, isBuy, targetLeverage)
     // marginBalance = 23695.57634375, amount = -5.67
     // withdraw = 23695.57634375 - (6965 - 6900)*2.3 - 6900*2.3*0.001 = 23530.20634375
     // deposit = (5.67 - 2.3)*6900*(1/1 + 0.001) + (6965 - 6900)*(5.67 - 2.3) = 23495.3
@@ -290,7 +290,7 @@ describe('computeLimitOrderMaxTradeAmount', function () {
     const context = new Map([
       [TEST_MARKET_INDEX0, { pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage1 }]
     ])
-    const amount = computeLimitOrderMaxTradeAmount(context, walletBalance, orders, TEST_MARKET_INDEX0, limitPrice, isBuy)
+    const amount = computeLimitOrderMaxTradeAmount(context, walletBalance, orders, TEST_MARKET_INDEX0, limitPrice, isBuy, targetLeverage)
     // marginBalance = 23695.57634375, amount = -15.59
     // withdraw = 23695.57634375 - (6965 - 6900)*2.3 - 6900*2.3*0.001 = 23530.20634375
     // deposit = (15.59 - 2.3)*6900*(1/1 + 0.001) + (6965 - 6900)*(15.59 - 2.3) = 92656.551
@@ -330,7 +330,7 @@ describe('computeLimitOrderMaxTradeAmount', function () {
       amount: amount,
       targetLeverage
     })
-    const amount1 = computeLimitOrderMaxTradeAmount(context, walletBalance, orders, TEST_MARKET_INDEX0, limitPrice, isBuy)
+    const amount1 = computeLimitOrderMaxTradeAmount(context, walletBalance, orders, TEST_MARKET_INDEX0, limitPrice, isBuy, targetLeverage)
     orders = []
     orders.push({
       symbol: TEST_MARKET_INDEX0,
@@ -338,7 +338,7 @@ describe('computeLimitOrderMaxTradeAmount', function () {
       amount: amount.plus(amount),
       targetLeverage
     })
-    const amount2 = computeLimitOrderMaxTradeAmount(context, walletBalance, orders, TEST_MARKET_INDEX0, limitPrice, isBuy)
+    const amount2 = computeLimitOrderMaxTradeAmount(context, walletBalance, orders, TEST_MARKET_INDEX0, limitPrice, isBuy, targetLeverage)
     expect(amount2).toApproximate(amount1)
   })
 
@@ -350,7 +350,8 @@ describe('computeLimitOrderMaxTradeAmount', function () {
     const context = new Map([
       [TEST_MARKET_INDEX0, { pool: poolStorage1, perpetualIndex: TEST_MARKET_INDEX0, account: accountStorage1 }]
     ])
-    const amount = computeLimitOrderMaxTradeAmount(context, walletBalance, orders, TEST_MARKET_INDEX0, limitPrice, isBuy)
+    const targetLeverage = accountStorage1.targetLeverage
+    const amount = computeLimitOrderMaxTradeAmount(context, walletBalance, orders, TEST_MARKET_INDEX0, limitPrice, isBuy, targetLeverage)
     // poolMargin = 100000, maxOpenInterestRate = 100
     // maxOpenInterest = 100000 * 100 / 7000 = 1428.5
     // current oi = 10

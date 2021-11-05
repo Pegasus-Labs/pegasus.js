@@ -148,9 +148,11 @@ export function computeLimitOrderMaxTradeAmount(
   symbol: number,
   limitPrice: BigNumberish,
   isTraderBuy: boolean,
+  targetLeverage: BigNumberish,
 ): BigNumber {
   const normalizeWalletBalance = normalizeBigNumberish(walletBalance)
   const normalizeLimitPrice = normalizeBigNumberish(limitPrice)
+  const normalizeTargetLeverage = normalizeBigNumberish(targetLeverage)
 
   // get available margin other than current perpetual
   const symbol2Orders = splitOrderPerpetual(orders)
@@ -181,11 +183,11 @@ export function computeLimitOrderMaxTradeAmount(
   const openInterestLimit = computePerpetualOpenInterestLimit(currentMarketContext.pool, currentMarketContext.perpetualIndex)
 
   // guess = available * lev / index - position
-  if (trader.targetLeverage.isZero()) {
+  if (normalizeTargetLeverage.isZero()) {
     throw new InvalidArgumentError('target leverage = 0')
   }
   const traderDetails = computeAccount(currentMarketContext.pool, currentMarketContext.perpetualIndex, trader)
-  let guess = available.times(trader.targetLeverage).div(perpetual.markPrice)
+  let guess = available.times(normalizeTargetLeverage).div(perpetual.markPrice)
   if (!isTraderBuy) {
     guess = guess.negated()
   }
@@ -205,7 +207,7 @@ export function computeLimitOrderMaxTradeAmount(
     if (!isTraderBuy) {
       a = a.negated()
     }
-    const targetLeverage = trader.targetLeverage
+    const targetLeverage = normalizeTargetLeverage
     let newOrderState = orderSideAvailable(
       currentMarketContext!.pool, currentMarketContext!.perpetualIndex, preState.remainMargin,
       preState.remainPosition, preState.remainWalletBalance,
