@@ -106,5 +106,10 @@ export const CHAIN_ID_TO_UNISWAP_V3_TOOL_ADDRESS: { [chainID: number]: string } 
   56: '0x2B53c970d5Fd8c1A659c417658ECDbAcC8830a77',
 }
 
+export const CHAIN_ID_TO_TUNABLE_ORACLE_REGISTER_ADDRESS: { [chainID: number]: string } = {
+  // arb testnet
+  421611: '0xF3E1620dbaf524a7C9Ae5b90821825AadBA546D4',
+}
+
 // leave 1% when calculating withdrawal penalty if position != 0
 export const REMOVE_LIQUIDITY_MAX_SHARE_RELAX = new BigNumber('0.99')
