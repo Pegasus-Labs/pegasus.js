@@ -25,9 +25,7 @@ interface TunableOracleInterface extends ethers.utils.Interface {
     "collateral()": FunctionFragment;
     "externalOracle()": FunctionFragment;
     "externalPrice()": FunctionFragment;
-    "externalTimestamp()": FunctionFragment;
     "fineTunedPrice()": FunctionFragment;
-    "fineTunedTimestamp()": FunctionFragment;
     "fineTuner()": FunctionFragment;
     "initialize(address,address,address)": FunctionFragment;
     "isMarketClosed()": FunctionFragment;
@@ -39,7 +37,7 @@ interface TunableOracleInterface extends ethers.utils.Interface {
     "register()": FunctionFragment;
     "release()": FunctionFragment;
     "setFineTuner(address)": FunctionFragment;
-    "setPrice(int256,uint256)": FunctionFragment;
+    "setPrice(int256)": FunctionFragment;
     "underlyingAsset()": FunctionFragment;
   };
 
@@ -56,15 +54,7 @@ interface TunableOracleInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "externalTimestamp",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "fineTunedPrice",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "fineTunedTimestamp",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "fineTuner", values?: undefined): string;
@@ -104,7 +94,7 @@ interface TunableOracleInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setPrice",
-    values: [BigNumberish, BigNumberish]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "underlyingAsset",
@@ -121,15 +111,7 @@ interface TunableOracleInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "externalTimestamp",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "fineTunedPrice",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "fineTunedTimestamp",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "fineTuner", data: BytesLike): Result;
@@ -209,35 +191,31 @@ export class TunableOracle extends Contract {
     }>;
 
     externalPrice(overrides?: CallOverrides): Promise<{
+      price: BigNumber;
+      timestamp: BigNumber;
       0: BigNumber;
+      1: BigNumber;
     }>;
 
     "externalPrice()"(overrides?: CallOverrides): Promise<{
+      price: BigNumber;
+      timestamp: BigNumber;
       0: BigNumber;
-    }>;
-
-    externalTimestamp(overrides?: CallOverrides): Promise<{
-      0: BigNumber;
-    }>;
-
-    "externalTimestamp()"(overrides?: CallOverrides): Promise<{
-      0: BigNumber;
+      1: BigNumber;
     }>;
 
     fineTunedPrice(overrides?: CallOverrides): Promise<{
+      price: BigNumber;
+      timestamp: BigNumber;
       0: BigNumber;
+      1: BigNumber;
     }>;
 
     "fineTunedPrice()"(overrides?: CallOverrides): Promise<{
+      price: BigNumber;
+      timestamp: BigNumber;
       0: BigNumber;
-    }>;
-
-    fineTunedTimestamp(overrides?: CallOverrides): Promise<{
-      0: BigNumber;
-    }>;
-
-    "fineTunedTimestamp()"(overrides?: CallOverrides): Promise<{
-      0: BigNumber;
+      1: BigNumber;
     }>;
 
     fineTuner(overrides?: CallOverrides): Promise<{
@@ -318,13 +296,11 @@ export class TunableOracle extends Contract {
 
     setPrice(
       newPrice: BigNumberish,
-      newTimestamp: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "setPrice(int256,uint256)"(
+    "setPrice(int256)"(
       newPrice: BigNumberish,
-      newTimestamp: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -345,21 +321,33 @@ export class TunableOracle extends Contract {
 
   "externalOracle()"(overrides?: CallOverrides): Promise<string>;
 
-  externalPrice(overrides?: CallOverrides): Promise<BigNumber>;
+  externalPrice(overrides?: CallOverrides): Promise<{
+    price: BigNumber;
+    timestamp: BigNumber;
+    0: BigNumber;
+    1: BigNumber;
+  }>;
 
-  "externalPrice()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "externalPrice()"(overrides?: CallOverrides): Promise<{
+    price: BigNumber;
+    timestamp: BigNumber;
+    0: BigNumber;
+    1: BigNumber;
+  }>;
 
-  externalTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
+  fineTunedPrice(overrides?: CallOverrides): Promise<{
+    price: BigNumber;
+    timestamp: BigNumber;
+    0: BigNumber;
+    1: BigNumber;
+  }>;
 
-  "externalTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  fineTunedPrice(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "fineTunedPrice()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  fineTunedTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "fineTunedTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "fineTunedPrice()"(overrides?: CallOverrides): Promise<{
+    price: BigNumber;
+    timestamp: BigNumber;
+    0: BigNumber;
+    1: BigNumber;
+  }>;
 
   fineTuner(overrides?: CallOverrides): Promise<string>;
 
@@ -423,13 +411,11 @@ export class TunableOracle extends Contract {
 
   setPrice(
     newPrice: BigNumberish,
-    newTimestamp: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "setPrice(int256,uint256)"(
+  "setPrice(int256)"(
     newPrice: BigNumberish,
-    newTimestamp: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -446,21 +432,33 @@ export class TunableOracle extends Contract {
 
     "externalOracle()"(overrides?: CallOverrides): Promise<string>;
 
-    externalPrice(overrides?: CallOverrides): Promise<BigNumber>;
+    externalPrice(overrides?: CallOverrides): Promise<{
+      price: BigNumber;
+      timestamp: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    }>;
 
-    "externalPrice()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "externalPrice()"(overrides?: CallOverrides): Promise<{
+      price: BigNumber;
+      timestamp: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    }>;
 
-    externalTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
+    fineTunedPrice(overrides?: CallOverrides): Promise<{
+      price: BigNumber;
+      timestamp: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    }>;
 
-    "externalTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    fineTunedPrice(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "fineTunedPrice()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    fineTunedTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "fineTunedTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "fineTunedPrice()"(overrides?: CallOverrides): Promise<{
+      price: BigNumber;
+      timestamp: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    }>;
 
     fineTuner(overrides?: CallOverrides): Promise<string>;
 
@@ -534,15 +532,10 @@ export class TunableOracle extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setPrice(
-      newPrice: BigNumberish,
-      newTimestamp: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    setPrice(newPrice: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    "setPrice(int256,uint256)"(
+    "setPrice(int256)"(
       newPrice: BigNumberish,
-      newTimestamp: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -572,17 +565,9 @@ export class TunableOracle extends Contract {
 
     "externalPrice()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    externalTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "externalTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     fineTunedPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     "fineTunedPrice()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    fineTunedTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "fineTunedTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     fineTuner(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -644,15 +629,10 @@ export class TunableOracle extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    setPrice(
-      newPrice: BigNumberish,
-      newTimestamp: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
+    setPrice(newPrice: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
 
-    "setPrice(int256,uint256)"(
+    "setPrice(int256)"(
       newPrice: BigNumberish,
-      newTimestamp: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -676,23 +656,9 @@ export class TunableOracle extends Contract {
 
     "externalPrice()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    externalTimestamp(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "externalTimestamp()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     fineTunedPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "fineTunedPrice()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    fineTunedTimestamp(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "fineTunedTimestamp()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -758,13 +724,11 @@ export class TunableOracle extends Contract {
 
     setPrice(
       newPrice: BigNumberish,
-      newTimestamp: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "setPrice(int256,uint256)"(
+    "setPrice(int256)"(
       newPrice: BigNumberish,
-      newTimestamp: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

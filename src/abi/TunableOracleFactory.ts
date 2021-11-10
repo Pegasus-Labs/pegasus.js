@@ -86,22 +86,14 @@ const _abi = [
     name: "externalPrice",
     outputs: [
       {
-        internalType: "int256",
-        name: "",
-        type: "int256",
+        internalType: "int192",
+        name: "price",
+        type: "int192",
       },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "externalTimestamp",
-    outputs: [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
+        internalType: "uint64",
+        name: "timestamp",
+        type: "uint64",
       },
     ],
     stateMutability: "view",
@@ -112,22 +104,14 @@ const _abi = [
     name: "fineTunedPrice",
     outputs: [
       {
-        internalType: "int256",
-        name: "",
-        type: "int256",
+        internalType: "int192",
+        name: "price",
+        type: "int192",
       },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "fineTunedTimestamp",
-    outputs: [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
+        internalType: "uint64",
+        name: "timestamp",
+        type: "uint64",
       },
     ],
     stateMutability: "view",
@@ -296,11 +280,6 @@ const _abi = [
         internalType: "int256",
         name: "newPrice",
         type: "int256",
-      },
-      {
-        internalType: "uint256",
-        name: "newTimestamp",
-        type: "uint256",
       },
     ],
     name: "setPrice",
