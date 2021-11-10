@@ -34,7 +34,7 @@ interface TunableOracleRegisterInterface extends ethers.utils.Interface {
     "initialize()": FunctionFragment;
     "isAllTerminated()": FunctionFragment;
     "isTerminated(address)": FunctionFragment;
-    "newExternalOracle(address,address)": FunctionFragment;
+    "newTunableOracle(address,address)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
     "setAllTerminated()": FunctionFragment;
@@ -93,7 +93,7 @@ interface TunableOracleRegisterInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "newExternalOracle",
+    functionFragment: "newTunableOracle",
     values: [string, string]
   ): string;
   encodeFunctionData(
@@ -165,7 +165,7 @@ interface TunableOracleRegisterInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "newExternalOracle",
+    functionFragment: "newTunableOracle",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -383,13 +383,13 @@ export class TunableOracleRegister extends Contract {
       0: boolean;
     }>;
 
-    newExternalOracle(
+    newTunableOracle(
       liquidityPool: string,
       externalOracle: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "newExternalOracle(address,address)"(
+    "newTunableOracle(address,address)"(
       liquidityPool: string,
       externalOracle: string,
       overrides?: Overrides
@@ -583,13 +583,13 @@ export class TunableOracleRegister extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  newExternalOracle(
+  newTunableOracle(
     liquidityPool: string,
     externalOracle: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "newExternalOracle(address,address)"(
+  "newTunableOracle(address,address)"(
     liquidityPool: string,
     externalOracle: string,
     overrides?: Overrides
@@ -776,13 +776,13 @@ export class TunableOracleRegister extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    newExternalOracle(
+    newTunableOracle(
       liquidityPool: string,
       externalOracle: string,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    "newExternalOracle(address,address)"(
+    "newTunableOracle(address,address)"(
       liquidityPool: string,
       externalOracle: string,
       overrides?: CallOverrides
@@ -989,13 +989,13 @@ export class TunableOracleRegister extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    newExternalOracle(
+    newTunableOracle(
       liquidityPool: string,
       externalOracle: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "newExternalOracle(address,address)"(
+    "newTunableOracle(address,address)"(
       liquidityPool: string,
       externalOracle: string,
       overrides?: Overrides
@@ -1178,13 +1178,13 @@ export class TunableOracleRegister extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    newExternalOracle(
+    newTunableOracle(
       liquidityPool: string,
       externalOracle: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "newExternalOracle(address,address)"(
+    "newTunableOracle(address,address)"(
       liquidityPool: string,
       externalOracle: string,
       overrides?: Overrides

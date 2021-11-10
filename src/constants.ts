@@ -108,7 +108,7 @@ export const CHAIN_ID_TO_UNISWAP_V3_TOOL_ADDRESS: { [chainID: number]: string } 
 
 export const CHAIN_ID_TO_TUNABLE_ORACLE_REGISTER_ADDRESS: { [chainID: number]: string } = {
   // arb testnet
-  421611: '0xF3E1620dbaf524a7C9Ae5b90821825AadBA546D4',
+  421611: '0x089543a24c2B96084319072d1BB3c15ad63092D0',
 }
 
 // leave 1% when calculating withdrawal penalty if position != 0

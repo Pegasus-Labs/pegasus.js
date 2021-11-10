@@ -402,7 +402,7 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "newExternalOracle",
+    name: "newTunableOracle",
     outputs: [
       {
         internalType: "address",
