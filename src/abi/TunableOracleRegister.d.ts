@@ -38,7 +38,7 @@ interface TunableOracleRegisterInterface extends ethers.utils.Interface {
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
     "setAllTerminated()": FunctionFragment;
-    "setExternalOracle(address,uint64,uint32)": FunctionFragment;
+    "setExternalOracle(address,uint64,uint64)": FunctionFragment;
     "setTerminated(address)": FunctionFragment;
     "tunableOracles(address)": FunctionFragment;
     "upgradeTunableOracle(address)": FunctionFragment;
@@ -199,9 +199,9 @@ interface TunableOracleRegisterInterface extends ethers.utils.Interface {
     "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
     "RoleGranted(bytes32,address,address)": EventFragment;
     "RoleRevoked(bytes32,address,address)": EventFragment;
-    "SetExternalOracle(address,uint64,uint32)": EventFragment;
+    "SetExternalOracle(address,uint64,uint64)": EventFragment;
     "Terminated(address)": EventFragment;
-    "TunableOracleCreated(address)": EventFragment;
+    "TunableOracleCreated(address,address,address)": EventFragment;
     "Upgraded(address)": EventFragment;
   };
 
@@ -253,11 +253,11 @@ export class TunableOracleRegister extends Contract {
         isAdded: boolean;
         isTerminated: boolean;
         deviation: BigNumber;
-        timeout: number;
+        timeout: BigNumber;
         0: boolean;
         1: boolean;
         2: BigNumber;
-        3: number;
+        3: BigNumber;
       };
     }>;
 
@@ -269,11 +269,11 @@ export class TunableOracleRegister extends Contract {
         isAdded: boolean;
         isTerminated: boolean;
         deviation: BigNumber;
-        timeout: number;
+        timeout: BigNumber;
         0: boolean;
         1: boolean;
         2: BigNumber;
-        3: number;
+        3: BigNumber;
       };
     }>;
 
@@ -430,7 +430,7 @@ export class TunableOracleRegister extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "setExternalOracle(address,uint64,uint32)"(
+    "setExternalOracle(address,uint64,uint64)"(
       externalOracle: string,
       deviation: BigNumberish,
       timeout: BigNumberish,
@@ -487,11 +487,11 @@ export class TunableOracleRegister extends Contract {
     isAdded: boolean;
     isTerminated: boolean;
     deviation: BigNumber;
-    timeout: number;
+    timeout: BigNumber;
     0: boolean;
     1: boolean;
     2: BigNumber;
-    3: number;
+    3: BigNumber;
   }>;
 
   "getExternalOracle(address)"(
@@ -501,11 +501,11 @@ export class TunableOracleRegister extends Contract {
     isAdded: boolean;
     isTerminated: boolean;
     deviation: BigNumber;
-    timeout: number;
+    timeout: BigNumber;
     0: boolean;
     1: boolean;
     2: BigNumber;
-    3: number;
+    3: BigNumber;
   }>;
 
   getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
@@ -630,7 +630,7 @@ export class TunableOracleRegister extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "setExternalOracle(address,uint64,uint32)"(
+  "setExternalOracle(address,uint64,uint64)"(
     externalOracle: string,
     deviation: BigNumberish,
     timeout: BigNumberish,
@@ -680,11 +680,11 @@ export class TunableOracleRegister extends Contract {
       isAdded: boolean;
       isTerminated: boolean;
       deviation: BigNumber;
-      timeout: number;
+      timeout: BigNumber;
       0: boolean;
       1: boolean;
       2: BigNumber;
-      3: number;
+      3: BigNumber;
     }>;
 
     "getExternalOracle(address)"(
@@ -694,11 +694,11 @@ export class TunableOracleRegister extends Contract {
       isAdded: boolean;
       isTerminated: boolean;
       deviation: BigNumber;
-      timeout: number;
+      timeout: BigNumber;
       0: boolean;
       1: boolean;
       2: BigNumber;
-      3: number;
+      3: BigNumber;
     }>;
 
     getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
@@ -823,7 +823,7 @@ export class TunableOracleRegister extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "setExternalOracle(address,uint64,uint32)"(
+    "setExternalOracle(address,uint64,uint64)"(
       externalOracle: string,
       deviation: BigNumberish,
       timeout: BigNumberish,
@@ -887,7 +887,11 @@ export class TunableOracleRegister extends Contract {
 
     Terminated(externalOracle: string | null): EventFilter;
 
-    TunableOracleCreated(newOracle: null): EventFilter;
+    TunableOracleCreated(
+      liquidityPool: string | null,
+      externalOracle: string | null,
+      newOracle: null
+    ): EventFilter;
 
     Upgraded(implementation: string | null): EventFilter;
   };
@@ -1036,7 +1040,7 @@ export class TunableOracleRegister extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "setExternalOracle(address,uint64,uint32)"(
+    "setExternalOracle(address,uint64,uint64)"(
       externalOracle: string,
       deviation: BigNumberish,
       timeout: BigNumberish,
@@ -1225,7 +1229,7 @@ export class TunableOracleRegister extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "setExternalOracle(address,uint64,uint32)"(
+    "setExternalOracle(address,uint64,uint64)"(
       externalOracle: string,
       deviation: BigNumberish,
       timeout: BigNumberish,

@@ -119,9 +119,9 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: "uint32",
+        internalType: "uint64",
         name: "timeout",
-        type: "uint32",
+        type: "uint64",
       },
     ],
     name: "SetExternalOracle",
@@ -143,6 +143,18 @@ const _abi = [
   {
     anonymous: false,
     inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "liquidityPool",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "externalOracle",
+        type: "address",
+      },
       {
         indexed: false,
         internalType: "address",
@@ -220,9 +232,9 @@ const _abi = [
             type: "uint64",
           },
           {
-            internalType: "uint32",
+            internalType: "uint64",
             name: "timeout",
-            type: "uint32",
+            type: "uint64",
           },
         ],
         internalType: "struct TunableOracleRegister.ExternalOracle",
@@ -469,9 +481,9 @@ const _abi = [
         type: "uint64",
       },
       {
-        internalType: "uint32",
+        internalType: "uint64",
         name: "timeout",
-        type: "uint32",
+        type: "uint64",
       },
     ],
     name: "setExternalOracle",
