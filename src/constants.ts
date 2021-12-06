@@ -19,6 +19,8 @@ export const CHAIN_ID_TO_READER_ADDRESS: { [chainID: number]: string } = {
   42161: '0xf7D17C801b3Df2c818AB5aA07e9108589241B8a5',
   // bsc
   56: '0x942Df696cd1995ba2eAB710D168B2D9CeE53B52c',
+  // clover test
+  1023: '0x0f3a50449684f9e9D28Eb8F352DdFAb32c50E0B2',
 }
 
 export const CHAIN_ID_TO_POOL_CREATOR_ADDRESS: { [chainID: number]: string } = {
@@ -32,6 +34,8 @@ export const CHAIN_ID_TO_POOL_CREATOR_ADDRESS: { [chainID: number]: string } = {
   42161: '0xA017B813652b93a0aF2887913EFCBB4ab250CE65',
   // bsc
   56: '0xfB4cD1bf5C5919A29fb894c8ddC4A69A36f5Ec87',
+  // clover test
+  1023: '0x6266499e608419bc0A37D5e665EbbE2BCE5EF329',
 }
 
 export const CHAIN_ID_TO_BROKER_ADDRESS: { [chainID: number]: string } = {
@@ -45,6 +49,8 @@ export const CHAIN_ID_TO_BROKER_ADDRESS: { [chainID: number]: string } = {
   42161: '0xf985cA33B8b787599DE77E4Ccf2d0Ecbf27d87d9',
   // bsc
   56: '0xbCCF6C081d9aa6E8B85602C04e66c5405D9be4A7',
+  // clover test
+  1023: '0x4f2A265c77304c68F786da5b533e1B62D30d377a',
 }
 
 export const CHAIN_ID_TO_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: number]: string } = {
@@ -58,6 +64,8 @@ export const CHAIN_ID_TO_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: number]: str
   42161: '0xC3E272F76b3740C2AcF8e5272CbEF06D70e14FF3',
   // bsc
   56: '0xa48823Ff78e0D4D73D90b0Bf4B22Bf8a6EdBbb57',
+  // clover test
+  1023: '0x53C1732234deee12ADAdd047eec459130Bf6bCdC',
 }
 
 export const CHAIN_ID_SYMBOL_SERVICE_ADDRESS: { [chainID: number]: string } = {
@@ -71,6 +79,8 @@ export const CHAIN_ID_SYMBOL_SERVICE_ADDRESS: { [chainID: number]: string } = {
   42161: '0x2842c57C2736BB459BdAc97bAA22596e71f05811',
   // bsc
   56: '0x39f632208bb924f5c4c6253b042Cd056eca3710D',
+  // clover test
+  1023: '0xcEA944502E8092b95AF642F5d053298fb51A1790',
 }
 
 export const CHAIN_ID_INVERSE_SERVICE_ADDRESS: { [chainID: number]: string } = {
@@ -84,6 +94,8 @@ export const CHAIN_ID_INVERSE_SERVICE_ADDRESS: { [chainID: number]: string } = {
   42161: '0x129AD040Bd127c00d6De9051b3CfE9F3E36453D3',
   // bsc
   56: '0x7C55F0CB0DFB6E546a57FE728c8a4bf244789992',
+  // clover test
+  1023: '0x5232CA8857D797d66ff1924111D67947D6E02F3A',
 }
 
 export const CHAIN_ID_TO_UNISWAP_V3_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: number]: string } = {
@@ -95,6 +107,8 @@ export const CHAIN_ID_TO_UNISWAP_V3_ORACLE_ROUTER_CREATOR_ADDRESS: { [chainID: n
   42161: '0xCEda10b4d3bdE429DdA3A6daB87b38360313CBdB',
   // bsc
   56: '0x9734Bf8700C5A403CE3B96a4eC034e7CeDFdf08d',
+  // clover test
+  1023: '0x1DF507c4974c3D7537905C295C04EAdA6Ea20C22',
 }
 
 export const CHAIN_ID_TO_UNISWAP_V3_TOOL_ADDRESS: { [chainID: number]: string } = {
@@ -104,6 +118,8 @@ export const CHAIN_ID_TO_UNISWAP_V3_TOOL_ADDRESS: { [chainID: number]: string } 
   42161: '0xE2Dd46dD043aaD539d156fEEC2448547c1466A04',
   // bsc
   56: '0x2B53c970d5Fd8c1A659c417658ECDbAcC8830a77',
+  // clover test
+  1023: '0x21C2F99b12a9AaF42aD4D8c438699906F8338629',
 }
 
 export const CHAIN_ID_TO_TUNABLE_ORACLE_REGISTER_ADDRESS: { [chainID: number]: string } = {
