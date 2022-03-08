@@ -18,10 +18,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mcdexio/mai3.js"
+    "url": "https://github.com/Pegasus-Labs/pegasus.js"
   },
   "bugs": {
-    "url": "https://github.com/mcdexio/mai3.js/issues"
+    "url": "https://github.com/Pegasus-Labs/pegasus.js/issues"
   },
   "license": "MIT",
   "devDependencies": {

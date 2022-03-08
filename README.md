@@ -10,12 +10,12 @@ npm install @mcdex/mai3.js
 
 1. Go to trade.pegasusfinance.xyz to open some positions.
 
-2. Connect to Arbitrum Testnet:
+2. Connect to Optimism Testnet:
 
 ```js
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-const provider = new JsonRpcProvider('https://rinkeby.arbitrum.io/rpc')
+const provider = new JsonRpcProvider('https://kovan.optimism.io/rpc')
 const chainId = (await provider.getNetwork()).chainId
 ```
 
