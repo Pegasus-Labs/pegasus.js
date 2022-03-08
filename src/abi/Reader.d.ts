@@ -506,6 +506,7 @@ export class Reader extends Contract {
         isMaintenanceMarginSafe: boolean;
         isMarginSafe: boolean;
         targetLeverage: BigNumber;
+        entryValue: BigNumber;
         0: BigNumber;
         1: BigNumber;
         2: BigNumber;
@@ -515,6 +516,7 @@ export class Reader extends Contract {
         6: boolean;
         7: boolean;
         8: BigNumber;
+        9: BigNumber;
       };
       0: boolean;
       1: {
@@ -527,6 +529,7 @@ export class Reader extends Contract {
         isMaintenanceMarginSafe: boolean;
         isMarginSafe: boolean;
         targetLeverage: BigNumber;
+        entryValue: BigNumber;
         0: BigNumber;
         1: BigNumber;
         2: BigNumber;
@@ -536,6 +539,7 @@ export class Reader extends Contract {
         6: boolean;
         7: boolean;
         8: BigNumber;
+        9: BigNumber;
       };
     }>;
 
@@ -556,6 +560,7 @@ export class Reader extends Contract {
         isMaintenanceMarginSafe: boolean;
         isMarginSafe: boolean;
         targetLeverage: BigNumber;
+        entryValue: BigNumber;
         0: BigNumber;
         1: BigNumber;
         2: BigNumber;
@@ -565,6 +570,7 @@ export class Reader extends Contract {
         6: boolean;
         7: boolean;
         8: BigNumber;
+        9: BigNumber;
       };
       0: boolean;
       1: {
@@ -577,6 +583,7 @@ export class Reader extends Contract {
         isMaintenanceMarginSafe: boolean;
         isMarginSafe: boolean;
         targetLeverage: BigNumber;
+        entryValue: BigNumber;
         0: BigNumber;
         1: BigNumber;
         2: BigNumber;
@@ -586,6 +593,7 @@ export class Reader extends Contract {
         6: boolean;
         7: boolean;
         8: BigNumber;
+        9: BigNumber;
       };
     }>;
 
@@ -804,6 +812,14 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -813,9 +829,18 @@ export class Reader extends Contract {
           ammCashBalance: BigNumber;
           ammPositionAmount: BigNumber;
           isInversePerpetual: boolean;
+          entryValue: BigNumber;
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -866,6 +891,7 @@ export class Reader extends Contract {
           7: BigNumber;
           8: BigNumber;
           9: boolean;
+          10: BigNumber;
         }[];
         isAMMMaintenanceSafe: boolean;
         0: boolean;
@@ -918,6 +944,14 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -927,9 +961,18 @@ export class Reader extends Contract {
           ammCashBalance: BigNumber;
           ammPositionAmount: BigNumber;
           isInversePerpetual: boolean;
+          entryValue: BigNumber;
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -980,6 +1023,7 @@ export class Reader extends Contract {
           7: BigNumber;
           8: BigNumber;
           9: boolean;
+          10: BigNumber;
         }[];
         6: boolean;
       };
@@ -1042,6 +1086,14 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -1051,9 +1103,18 @@ export class Reader extends Contract {
           ammCashBalance: BigNumber;
           ammPositionAmount: BigNumber;
           isInversePerpetual: boolean;
+          entryValue: BigNumber;
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -1104,6 +1165,7 @@ export class Reader extends Contract {
           7: BigNumber;
           8: BigNumber;
           9: boolean;
+          10: BigNumber;
         }[];
         isAMMMaintenanceSafe: boolean;
         0: boolean;
@@ -1156,6 +1218,14 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -1165,9 +1235,18 @@ export class Reader extends Contract {
           ammCashBalance: BigNumber;
           ammPositionAmount: BigNumber;
           isInversePerpetual: boolean;
+          entryValue: BigNumber;
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -1218,6 +1297,7 @@ export class Reader extends Contract {
           7: BigNumber;
           8: BigNumber;
           9: boolean;
+          10: BigNumber;
         }[];
         6: boolean;
       };
@@ -1286,6 +1366,14 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -1295,9 +1383,18 @@ export class Reader extends Contract {
           ammCashBalance: BigNumber;
           ammPositionAmount: BigNumber;
           isInversePerpetual: boolean;
+          entryValue: BigNumber;
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -1348,6 +1445,7 @@ export class Reader extends Contract {
           7: BigNumber;
           8: BigNumber;
           9: boolean;
+          10: BigNumber;
         }[];
         isAMMMaintenanceSafe: boolean;
         0: boolean;
@@ -1400,6 +1498,14 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -1409,9 +1515,18 @@ export class Reader extends Contract {
           ammCashBalance: BigNumber;
           ammPositionAmount: BigNumber;
           isInversePerpetual: boolean;
+          entryValue: BigNumber;
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -1462,6 +1577,7 @@ export class Reader extends Contract {
           7: BigNumber;
           8: BigNumber;
           9: boolean;
+          10: BigNumber;
         }[];
         6: boolean;
       };
@@ -1524,6 +1640,14 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -1533,9 +1657,18 @@ export class Reader extends Contract {
           ammCashBalance: BigNumber;
           ammPositionAmount: BigNumber;
           isInversePerpetual: boolean;
+          entryValue: BigNumber;
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -1586,6 +1719,7 @@ export class Reader extends Contract {
           7: BigNumber;
           8: BigNumber;
           9: boolean;
+          10: BigNumber;
         }[];
         isAMMMaintenanceSafe: boolean;
         0: boolean;
@@ -1638,6 +1772,14 @@ export class Reader extends Contract {
             BigNumber,
             BigNumber,
             BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber
           ];
           symbol: BigNumber;
@@ -1647,9 +1789,18 @@ export class Reader extends Contract {
           ammCashBalance: BigNumber;
           ammPositionAmount: BigNumber;
           isInversePerpetual: boolean;
+          entryValue: BigNumber;
           0: number;
           1: string;
           2: [
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
@@ -1700,6 +1851,7 @@ export class Reader extends Contract {
           7: BigNumber;
           8: BigNumber;
           9: boolean;
+          10: BigNumber;
         }[];
         6: boolean;
       };

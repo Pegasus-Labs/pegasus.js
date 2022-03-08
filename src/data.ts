@@ -170,6 +170,8 @@ export async function getLiquidityPool(reader: Reader, liquidityPoolAddress: str
       indexPrice: parsePerpNums(2),
       fundingRate: parsePerpNums(3),
       unitAccumulativeFunding: parsePerpNums(4),
+      unitAccumulativeShortFunding: parsePerpNums(48),
+      unitAccumulativeLongFunding: parsePerpNums(49),
 
       initialMarginRate: parsePerpNums(5),
       maintenanceMarginRate: parsePerpNums(6),
@@ -233,7 +235,38 @@ export async function getLiquidityPool(reader: Reader, liquidityPoolAddress: str
       isTerminated: m.isTerminated,
       ammCashBalance: normalizeBigNumberish(m.ammCashBalance).shiftedBy(-DECIMALS),
       ammPositionAmount: normalizeBigNumberish(m.ammPositionAmount).shiftedBy(-DECIMALS),
+      entryValue: m.entryValue ? normalizeBigNumberish(m.entryValue).shiftedBy(-DECIMALS) : null,
       isInversePerpetual: m.isInversePerpetual,
+      openSlippageLongPenaltyFactor: {
+        value: parsePerpNums(42),
+        minValue: new BigNumber('0'),
+        maxValue: new BigNumber('0')
+      },
+      openSlippageShortPenaltyFactor: {
+        value: parsePerpNums(43),
+        minValue: new BigNumber('0'),
+        maxValue: new BigNumber('0')
+      },
+      meanRate: {
+        value: parsePerpNums(44),
+        minValue: new BigNumber('0'),
+        maxValue: new BigNumber('0')
+      },
+      maxRate: {
+        value: parsePerpNums(45),
+        minValue: new BigNumber('0'),
+        maxValue: new BigNumber('0')
+      },
+      longMeanRevertFactor: {
+        value: parsePerpNums(46),
+        minValue: new BigNumber('0'),
+        maxValue: new BigNumber('0')
+      },
+      shortMeanRevertFactor: {
+        value: parsePerpNums(47),
+        minValue: new BigNumber('0'),
+        maxValue: new BigNumber('0')
+      }
     })
   } // foreach perpetual
   return ret
@@ -256,7 +289,7 @@ export async function getAccountStorage(
     cashBalance: normalizeBigNumberish(accountStorage.cash).shiftedBy(-DECIMALS),
     positionAmount: normalizeBigNumberish(accountStorage.position).shiftedBy(-DECIMALS),
     targetLeverage: normalizeBigNumberish(accountStorage.targetLeverage).shiftedBy(-DECIMALS),
-    entryValue: null,
+    entryValue: normalizeBigNumberish(accountStorage.entryValue).shiftedBy(-DECIMALS),
     entryFunding: null
   }
 }

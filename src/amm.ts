@@ -4,9 +4,82 @@
 
 import { BigNumber } from 'bignumber.js'
 import { DECIMALS, REMOVE_LIQUIDITY_MAX_SHARE_RELAX, _0, _1, _2 } from './constants'
-import { LiquidityPoolStorage, AMMTradingContext, PerpetualState, BigNumberish } from './types'
+import { 
+  LiquidityPoolStorage, AMMTradingContext, PerpetualState,
+  BigNumberish, PerpetualStorage, AccountStorage
+} from './types'
 import { sqrt, splitAmount, hasTheSameSign, normalizeBigNumberish } from './utils'
 import { InsufficientLiquidityError, BugError, InvalidArgumentError } from './types'
+
+
+export function getFundingWithMeanPenalty(
+  perpetual: PerpetualStorage, accountPosition: BigNumber, position: BigNumber,
+  accountEntryValue: BigNumber | null
+) {
+  let funding = position.times(perpetual.unitAccumulativeFunding)
+  if (!accountEntryValue || accountPosition == _0) {
+      return funding;
+  }
+  let entryValAdj = accountEntryValue.times(position).div(accountPosition).abs();
+  let meanAdj = perpetual.meanRate.value.times(position).abs();
+  let penalty = _0;
+  if (entryValAdj.lt(meanAdj)) {
+      let meanRevertPenalty = perpetual.longMeanRevertFactor.value.times(
+          meanAdj.minus(entryValAdj)
+      );
+      penalty = meanRevertPenalty.times(perpetual.unitAccumulativeLongFunding);
+      if (position.isNegative()) {
+        penalty = penalty.negated()
+      }
+  } else if (entryValAdj.gt(meanAdj)) {
+      let meanRevertPenalty = perpetual.shortMeanRevertFactor.value.times(
+          entryValAdj.minus(meanAdj)
+      );
+      penalty = meanRevertPenalty.times(perpetual.unitAccumulativeShortFunding);
+      if (position.isNegative()) {
+        penalty = penalty.negated()
+      }
+  }
+  funding = funding.plus(penalty);
+  return funding;
+}
+
+export function getAMMInitFundingWPenalty(
+  perpetual: PerpetualStorage, trader: AccountStorage, deltaPosition: BigNumber,
+  tradingPrice: BigNumber
+) {
+  const { close, open } = splitAmount(
+    trader.positionAmount, deltaPosition.negated()
+  )
+  let fundingToAdd = _0
+  let newEntryValue = perpetual.entryValue || _0
+  if (!close.isZero()) {
+    let closedValue = (
+        trader.entryValue
+        .times(close)
+        .dividedBy(trader.positionAmount)
+    );
+    newEntryValue = newEntryValue.minus(closedValue)
+    fundingToAdd = fundingToAdd.plus(
+      getFundingWithMeanPenalty(
+          perpetual, trader.positionAmount, close.negated(), trader.entryValue
+      )
+    )
+  }
+  if (!open.isZero()) {
+    newEntryValue = newEntryValue.plus(
+      tradingPrice.times(open).negated()
+    )
+    fundingToAdd = fundingToAdd.plus(
+      getFundingWithMeanPenalty(
+          perpetual, open.negated(), open.negated(),
+          tradingPrice.times(open).abs()
+      )
+    )
+  }
+  return { fundingToAdd, newEntryValue }
+}
+
 
 export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: number): AMMTradingContext {
   if (perpetualIndex) {
@@ -19,6 +92,10 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
   let position1 = _0
   let halfSpread = _0
   let openSlippageFactor = _0
+  let openSlippageShortPenaltyFactor = _0
+  let openSlippageLongPenaltyFactor = _0
+  let maxRate = _0
+  let meanRate = _0
   let closeSlippageFactor = _0
   let fundingRateFactor = _0
   let fundingRateLimit = _0
@@ -42,12 +119,21 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
       throw new InvalidArgumentError('index price must be positive')
     }
     cash = cash.plus(perpetual.ammCashBalance)
-    cash = cash.minus(perpetual.unitAccumulativeFunding.times(perpetual.ammPositionAmount))
+    cash = cash.minus(
+      getFundingWithMeanPenalty(
+        perpetual, perpetual.ammPositionAmount, perpetual.ammPositionAmount,
+        perpetual.entryValue
+      )
+    )
     if (id === perpetualIndex) {
       index = perpetual.indexPrice
       position1 = perpetual.ammPositionAmount
       halfSpread = perpetual.halfSpread.value
       openSlippageFactor = perpetual.openSlippageFactor.value
+      openSlippageShortPenaltyFactor = perpetual.openSlippageShortPenaltyFactor.value
+      openSlippageLongPenaltyFactor = perpetual.openSlippageLongPenaltyFactor.value
+      meanRate = perpetual.meanRate.value
+      maxRate = perpetual.maxRate.value
       closeSlippageFactor = perpetual.closeSlippageFactor.value
       fundingRateFactor = perpetual.fundingRateFactor.value
       fundingRateLimit = perpetual.fundingRateLimit.value
@@ -66,6 +152,10 @@ export function initAMMTradingContext(p: LiquidityPoolStorage, perpetualIndex?: 
     position1,
     halfSpread,
     openSlippageFactor,
+    openSlippageShortPenaltyFactor,
+    openSlippageLongPenaltyFactor,
+    meanRate,
+    maxRate,
     closeSlippageFactor,
     fundingRateFactor,
     fundingRateLimit,
@@ -192,6 +282,22 @@ function appendSpread(context: AMMTradingContext, midPrice: BigNumber, isAMMBuy:
   }
 }
 
+export function computeOpenSlippageFactor(context: AMMTradingContext, isAMMBuy: boolean): BigNumber {
+  let beta = context.openSlippageFactor
+  let index = context.index
+  let dist = _0
+  if (index.lt(context.meanRate) && !isAMMBuy) {
+    dist = index.minus(context.meanRate).abs()
+    dist = dist.div(context.meanRate)
+    beta = beta.times(_1.plus(context.openSlippageLongPenaltyFactor.times(dist)))
+  } else if (index.gt(context.meanRate) && isAMMBuy) {
+    dist = index.minus(context.meanRate).abs()
+    dist = dist.div(context.maxRate.minus(context.meanRate))
+    beta = beta.times(_1.plus(context.openSlippageShortPenaltyFactor.times(dist)))
+  }
+  return beta
+}
+
 // get the price if ΔN -> 0. lim_(ΔN -> 0) (computeDeltaMargin / (ΔN))
 // this function implements all possible situations include:
 // * limit by α. this is P_{best} in the paper
@@ -200,7 +306,7 @@ function appendSpread(context: AMMTradingContext, midPrice: BigNumber, isAMMBuy:
 export function computeBestAskBidPrice(p: LiquidityPoolStorage, perpetualIndex: number, isAMMBuy: boolean): BigNumber {
   let context = initAMMTradingContext(p, perpetualIndex)
   let isAMMClosing = false
-  let beta = context.openSlippageFactor
+  let beta = computeOpenSlippageFactor(context, isAMMBuy)
   if ((context.position1.gt(_0) && !isAMMBuy) || (context.position1.lt(_0) && isAMMBuy)) {
     isAMMClosing = true
     beta = context.closeSlippageFactor
@@ -280,21 +386,21 @@ export function computeAMMInternalClose(context: AMMTradingContext, amount: BigN
 
 // the amount is the AMM's perspective
 export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNumber): AMMTradingContext {
-  const beta = context.openSlippageFactor
+  const beta = computeOpenSlippageFactor(context, amount.gt(0))
   let ret: AMMTradingContext = { ...context }
   const position2 = ret.position1.plus(amount)
 
   // pre-check
-  if (!isAMMSafe(ret, beta)) {
+  if (!isAMMSafe(ret, context.openSlippageFactor)) {
     throw new InsufficientLiquidityError(`AMM can not open position anymore: unsafe before trade`)
   }
-  ret = computeAMMPoolMargin(ret, beta)
+  ret = computeAMMPoolMargin(ret, context.openSlippageFactor)
   if (ret.poolMargin.lte(_0)) {
     throw new InsufficientLiquidityError(`AMM can not open position anymore: pool margin must be positive`)
   }
   if (amount.gt(_0)) {
     // 0.....position2.....safePosition2
-    const safePosition2 = computeAMMSafeLongPositionAmount(ret, beta)
+    const safePosition2 = computeAMMSafeLongPositionAmount(ret, context.openSlippageFactor)
     if (position2.gt(safePosition2)) {
       throw new InsufficientLiquidityError(
         `AMM can not open position anymore: position too large after trade ${position2.toFixed()} > ${safePosition2.toFixed()}`
@@ -302,7 +408,7 @@ export function computeAMMInternalOpen(context: AMMTradingContext, amount: BigNu
     }
   } else {
     // safePosition2.....position2.....0
-    const safePosition2 = computeAMMSafeShortPositionAmount(ret, beta)
+    const safePosition2 = computeAMMSafeShortPositionAmount(ret, context.openSlippageFactor)
     if (position2.lt(safePosition2)) {
       throw new InsufficientLiquidityError(
         `AMM can not open position anymore: position too large after trade ${position2.toFixed()} < ${safePosition2.toFixed()}`

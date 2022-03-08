@@ -119,6 +119,8 @@ export interface PerpetualStorage {
   indexPrice: BigNumber
   fundingRate: BigNumber
   unitAccumulativeFunding: BigNumber // committed funding payment
+  unitAccumulativeShortFunding: BigNumber
+  unitAccumulativeLongFunding: BigNumber
 
   initialMarginRate: BigNumber
   maintenanceMarginRate: BigNumber
@@ -133,9 +135,15 @@ export interface PerpetualStorage {
 
   halfSpread: Option // α
   openSlippageFactor: Option // β1
+  openSlippageLongPenaltyFactor: Option
+  openSlippageShortPenaltyFactor: Option
+  meanRate: Option
+  maxRate: Option
   closeSlippageFactor: Option // β2
   fundingRateFactor: Option // γ
   fundingRateLimit: Option // Γ
+  longMeanRevertFactor: Option
+  shortMeanRevertFactor: Option
   ammMaxLeverage: Option // λ
   maxClosePriceDiscount: Option // δ
   defaultTargetLeverage: Option
@@ -148,6 +156,7 @@ export interface PerpetualStorage {
   ammCashBalance: BigNumber
   ammPositionAmount: BigNumber
   isInversePerpetual: boolean
+  entryValue: BigNumber | null
 }
 
 export interface AccountStorage {
@@ -156,7 +165,7 @@ export interface AccountStorage {
   targetLeverage: BigNumber
 
   // read from the graph
-  entryValue: BigNumber | null
+  entryValue: BigNumber
   entryFunding: BigNumber | null
 }
 
@@ -203,6 +212,10 @@ export interface AMMTradingContext {
   position1: BigNumber // N_m
   halfSpread: BigNumber // α_m
   openSlippageFactor: BigNumber // β1_m
+  openSlippageLongPenaltyFactor: BigNumber
+  openSlippageShortPenaltyFactor: BigNumber
+  meanRate: BigNumber
+  maxRate: BigNumber
   closeSlippageFactor: BigNumber // β2_m
   fundingRateFactor: BigNumber // γ_m
   fundingRateLimit: BigNumber // Γ_m

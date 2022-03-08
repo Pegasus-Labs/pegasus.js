@@ -14,7 +14,8 @@ import {
   computeAMMInternalOpen,
   computeAMMInternalClose,
   computeBestAskBidPriceIfSafe,
-  computeBestAskBidPriceIfUnsafe
+  computeBestAskBidPriceIfUnsafe,
+  computeOpenSlippageFactor
 } from './amm'
 import { BugError } from './types'
 import { DECIMALS, _0, _1, _2 } from './constants'
@@ -129,6 +130,7 @@ export function computeAMMTradeAmountByMargin(
       return res.deltaAMMMargin.abs().lte(normalizeDeltaMargin.abs())
     } catch (e) {
       // typically means a is too large
+      console.log(e)
       return false
     }
   }
@@ -343,7 +345,8 @@ export function computeAMMOpenAmountWithPrice(
 
   // case 2: limit by spread
   if (context.bestAskBidPrice === null) {
-    context.bestAskBidPrice = computeBestAskBidPriceIfSafe(context, context.openSlippageFactor, isAMMBuy)
+    context.bestAskBidPrice = computeBestAskBidPriceIfSafe(
+      context, computeOpenSlippageFactor(context, isAMMBuy), isAMMBuy)
   }
   if (isAMMBuy) {
     if (limitPrice.gt(context.bestAskBidPrice)) {
@@ -358,12 +361,12 @@ export function computeAMMOpenAmountWithPrice(
   // case 3: limit by safePos
   let safePos2: BigNumber
   if (isAMMBuy) {
-    safePos2 = computeAMMSafeLongPositionAmount(context, context.openSlippageFactor)
+    safePos2 = computeAMMSafeLongPositionAmount(context, computeOpenSlippageFactor(context, isAMMBuy))
     if (safePos2.lt(context.position1)) {
       return _0
     }
   } else {
-    safePos2 = computeAMMSafeShortPositionAmount(context, context.openSlippageFactor)
+    safePos2 = computeAMMSafeShortPositionAmount(context, computeOpenSlippageFactor(context, isAMMBuy))
     if (safePos2.gt(context.position1)) {
       return _0
     }
@@ -382,7 +385,8 @@ export function computeAMMOpenAmountWithPrice(
   }
 
   // case 3: inverse function of price function
-  const amount = computeAMMInverseVWAP(context, limitPrice, context.openSlippageFactor, isAMMBuy)
+  const amount = computeAMMInverseVWAP(
+    context, limitPrice, computeOpenSlippageFactor(context, isAMMBuy), isAMMBuy)
   if ((isAMMBuy && amount.gt(_0)) /* long open success */ || (!isAMMBuy && amount.lt(_0)) /* short open success */) {
     return amount
   }

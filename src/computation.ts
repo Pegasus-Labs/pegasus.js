@@ -17,9 +17,13 @@ import {
   TradeWithPriceResult,
   OpenInterestExceededError,
 } from './types'
-import { computeAMMInternalTrade, computeAMMPoolMargin, initAMMTradingContext } from './amm'
+import { 
+  computeAMMInternalTrade, computeAMMPoolMargin, initAMMTradingContext,
+  getFundingWithMeanPenalty, getAMMInitFundingWPenalty
+} from './amm'
 import { _0, _1 } from './constants'
 import { normalizeBigNumberish, hasTheSameSign, splitAmount, decodeTargetLeverage } from './utils'
+
 
 export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, s: AccountStorage): AccountDetails {
   const perpetual = p.perpetuals.get(perpetualIndex)
@@ -33,7 +37,9 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
   if (!s.positionAmount.isZero()) {
     reservedCash = perpetual.keeperGasReward
   }
-  const availableCashBalance = s.cashBalance.minus(s.positionAmount.times(perpetual.unitAccumulativeFunding))
+  const availableCashBalance = s.cashBalance.minus(
+    getFundingWithMeanPenalty(perpetual, s.positionAmount, s.positionAmount, s.entryValue)
+  )
   const marginBalance = availableCashBalance.plus(perpetual.markPrice.times(s.positionAmount))
   const availableMargin = marginBalance.minus(positionMargin).minus(reservedCash)
   const withdrawableBalance = BigNumber.maximum(_0, availableMargin)
@@ -54,17 +60,23 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
       : new BigNumber('Infinity')
   }
   let fundingPNL: BigNumber | null = null
-  if (s.entryFunding) {
-    fundingPNL = s.entryFunding.minus(s.positionAmount.times(perpetual.unitAccumulativeFunding))
-  }
-
   let entryPrice: BigNumber | null = null
   let pnl1: BigNumber | null = null
   let pnl2: BigNumber | null = null
   let roe: BigNumber | null = null
+
   if (s.entryValue) {
     entryPrice = s.positionAmount.isZero() ? _0 : s.entryValue.div(s.positionAmount)
   }
+
+  if (s.entryFunding) {
+    fundingPNL = s.entryFunding.minus(
+      getFundingWithMeanPenalty(
+        perpetual, s.positionAmount, s.positionAmount, s.entryValue
+      )
+    )
+  }
+
   if (s.entryValue) {
     pnl1 = perpetual.markPrice.times(s.positionAmount).minus(s.entryValue)
   }
@@ -143,10 +155,12 @@ export function computeDecreasePosition(
     throw new InvalidArgumentError(`position size |${oldAmount.toFixed()}| is less than amount |${amount.toFixed()}|`)
   }
   cashBalance = cashBalance.minus(price.times(amount))
-  cashBalance = cashBalance.plus(perpetual.unitAccumulativeFunding.times(amount))
+  cashBalance = cashBalance.plus(
+    getFundingWithMeanPenalty(perpetual, a.positionAmount, amount, a.entryValue)
+  )
   const positionAmount = oldAmount.plus(amount)
   entryFunding = entryFunding ? entryFunding.times(positionAmount).div(oldAmount) : null
-  entryValue = entryValue ? entryValue.times(positionAmount).div(oldAmount) : null
+  entryValue = entryValue.times(positionAmount).div(oldAmount)
   return { cashBalance, entryValue, positionAmount, entryFunding, targetLeverage: a.targetLeverage }
 }
 
@@ -174,10 +188,12 @@ export function computeIncreasePosition(
   if (!oldAmount.isZero() && !hasTheSameSign(oldAmount, amount)) {
     throw new InvalidArgumentError(`bad increase size ${amount.toFixed()} where position is ${oldAmount.toFixed()}`)
   }
+  entryValue = entryValue.plus(price.times(amount))
   cashBalance = cashBalance.minus(price.times(amount))
-  cashBalance = cashBalance.plus(perpetual.unitAccumulativeFunding.times(amount))
-  entryValue = entryValue ? entryValue.plus(price.times(amount)) : null
-  entryFunding = entryFunding ? entryFunding.plus(perpetual.unitAccumulativeFunding.times(amount)) : null
+  cashBalance = cashBalance.plus(
+    getFundingWithMeanPenalty(perpetual, amount, amount, price.times(amount))
+  )
+  entryFunding = entryFunding ? entryFunding.plus(getFundingWithMeanPenalty(perpetual, a.positionAmount, amount, a.entryValue)) : null
   const positionAmount = oldAmount.plus(amount)
   return { cashBalance, entryValue, positionAmount, entryFunding, targetLeverage: a.targetLeverage }
 }
@@ -398,15 +414,24 @@ export function computeAMMTrade(
     perpetual.lpFeeRate.plus(p.vaultFeeRate).plus(perpetual.operatorFeeRate),
     options
   )
-
   // fee
   const totalFeeRate = perpetual.lpFeeRate.plus(p.vaultFeeRate).plus(perpetual.operatorFeeRate)
   const lpFee = totalFeeRate.isZero() ? _0 : traderResult.totalFee.times(perpetual.lpFeeRate).div(totalFeeRate)
 
   // new AMM
+  const {newEntryValue, fundingToAdd} = getAMMInitFundingWPenalty(
+        perpetual, trader, deltaAMMAmount,
+        tradingPrice.abs().negated()
+  )
   const newPoolCashBalance = p.poolCashBalance
     .minus(deltaAMMAmount.times(tradingPrice))
-    .plus(perpetual.unitAccumulativeFunding.times(deltaAMMAmount))
+    .plus(
+      //       getFundingWithMeanPenalty(
+      //   perpetual, deltaAMMAmount, deltaAMMAmount,
+      //   tradingPrice.times(deltaAMMAmount).abs()
+      // ))
+      fundingToAdd)
+      // perpetual.unitAccumulativeFunding.times(deltaAMMAmount))
     .plus(lpFee)
   const newOpenInterest = computeAMMOpenInterest(p, perpetualIndex, trader, normalizedAmount)
   const newPool: LiquidityPoolStorage = {
@@ -418,9 +443,9 @@ export function computeAMMTrade(
   newPool.perpetuals.set(perpetualIndex, {
     ...perpetual,
     ammPositionAmount: perpetual.ammPositionAmount.plus(deltaAMMAmount),
+    entryValue: newEntryValue,
     openInterest: newOpenInterest,
   })
-
   // check open interest limit
   if (newOpenInterest.gt(oldOpenInterest)) {
     const limit = computePerpetualOpenInterestLimit(newPool, perpetualIndex)

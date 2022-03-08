@@ -1,6 +1,5 @@
-# mai3.js - Mai Protocol v3 JavaScript API
+# pegasus.js - Pegasus JavaScript API
 
-![CoverageStatus](https://github.com/mcdexio/mai3.js/workflows/Coverage/badge.svg)
 
 ## Install
 ```
@@ -9,7 +8,7 @@ npm install @mcdex/mai3.js
 
 ## Quick start
 
-1. Goto mcdex.io/trade to open some positions.
+1. Go to trade.pegasusfinance.xyz to open some positions.
 
 2. Connect to Arbitrum Testnet:
 

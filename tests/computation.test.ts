@@ -80,6 +80,10 @@ const perpetual1: PerpetualStorage = {
 
   halfSpread: { value: new BigNumber(0.001), minValue: _0, maxValue: _0 },
   openSlippageFactor: { value: new BigNumber('0.0142857142857142857142857142857'), minValue: _0, maxValue: _0 },
+  openSlippageLongPenaltyFactor: { value: new BigNumber(0), minValue: _0, maxValue: _0 },
+  openSlippageShortPenaltyFactor: { value: new BigNumber(0), minValue: _0, maxValue: _0 },
+  meanRate: { value: new BigNumber(10000), minValue: _0, maxValue: _0 },
+  maxRate: { value: new BigNumber(100000), minValue: _0, maxValue: _0 },
   closeSlippageFactor: { value: new BigNumber('0.0128571428571428571428571428571'), minValue: _0, maxValue: _0 },
   fundingRateFactor: { value: new BigNumber(0.005), minValue: _0, maxValue: _0 },
   fundingRateLimit: { value: new BigNumber(0.005), minValue: _0, maxValue: _0 },
@@ -923,6 +927,10 @@ describe('computeAMMTrade with USE_TARGET_LEVERAGE', function() {
   
     halfSpread: { value: new BigNumber(0.01), minValue: _0, maxValue: _0 },
     openSlippageFactor: { value: new BigNumber('0.1'), minValue: _0, maxValue: _0 },
+    openSlippageLongPenaltyFactor: { value: new BigNumber(0), minValue: _0, maxValue: _0 },
+    openSlippageShortPenaltyFactor: { value: new BigNumber(0), minValue: _0, maxValue: _0 },
+    meanRate: { value: new BigNumber(10000), minValue: _0, maxValue: _0 },
+    maxRate: { value: new BigNumber(100000), minValue: _0, maxValue: _0 },
     closeSlippageFactor: { value: new BigNumber('0.06'), minValue: _0, maxValue: _0 },
     fundingRateFactor: { value: new BigNumber(0.01), minValue: _0, maxValue: _0 },
     fundingRateLimit: { value: new BigNumber(0), minValue: _0, maxValue: _0 },

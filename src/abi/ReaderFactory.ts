@@ -102,6 +102,11 @@ const _abi = [
             name: "targetLeverage",
             type: "int256",
           },
+          {
+            internalType: "int256",
+            name: "entryValue",
+            type: "int256",
+          },
         ],
         internalType: "struct Reader.AccountReaderResult",
         name: "accountStorage",
@@ -325,9 +330,9 @@ const _abi = [
                 type: "address",
               },
               {
-                internalType: "int256[42]",
+                internalType: "int256[50]",
                 name: "nums",
-                type: "int256[42]",
+                type: "int256[50]",
               },
               {
                 internalType: "uint256",
@@ -363,6 +368,11 @@ const _abi = [
                 internalType: "bool",
                 name: "isInversePerpetual",
                 type: "bool",
+              },
+              {
+                internalType: "bool",
+                name: "entryValue",
+                type: "int256",
               },
             ],
             internalType: "struct Reader.PerpetualReaderResult[]",

@@ -1193,9 +1193,9 @@ const _abi = [
         type: "address",
       },
       {
-        internalType: "int256[42]",
+        internalType: "int256[50]",
         name: "nums",
-        type: "int256[42]",
+        type: "int256[50]",
       },
     ],
     stateMutability: "view",
