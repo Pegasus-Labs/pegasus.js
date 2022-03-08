@@ -45,7 +45,6 @@
     "stop_testrpc": "kill $(ps aux|grep \"[d]iagram range remind capable\"|awk '{print $2}')",
     "deploy_contract": "chmod +x ./scripts/deploy_contract.sh && ./scripts/deploy_contract.sh",
     "build_test_env": "node scripts/run_test_env.js",
-    "install": "npm run build",
     "prepare": "npm run build"
   },
   "files": [
