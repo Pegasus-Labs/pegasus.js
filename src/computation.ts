@@ -95,7 +95,7 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
   if (!s.positionAmount.isZero()) {
     let tradingFeeRate = p.vaultFeeRate.plus(perpetual.operatorFeeRate).plus(perpetual.lpFeeRate)
     const t = perpetual.maintenanceMarginRate
-      .plus(tradingFeeRate)
+      .plus(tradingFeeRate.minus(tradingFeeRate))
       .times(s.positionAmount.abs())
       .minus(s.positionAmount)
     liquidationPrice = availableCashBalance.minus(reservedCash).div(t)
