@@ -78,7 +78,11 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
   }
 
   if (s.entryValue) {
-    pnl1 = perpetual.markPrice.times(s.positionAmount).minus(s.entryValue)
+    let closePrice = perpetual.markPrice
+    if (!s.positionAmount.isZero()) {
+      closePrice = computeAMMPrice(p, perpetualIndex, -s.positionAmount).tradingPrice
+    }
+    pnl1 = closePrice.times(s.positionAmount).minus(s.entryValue)
   }
   if (pnl1 && fundingPNL) {
     pnl2 = pnl1.plus(fundingPNL)
