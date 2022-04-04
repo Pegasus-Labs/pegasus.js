@@ -184,6 +184,7 @@ export interface AccountComputed {
   marginRatio: BigNumber // maintenanceMargin / marginBalance
 
   entryPrice: BigNumber | null
+  closePrice: BigNumber | null
   fundingPNL: BigNumber | null // entryFunding - pos * accumulatedFunding
   pnl1: BigNumber | null // pos * (exitPrice - entryPrice) if entry != null
   pnl2: BigNumber | null // pnl1 + funding if entry != null

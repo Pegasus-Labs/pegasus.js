@@ -77,8 +77,8 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
     )
   }
 
+  let closePrice = perpetual.markPrice
   if (s.entryValue) {
-    let closePrice = perpetual.markPrice
     if (!s.positionAmount.isZero()) {
       closePrice = computeAMMPrice(p, perpetualIndex, -s.positionAmount).tradingPrice
     }
@@ -123,6 +123,7 @@ export function computeAccount(p: LiquidityPoolStorage, perpetualIndex: number, 
     marginRatio,
 
     entryPrice,
+    closePrice,
     fundingPNL,
     pnl1,
     pnl2,
